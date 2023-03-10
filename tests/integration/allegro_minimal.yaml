@@ -1,0 +1,58 @@
+# !! PLEASE NOTE: `minimal.yaml` is meant as a _minimal_ example of a tiny, fast
+#                 training that can be used to verify your nequip+allegro install,
+#                 the syntax of your configuration edits, etc.
+#                 These are NOT recommended hyperparameters for real applications!
+#                 Please see `example.yaml` for a reasonable starting point.
+
+# general
+seed: 123456
+dataset_seed: 123456
+device: cpu
+
+# -- network --
+model_builders:
+ - allegro.model.Allegro
+ - PerSpeciesRescale
+ - ForceOutput
+ - RescaleEnergyEtc
+
+# cutoffs
+r_max: 6.0
+
+# network symmetry
+l_max: 1
+parity: o3_full
+
+# allegro layers:
+num_layers: 1
+env_embed_multiplicity: 32
+two_body_latent_mlp_latent_dimensions: [32, 64]
+two_body_latent_mlp_nonlinearity: silu
+
+latent_mlp_latent_dimensions: [64]
+latent_mlp_nonlinearity: silu
+
+latent_resnet: true
+
+env_embed_mlp_latent_dimensions: []
+env_embed_mlp_nonlinearity: null
+
+edge_eng_mlp_latent_dimensions: [32]
+edge_eng_mlp_nonlinearity: null
+
+
+# logging
+wandb: false
+wandb_project: aspirin
+verbose: info
+
+# training
+batch_size: 1
+max_epochs: 3
+learning_rate: 0.002
+
+# loss function
+loss_coeffs: forces
+
+# optimizer
+optimizer_name: Adam

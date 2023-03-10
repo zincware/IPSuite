@@ -1,0 +1,31 @@
+name: Check coding style
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  full:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: 1.4.0
+      - name: Install lint tools
+        run: |
+          poetry config virtualenvs.create false
+          poetry install --no-root --only=lint
+      - name: black
+        if: always()
+        run: black --check .
+      - name: isort
+        if: always()
+        run: isort --check-only .
+      - name: ruff
+        if: always()
+        run: ruff .

@@ -1,0 +1,45 @@
+"""ipsuite helper modules."""
+
+import contextlib
+from logging import Logger
+
+import znflow
+from zntrack import Node
+
+
+def get_deps_if_node(obj, attribute: str):
+    """Apply getdeps if obj is subclass/instance of a Node.
+
+    Parameters
+    ----------
+    obj: any
+        Any object that is either a Node or not.
+    attribute: str
+        Name of the attribute to get.
+
+    Returns
+    -------
+    Either the requested attribute if obj is a Node.
+    Otherwise, it will return the obj itself.
+
+    """
+    if isinstance(obj, (list, tuple)):
+        return [get_deps_if_node(x, attribute) for x in obj]
+    with contextlib.suppress(TypeError):
+        if issubclass(obj, Node):
+            return obj @ attribute  # TODO attribute access should also work, right?
+    if isinstance(obj, znflow.Connection):
+        if obj.attribute is None:
+            assert obj.item is None
+            return znflow.Connection(obj.instance, attribute)
+    return obj @ attribute if isinstance(obj, Node) else obj
+
+
+def check_duplicate_keys(dict_a: dict, dict_b: dict, log: Logger) -> None:
+    """Check if a key of dict_a is present in dict_b and then log a warning."""
+    for key in dict_a:
+        if key in dict_b:
+            log.warning(
+                f"Found <{key}> in given config file. Please be aware that <{key}>"
+                " will be overwritten by MLSuite!"
+            )
