@@ -1,0 +1,7 @@
+#!/bin/bash
+git config --global user.name "John Doe"
+git config --global user.email johndoe@example.com
+
+pip install poetry
+poetry config virtualenvs.create false
+poetry install --all-extras --without=notebook

@@ -6,7 +6,7 @@
 
 IPS provides you with tools to generate Machine Learned Interatomic Potentials.
 
-Install the package to get started. 
+Install the package to get started or check out an interactive notebook [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/zincware/IPSuite/HEAD) 
 ```python
 pip install ipsuite
 ```
