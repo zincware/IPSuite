@@ -2,19 +2,36 @@ import logging
 
 from ipsuite.models.base import MLModel, Prediction
 from ipsuite.models.ensemble import EnsembleModel
-from ipsuite.models.gap import GAP
-from ipsuite.models.nequip import Nequip
 
 log = logging.getLogger(__name__)
 
-__all__ = ["Prediction", "MLModel", "GAP", "Nequip", "EnsembleModel"]
+__all__ = ["Prediction", "MLModel", "EnsembleModel"]
+try:
+    from ipsuite.models.gap import GAP
+
+    __all__ += ["GAP"]
+except ModuleNotFoundError:
+    log.warning(
+        "No GAP installation was found. You can install GAP using 'pip install"
+        " ipsuite[gap]'"
+    )
+
+try:
+    from ipsuite.models.nequip import Nequip
+
+    __all__ += ["Nequip"]
+except ModuleNotFoundError:
+    log.warning(
+        "No Nequip installation was found. You can install GAP using 'pip install"
+        " ipsuite[nequip]'"
+    )
+
 try:
     from ipsuite.models.mace_model import MACE
 
     __all__ += ["MACE"]
-except ImportError:
+except ModuleNotFoundError:
     log.warning(
-        "The MACE doesn't seem to be installed. If you want to use MACE, please instal"
-        " it. The installation of MACE is described here"
+        "No MACE installation was found. The installation is described here:"
         " 'https://github.com/ACEsuit/mace' ."
     )
