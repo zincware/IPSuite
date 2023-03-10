@@ -7,6 +7,7 @@ from ipsuite import (
     calculators,
     configuration_comparison,
     configuration_selection,
+    fields,
     models,
     utils,
 )
@@ -23,7 +24,7 @@ __all__ = [
     "configuration_selection",
     "models",
     "analysis",
-    "zn_types",
+    "fields",
     "calculators",
 ]
 
