@@ -2827,7 +2827,7 @@ files = [
 name = "mace"
 version = "0.2.0"
 description = ""
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = []
@@ -3046,7 +3046,7 @@ files = [
 name = "mir-allegro"
 version = "0.2.0"
 description = "Allegro is an open-source code for building highly scalable and accurate equivariant deep learning interatomic potentials."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = []
@@ -3901,7 +3901,7 @@ testing = ["pytest", "pytest-benchmark"]
 name = "prettytable"
 version = "3.6.0"
 description = "A simple Python library for easily displaying tabular data in a visually appealing ASCII table format"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -6087,4 +6087,4 @@ znjson = ">=0.2.2,<0.3.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "1e7bee26974dc56f7bc5d4ecd3563ea1586bb8ee4e57c2e1b94a255b064fbcdd"
+content-hash = "e5d53b9e6fa2199beab5806f2923b1946b8468fb2ebcfcefbdfa74836fb039e2"

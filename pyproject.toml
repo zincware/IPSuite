@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ipsuite"
-version = "0.1.0"
+version = "0.1.0a0"
 description = "A suite of tools for machine learned interatomic potentials."
 authors = ["zincwarecode <zincwarecode@gmail.com>"]
 keywords=["data-version-control", "machine-learning", "reproducibility", "interatomic potentials"]
@@ -31,12 +31,13 @@ quippy-ase = "^0.9.12"
 xmltodict = "^0.13.0"
 
 
-#[tool.poetry.group.nequip.dependencies]
+
 nequip = "^0.5.6"
+[tool.poetry.group.allegro.dependencies]
 mir-allegro = {git = "https://github.com/mir-group/allegro.git"}
 
 
-#[tool.poetry.group.mace.dependencies]
+[tool.poetry.group.mace.dependencies]
 mace = {git = "https://github.com/ACEsuit/mace.git"}
 
 
