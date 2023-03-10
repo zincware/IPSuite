@@ -54,6 +54,10 @@ mir-allegro = {git = "https://github.com/mir-group/allegro.git"}
 mace = {git = "https://github.com/ACEsuit/mace.git"}
 
 
+
+[tool.poetry.group.test.dependencies]
+coverage = "^7.2.1"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
