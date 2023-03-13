@@ -35,7 +35,7 @@ jobs:
       - name: Install package
         run: |
           poetry config virtualenvs.create false
-          poetry install
+          poetry install --all-extras
       - name: Setup git user
         run: |
           git config --global user.name "John Doe"
