@@ -32,6 +32,6 @@ try:
     __all__ += ["MACE"]
 except ModuleNotFoundError:
     log.warning(
-        "No MACE installation was found. The installation is described here:"
-        " 'https://github.com/ACEsuit/mace' ."
+        "No MACE installation was found. The installation is described at"
+        " 'https://github.com/ACEsuit/mace'"
     )
