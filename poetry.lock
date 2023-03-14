@@ -1250,6 +1250,18 @@ files = [
 ]
 
 [[package]]
+name = "docstring-parser"
+version = "0.15"
+description = "Parse Python docstrings in reST, Google and Numpydoc format"
+category = "dev"
+optional = false
+python-versions = ">=3.6,<4.0"
+files = [
+    {file = "docstring_parser-0.15-py3-none-any.whl", hash = "sha256:d1679b86250d269d06a99670924d6bce45adc00b08069dae8c47d98e89b667a9"},
+    {file = "docstring_parser-0.15.tar.gz", hash = "sha256:48ddc093e8b1865899956fcc03b03e66bb7240c310fac5af81814580c55bf682"},
+]
+
+[[package]]
 name = "dot4dict"
 version = "0.1.1"
 description = "A Python Package to enable dot-notation on dictionaries"
@@ -1621,6 +1633,25 @@ files = [
 
 [package.extras]
 tests = ["asttokens", "littleutils", "pytest", "rich"]
+
+[[package]]
+name = "expyre-wfl"
+version = "0.1.1"
+description = ""
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "main", hash = "sha256:2dcb98ff013221ce25d96c8c5ca117e3430be77cdba9254d5b4fcab3a2b0209b"},
+]
+
+[package.dependencies]
+click = ">=7.0"
+pandas = "*"
+
+[package.source]
+type = "url"
+url = "https://github.com/libAtoms/ExPyRe/tarball/main"
 
 [[package]]
 name = "f90wrap"
@@ -5089,6 +5120,51 @@ tests = ["dask[array]", "pytest (>=3.5)", "pytest-black", "pytest-cov"]
 tox = ["dask[array]", "pytest (>=3.5)", "pytest-black", "pytest-cov", "tox"]
 
 [[package]]
+name = "spglib"
+version = "2.0.2"
+description = "This is the spglib module."
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "spglib-2.0.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:a54dbc8954ffef86895c29416274b23b562dcdd23f8d3d4e61b47b43eabe65aa"},
+    {file = "spglib-2.0.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:da956b941a377c6af450b252ee4ef03040dd2f80b5b77c56d043a5aa3b7e0aca"},
+    {file = "spglib-2.0.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:791cd3d525a33142f874facb4a0371a744deb6c63cbfa8d8eec2cc2977f54691"},
+    {file = "spglib-2.0.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2f76c1a5e9699479c847a577e3d7974c676a030048ca4f9ae1b89008ef8b3db7"},
+    {file = "spglib-2.0.2-cp310-cp310-win_amd64.whl", hash = "sha256:19d1a793515711c3196126f4f6da32b1ebb4e6f3c418671692430191b6bb5c75"},
+    {file = "spglib-2.0.2-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:c6dafee1c21ef378df002802a7a74f92b6a8b54170fe12ebab7f563c8333aae3"},
+    {file = "spglib-2.0.2-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:b515b688b595590181a763586d9b2bf28e1c5c49dadc90825963ee5c8d63ff69"},
+    {file = "spglib-2.0.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:57ffbc725c7c22410dbf19f276762d81448843e35bdca55d00480e30dfac61e8"},
+    {file = "spglib-2.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b57e9cbe6ce271a9a2ff403e236e07adaf6c263acbf4dbe007632e189f4108e7"},
+    {file = "spglib-2.0.2-cp311-cp311-win_amd64.whl", hash = "sha256:778306dcccd5c3946357d64435593d80d22758abd94d2d0fc9ec8ee3f75c33a3"},
+    {file = "spglib-2.0.2-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:4a58ecdd553a9c1603e9bd8124170e97cea0d0ee3be76e5efc2f952a6d463f35"},
+    {file = "spglib-2.0.2-cp36-cp36m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:184f4045a6691be5012d75296874e1c7468ebdec3284161724c000efd78558d7"},
+    {file = "spglib-2.0.2-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:04fd1899d69456259e3667aa4cace8e4e6f3b8a369714ed01f349b4734263df1"},
+    {file = "spglib-2.0.2-cp36-cp36m-win_amd64.whl", hash = "sha256:4d026e4ffd4801b1c0bf6784cb7547032db4a1d0806993060dd95f5caa547c77"},
+    {file = "spglib-2.0.2-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:98ff97079e331cc707cc1836bfe6c632eb496ffff76fd534bd28faa1221124bd"},
+    {file = "spglib-2.0.2-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b7440b220cd100c31ee72a33dcb1ee8544ff9b0c0cd69aeee78c081eea654cd3"},
+    {file = "spglib-2.0.2-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0352429063f0f174d5b763a4a119ff972fa8f951762719eb930f2db8d462df22"},
+    {file = "spglib-2.0.2-cp37-cp37m-win_amd64.whl", hash = "sha256:64e6731f5921c55521efe53cd9eead26a624124b04547216a8e90bc654638664"},
+    {file = "spglib-2.0.2-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:d0d17316837825c67723ab2bc6d9cdee0a8252673c7e4e12f8a9264732865bef"},
+    {file = "spglib-2.0.2-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:50dfd569aa2f8a1393c9784449c1631b73ef3b4035670a905a959656a8af2bc5"},
+    {file = "spglib-2.0.2-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8916019d201e107d3dc02367ad36f96913e2a42dc9226578e5608b835dec3ad4"},
+    {file = "spglib-2.0.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:07fa12e0fba754ddf9daa126f82a3b6ed21d4ef5ff7d8f7747e26f55b67c153c"},
+    {file = "spglib-2.0.2-cp38-cp38-win_amd64.whl", hash = "sha256:d2132751f1151f6875b45c9e4b9053fee1d2ef376aa85c8a53f058c71f492a9e"},
+    {file = "spglib-2.0.2-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:c5c23bd8ee8941cb679ba941f8b49cae306fa62a92085d84a451ae86332dc440"},
+    {file = "spglib-2.0.2-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:8b09b79309bd599947d1007ec7598182f193aa291fc50cd5f19b2c73aa643641"},
+    {file = "spglib-2.0.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d9f63b3f1b00a49d1a409b47e66beb6ea3eaed2131749be8668fce3cb01ec753"},
+    {file = "spglib-2.0.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b9ab53e531f4083ef61f349fe662f40c1f86bc1e313d76f838a54317acb74865"},
+    {file = "spglib-2.0.2-cp39-cp39-win_amd64.whl", hash = "sha256:9f904e8a1420e3c07a0815f698c464d9a3ea5b5419276ae002f765c5d06f7bee"},
+    {file = "spglib-2.0.2.tar.gz", hash = "sha256:1d081ec22da4ab4fc3198e9445ddad6dec2261c43927831151d93e39422610aa"},
+]
+
+[package.dependencies]
+numpy = "*"
+
+[package.extras]
+doc = ["Sphinx (==4.5.0)", "myst-parser (==0.18.0)", "sphinx-autobuild (==2021.3.14)", "sphinx-book-theme (==0.3.3)", "sphinxcontrib-bibtex (==2.4.2)"]
+
+[[package]]
 name = "sqltrie"
 version = "0.1.1"
 description = "SQL-based prefix tree inspired by pygtrie and python-diskcache"
@@ -5567,6 +5643,21 @@ files = [
 ]
 
 [[package]]
+name = "universalSOAP"
+version = "0.1.0b0"
+description = ""
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "main", hash = "sha256:3821c4a1c041eb9926b5da41cb158d69eb244a3c5a43d63ee5b74b2baad7749d"},
+]
+
+[package.source]
+type = "url"
+url = "https://github.com/libAtoms/universalSOAP/tarball/main"
+
+[[package]]
 name = "uri-template"
 version = "1.2.0"
 description = "RFC 6570 URI Template Processor"
@@ -5692,6 +5783,32 @@ MarkupSafe = ">=2.1.1"
 
 [package.extras]
 watchdog = ["watchdog"]
+
+[[package]]
+name = "wfl"
+version = "0.1.0b"
+description = ""
+category = "dev"
+optional = false
+python-versions = "*"
+files = []
+develop = false
+
+[package.dependencies]
+ase = "*"
+click = ">=7.0"
+docstring_parser = "*"
+expyre-wfl = {url = "https://github.com/libAtoms/ExPyRe/tarball/main"}
+numpy = "*"
+pyyaml = "*"
+spglib = "*"
+universalSOAP = {url = "https://github.com/libAtoms/universalSOAP/tarball/main"}
+
+[package.source]
+type = "git"
+url = "https://github.com/libAtoms/workflow.git"
+reference = "HEAD"
+resolved_reference = "3fedebee792d71b9ba0b8ed05ecdeca27ac538e1"
 
 [[package]]
 name = "wheel"
@@ -6093,4 +6210,4 @@ nequip = ["nequip"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "c39c8b656c373b6e8565504341034c25cfc22a57990039444dcccb935517d90b"
+content-hash = "27c8d2bbd5221ecd71c539c2b6c89ff86a2cc8706c6506b38725adc692e9eea1"

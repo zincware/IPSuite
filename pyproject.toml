@@ -53,6 +53,10 @@ jupyterlab = "^3.6.1"
 pytest = "^7.2.1"
 coverage = "^7.2.1"
 
+
+[tool.poetry.group.workflow.dependencies]
+wfl = {git = "https://github.com/libAtoms/workflow.git"}
+
 [tool.poetry.extras]
 comparison = ["h5py", "tensorflow", "llvmlite", "numba", "dscribe"]
 gap = ["quippy-ase", "xmltodict"]

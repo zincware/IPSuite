@@ -328,6 +328,10 @@ class GAP(MLModel):
             n_atoms=len(atoms[0]),
         )
 
+    @property
+    def model_xml_file(self) -> Path:
+        return Path(self.model_directory.resolve(), "model.xml")
+
     #
     @property
     def calc(self):
@@ -338,11 +342,10 @@ class GAP(MLModel):
         Calculator object to use e.g. for ase.
         """
         with znflow.disable_graph():
-            file = Path(self.model_directory.resolve(), "model.xml")
-            if file.exists():
+            if self.model_xml_file.exists():
                 return quippy.potential.Potential(
                     "IP GAP",
-                    param_filename=file.as_posix(),
+                    param_filename=self.model_xml_file.as_posix(),
                 )
             else:
                 raise FileNotFoundError(f"Could not load GAP potential from file {file}")
