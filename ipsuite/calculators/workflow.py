@@ -5,6 +5,7 @@ from wfl.configset import ConfigSet, OutputSpec
 
 from ipsuite import base, utils
 from ipsuite.models import GAP
+import os
 
 
 class Workflow(base.ProcessAtoms):
@@ -14,6 +15,7 @@ class Workflow(base.ProcessAtoms):
     properties = zntrack.zn.params(["energy", "forces"])
     
     num_python_subprocesses: int = zntrack.meta.Text(1)
+    OMP_NUM_THREADS: str = zntrack.meta.Environment("1")
 
     # def _post_init_(self):
     # self.calculator = utils.get_deps_if_node(self.calculator, "calc")
@@ -31,7 +33,7 @@ class Workflow(base.ProcessAtoms):
 
         inputs = ConfigSet([x for x in self.data])
         outputs = OutputSpec()
-        
+
         config_set = generic.run(
             inputs=inputs,
             calculator=calculator,
