@@ -1,54 +1,12 @@
 """Lazy ASE Atoms loading."""
-import collections.abc
 import functools
 import typing
 
-import ase.calculators.singlepoint
-import ase.db
 import h5py
 import znh5md
-import znslice
 import zntrack
 
 from ipsuite import base
-
-
-class ASEAtomsFromDB(collections.abc.Sequence):
-    """ASE Atoms from ASE DB loading."""
-
-    def __init__(self, database: znh5md.ASEH5MD, threshold: int = 100):
-        """Construct ASEAtomsFromDB.
-
-        Parameters
-        ----------
-        database: file
-            The database to read from
-        threshold: int
-            Minimum number of atoms to read at once to print tqdm loading bars.
-        """
-        self.database = database
-        self.threshold = threshold
-        self._len = None
-
-    @znslice.znslice(lazy=True, advanced_slicing=True)
-    def __getitem__(
-        self, item: typing.Union[int, list]
-    ) -> typing.Union[ase.Atoms, znslice.LazySequence]:
-        """Get Atoms from the database."""
-        return self.database[item]
-
-    def __len__(self):
-        """Get the len based on the db.
-
-        This value is cached because the db is not expected to
-        change during the lifetime of this class.
-        """
-        return len(self.database.position)
-
-    def __repr__(self):
-        """Repr."""
-        db_short = "/".join(self._database.parts[-3:])
-        return f"{self.__class__.__name__}(db='{db_short}')"
 
 
 class Atoms(zntrack.Field):
@@ -80,7 +38,7 @@ class Atoms(zntrack.Field):
         db.initialize_database_groups()
         db.add(znh5md.io.AtomsReader(atoms))
 
-    def get_data(self, instance: zntrack.Node) -> any:
+    def get_data(self, instance: zntrack.Node) -> base.protocol.ATOMS_LST:
         """Get data from znh5md File."""
         file = self.get_files(instance)[0]
 
@@ -94,4 +52,7 @@ class Atoms(zntrack.Field):
                 znh5md.FormatHandler, file_handle=file_handle
             ),
         )
-        return ASEAtomsFromDB(database=data)[:]
+        return data[:]
+        # if instance.state.rev is None and instance.state.remote is None::
+        #     # it is slightly faster
+        #     return znh5md.ASEH5MD(file)[:]

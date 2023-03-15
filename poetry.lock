@@ -6174,23 +6174,27 @@ description = "Create, Run and Benchmark DVC Pipelines in Python"
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0.0"
-files = [
-    {file = "zntrack-0.6.0a0-py3-none-any.whl", hash = "sha256:d7fa0e3ce476209f8c181898a0a192538fbf2bd66acade9083b51ad6d8f9b6f0"},
-    {file = "zntrack-0.6.0a0.tar.gz", hash = "sha256:5cb2ebf6d2e9f3cc97c58026d1f1a125a304d8e8aae72ec8416e05a8254e12e2"},
-]
+files = []
+develop = false
 
 [package.dependencies]
-dot4dict = ">=0.1.1,<0.2.0"
-dvc = ">=2.47.0,<3.0.0"
-pandas = ">=1.4.3,<2.0.0"
-pyyaml = ">=6.0,<7.0"
-tqdm = ">=4.64.0,<5.0.0"
-typer = ">=0.7.0,<0.8.0"
-znflow = ">=0.1.3,<0.2.0"
-zninit = ">=0.1.6"
-znjson = ">=0.2.2,<0.3.0"
+dot4dict = "^0.1.1"
+dvc = "^2.47.0"
+pandas = "^1.4.3"
+pyyaml = "^6.0"
+tqdm = "^4.64.0"
+typer = "^0.7.0"
+znflow = "^0.1.3"
+zninit = "^0.1.9"
+znjson = "^0.2.2"
+
+[package.source]
+type = "git"
+url = "https://github.com/zincware/zntrack"
+reference = "add_znflow"
+resolved_reference = "8bd522ac5746da51d024d4014fdabb838d5a8050"
 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "8cd6b2d67c4a6efaf2c60b02717c04d688809f3e64d43df99c293e99a880e1a0"
+content-hash = "08bf963f27b8f8e23fdb409eeb5d66346a534a199a7b16c021bea9c8d42a2b30"
