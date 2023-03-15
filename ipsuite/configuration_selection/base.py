@@ -47,7 +47,7 @@ def _flatten(
             for index in range(len(atoms_lst))
             if index not in exclude_configurations.get(node_name, [])
         ]
-        all_atoms += atoms_lst[indices]
+        all_atoms += [x for idx, x in enumerate(atoms_lst) if idx in indices]
 
         length_per_node_attr[node_name] = len(indices)
 
@@ -201,7 +201,9 @@ class ConfigurationSelection(base.ProcessAtoms):
             for selected_confs, data in zip(
                 self.selected_configurations.values(), self.data, strict=True
             ):
-                selected_data += data[selected_confs]
+                selected_data += [
+                    x for idx, x in enumerate(data) if idx in selected_confs
+                ]
             return selected_data
 
     @property
@@ -219,5 +221,7 @@ class ConfigurationSelection(base.ProcessAtoms):
                 excluded_indices = [
                     x for x in range(len(data)) if x not in selected_confs
                 ]
-                selected_data += data[excluded_indices]
+                selected_data += [
+                    x for idx, x in enumerate(data) if idx in excluded_indices
+                ]
             return selected_data
