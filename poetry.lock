@@ -1569,14 +1569,14 @@ tests = ["funcy (>=1.17)", "matplotlib", "mypy (==0.981)", "pylint (==2.15.0)", 
 
 [[package]]
 name = "dvc-studio-client"
-version = "0.6.0"
+version = "0.6.1"
 description = "Small library to post data from DVC/DVCLive to Iterative Studio"
 category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "dvc-studio-client-0.6.0.tar.gz", hash = "sha256:90107ebc6808645374034b2eb71226dd5d6e004f62a7ad4c410b9c5193d6c902"},
-    {file = "dvc_studio_client-0.6.0-py3-none-any.whl", hash = "sha256:8878552b3f0b79cfd2114313e5fb35309995f41e8939ec1ff70c67379541abe3"},
+    {file = "dvc-studio-client-0.6.1.tar.gz", hash = "sha256:341b33075a32a3ec93bc509a7114664d94c9f4c554ca554f648cb6004acd857b"},
+    {file = "dvc_studio_client-0.6.1-py3-none-any.whl", hash = "sha256:954d1e3510ed44d36a75914f3a1160e5d4c23d0dbd4f72dabd56fcd6bb009d2f"},
 ]
 
 [package.dependencies]
@@ -1707,14 +1707,14 @@ devel = ["colorama", "json-spec", "jsonschema", "pylint", "pytest", "pytest-benc
 
 [[package]]
 name = "filelock"
-version = "3.9.1"
+version = "3.10.0"
 description = "A platform independent file lock."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "filelock-3.9.1-py3-none-any.whl", hash = "sha256:4427cdda14a1c68e264845142842d6de2d0fa2c15ba31571a3d9c9a1ec9d191c"},
-    {file = "filelock-3.9.1.tar.gz", hash = "sha256:e393782f76abea324dee598d2ea145b857a20df0e0ee4f80fcf35e72a341d2c7"},
+    {file = "filelock-3.10.0-py3-none-any.whl", hash = "sha256:e90b34656470756edf8b19656785c5fea73afa1953f3e1b0d645cef11cab3182"},
+    {file = "filelock-3.10.0.tar.gz", hash = "sha256:3199fd0d3faea8b911be52b663dfccceb84c95949dd13179aa21436d1a79c4ce"},
 ]
 
 [package.extras]
@@ -6110,14 +6110,14 @@ networkx = ">=3.0,<4.0"
 
 [[package]]
 name = "znh5md"
-version = "0.1.0"
+version = "0.1.1"
 description = "High Performance Interface for H5MD Trajectories"
 category = "main"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "znh5md-0.1.0-py3-none-any.whl", hash = "sha256:d49bc3e146183ecdc0b137a9b7021669ac21a0c57f6c3babdeed4d866cf86690"},
-    {file = "znh5md-0.1.0.tar.gz", hash = "sha256:d7c8125b6b950405dfafed09db7c19c1d29e3a485dc65f3d1270c8d4a6c57051"},
+    {file = "znh5md-0.1.1-py3-none-any.whl", hash = "sha256:28794263610c4cd9ec6b9b18261248354e3b80adf2ec0eea85ca8a7d5e010e11"},
+    {file = "znh5md-0.1.1.tar.gz", hash = "sha256:8904f8e1e0801016dae63343ad6f9572f86ce5e3c8a4355b668d471429aaf983"},
 ]
 
 [package.dependencies]
@@ -6200,4 +6200,4 @@ nequip = ["nequip"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "cb17726071283f921843b74a3fa8edab6ea1f08bf67d40053cad6bb29beeca90"
+content-hash = "41efa9bab3c0e5418d869d5c9902b6ff11300a2f78543f25e1872a455f1729d8"
