@@ -6193,7 +6193,7 @@ znjson = "^0.2.2"
 type = "git"
 url = "https://github.com/zincware/zntrack"
 reference = "add_znflow"
-resolved_reference = "8bd522ac5746da51d024d4014fdabb838d5a8050"
+resolved_reference = "86ee4abed3b2f4cc2ea7febfa349502a19518fbc"
 
 [extras]
 comparison = ["dscribe", "h5py", "llvmlite", "numba", "tensorflow"]
