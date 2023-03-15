@@ -43,7 +43,7 @@ class ASEAtomsFromDB(collections.abc.Sequence):
         This value is cached because the db is not expected to
         change during the lifetime of this class.
         """
-        return len(self.database.format_handler.positions)
+        return len(self.database.position)
 
     def __repr__(self):
         """Repr."""

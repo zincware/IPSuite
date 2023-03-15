@@ -6126,7 +6126,7 @@ h5py = "^3.7.0"
 type = "git"
 url = "https://github.com/zincware/znh5md"
 reference = "HEAD"
-resolved_reference = "a2eab36bb63b8d09d6b8e4b76649d4519973cb9f"
+resolved_reference = "19371b7555a9f225772c26f63c09bd942838f818"
 
 [[package]]
 name = "zninit"
