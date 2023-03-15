@@ -6114,20 +6114,17 @@ version = "0.1.0"
 description = "High Performance Interface for H5MD Trajectories"
 category = "main"
 optional = false
-python-versions = "^3.9"
-files = []
-develop = false
+python-versions = ">=3.9,<4.0"
+files = [
+    {file = "znh5md-0.1.0-py3-none-any.whl", hash = "sha256:d49bc3e146183ecdc0b137a9b7021669ac21a0c57f6c3babdeed4d866cf86690"},
+    {file = "znh5md-0.1.0.tar.gz", hash = "sha256:d7c8125b6b950405dfafed09db7c19c1d29e3a485dc65f3d1270c8d4a6c57051"},
+]
 
 [package.dependencies]
-ase = "^3.22.1"
-dask = {version = "^2022.11.1", extras = ["array"]}
-h5py = "^3.7.0"
-
-[package.source]
-type = "git"
-url = "https://github.com/zincware/znh5md"
-reference = "HEAD"
-resolved_reference = "19371b7555a9f225772c26f63c09bd942838f818"
+ase = ">=3.22.1,<4.0.0"
+dask = {version = ">=2022.11.1,<2023.0.0", extras = ["array"]}
+h5py = ">=3.7.0,<4.0.0"
+tqdm = ">=4.65.0,<5.0.0"
 
 [[package]]
 name = "zninit"
@@ -6203,4 +6200,4 @@ nequip = ["nequip"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "ab1a6748b36f07e2e349ca5dd45997d2746ec531a06f02e83b185954e2678e09"
+content-hash = "cb17726071283f921843b74a3fa8edab6ea1f08bf67d40053cad6bb29beeca90"
