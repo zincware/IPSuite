@@ -33,6 +33,8 @@ xmltodict = "^0.13.0"
 
 
 nequip = "^0.5.6"
+zninit = "^0.1.9"
+znh5md = {git = "https://github.com/zincware/znh5md"}
 [tool.poetry.group.allegro.dependencies]
 mir-allegro = {git = "https://github.com/mir-group/allegro.git"}
 

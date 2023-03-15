@@ -872,6 +872,18 @@ prompt-toolkit = "*"
 six = "*"
 
 [[package]]
+name = "cloudpickle"
+version = "2.2.1"
+description = "Extended pickling support for Python objects"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "cloudpickle-2.2.1-py3-none-any.whl", hash = "sha256:61f594d1f4c295fa5cd9014ceb3a1fc4a70b0de1164b94fbc2d854ccba056f9f"},
+    {file = "cloudpickle-2.2.1.tar.gz", hash = "sha256:d89684b8de9e34a2a43b3460fbca07d09d6e25ce858df4d5a44240403b6178f5"},
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -1155,6 +1167,36 @@ files = [
     {file = "cycler-0.11.0-py3-none-any.whl", hash = "sha256:3a27e95f763a428a739d2add979fa7494c912a32c17c4c38c4d5f082cad165a3"},
     {file = "cycler-0.11.0.tar.gz", hash = "sha256:9c87405839a19696e837b3b818fed3f5f69f16f1eec1a1ad77e043dcea9c772f"},
 ]
+
+[[package]]
+name = "dask"
+version = "2022.12.1"
+description = "Parallel PyData with Task Scheduling"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "dask-2022.12.1-py3-none-any.whl", hash = "sha256:a833ee774bf702c08d22f31412358d12b007df36c6e8c107f32f17a4b20f1f68"},
+    {file = "dask-2022.12.1.tar.gz", hash = "sha256:ef12c98a6681964494ddfee4ba8071ebc8895d3c4ea27f5c5160a14e29f01d92"},
+]
+
+[package.dependencies]
+click = ">=7.0"
+cloudpickle = ">=1.1.1"
+fsspec = ">=0.6.0"
+numpy = {version = ">=1.18", optional = true, markers = "extra == \"array\""}
+packaging = ">=20.0"
+partd = ">=0.3.10"
+pyyaml = ">=5.3.1"
+toolz = ">=0.8.2"
+
+[package.extras]
+array = ["numpy (>=1.18)"]
+complete = ["bokeh (>=2.4.2,<3)", "distributed (==2022.12.1)", "jinja2", "numpy (>=1.18)", "pandas (>=1.0)"]
+dataframe = ["numpy (>=1.18)", "pandas (>=1.0)"]
+diagnostics = ["bokeh (>=2.4.2,<3)", "jinja2"]
+distributed = ["distributed (==2022.12.1)"]
+test = ["pandas[test]", "pre-commit", "pytest", "pytest-rerunfailures", "pytest-xdist"]
 
 [[package]]
 name = "debugpy"
@@ -2824,6 +2866,18 @@ files = [
 ]
 
 [[package]]
+name = "locket"
+version = "1.0.0"
+description = "File-based locks for Python on Linux and Windows"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+files = [
+    {file = "locket-1.0.0-py2.py3-none-any.whl", hash = "sha256:b6c819a722f7b6bd955b80781788e4a66a55628b858d347536b7e81325a3a5e3"},
+    {file = "locket-1.0.0.tar.gz", hash = "sha256:5c0d4c052a8bbbf750e056a8e65ccd309086f4f0f18a2eac306a8dfa4112a632"},
+]
+
+[[package]]
 name = "mace"
 version = "0.2.0"
 description = ""
@@ -3714,6 +3768,25 @@ files = [
 [package.extras]
 qa = ["flake8 (==3.8.3)", "mypy (==0.782)"]
 testing = ["docopt", "pytest (<6.0.0)"]
+
+[[package]]
+name = "partd"
+version = "1.3.0"
+description = "Appendable key-value storage"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "partd-1.3.0-py3-none-any.whl", hash = "sha256:6393a0c898a0ad945728e34e52de0df3ae295c5aff2e2926ba7cc3c60a734a15"},
+    {file = "partd-1.3.0.tar.gz", hash = "sha256:ce91abcdc6178d668bcaa431791a5a917d902341cb193f543fe445d494660485"},
+]
+
+[package.dependencies]
+locket = "*"
+toolz = "*"
+
+[package.extras]
+complete = ["blosc", "numpy (>=1.9.0)", "pandas (>=0.19.0)", "pyzmq"]
 
 [[package]]
 name = "pathspec"
@@ -5396,6 +5469,18 @@ files = [
 ]
 
 [[package]]
+name = "toolz"
+version = "0.12.0"
+description = "List processing tools and functional utilities"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+files = [
+    {file = "toolz-0.12.0-py3-none-any.whl", hash = "sha256:2059bd4148deb1884bb0eb770a3cde70e7f954cfbbdc2285f1f2de01fd21eb6f"},
+    {file = "toolz-0.12.0.tar.gz", hash = "sha256:88c570861c440ee3f2f6037c4654613228ff40c93a6c25e0eba70d17282c6194"},
+]
+
+[[package]]
 name = "torch"
 version = "1.12.1"
 description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
@@ -6023,15 +6108,36 @@ matplotlib = ">=3.6.3,<4.0.0"
 networkx = ">=3.0,<4.0"
 
 [[package]]
+name = "znh5md"
+version = "0.1.0"
+description = "High Performance Interface for H5MD Trajectories"
+category = "main"
+optional = false
+python-versions = "^3.9"
+files = []
+develop = false
+
+[package.dependencies]
+ase = "^3.22.1"
+dask = {version = "^2022.11.1", extras = ["array"]}
+h5py = "^3.7.0"
+
+[package.source]
+type = "git"
+url = "https://github.com/zincware/znh5md"
+reference = "HEAD"
+resolved_reference = "a2eab36bb63b8d09d6b8e4b76649d4519973cb9f"
+
+[[package]]
 name = "zninit"
-version = "0.1.8"
+version = "0.1.9"
 description = "Descriptor based dataclass implementation"
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "zninit-0.1.8-py3-none-any.whl", hash = "sha256:49e0529062658c4f4b3fba250cb69b0bf5b778e0d7b925c2a39fdb3e70be0122"},
-    {file = "zninit-0.1.8.tar.gz", hash = "sha256:5301669afe52538a6c03459f4d367f23ab46db7f256cbc9582cf60133b76a609"},
+    {file = "zninit-0.1.9-py3-none-any.whl", hash = "sha256:b10a96c0ed54f67c666b20ccd72958398c68e6347c8f7bd726b36b45d2a6de44"},
+    {file = "zninit-0.1.9.tar.gz", hash = "sha256:18a1f6da53ebd888e39fb2a4105e595cb4bc0f100b3e5b30f1d8b01c14254de8"},
 ]
 
 [package.extras]
@@ -6087,4 +6193,4 @@ znjson = ">=0.2.2,<0.3.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "e5d53b9e6fa2199beab5806f2923b1946b8468fb2ebcfcefbdfa74836fb039e2"
+content-hash = "8cd6b2d67c4a6efaf2c60b02717c04d688809f3e64d43df99c293e99a880e1a0"
