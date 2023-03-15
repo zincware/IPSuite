@@ -18,21 +18,17 @@ class Atoms(zntrack.Field):
     def __init__(self):
         super().__init__(use_repr=False)
 
-    def get_affected_files(self, instance: zntrack.Node) -> list:
-        # TODO: remove on new ZnTrack release
-        return self.get_files(instance)
-
     def get_files(self, instance: zntrack.Node) -> list:
         return [(instance.nwd / f"{self.name}.h5").as_posix()]
 
     def get_stage_add_argument(self, instance: zntrack.Node) -> typing.List[tuple]:
-        return [(self.dvc_option, file) for file in self.get_affected_files(instance)]
+        return [(self.dvc_option, file) for file in self.get_files(instance)]
 
     def save(self, instance: zntrack.Node):
         """Save value with ase.db.connect."""
         atoms: base.ATOMS_LST = getattr(instance, self.name)
         instance.nwd.mkdir(exist_ok=True, parents=True)
-        file = self.get_affected_files(instance)[0]
+        file = self.get_files(instance)[0]
 
         db = znh5md.io.DataWriter(filename=file)
         db.initialize_database_groups()
