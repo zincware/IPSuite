@@ -4,7 +4,6 @@ import typing
 import ase
 import numpy as np
 import znflow
-import znslice
 import zntrack
 
 from ipsuite import base, utils

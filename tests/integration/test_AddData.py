@@ -5,7 +5,6 @@ import subprocess
 import ase
 import numpy.testing as npt
 import pytest
-import znslice
 
 import ipsuite
 

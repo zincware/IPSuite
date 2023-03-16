@@ -1,7 +1,6 @@
 import typing
 
 import pytest
-import znslice
 from ase import Atoms
 
 from ipsuite.configuration_selection.base import (
