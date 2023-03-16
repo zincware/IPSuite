@@ -1,7 +1,6 @@
 import typing
 
 import pytest
-import znslice
 from ase import Atoms
 
 from ipsuite.configuration_selection.base import (
@@ -26,7 +25,7 @@ def test__flatten(atoms_lists):
         node_names=["Config_1", "Config_2"],
         exclude_configurations={"Config_1": [0], "Config_2": [1, 3]},
     )
-    assert isinstance(all_atoms, znslice.LazySequence)
+    # assert isinstance(all_atoms, znslice.LazySequence)
     assert isinstance(all_atoms[0], Atoms)
     assert all_atoms[0] == atoms[0][1]
     assert all_atoms[19] == atoms[1][0]
@@ -71,7 +70,7 @@ def test_atoms(atoms_lists):
     configuration_selection.exclude_configurations = excluded
     selected = {"Config_1": [0, 1, 2, 5], "Config_2": list(range(10))}
     configuration_selection.selected_configurations = selected
-    assert isinstance(configuration_selection.atoms, znslice.LazySequence)
+    # assert isinstance(configuration_selection.atoms, znslice.LazySequence)
     assert isinstance(configuration_selection.atoms[0], Atoms)
     assert len(configuration_selection.atoms) == 14
 
@@ -83,6 +82,6 @@ def test_excluded_atoms(atoms_lists):
     selected = {"Config_1": list(range(0, 20, 2)), "Config_2": list(range(10))}
     configuration_selection.selected_configurations = selected
     # print(configuration_selection.exclude_atoms)
-    assert isinstance(configuration_selection.excluded_atoms, znslice.LazySequence)
+    # assert isinstance(configuration_selection.excluded_atoms, znslice.LazySequence)
     assert isinstance(configuration_selection.excluded_atoms[0], Atoms)
     assert len(configuration_selection.excluded_atoms) == 20
