@@ -52,7 +52,6 @@ class AddData(zntrack.Node):
 
     atoms: typing.List[ase.Atoms] = fields.Atoms()
     file: typing.Union[str, pathlib.Path] = zntrack.dvc.deps()
-    add_deps: bool = zntrack.zn.params(True)
     lines_to_read: int = zntrack.zn.params(None)
 
     def _post_init_(self):

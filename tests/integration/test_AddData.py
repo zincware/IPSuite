@@ -24,16 +24,8 @@ def test_AddData(proj_path, traj_file, atoms_list, eager):
     if not eager:
         data.load()
 
-        assert isinstance(data.atoms, znslice.LazySequence)
-        assert isinstance(data.atoms[0], ase.Atoms)
-        assert isinstance(data.atoms[[0, 1]].tolist(), list)
-        assert isinstance(data.atoms[[0, 1]], znslice.LazySequence)
-        assert isinstance(data.atoms[:].tolist(), list)
-        assert isinstance(data.atoms.tolist(), list)
-    else:
-        assert isinstance(data.atoms, list)
-        assert isinstance(data.atoms[0], ase.Atoms)
-        # we don't have advanced slicing when not loading from disk (yet)
+    assert isinstance(data.atoms, list)
+    assert isinstance(data.atoms[0], ase.Atoms)
 
     for loaded, given in zip(data.atoms[:], atoms_list):
         # Check that the atoms match

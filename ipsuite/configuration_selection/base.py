@@ -38,7 +38,7 @@ def _flatten(
     if exclude_configurations is None:
         exclude_configurations = {}
 
-    all_atoms = znslice.LazySequence.from_obj([])
+    all_atoms = []
     length_per_node_attr = {}
 
     for atoms_lst, node_name in zip(full_configurations, node_names, strict=True):
@@ -47,7 +47,7 @@ def _flatten(
             for index in range(len(atoms_lst))
             if index not in exclude_configurations.get(node_name, [])
         ]
-        all_atoms += znslice.LazySequence.from_obj(atoms_lst, indices=indices)
+        all_atoms += [x for idx, x in enumerate(atoms_lst) if idx in indices]
 
         length_per_node_attr[node_name] = len(indices)
 
@@ -196,14 +196,14 @@ class ConfigurationSelection(base.ProcessAtoms):
             if isinstance(self.data[0], ase.Atoms):
                 self.data = [self.data]
 
-            selected_data = znslice.LazySequence.from_obj([])
+            selected_data = []
 
             for selected_confs, data in zip(
                 self.selected_configurations.values(), self.data, strict=True
             ):
-                selected_data += znslice.LazySequence.from_obj(
-                    data, indices=selected_confs
-                )
+                selected_data += [
+                    x for idx, x in enumerate(data) if idx in selected_confs
+                ]
             return selected_data
 
     @property
@@ -214,14 +214,14 @@ class ConfigurationSelection(base.ProcessAtoms):
                 # this will read the first entry, therefore, tqdm starts usually at len - 1
                 self.data = [self.data]
 
-            selected_data = znslice.LazySequence.from_obj([])
+            selected_data = []
             for selected_confs, data in zip(
                 self.selected_configurations.values(), self.data, strict=True
             ):
                 excluded_indices = [
                     x for x in range(len(data)) if x not in selected_confs
                 ]
-                selected_data += znslice.LazySequence.from_obj(
-                    data, indices=excluded_indices
-                )
+                selected_data += [
+                    x for idx, x in enumerate(data) if idx in excluded_indices
+                ]
             return selected_data
