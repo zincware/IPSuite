@@ -6,6 +6,8 @@ import zntrack
 
 from ipsuite import fields, utils
 
+# TODO raise error if both data and data_file are given
+
 
 class ProcessAtoms(zntrack.Node):
     """Protocol for objects that process atoms.

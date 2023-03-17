@@ -60,7 +60,7 @@ def _update_paths(cp2k_input_dict) -> dict:
         )
 
 
-class CP2KYamlNode(base.ProcessSingleAtom):
+class CP2KYaml(base.ProcessSingleAtom):
     """Node for running CP2K Single point calculations."""
 
     cp2k_bin: str = zntrack.meta.Text("cp2k.psmp")
@@ -134,20 +134,16 @@ class CP2KYamlNode(base.ProcessSingleAtom):
         return atoms
 
 
-class CP2KSinglePointNode(base.ProcessAtoms):
+class CP2KSinglePoint(base.ProcessAtoms):
     """Node for running CP2K Single point calculations."""
 
     cp2k_shell: str = zntrack.meta.Text("cp2k_shell.ssmp")
     cp2k_params = zntrack.dvc.params("cp2k.yaml")
+    cp2k_files = zntrack.dvc.deps()
 
+    wfn_restart: str = zntrack.dvc.deps(None)
     output_file = zntrack.dvc.outs(zntrack.nwd / "atoms.extxyz")
     cp2k_directory = zntrack.dvc.outs(zntrack.nwd / "cp2k")
-
-    def _post_init_(self):
-        if self.atoms is None and self.atoms_file is None:
-            raise TypeError("Either atoms or atoms_file must not be None")
-        if self.atoms is not None and self.atoms_file is not None:
-            raise TypeError("Can only use atoms or atoms_file")
 
     def run(self):
         """ZnTrack run method."""
@@ -160,6 +156,9 @@ class CP2KSinglePointNode(base.ProcessAtoms):
         _update_paths(cp2k_input_dict)
 
         cp2k_input_script = "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
+
+        if self.wfn_restart is not None:
+            shutil.copy(self.wfn_restart, self.cp2k_directory / "cp2k-RESTART.wfn")
 
         with patch(
             "ase.calculators.cp2k.Popen",
@@ -186,3 +185,7 @@ class CP2KSinglePointNode(base.ProcessAtoms):
                 atom.calc = calculator
                 atom.get_potential_energy()
                 ase.io.write(self.output_file.as_posix(), atom, append=True)
+
+        for file in self.cp2k_directory.glob("cp2k-RESTART.wfn*"):
+            # we don't need the restart files
+            file.unlink()
