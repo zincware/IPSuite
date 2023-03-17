@@ -73,7 +73,7 @@ class CP2KYamlNode(zntrack.Node):
     def run(self):
         """ZnTrack run method."""
         self.cp2k_directory.mkdir(exist_ok=True)
-        with open(self.cp2k_params, "r") as file:
+        with pathlib.Path(self.cp2k_params).open("r") as file:
             cp2k_input_dict = yaml.safe_load(file)
 
         atoms = list(ase.io.iread(self.atoms_file))
@@ -109,7 +109,7 @@ class CP2KYamlNode(zntrack.Node):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         ) as proc:
-            with open(self.cp2k_directory / "cp2k.log", "w") as file:
+            with (self.cp2k_directory / "cp2k.log").open("w") as file:
                 for line in proc.stdout:
                     file.write(line.decode("utf-8"))
                     print(line.decode("utf-8"), end="")
@@ -121,7 +121,7 @@ class CP2KYamlNode(zntrack.Node):
         """Return the atoms object."""
         # TODO this is for single point, what about MD
         data = {}
-        with open(self.cp2k_directory / "cp2k.log", "r") as file:
+        with (self.cp2k_directory / "cp2k.log").open("r") as file:
             for match in cp2k_output_tools.parse_iter(file.read()):
                 data.update(match)
 
@@ -159,7 +159,7 @@ class CP2KSinglePointNode(zntrack.Node):
             self.atoms = list(ase.io.iread(self.atoms_file))
 
         self.cp2k_directory.mkdir(exist_ok=True)
-        with open(self.cp2k_params, "r") as file:
+        with pathlib.Path(self.cp2k_params).open("r") as file:
             cp2k_input_dict = yaml.safe_load(file)
 
         _update_paths(cp2k_input_dict)

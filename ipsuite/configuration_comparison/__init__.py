@@ -9,7 +9,7 @@ try:
     from ipsuite.configuration_comparison.REMatch import REMatch
 
     __all__ = ["MMKernel", "ConfigurationComparison", "REMatch"]
-except ModuleNotFoundError as err:
+except ModuleNotFoundError:
     log.warning(
         "Using configuration comparison requires 'pip install ipsuite[comparison]'"
     )

@@ -197,7 +197,7 @@ class Nequip(MLModel):
     @property
     def lammps_pair_style(self) -> str:
         """Get the lammps pair style for the nequip model."""
-        with open(self.model_directory / "config.yaml", "r") as file:
+        with (self.model_directory / "config.yaml").open("r") as file:
             parameter = yaml.safe_load(file)
         if "allegro.model.Allegro" in parameter.get("model_builders", []):
             return "allegro"
@@ -206,7 +206,7 @@ class Nequip(MLModel):
     @property
     def lammps_pair_coeff(self) -> typing.List[str]:
         """Get the lammps pair coefficient for the nequip model."""
-        with open(self.model_directory / "config.yaml", "r") as file:
+        with (self.model_directory / "config.yaml").open("r") as file:
             parameter = yaml.safe_load(file)
 
         type_names = " ".join(parameter["chemical_symbols"])
