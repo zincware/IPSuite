@@ -1,5 +1,5 @@
 import typing
-import uuid
+from uuid import uuid4
 
 import ase
 import numpy as np
@@ -41,10 +41,10 @@ class EnsembleCalculator(Calculator):
 class EnsembleModel(zntrack.Node):
     models: typing.List[MLModel] = zntrack.zn.deps()
 
-    hash = zntrack.zn.outs()  # to connect this Node to other Nodes it requires an output.
+    uuid = zntrack.zn.outs()  # to connect this Node to other Nodes it requires an output.
 
     def run(self) -> None:
-        self.hash = str(uuid.uuid4())
+        self.uuid = str(uuid4())
 
     @property
     def calc(self) -> ase.calculators.calculator.Calculator:
