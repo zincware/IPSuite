@@ -360,7 +360,7 @@ class GAP(MLModel):
             atomic_numbers = list(
                 OrderedDict.fromkeys(ase.io.read(self.train_data_file).numbers)
             )
-            with open(self.model_directory.resolve() / "model.xml", "r") as file:
+            with (self.model_directory.resolve() / "model.xml").open("r") as file:
                 second_line = file.readlines()[1]
             content_as_dict = xmltodict.parse(second_line)
             gap_xml_label = f"{content_as_dict['Potential']['@label']}"

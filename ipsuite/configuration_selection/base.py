@@ -210,7 +210,8 @@ class ConfigurationSelection(base.ProcessAtoms):
         """Get a list of the atoms objects that were not selected."""
         with znflow.disable_graph():
             if isinstance(self.data[0], ase.Atoms):
-                # this will read the first entry, therefore, tqdm starts usually at len - 1
+                # this will read the first entry, therefore,
+                #  tqdm starts usually at len - 1
                 self.data = [self.data]
 
             selected_data = []

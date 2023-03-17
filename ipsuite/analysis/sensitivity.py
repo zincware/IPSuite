@@ -113,7 +113,8 @@ class AnalyseSingleForceSensitivity(zntrack.Node):
 
     def run(self):
         self.plots.mkdir(parents=True, exist_ok=True)
-        assert len(self.sim_list) == len(self.atoms_list)
+        if len(self.sim_list) != len(self.atoms_list):
+            raise ValueError("The size of simulations and atoms list must be equal.")
 
         force_std = []
         for configurations in self.atoms_list:

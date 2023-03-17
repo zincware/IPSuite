@@ -30,7 +30,8 @@ def get_deps_if_node(obj, attribute: str):
             return obj @ attribute  # TODO attribute access should also work, right?
     if isinstance(obj, znflow.Connection):
         if obj.attribute is None:
-            assert obj.item is None
+            if obj.item is not None:
+                raise ValueError("Cannot get attribute of item.")
             return znflow.Connection(obj.instance, attribute)
     return obj @ attribute if isinstance(obj, Node) else obj
 

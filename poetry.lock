@@ -2294,24 +2294,6 @@ files = [
 arrow = ">=0.15.0"
 
 [[package]]
-name = "isort"
-version = "5.12.0"
-description = "A Python utility / library to sort Python imports."
-category = "dev"
-optional = false
-python-versions = ">=3.8.0"
-files = [
-    {file = "isort-5.12.0-py3-none-any.whl", hash = "sha256:f84c2818376e66cf843d497486ea8fed8700b340f308f076c6fb1229dff318b6"},
-    {file = "isort-5.12.0.tar.gz", hash = "sha256:8bef7dde241278824a6d83f44a544709b065191b95b6e50894bdc722fcba0504"},
-]
-
-[package.extras]
-colors = ["colorama (>=0.4.3)"]
-pipfile-deprecated-finder = ["pip-shims (>=0.5.2)", "pipreqs", "requirementslib"]
-plugins = ["setuptools"]
-requirements-deprecated-finder = ["pip-api", "pipreqs"]
-
-[[package]]
 name = "iterative-telemetry"
 version = "0.0.8"
 description = "Common library for sending telemetry"
@@ -6184,4 +6166,4 @@ nequip = ["nequip"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "767deddcacfbab1cf93112638c074cf7715bda54453c3f7e34c318ed5d4fc5cd"
+content-hash = "1cc57218d26ea2965c76ff2eb9170a5ad084860a024ae0536024e621ebebcdf0"
