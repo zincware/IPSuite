@@ -4,7 +4,7 @@ import typing
 import ase
 import zntrack
 
-from ipsuite import fields
+from ipsuite import fields, utils
 
 
 class ProcessAtoms(zntrack.Node):
@@ -27,6 +27,10 @@ class ProcessAtoms(zntrack.Node):
     data: list[ase.Atoms] = zntrack.zn.deps()
     data_file: str = zntrack.dvc.deps(None)
     atoms: list[ase.Atoms] = fields.Atoms()
+
+    def _post_init_(self):
+        if self.data is not None:
+            self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
 
     def update_data(self):
         """Update the data attribute."""
