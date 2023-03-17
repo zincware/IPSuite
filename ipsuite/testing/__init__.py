@@ -8,8 +8,9 @@ import git
 import numpy as np
 import zntrack
 from ase.calculators.singlepoint import SinglePointCalculator
+from zntrack.tools import timeit
 
-from ipsuite import AddData, base, fields
+from ipsuite import AddData, Project, base, fields
 
 
 class UpdateCalculator(base.ProcessSingleAtom):
@@ -18,11 +19,19 @@ class UpdateCalculator(base.ProcessSingleAtom):
     Set energy, forces to zero.
     """
 
+    energy = zntrack.zn.params(0.0)
+    forces = zntrack.zn.params((0, 0, 0))
+
+    time: float = zntrack.zn.metrics()
+
+    @timeit(field="time")
     def run(self) -> None:
         self.atoms = self.get_data()
 
         self.atoms.calc = SinglePointCalculator(
-            self.atoms, energy=0, forces=np.zeros((len(self.atoms), 3))
+            self.atoms,
+            energy=self.energy,
+            forces=np.stack([self.forces] * len(self.atoms)),
         )
         self.atoms = [self.atoms]
 
@@ -71,25 +80,62 @@ class AtomsToXYZ(base.AnalyseAtoms):
 
 
 class NodesPerAtoms(base.ProcessAtoms):
-    # processor: base.ProcessSingleAtom = zntrack.zn.nodes()
+    processor: base.ProcessSingleAtom = zntrack.zn.nodes()
     repo: str = zntrack.meta.Text(None)
+    commit: bool = zntrack.meta.Text(True)
+    clean_exp: bool = zntrack.meta.Text(True)
 
     def run(self):
-        _ = self.data  # lazy loading: load now
+        # lazy loading: load now
+        _ = self.data
+        processor = self.processor
+        processor.name = processor.__class__.__name__
+
         repo = git.Repo.init(self.repo or self.name)
+
+        gitignore = pathlib.Path(".gitignore")
+        # TODO: move this into a function
+        if not gitignore.exists():
+            gitignore.write_text(f"{repo.working_dir}\n")
+        elif repo.working_dir not in gitignore.read_text().split(" "):
+            gitignore.write_text(f"{repo.working_dir}\n")
+
         os.chdir(repo.working_dir)
         dvc.cli.main(["init"])
-        project = zntrack.Project()
+        project = Project()
 
         with project:
             data = AddData(file="atoms.xyz")
-            processor = UpdateCalculator(data=data.atoms, data_id=0)
-            # we replace processor with a zn.nodes and
-            # then we want to update the parameters
-
         project.run(repro=False)
 
-        # TODO use some parallelization here, e.g. dvc exp + dask4dvc
+        processor.data = data @ "atoms"
+        processor.write_graph()
+
+        repo.git.add(all=True)
+        repo.index.commit("Build graph")
+
+        if self.clean_exp:
+            dvc.cli.main(["exp", "gc", "-w", "-f"])
+
+        self.run_exp(project, processor)
+        if self.commit:
+            self.run_commits(repo)
+
+        os.chdir("..")  # we need to go back to save
+
+    def run_exp(self, project, processor):
+        exp_lst = []
+        for atom in self.data:
+            with project.create_experiment() as exp:
+                ase.io.write("atoms.xyz", atom)
+            exp_lst.append(exp)
+        project.run_exp()
+
+        self.atoms = [
+            processor.from_rev(name=processor.name, rev=x.name).atoms[0] for x in exp_lst
+        ]
+
+    def run_commits(self, repo):
         commits = []
         for idx, atom in enumerate(self.data):
             ase.io.write("atoms.xyz", atom)
@@ -99,6 +145,3 @@ class NodesPerAtoms(base.ProcessAtoms):
             # do not use repo.index.add("*"); it will add atoms.xyz
             commit_message = f"repro {self.name}_{idx}"
             commits.append(repo.index.commit(commit_message))
-
-        self.atoms = [processor.from_rev(rev=x.hexsha).atoms[0] for x in commits]
-        os.chdir("..")  # we need to go back to save

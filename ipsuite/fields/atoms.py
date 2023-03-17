@@ -26,7 +26,10 @@ class Atoms(zntrack.Field):
 
     def save(self, instance: zntrack.Node):
         """Save value with ase.db.connect."""
-        atoms: base.ATOMS_LST = getattr(instance, self.name)
+        try:
+            atoms: base.ATOMS_LST = getattr(instance, self.name)
+        except AttributeError:
+            return
         instance.nwd.mkdir(exist_ok=True, parents=True)
         file = self.get_files(instance)[0]
 
