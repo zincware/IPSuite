@@ -33,13 +33,10 @@ class PredictWithModel(base.ProcessAtoms):
 
     model: models.MLModel = zntrack.zn.deps()
 
-    def post_init(self):
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
-
     def run(self):
         self.atoms = []
         calc = self.model.calc
-        for configuration in tqdm.tqdm(self.data, ncols=70):
+        for configuration in tqdm.tqdm(self.get_data(), ncols=70):
             configuration: ase.Atoms
             # Run calculation
             atoms = configuration.copy()
