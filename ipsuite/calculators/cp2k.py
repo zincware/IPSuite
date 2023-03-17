@@ -18,6 +18,8 @@ import zntrack
 from ase.calculators.singlepoint import SinglePointCalculator
 from cp2k_input_tools.generator import CP2KInputGenerator
 
+from ipsuite import base
+
 
 def _update_paths(cp2k_input_dict) -> dict:
     cp2k_input_dict["force_eval"]["DFT"]["basis_set_file_name"] = (
@@ -58,7 +60,7 @@ def _update_paths(cp2k_input_dict) -> dict:
         )
 
 
-class CP2KYamlNode(zntrack.Node):
+class CP2KYamlNode(base.ProcessSingleAtom):
     """Node for running CP2K Single point calculations."""
 
     cp2k_bin: str = zntrack.meta.Text("cp2k.psmp")
@@ -67,17 +69,13 @@ class CP2KYamlNode(zntrack.Node):
 
     cp2k_directory: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "cp2k")
 
-    atoms_file = zntrack.dvc.deps()  # TODO allow both, atoms file and atoms object
-    index: int = zntrack.zn.params(-1)
-
     def run(self):
         """ZnTrack run method."""
         self.cp2k_directory.mkdir(exist_ok=True)
         with pathlib.Path(self.cp2k_params).open("r") as file:
             cp2k_input_dict = yaml.safe_load(file)
 
-        atoms = list(ase.io.iread(self.atoms_file))
-        atoms = atoms[self.index]
+        atoms = self.get_data()
         # TODO assert that they do not exist
         cp2k_input_dict["force_eval"]["subsys"]["topology"] = {
             "COORD_FILE_FORMAT": "XYZ",
@@ -136,14 +134,12 @@ class CP2KYamlNode(zntrack.Node):
         return atoms
 
 
-class CP2KSinglePointNode(zntrack.Node):
+class CP2KSinglePointNode(base.ProcessAtoms):
     """Node for running CP2K Single point calculations."""
 
     cp2k_shell: str = zntrack.meta.Text("cp2k_shell.ssmp")
     cp2k_params = zntrack.dvc.params("cp2k.yaml")
 
-    atoms = zntrack.zn.deps()
-    atoms_file = zntrack.dvc.deps()
     output_file = zntrack.dvc.outs(zntrack.nwd / "atoms.extxyz")
     cp2k_directory = zntrack.dvc.outs(zntrack.nwd / "cp2k")
 
@@ -155,8 +151,7 @@ class CP2KSinglePointNode(zntrack.Node):
 
     def run(self):
         """ZnTrack run method."""
-        if self.atoms_file is not None:
-            self.atoms = list(ase.io.iread(self.atoms_file))
+        self.atoms = self.get_data()
 
         self.cp2k_directory.mkdir(exist_ok=True)
         with pathlib.Path(self.cp2k_params).open("r") as file:
@@ -191,9 +186,3 @@ class CP2KSinglePointNode(zntrack.Node):
                 atom.calc = calculator
                 atom.get_potential_energy()
                 ase.io.write(self.output_file.as_posix(), atom, append=True)
-
-    @functools.cached_property
-    def results(self):
-        """Get the Atoms list."""
-        # TODO this should probably be a Atoms object.
-        return list(ase.io.iread(self.output_file))
