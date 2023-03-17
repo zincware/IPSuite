@@ -116,4 +116,5 @@ class AnalyseProcessAtoms(zntrack.Node):
     data: ProcessAtoms = zntrack.zn.deps()
 
     def get_data(self) -> typing.Tuple[list[ase.Atoms], list[ase.Atoms]]:
+        self.data.update_data() # otherwise, data might not be available
         return self.data.data, self.data.atoms
