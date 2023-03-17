@@ -1550,14 +1550,14 @@ tests = ["mypy (==0.971)", "pylint (==2.15.0)", "pytest (==7.2.0)", "pytest-cov 
 
 [[package]]
 name = "dvc-render"
-version = "0.3.0"
+version = "0.3.1"
 description = "DVC render"
 category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "dvc-render-0.3.0.tar.gz", hash = "sha256:dc13ab3c3e7dc225019e60fb2d3b2501ff3f402ec64b66b99f2dbc95306aa4c8"},
-    {file = "dvc_render-0.3.0-py3-none-any.whl", hash = "sha256:6fedd7e11422dde701e469ea7c72053801c16002dc5ba9e9151fab270f135a27"},
+    {file = "dvc-render-0.3.1.tar.gz", hash = "sha256:af718d813017db9b2e688576f33a8ce27398949620340894afae4f1023f0e07a"},
+    {file = "dvc_render-0.3.1-py3-none-any.whl", hash = "sha256:98667e4290bab07bb9c404e796a212d41408d70e8094ed9b73166176788de944"},
 ]
 
 [package.extras]
@@ -1766,14 +1766,14 @@ psutil = ">=5.9.0"
 
 [[package]]
 name = "fonttools"
-version = "4.39.1"
+version = "4.39.2"
 description = "Tools to manipulate font files"
 category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "fonttools-4.39.1-py3-none-any.whl", hash = "sha256:54c871c0587c1f3ad3a71b390e503edbb4638d90ad14f905f2fa5938a72fc76b"},
-    {file = "fonttools-4.39.1.zip", hash = "sha256:51c72f26a5b79fc77d59f22e9d146350fbd1d107430ddda7b7665b1be38b16ad"},
+    {file = "fonttools-4.39.2-py3-none-any.whl", hash = "sha256:85245aa2fd4cf502a643c9a9a2b5a393703e150a6eaacc3e0e84bb448053f061"},
+    {file = "fonttools-4.39.2.zip", hash = "sha256:e2d9f10337c9e3b17f9bce17a60a16a885a7d23b59b7f45ce07ea643e5580439"},
 ]
 
 [package.extras]
@@ -2463,19 +2463,19 @@ test = ["codecov", "coverage", "ipykernel (>=6.14)", "mypy", "paramiko", "pre-co
 
 [[package]]
 name = "jupyter-core"
-version = "5.2.0"
+version = "5.3.0"
 description = "Jupyter core package. A base package on which Jupyter projects rely."
 category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jupyter_core-5.2.0-py3-none-any.whl", hash = "sha256:4bdc2928c37f6917130c667d8b8708f20aee539d8283c6be72aabd2a4b4c83b0"},
-    {file = "jupyter_core-5.2.0.tar.gz", hash = "sha256:1407cdb4c79ee467696c04b76633fc1884015fa109323365a6372c8e890cc83f"},
+    {file = "jupyter_core-5.3.0-py3-none-any.whl", hash = "sha256:d4201af84559bc8c70cead287e1ab94aeef3c512848dde077b7684b54d67730d"},
+    {file = "jupyter_core-5.3.0.tar.gz", hash = "sha256:6db75be0c83edbf1b7c9f91ec266a9a24ef945da630f3120e1a0046dc13713fc"},
 ]
 
 [package.dependencies]
 platformdirs = ">=2.5"
-pywin32 = {version = ">=1.0", markers = "sys_platform == \"win32\" and platform_python_implementation != \"PyPy\""}
+pywin32 = {version = ">=300", markers = "sys_platform == \"win32\" and platform_python_implementation != \"PyPy\""}
 traitlets = ">=5.3"
 
 [package.extras]
