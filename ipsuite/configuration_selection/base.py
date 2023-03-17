@@ -154,6 +154,8 @@ class ConfigurationSelection(base.ProcessAtoms):
         # else:
         #     node_names = [node_attrs.name]
 
+        self.update_data()
+
         if isinstance(self.data[0], ase.Atoms):
             self.data = [self.data]
 
@@ -192,6 +194,7 @@ class ConfigurationSelection(base.ProcessAtoms):
     def atoms(self) -> typing.Sequence[ase.Atoms]:
         """Get a list of the selected atoms objects."""
         with znflow.disable_graph():
+            self.update_data()
             if isinstance(self.data[0], ase.Atoms):
                 self.data = [self.data]
 
@@ -208,6 +211,7 @@ class ConfigurationSelection(base.ProcessAtoms):
     @property
     def excluded_atoms(self) -> typing.Sequence[ase.Atoms]:
         """Get a list of the atoms objects that were not selected."""
+        self.update_data()
         with znflow.disable_graph():
             if isinstance(self.data[0], ase.Atoms):
                 # this will read the first entry, therefore,

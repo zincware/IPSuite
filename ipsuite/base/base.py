@@ -14,13 +14,33 @@ class ProcessAtoms(zntrack.Node):
     ----------
     data: list[ase.Atoms]
         The atoms data to process. This must be an input to the Node
+    data_file: str | None
+        The path to the file containing the atoms data. This is an
+        alternative to 'data' and can be used to load the data from
+        a file. If both are given, 'data' is used. Set 'data' to None
+        if you want to use 'data_file'.
     atoms: list[ase.Atoms]
         The processed atoms data. This is an output of the Node.
         It musn't be a 'field.Atoms' but can also be e.g. a 'property'.
     """
 
     data: list[ase.Atoms] = zntrack.zn.deps()
+    data_file: str = zntrack.dvc.deps(None)
     atoms: list[ase.Atoms] = fields.Atoms()
+
+    def update_data(self):
+        """Update the data attribute."""
+        if self.data is None:
+            self.data = self.get_data()
+
+    def get_data(self) -> list[ase.Atoms]:
+        """Get the atoms data to process."""
+        if self.data is not None:
+            return self.data
+        elif self.data_file is not None:
+            return list(ase.io.iread(self.data_file))
+        else:
+            raise ValueError("No data given.")
 
 
 class ProcessSingleAtom(zntrack.Node):
@@ -35,6 +55,11 @@ class ProcessSingleAtom(zntrack.Node):
     data_id: int | None
         The id of the atoms object to process. If None, the first
         atoms object is used. Only relevant if 'data' is a list.
+    data_file: str | None
+        The path to the file containing the atoms data. This is an
+        alternative to 'data' and can be used to load the data from
+        a file. If both are given, 'data' is used. Set 'data' to None
+        if you want to use 'data_file'.
     atoms: list[ase.Atoms]
         The processed atoms data. This is an output of the Node.
         It musn't be a 'field.Atoms' but can also be e.g. a 'property'.
@@ -44,7 +69,8 @@ class ProcessSingleAtom(zntrack.Node):
     """
 
     data: typing.Union[ase.Atoms, typing.List[ase.Atoms]] = zntrack.zn.deps()
-    data_id: typing.Optional[int] = zntrack.zn.params(None)
+    data_file: str = zntrack.dvc.deps(None)
+    data_id: typing.Optional[int] = zntrack.zn.params(0)
 
     atoms: typing.List[ase.Atoms] = fields.Atoms()
 
@@ -56,10 +82,15 @@ class ProcessSingleAtom(zntrack.Node):
         ase.Atoms
             The atoms object to process
         """
-        if isinstance(self.data, (list, collections.abc.Sequence)):
-            atoms = self.data[self.data_id if self.data_id else 0].copy()
+        if self.data is not None:
+            if isinstance(self.data, (list, collections.abc.Sequence)):
+                atoms = self.data[self.data_id].copy()
+            else:
+                atoms = self.data.copy()
+        elif self.data_file is not None:
+            atoms = list(ase.io.iread(self.data_file))[self.data_id]
         else:
-            atoms = self.data.copy()
+            raise ValueError("No data given.")
         return atoms
 
 
@@ -80,5 +111,5 @@ class AnalyseProcessAtoms(zntrack.Node):
 
     data: ProcessAtoms = zntrack.zn.deps()
 
-    def get_data(self):
+    def get_data(self) -> typing.Tuple[list[ase.Atoms], list[ase.Atoms]]:
         return self.data.data, self.data.atoms
