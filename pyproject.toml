@@ -76,7 +76,7 @@ preview = true
 
 [tool.ruff]
 # Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
-select = ["A", "B", "C", "E", "F", "I"] #  "D",
+select = ["A", "B", "C", "E", "F", "I", "C90", "S"] #  "D",
 # ignore = ["D203", "D213", "D104", "D102", "D100", ]
 
 # Exclude a variety of commonly ignored directories.
