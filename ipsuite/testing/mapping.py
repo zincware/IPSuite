@@ -255,5 +255,5 @@ class MoleculeMapping(base.ProcessAtoms):
                     pbc=cc_atoms.get_pbc(),
                 )
             )
-            new_atoms[-1].wrap()
+            # new_atoms[-1].wrap()
         return new_atoms
