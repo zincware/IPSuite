@@ -12,7 +12,7 @@ from ase.constraints import FixBondLengths
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from ipsuite import base
+from ipsuite import base, fields
 
 
 class MoleculeMapping(base.ProcessAtoms):
@@ -24,7 +24,7 @@ class MoleculeMapping(base.ProcessAtoms):
     # TODO make smiles a dict {ratio: smiles}
     #  where ratio can be used e.g. MgCl2 would be {1: "Mg", 2: "Cl"}
 
-    graphs = zntrack.zn.outs()
+    graphs = fields.NxGraph()
 
     def get_allowed_bonds(self) -> dict:
         """Get allowed bonds for each atom type
@@ -92,11 +92,14 @@ class MoleculeMapping(base.ProcessAtoms):
             symbols = np.array(atoms.get_chemical_symbols())
             for symbol in set(symbols):
                 # only consider allowed bonds via smiles
-                possible_dij = distances.copy()
+                possible_dij = np.array(distances.copy())
                 possible_dij[symbols != symbol] = np.inf
                 possible_dij[:, ~np.isin(symbols, list(bonds[symbol]))] = np.inf
                 graph.add_edges_from(
-                    [tuple(x) for x in np.argwhere(possible_dij < threshold)]
+                    [
+                        (x[0].item(), x[1].item())
+                        for x in np.argwhere(possible_dij < threshold)
+                    ]
                 )
             size = len(list(nx.connected_components(graph)))
             sizes.append(size)
