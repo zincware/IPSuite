@@ -19,10 +19,12 @@ class MoleculeMapping(base.ProcessAtoms):
     smiles: str = zntrack.zn.params()
     n_molecules: int = zntrack.zn.params()
     threshold: float = zntrack.zn.params(2.0)
+    skip_errors: bool = zntrack.zn.params(False)
 
     # TODO remove n_molecules
     # TODO make smiles a dict {ratio: smiles}
     #  where ratio can be used e.g. MgCl2 would be {1: "Mg", 2: "Cl"}
+    #  or a list if equal ratios
 
     graphs = fields.NxGraph()
 
@@ -110,14 +112,21 @@ class MoleculeMapping(base.ProcessAtoms):
                 threshold += 0.01
             else:
                 threshold -= 0.01
-        raise ValueError(f"Could not generate a graph {sizes =} with {thresholds =}")
+        raise ValueError(f"Could not generate a graph.")
 
     def run(self) -> None:
         atoms = self.get_data()
         self.graphs = []
         bonds = self.get_allowed_bonds()
-        self.graphs.extend(self.get_graph(atoms, bonds) for atoms in tqdm.tqdm(atoms))
 
+        for atoms in tqdm.tqdm(atoms):
+            try:
+                self.graphs.append(self.get_graph(atoms, bonds))
+            except Exception as e:
+                if not self.skip_errors:
+                    raise e
+                self.graphs.append(self.graphs[-1]) # TODO this is not true!
+                print(e)
         self.atoms = self.get_coarse_grained_atoms()
 
     def get_rdkit_molecules(self, item=None):
