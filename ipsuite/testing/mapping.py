@@ -1,6 +1,8 @@
 """Molecule Mapping using smiles and networkx"""
 
 
+import typing
+
 import ase
 import networkx as nx
 import numpy as np
@@ -152,21 +154,39 @@ class MoleculeMapping(base.ProcessAtoms):
 
         return atoms_lst
 
+    def get_molecule_ids(self, graph) -> typing.List[typing.List[int]]:
+        """Get molecule ids from a graph."""
+        return [list(mol_ids) for mol_ids in nx.connected_components(graph)]
+
+    def get_com(self, atoms: ase.Atoms) -> np.ndarray:
+        """Get center of mass of atoms.
+
+        Try to accoung for pbc.
+        """
+        atoms = atoms.copy()
+        reference = atoms.get_positions(wrap=True)[0]
+        atoms.center()
+        atoms.wrap()
+
+        shift = atoms.get_positions(wrap=True)[0] - reference
+        return atoms.get_center_of_mass() - shift
+
     def get_coarse_grained_atoms(self) -> base.protocol.ATOMS_LST:
         """Get coarse grained atoms by COM of molecules."""
         cc_atoms_list = []
-        for graph, atoms in zip(self.graphs, self.data, strict=True):
+        for graph, atoms in zip(self.graphs, self.get_data(), strict=True):
             coms = []
-            for mol_ids in nx.connected_components(graph):
-                symbols = np.array(atoms.get_chemical_symbols())[list(mol_ids)]
-                positions = np.array(atoms.get_positions())[list(mol_ids)]
+            for mol_ids in self.get_molecule_ids(graph):
+                atomic_numbers = np.array(atoms.get_atomic_numbers())[mol_ids]
+                positions = np.array(atoms.get_positions())[mol_ids]
                 mol = ase.Atoms(
-                    symbols=symbols,
+                    atomic_numbers,
                     positions=positions,
                     cell=atoms.get_cell(),
                     pbc=atoms.get_pbc(),
                 )
-                coms.append(mol.get_center_of_mass())
+                coms.append(self.get_com(mol))
+
             cc_atoms_list.append(
                 ase.Atoms(positions=coms, cell=atoms.get_cell(), pbc=atoms.get_pbc())
             )
@@ -196,6 +216,7 @@ class MoleculeMapping(base.ProcessAtoms):
         """
 
         # TODO a simple test: coarse grain and then undo and check if the same
+        #  currently distances in pbc are the same but not the positions
         new_atoms = []
 
         if isinstance(data, list):
@@ -208,29 +229,31 @@ class MoleculeMapping(base.ProcessAtoms):
             atoms = self.data[idx]
             cc_atoms = data[idx]
 
-            new_symbols, new_positions = [], []
+            new_atomic_numbers, new_positions = [], []
             for mol_ids, com in zip(
-                nx.connected_components(graph), cc_atoms.get_positions(), strict=True
+                self.get_molecule_ids(graph), cc_atoms.get_positions(), strict=True
             ):
-                symbols = np.array(atoms.get_chemical_symbols())[list(mol_ids)]
-                positions = np.array(atoms.get_positions())[list(mol_ids)]
+                atomic_numbers = np.array(atoms.get_atomic_numbers())[mol_ids]
+                positions = np.array(atoms.get_positions())[mol_ids]
                 mol = ase.Atoms(
-                    symbols=symbols,
+                    atomic_numbers,
                     positions=positions,
                     cell=atoms.get_cell(),
                     pbc=atoms.get_pbc(),
                 )
-                mol.center(about=0)
+                mol.positions -= self.get_com(mol)
+                # mol.wrap() # TODO this is not working
 
-                new_symbols.append(mol.get_chemical_symbols())
+                new_atomic_numbers.append(mol.get_atomic_numbers())
                 new_positions.append(mol.get_positions() + com)
 
             new_atoms.append(
                 ase.Atoms(
-                    np.concatenate(new_symbols),
+                    np.concatenate(new_atomic_numbers),
                     positions=np.concatenate(new_positions),
                     cell=cc_atoms.get_cell(),
                     pbc=cc_atoms.get_pbc(),
                 )
             )
+            new_atoms[-1].wrap()
         return new_atoms

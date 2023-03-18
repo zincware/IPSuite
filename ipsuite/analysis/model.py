@@ -441,7 +441,7 @@ class BoxScaleAnalysis(base.ProcessSingleAtom):
         for scale in tqdm.tqdm(scale_space, ncols=70):
             atoms.set_cell(cell=cell * scale, scale_atoms=True)
             if self.mapping is not None:
-                new_atoms = self.mapping([atoms])[0].copy()
+                new_atoms = self.mapping({self.data_id: atoms})[0].copy()
             else:
                 new_atoms = atoms.copy()
             new_atoms.calc = calc
