@@ -1550,14 +1550,14 @@ tests = ["mypy (==0.971)", "pylint (==2.15.0)", "pytest (==7.2.0)", "pytest-cov 
 
 [[package]]
 name = "dvc-render"
-version = "0.3.0"
+version = "0.3.1"
 description = "DVC render"
 category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "dvc-render-0.3.0.tar.gz", hash = "sha256:dc13ab3c3e7dc225019e60fb2d3b2501ff3f402ec64b66b99f2dbc95306aa4c8"},
-    {file = "dvc_render-0.3.0-py3-none-any.whl", hash = "sha256:6fedd7e11422dde701e469ea7c72053801c16002dc5ba9e9151fab270f135a27"},
+    {file = "dvc-render-0.3.1.tar.gz", hash = "sha256:af718d813017db9b2e688576f33a8ce27398949620340894afae4f1023f0e07a"},
+    {file = "dvc_render-0.3.1-py3-none-any.whl", hash = "sha256:98667e4290bab07bb9c404e796a212d41408d70e8094ed9b73166176788de944"},
 ]
 
 [package.extras]
@@ -1766,14 +1766,14 @@ psutil = ">=5.9.0"
 
 [[package]]
 name = "fonttools"
-version = "4.39.1"
+version = "4.39.2"
 description = "Tools to manipulate font files"
 category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "fonttools-4.39.1-py3-none-any.whl", hash = "sha256:54c871c0587c1f3ad3a71b390e503edbb4638d90ad14f905f2fa5938a72fc76b"},
-    {file = "fonttools-4.39.1.zip", hash = "sha256:51c72f26a5b79fc77d59f22e9d146350fbd1d107430ddda7b7665b1be38b16ad"},
+    {file = "fonttools-4.39.2-py3-none-any.whl", hash = "sha256:85245aa2fd4cf502a643c9a9a2b5a393703e150a6eaacc3e0e84bb448053f061"},
+    {file = "fonttools-4.39.2.zip", hash = "sha256:e2d9f10337c9e3b17f9bce17a60a16a885a7d23b59b7f45ce07ea643e5580439"},
 ]
 
 [package.extras]
@@ -2445,19 +2445,19 @@ test = ["codecov", "coverage", "ipykernel (>=6.14)", "mypy", "paramiko", "pre-co
 
 [[package]]
 name = "jupyter-core"
-version = "5.2.0"
+version = "5.3.0"
 description = "Jupyter core package. A base package on which Jupyter projects rely."
 category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jupyter_core-5.2.0-py3-none-any.whl", hash = "sha256:4bdc2928c37f6917130c667d8b8708f20aee539d8283c6be72aabd2a4b4c83b0"},
-    {file = "jupyter_core-5.2.0.tar.gz", hash = "sha256:1407cdb4c79ee467696c04b76633fc1884015fa109323365a6372c8e890cc83f"},
+    {file = "jupyter_core-5.3.0-py3-none-any.whl", hash = "sha256:d4201af84559bc8c70cead287e1ab94aeef3c512848dde077b7684b54d67730d"},
+    {file = "jupyter_core-5.3.0.tar.gz", hash = "sha256:6db75be0c83edbf1b7c9f91ec266a9a24ef945da630f3120e1a0046dc13713fc"},
 ]
 
 [package.dependencies]
 platformdirs = ">=2.5"
-pywin32 = {version = ">=1.0", markers = "sys_platform == \"win32\" and platform_python_implementation != \"PyPy\""}
+pywin32 = {version = ">=300", markers = "sys_platform == \"win32\" and platform_python_implementation != \"PyPy\""}
 traitlets = ">=5.3"
 
 [package.extras]
@@ -4608,6 +4608,44 @@ f90wrap = ">=0.2.6"
 numpy = ">=1.13"
 
 [[package]]
+name = "rdkit"
+version = "2022.9.5"
+description = "A collection of chemoinformatics and machine-learning software written in C++ and Python"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "rdkit-2022.9.5-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:ba416aea1ecaf96c856227263e763e9b51261aaba348feea4015d16932a3229d"},
+    {file = "rdkit-2022.9.5-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:4324b703ac44d8486a911c3313a79df6d75b04ede54c62dbf611d0212658eac5"},
+    {file = "rdkit-2022.9.5-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c8b168214684589a243acb5be44e2d6fb35eb710e05a58aa27c6a449e912dac9"},
+    {file = "rdkit-2022.9.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:072c6c72c09a9ecc02a9df11adc4500005f883878c4146846bfc33c2739cf2de"},
+    {file = "rdkit-2022.9.5-cp310-cp310-win_amd64.whl", hash = "sha256:a8598d78a8b43295fb5ae3b137f7311c21ea395cab32894b5d3b98f93446c049"},
+    {file = "rdkit-2022.9.5-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:7e56bbc104342c534268daaa1b096f51fb855c50a6d24e3cec8506b6c5b02502"},
+    {file = "rdkit-2022.9.5-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:c7881f240e283300e3ef53830d73635a9898db0cc70860737545465662787e6b"},
+    {file = "rdkit-2022.9.5-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e39e29300fc68d53b2d2db63816f5c347d13bd8478afe4763140d416dec62a54"},
+    {file = "rdkit-2022.9.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4a0904c8d4e2a8fa34d8732b14b1dbe223b54094daa69dc0040bede6bdeebfa5"},
+    {file = "rdkit-2022.9.5-cp311-cp311-win_amd64.whl", hash = "sha256:984be71bf3ab0e84b4cf208a296a19e1ae1bc34d5d33fdc47a4446e5de9a8ecb"},
+    {file = "rdkit-2022.9.5-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:51ead2e112aa086cf411f84b0d072432771def958db25253d10dadc52e46fe52"},
+    {file = "rdkit-2022.9.5-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8c8c19ea0d893b4935fc61e767b7e63d56e1a04f057719117af2ec6a861e03af"},
+    {file = "rdkit-2022.9.5-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c60060b2b6439b9c6f2ec2c95e0b43a693534896fa0f2e143034ea64a9a18e05"},
+    {file = "rdkit-2022.9.5-cp37-cp37m-win_amd64.whl", hash = "sha256:f8042828e1287c474b839f540abd4567b4f73c375becd39e62ec631e05e41c5e"},
+    {file = "rdkit-2022.9.5-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:a180b0db174a905b256006ff7bf200274d690b53ab0d96341d1a9d9742c02656"},
+    {file = "rdkit-2022.9.5-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:9b97c3a57d3a436c355c1a6206088b2a1c29c80e232fd47fad14a888627316b9"},
+    {file = "rdkit-2022.9.5-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6e665e5002486e16acec094666b09f77703ad6bf2f517e089e993a3ede20ec11"},
+    {file = "rdkit-2022.9.5-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e17578b01a24d8cb792d5f1a5c62dd65be60eb09bcf240eb18cf862f1841346d"},
+    {file = "rdkit-2022.9.5-cp38-cp38-win_amd64.whl", hash = "sha256:f47888fbc0c36a92fbfa7fe917d27f79600e7434a4ada3160dfe8a1ccd3af8ed"},
+    {file = "rdkit-2022.9.5-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:9470447bf9581b06403144240d59a2ff92abdbdf6f023424e175c091781338c0"},
+    {file = "rdkit-2022.9.5-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:fd2741108757252e862442b1b2a3fc9965b6ecb3c75c87f1797efa073e1ddb10"},
+    {file = "rdkit-2022.9.5-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:96f8a904874edc9497d504ede827fdab10783b3d56b7dceefe9ecb66c8539cb3"},
+    {file = "rdkit-2022.9.5-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4cc6135ff385f6b1ef2f110931e16a53d7b73205d89eec0d32363d8ed9251fb1"},
+    {file = "rdkit-2022.9.5-cp39-cp39-win_amd64.whl", hash = "sha256:25f035e07dc179cd41763ed6d52aaed04ff6125e2315ee69b3f982c29757a40f"},
+]
+
+[package.dependencies]
+numpy = "*"
+Pillow = "*"
+
+[[package]]
 name = "regex"
 version = "2021.11.10"
 description = "Alternative regular expression module, to replace re."
@@ -6170,4 +6208,4 @@ nequip = ["nequip"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "69e06ddbdfba0c8039c277bc08b1851b6b5bef10314ce825991f0fa4f2239611"
+content-hash = "e61dbea41a64c73a9c5eb7a09f400a03452545272e09b604d18bf45199c4e762"

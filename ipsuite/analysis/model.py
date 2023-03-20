@@ -1,6 +1,7 @@
 import contextlib
 import logging
 import pathlib
+import typing
 
 import ase
 import matplotlib.pyplot as plt
@@ -399,28 +400,21 @@ class BoxScaleAnalysis(base.ProcessSingleAtom):
     Attributes
     ----------
     model: The MLModel node that implements the 'predict' method
-    atoms: list[Atoms] to predict properties for
-    logspace: bool, default=True
-        Increase the stdev of rattle with 'np.logspace' instead of 'np.linspace'
     stop: float, default = 1.0
         The stop value for the generated space of stdev points
     num: int, default = 100
         The size of the generated space of stdev points
-    factor: float, default = 0.001
-        The 'np.linspace(0.0, stop, num) * factor'
-    atom_id: int, default = 0
-        The atom to pick from self.atoms as a starting point
     start: int, default = None
         The initial box scale, default value is the original box size.
     """
 
     model: models.MLModel = zntrack.zn.deps()
 
-    logspace: bool = zntrack.zn.params(False)
-    stop: float = zntrack.zn.params(2.0)
-    factor: float = zntrack.zn.params(1.0)
+    mapping: typing.Callable = zntrack.zn.deps(None)
+
+    start: float = zntrack.zn.params(0.9)
+    stop: float = zntrack.zn.params(2.5)
     num: int = zntrack.zn.params(100)
-    start: float = zntrack.zn.params(None)
 
     energies: pd.DataFrame = zntrack.zn.plots(
         # x="x",
@@ -429,34 +423,39 @@ class BoxScaleAnalysis(base.ProcessSingleAtom):
         # y_label="predicted energy",
     )
 
-    def post_init(self):
+    figure = zntrack.dvc.outs(zntrack.nwd / "box_scale_analysis.png")
+
+    def _post_init_(self):
         self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
-        if self.start is None:
-            self.start = 0.0 if self.logspace else 1.0
 
     def run(self):
-        if self.logspace:
-            scale_space = (
-                np.logspace(start=self.start, stop=self.stop, num=self.num) * self.factor
-            )
-        else:
-            scale_space = (
-                np.linspace(start=self.start, stop=self.stop, num=self.num) * self.factor
-            )
+        scale_space = np.linspace(start=self.start, stop=self.stop, num=self.num)
 
         atoms = self.get_data()
         cell = atoms.copy().cell
-        atoms.calc = self.model.calc
+        calc = self.model.calc
 
         energies = []
         self.atoms = []
 
         for scale in tqdm.tqdm(scale_space, ncols=70):
             atoms.set_cell(cell=cell * scale, scale_atoms=True)
-            energies.append(atoms.get_potential_energy())
-            self.atoms.append(atoms.copy())
+            if self.mapping is not None:
+                new_atoms = self.mapping({self.data_id: atoms})[0].copy()
+            else:
+                new_atoms = atoms.copy()
+            new_atoms.calc = calc
+            energies.append(new_atoms.get_potential_energy())
+
+            self.atoms.append(new_atoms)
 
         self.energies = pd.DataFrame({"y": energies, "x": scale_space})
+
+        fig, ax = plt.subplots()
+        ax.plot(scale_space, energies)
+        ax.set_ylabel("Predicted Energy (eV)")
+        ax.set_xlabel("Scale factor of the initial cell")
+        fig.savefig(self.figure, bbox_inches="tight")
 
 
 class BoxHeatUp(base.ProcessSingleAtom):
