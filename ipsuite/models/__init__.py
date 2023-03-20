@@ -10,7 +10,7 @@ try:
     from ipsuite.models.gap import GAP
 
     __all__ += ["GAP"]
-except ModuleNotFoundError:
+except ImportError:  # ModuleNotFoundError is a subclass of ImportError
     log.warning(
         "No GAP installation was found. You can install GAP using 'pip install"
         " ipsuite[gap]'"
@@ -20,7 +20,7 @@ try:
     from ipsuite.models.nequip import Nequip
 
     __all__ += ["Nequip"]
-except ModuleNotFoundError:
+except ImportError:
     log.warning(
         "No Nequip installation was found. You can install GAP using 'pip install"
         " ipsuite[nequip]'"
@@ -30,7 +30,7 @@ try:
     from ipsuite.models.mace_model import MACE
 
     __all__ += ["MACE"]
-except ModuleNotFoundError:
+except ImportError:
     log.warning(
         "No MACE installation was found. The installation is described at"
         " 'https://github.com/ACEsuit/mace'"
