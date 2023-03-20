@@ -1,6 +1,7 @@
 """Molecule Mapping using smiles and networkx"""
 
 
+import contextlib
 import typing
 
 import ase
@@ -8,6 +9,7 @@ import networkx as nx
 import numpy as np
 import tqdm
 import zntrack
+from ase.calculators.singlepoint import PropertyNotImplementedError, SinglePointCalculator
 from ase.constraints import FixBondLengths
 from rdkit import Chem
 from rdkit.Chem import AllChem
@@ -112,20 +114,19 @@ class MoleculeMapping(base.ProcessAtoms):
                 threshold += 0.01
             else:
                 threshold -= 0.01
-        raise ValueError(f"Could not generate a graph.")
+        raise ValueError("Could not generate a graph.")
 
     def run(self) -> None:
-        atoms = self.get_data()
         self.graphs = []
         bonds = self.get_allowed_bonds()
 
-        for atoms in tqdm.tqdm(atoms):
+        for atoms in tqdm.tqdm(self.get_data()):
             try:
                 self.graphs.append(self.get_graph(atoms, bonds))
             except Exception as e:
                 if not self.skip_errors:
                     raise e
-                self.graphs.append(self.graphs[-1]) # TODO this is not true!
+                self.graphs.append(self.graphs[-1])  # TODO this is not true!
                 print(e)
         self.atoms = self.get_coarse_grained_atoms()
 
@@ -170,6 +171,27 @@ class MoleculeMapping(base.ProcessAtoms):
         """Get molecule ids from a graph."""
         return [list(mol_ids) for mol_ids in nx.connected_components(graph)]
 
+    def get_molecules(self, graph, atoms: ase.Atoms) -> typing.List[ase.Atoms]:
+        """Get molecules from a graph."""
+        molecules = []
+        for mol_ids in self.get_molecule_ids(graph):
+            atomic_numbers = np.array(atoms.get_atomic_numbers())[mol_ids]
+            positions = np.array(atoms.get_positions())[mol_ids]
+            calc = None
+            mol = ase.Atoms(
+                atomic_numbers,
+                positions=positions,
+                cell=atoms.get_cell(),
+                pbc=atoms.get_pbc(),
+            )
+            if atoms.calc:
+                with contextlib.suppress(PropertyNotImplementedError):
+                    forces = np.array(atoms.get_forces())[mol_ids]
+                    calc = SinglePointCalculator(mol, forces=forces)
+                    mol.calc = calc
+            molecules.append(mol)
+        return molecules
+
     def get_com(self, atoms: ase.Atoms) -> np.ndarray:
         """Get center of mass of atoms.
 
@@ -187,18 +209,7 @@ class MoleculeMapping(base.ProcessAtoms):
         """Get coarse grained atoms by COM of molecules."""
         cc_atoms_list = []
         for graph, atoms in zip(self.graphs, self.get_data(), strict=True):
-            coms = []
-            for mol_ids in self.get_molecule_ids(graph):
-                atomic_numbers = np.array(atoms.get_atomic_numbers())[mol_ids]
-                positions = np.array(atoms.get_positions())[mol_ids]
-                mol = ase.Atoms(
-                    atomic_numbers,
-                    positions=positions,
-                    cell=atoms.get_cell(),
-                    pbc=atoms.get_pbc(),
-                )
-                coms.append(self.get_com(mol))
-
+            coms = [self.get_com(mol) for mol in self.get_molecules(graph, atoms)]
             cc_atoms_list.append(
                 ase.Atoms(positions=coms, cell=atoms.get_cell(), pbc=atoms.get_pbc())
             )
@@ -242,17 +253,9 @@ class MoleculeMapping(base.ProcessAtoms):
             cc_atoms = data[idx]
 
             new_atomic_numbers, new_positions = [], []
-            for mol_ids, com in zip(
-                self.get_molecule_ids(graph), cc_atoms.get_positions(), strict=True
+            for mol, com in zip(
+                self.get_molecules(graph, atoms), cc_atoms.get_positions(), strict=True
             ):
-                atomic_numbers = np.array(atoms.get_atomic_numbers())[mol_ids]
-                positions = np.array(atoms.get_positions())[mol_ids]
-                mol = ase.Atoms(
-                    atomic_numbers,
-                    positions=positions,
-                    cell=atoms.get_cell(),
-                    pbc=atoms.get_pbc(),
-                )
                 mol.positions -= self.get_com(mol)
                 # mol.wrap() # TODO this is not working
 
