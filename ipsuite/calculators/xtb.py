@@ -1,6 +1,6 @@
 import logging
 
-import zntrack 
+import zntrack
 
 log = logging.getLogger(__name__)
 
@@ -13,7 +13,8 @@ class xTBCalc(zntrack.Node):
     method: str
         xTB method to be used. Only "GFN1-xTB" supports PBC.
     """
-    method: str =  zntrack.zn.params("GFN1-xTB")
+
+    method: str = zntrack.zn.params("GFN1-xTB")
 
     @property
     def calc(self):
