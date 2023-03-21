@@ -449,8 +449,11 @@ class BoxScaleAnalysis(base.ProcessSingleAtom):
             if self.mapping is not None:
                 atoms, molecules = self.mapping.forward_mapping(atoms)
             atoms.set_cell(cell=cell * scale, scale_atoms=True)
+
             if self.mapping is not None:
                 atoms = self.mapping.backward_mapping(atoms, molecules)
+                # New atoms object, does not have the calculator.
+                atoms.calc = self.model.calc
             energies.append(atoms.get_potential_energy())
             self.atoms.append(atoms.copy())
 
