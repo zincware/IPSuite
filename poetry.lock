@@ -3096,7 +3096,7 @@ nequip = ">=0.5.3"
 type = "git"
 url = "https://github.com/mir-group/allegro.git"
 reference = "HEAD"
-resolved_reference = "c56bc809b689e60486ea30ef6eba5267430a147b"
+resolved_reference = "71ea80992f70a84fc65ecfb5a5ca45e8a82c6031"
 
 [[package]]
 name = "mistune"
@@ -6161,7 +6161,7 @@ znjson = "^0.2.2"
 type = "git"
 url = "https://github.com/zincware/zntrack"
 reference = "HEAD"
-resolved_reference = "6226c7365ea20ecfc2afd473a04df0726e9d61b8"
+resolved_reference = "3456e5f3f4bbe3f19ee3746e9f70fcee0628b540"
 
 [extras]
 comparison = ["dscribe", "h5py", "llvmlite", "numba", "tensorflow"]
