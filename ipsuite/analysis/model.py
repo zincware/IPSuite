@@ -417,9 +417,7 @@ class BoxScaleAnalysis(base.ProcessSingleAtom):
     model: models.MLModel = zntrack.zn.deps()
     mapping: base.Mapping = zntrack.zn.nodes(None)
 
-    logspace: bool = zntrack.zn.params(False)
     stop: float = zntrack.zn.params(2.0)
-    factor: float = zntrack.zn.params(1.0)
     num: int = zntrack.zn.params(100)
     start: float = zntrack.zn.params(None)
 
@@ -436,14 +434,9 @@ class BoxScaleAnalysis(base.ProcessSingleAtom):
             self.start = 0.0 if self.logspace else 1.0
 
     def run(self):
-        if self.logspace:
-            scale_space = (
-                np.logspace(start=self.start, stop=self.stop, num=self.num) * self.factor
-            )
-        else:
-            scale_space = (
-                np.linspace(start=self.start, stop=self.stop, num=self.num) * self.factor
-            )
+        scale_space = (
+            np.linspace(start=self.start, stop=self.stop, num=self.num)
+        )
 
         atoms = self.get_data()
         cell = atoms.copy().cell
