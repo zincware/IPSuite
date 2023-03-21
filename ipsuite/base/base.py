@@ -120,3 +120,11 @@ class AnalyseProcessAtoms(zntrack.Node):
     def get_data(self) -> typing.Tuple[list[ase.Atoms], list[ase.Atoms]]:
         self.data.update_data()  # otherwise, data might not be available
         return self.data.data, self.data.atoms
+
+
+class Mapping(zntrack.Node):
+    def forward_mapping(self, atoms):
+        raise NotImplementedError
+
+    def backward_mapping(self, cg_atoms, molecules):
+        raise NotImplementedError
