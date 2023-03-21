@@ -123,7 +123,6 @@ class AnalyseProcessAtoms(zntrack.Node):
 
 
 class Mapping(ProcessSingleAtom):
-
     def run(self):
         self.atoms, self.molecules = self.forward_mapping(self.data)
 

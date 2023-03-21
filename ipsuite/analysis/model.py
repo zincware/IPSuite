@@ -434,9 +434,7 @@ class BoxScaleAnalysis(base.ProcessSingleAtom):
             self.start = 1.0
 
     def run(self):
-        scale_space = (
-            np.linspace(start=self.start, stop=self.stop, num=self.num)
-        )
+        scale_space = np.linspace(start=self.start, stop=self.stop, num=self.num)
 
         atoms = self.get_data()
         cell = atoms.copy().cell
