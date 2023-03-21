@@ -415,7 +415,7 @@ class BoxScaleAnalysis(base.ProcessSingleAtom):
     """
 
     model: models.MLModel = zntrack.zn.deps()
-    mapping: base.Mapping = zntrack.zn.nodes()
+    mapping: base.Mapping = zntrack.zn.nodes(None)
 
     logspace: bool = zntrack.zn.params(False)
     stop: float = zntrack.zn.params(2.0)
@@ -454,10 +454,10 @@ class BoxScaleAnalysis(base.ProcessSingleAtom):
 
         for scale in tqdm.tqdm(scale_space, ncols=70):
             if self.mapping is not None:
-                atoms, molecules = self.mapping.forward_map(atoms)
+                atoms, molecules = self.mapping.forward_mapping(atoms)
             atoms.set_cell(cell=cell * scale, scale_atoms=True)
             if self.mapping is not None:
-                atoms = self.mapping.backward_map(atoms, molecules)
+                atoms = self.mapping.backward_mapping(atoms, molecules)
             energies.append(atoms.get_potential_energy())
             self.atoms.append(atoms.copy())
 
