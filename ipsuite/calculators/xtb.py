@@ -11,7 +11,7 @@ class xTBCalc(zntrack.Node):
     Attributes
     ----------
     method: str
-        xTB method to be used. 
+        xTB method to be used. Only "GFN1-xTB" supports PBC.
     """
     method: str =  zntrack.zn.params("GFN1-xTB")
 
