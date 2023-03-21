@@ -122,7 +122,11 @@ class AnalyseProcessAtoms(zntrack.Node):
         return self.data.data, self.data.atoms
 
 
-class Mapping(zntrack.Node):
+class Mapping(ProcessSingleAtom):
+
+    def run(self):
+        self.atoms, self.molecules = self.forward_mapping(self.data)
+
     def forward_mapping(self, atoms):
         raise NotImplementedError
 
