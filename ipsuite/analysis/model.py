@@ -436,24 +436,29 @@ class BoxScaleAnalysis(base.ProcessSingleAtom):
     def run(self):
         scale_space = np.linspace(start=self.start, stop=self.stop, num=self.num)
 
-        atoms = self.get_data()
-        cell = atoms.copy().cell
-        atoms.calc = self.model.calc
+        original_atoms = self.get_data()
+        cell = original_atoms.copy().cell
+        original_atoms.calc = self.model.calc
 
         energies = []
         self.atoms = []
+        if self.mapping is None:
+            scaling_atoms = original_atoms
+        else:
+            scaling_atoms, molecules = self.mapping.forward_mapping(original_atoms)
 
         for scale in tqdm.tqdm(scale_space, ncols=70):
-            if self.mapping is not None:
-                atoms, molecules = self.mapping.forward_mapping(atoms)
-            atoms.set_cell(cell=cell * scale, scale_atoms=True)
+            scaling_atoms.set_cell(cell=cell * scale, scale_atoms=True)
 
-            if self.mapping is not None:
-                atoms = self.mapping.backward_mapping(atoms, molecules)
+            if self.mapping is None:
+                eval_atoms = scaling_atoms
+            else:
+                eval_atoms = self.mapping.backward_mapping(scaling_atoms, molecules)
                 # New atoms object, does not have the calculator.
-                atoms.calc = self.model.calc
-            energies.append(atoms.get_potential_energy())
-            self.atoms.append(atoms.copy())
+                eval_atoms.calc = self.model.calc
+
+            energies.append(eval_atoms.get_potential_energy())
+            self.atoms.append(eval_atoms.copy())
 
         self.energies = pd.DataFrame({"y": energies, "x": scale_space})
 
