@@ -431,7 +431,7 @@ class BoxScaleAnalysis(base.ProcessSingleAtom):
     def post_init(self):
         self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
         if self.start is None:
-            self.start = 0.0 if self.logspace else 1.0
+            self.start = 1.0
 
     def run(self):
         scale_space = (
