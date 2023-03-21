@@ -1,3 +1,4 @@
+import ase
 import numpy as np
 
 from ipsuite.geometry.graphs import edges_from_atoms
@@ -44,7 +45,14 @@ def unwrap(atoms, edges, idx):
         unwrap(atoms, filtered_edges, next_idx)
 
 
-def unwrap_system(atoms, components):
+def unwrap_system(atoms: ase.Atoms, components: list[np.ndarray]) -> list[ase.Atom]:
+    """Molecules in a system which extend across periodic bounaries are mapped such that
+    they are connected but dangle out of the cell.
+    Mapping to the side where the fragment of molecule is closest
+    to the cell center is preferred.
+    Can be reversed by joining the returned molecules
+    and calling the `atoms.wrap()` method.
+    """
     molecules = []
     for component in components:
         mol = atoms[component].copy()

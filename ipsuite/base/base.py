@@ -123,11 +123,22 @@ class AnalyseProcessAtoms(zntrack.Node):
 
 
 class Mapping(ProcessSingleAtom):
+    """Base class for transforming ASE `Atoms`.
+    `Mapping` nodes can be used in a more functional manner when initialized
+    with `data=None` outside the project graph.
+    In that case, one can use the mapping methods but the Node itself does not store
+    the transformed configurations.
+    """
+
     def run(self):
         self.atoms, self.molecules = self.forward_mapping(self.data)
 
-    def forward_mapping(self, atoms):
+    def forward_mapping(
+        self, atoms: ase.Atoms
+    ) -> typing.Tuple[ase.Atoms, list[ase.Atoms]]:
         raise NotImplementedError
 
-    def backward_mapping(self, cg_atoms, molecules):
+    def backward_mapping(
+        self, cg_atoms: ase.Atoms, molecules: list[ase.Atoms]
+    ) -> list[ase.Atoms]:
         raise NotImplementedError
