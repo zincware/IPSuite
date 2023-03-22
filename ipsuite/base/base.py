@@ -136,7 +136,7 @@ class Mapping(ProcessAtoms):
         A flat list of all molecules in the system.
     """
 
-    molecules: list[ase.Atoms] = fields.Atoms()
+    molecules: list[ase.Atoms] = zntrack.zn.outs()
 
     def run(self):
         self.atoms = []
