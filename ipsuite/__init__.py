@@ -9,6 +9,7 @@ from ipsuite import (
     configuration_comparison,
     configuration_selection,
     fields,
+    geometry,
     models,
     utils,
 )
@@ -28,6 +29,7 @@ __all__ = [
     "analysis",
     "fields",
     "calculators",
+    "geometry",
 ]
 
 __version__ = importlib.metadata.version(__name__)
