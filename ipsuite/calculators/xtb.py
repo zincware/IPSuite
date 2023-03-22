@@ -21,7 +21,6 @@ class xTBSinglePoint(base.ProcessAtoms):
 
     def run(self):
         self.atoms = self.get_data()
-        print(self.atoms)
 
         calculator = self.calc
 
