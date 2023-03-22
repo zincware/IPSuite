@@ -22,7 +22,6 @@ def create_initial_configurations(
 class RattleAtoms(base.ProcessSingleAtom):
     """Create randomly displaced versions of a particular atomic configuration.
     Useful for learning on the fly applications.
-    Only the displaced structures are returned.
 
     Attributes
     ----------
