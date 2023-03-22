@@ -2,6 +2,7 @@ import collections.abc
 import typing
 
 import ase
+import tqdm
 import zntrack
 
 from ipsuite import fields, utils
@@ -141,7 +142,7 @@ class Mapping(ProcessAtoms):
     def run(self):
         self.atoms = []
         self.molecules = []
-        for atoms in self.get_data():
+        for atoms in tqdm.tqdm(self.get_data()):
             cg_atoms, molecules = self.forward_mapping(atoms)
             self.atoms.append(cg_atoms)
             self.molecules.extend(molecules)
