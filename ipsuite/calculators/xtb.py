@@ -1,12 +1,15 @@
 import logging
 
+import tqdm
 import zntrack
+
+from ipsuite import base
 
 log = logging.getLogger(__name__)
 
 
-class xTBCalc(zntrack.Node):
-    """Node for obtaining xTB calculators.
+class xTBSinglePoint(base.ProcessAtoms):
+    """Node for labeling date with xTB and obtaining ASE calculators.
 
     Attributes
     ----------
@@ -15,6 +18,16 @@ class xTBCalc(zntrack.Node):
     """
 
     method: str = zntrack.zn.params("GFN1-xTB")
+
+    def run(self):
+        self.atoms = self.get_data()
+        print(self.atoms)
+
+        calculator = self.calc
+
+        for atom in tqdm.tqdm(self.atoms):
+            atom.calc = calculator
+            atom.get_potential_energy()
 
     @property
     def calc(self):
