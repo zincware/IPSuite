@@ -4,6 +4,7 @@ import importlib.metadata
 from ipsuite import (
     analysis,
     base,
+    bootstrap,
     calculators,
     configuration_comparison,
     configuration_selection,
@@ -18,6 +19,7 @@ from ipsuite.utils.logs import setup_logging
 
 __all__ = [
     "base",
+    "bootstrap",
     "utils",
     "AddData",
     "Project",
