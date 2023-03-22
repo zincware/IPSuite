@@ -13,12 +13,16 @@ class BarycenterMapping(base.Mapping):
     but not intramolecular distances.
     """
 
-    def forward_mapping(self, atoms) -> typing.Tuple[ase.Atoms, list[ase.Atoms]]:
+    def forward_mapping(
+        self, atoms: ase.Atoms
+    ) -> typing.Tuple[ase.Atoms, list[ase.Atoms]]:
         components = graphs.identify_molecules(atoms)
         molecules = unwrap.unwrap_system(atoms, components)
         cg_atoms = barycenter_coarse_grain.coarse_grain_to_barycenter(molecules)
         return cg_atoms, molecules
 
-    def backward_mapping(self, cg_atoms, molecules) -> list[ase.Atoms]:
+    def backward_mapping(
+        self, cg_atoms: ase.Atoms, molecules: list[ase.Atoms]
+    ) -> list[ase.Atoms]:
         atoms = barycenter_coarse_grain.barycenter_backmapping(cg_atoms, molecules)
         return atoms
