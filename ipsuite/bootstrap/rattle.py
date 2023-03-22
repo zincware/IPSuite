@@ -6,9 +6,17 @@ from ipsuite import base
 
 
 def create_initial_configurations(
-    atoms: ase.Atoms, displacement_range: float, n_configs: int, rng
+    atoms: ase.Atoms,
+    displacement_range: float,
+    n_configs: int,
+    include_original: bool,
+    rng,
 ):
-    atoms_list = [atoms]
+    if include_original:
+        atoms_list = [atoms]
+    else:
+        atoms_list = []
+
     for _ in range(n_configs):
         new_atoms = atoms.copy()
         displacement = rng.uniform(
@@ -29,6 +37,8 @@ class RattleAtoms(base.ProcessSingleAtom):
         Number of displaced configurations.
     displacement_range: float
         Bounds for uniform distribution from which displacments are drawn.
+    include_original: bool
+        Whether or not to include the orignal configuration in `self.atoms`.
     seed: int
         Random seed.
 
@@ -36,6 +46,7 @@ class RattleAtoms(base.ProcessSingleAtom):
 
     n_configs: int = zntrack.zn.params()
     displacement_range: float = zntrack.zn.params(0.1)
+    include_original: bool = zntrack.zn.params(True)
     seed: int = zntrack.zn.params(0)
 
     def run(self) -> None:
@@ -45,6 +56,7 @@ class RattleAtoms(base.ProcessSingleAtom):
             atoms,
             self.displacement_range,
             self.n_configs,
+            self.include_original,
             rng,
         )
 
