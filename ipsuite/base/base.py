@@ -120,3 +120,47 @@ class AnalyseProcessAtoms(zntrack.Node):
     def get_data(self) -> typing.Tuple[list[ase.Atoms], list[ase.Atoms]]:
         self.data.update_data()  # otherwise, data might not be available
         return self.data.data, self.data.atoms
+
+
+class Mapping(ProcessAtoms):
+    """Base class for transforming ASE `Atoms`.
+
+    `Mapping` nodes can be used in a more functional manner when initialized
+    with `data=None` outside the project graph.
+    In that case, one can use the mapping methods but the Node itself does not store
+    the transformed configurations.
+
+    Attributes
+    ----------
+    molecules: list[ase.Atoms]
+        A flat list of all molecules in the system.
+    """
+
+    molecules: list[ase.Atoms] = zntrack.zn.outs()
+
+    def run(self):
+        self.atoms = []
+        self.molecules = []
+        for atoms in self.get_data():
+            cg_atoms, molecules = self.forward_mapping(atoms)
+            self.atoms.append(cg_atoms)
+            self.molecules.extend(molecules)
+
+    def get_molecules_per_configuration(self) -> typing.List[typing.List[ase.Atoms]]:
+        """Get a list of lists of molecules per configuration."""
+        molecules_per_configuration = []
+        start = 0
+        for atoms in self.atoms:
+            molecules_per_configuration.append(self.molecules[start : start + len(atoms)])
+            start += len(atoms)
+        return molecules_per_configuration
+
+    def forward_mapping(
+        self, atoms: ase.Atoms
+    ) -> typing.Tuple[ase.Atoms, list[ase.Atoms]]:
+        raise NotImplementedError
+
+    def backward_mapping(
+        self, cg_atoms: ase.Atoms, molecules: list[ase.Atoms]
+    ) -> list[ase.Atoms]:
+        raise NotImplementedError

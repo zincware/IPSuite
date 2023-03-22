@@ -400,27 +400,20 @@ class BoxScaleAnalysis(base.ProcessSingleAtom):
     ----------
     model: The MLModel node that implements the 'predict' method
     atoms: list[Atoms] to predict properties for
-    logspace: bool, default=True
-        Increase the stdev of rattle with 'np.logspace' instead of 'np.linspace'
+    start: int, default = None
+        The initial box scale, default value is the original box size.
     stop: float, default = 1.0
         The stop value for the generated space of stdev points
     num: int, default = 100
         The size of the generated space of stdev points
-    factor: float, default = 0.001
-        The 'np.linspace(0.0, stop, num) * factor'
-    atom_id: int, default = 0
-        The atom to pick from self.atoms as a starting point
-    start: int, default = None
-        The initial box scale, default value is the original box size.
     """
 
     model: models.MLModel = zntrack.zn.deps()
+    mapping: base.Mapping = zntrack.zn.nodes(None)
 
-    logspace: bool = zntrack.zn.params(False)
     stop: float = zntrack.zn.params(2.0)
-    factor: float = zntrack.zn.params(1.0)
     num: int = zntrack.zn.params(100)
-    start: float = zntrack.zn.params(None)
+    start: float = zntrack.zn.params(1)
 
     energies: pd.DataFrame = zntrack.zn.plots(
         # x="x",
@@ -429,32 +422,35 @@ class BoxScaleAnalysis(base.ProcessSingleAtom):
         # y_label="predicted energy",
     )
 
-    def post_init(self):
+    def _post_init_(self):
         self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
-        if self.start is None:
-            self.start = 0.0 if self.logspace else 1.0
 
     def run(self):
-        if self.logspace:
-            scale_space = (
-                np.logspace(start=self.start, stop=self.stop, num=self.num) * self.factor
-            )
-        else:
-            scale_space = (
-                np.linspace(start=self.start, stop=self.stop, num=self.num) * self.factor
-            )
+        scale_space = np.linspace(start=self.start, stop=self.stop, num=self.num)
 
-        atoms = self.get_data()
-        cell = atoms.copy().cell
-        atoms.calc = self.model.calc
+        original_atoms = self.get_data()
+        cell = original_atoms.copy().cell
+        original_atoms.calc = self.model.calc
 
         energies = []
         self.atoms = []
+        if self.mapping is None:
+            scaling_atoms = original_atoms
+        else:
+            scaling_atoms, molecules = self.mapping.forward_mapping(original_atoms)
 
         for scale in tqdm.tqdm(scale_space, ncols=70):
-            atoms.set_cell(cell=cell * scale, scale_atoms=True)
-            energies.append(atoms.get_potential_energy())
-            self.atoms.append(atoms.copy())
+            scaling_atoms.set_cell(cell=cell * scale, scale_atoms=True)
+
+            if self.mapping is None:
+                eval_atoms = scaling_atoms
+            else:
+                eval_atoms = self.mapping.backward_mapping(scaling_atoms, molecules)
+                # New atoms object, does not have the calculator.
+                eval_atoms.calc = self.model.calc
+
+            energies.append(eval_atoms.get_potential_energy())
+            self.atoms.append(eval_atoms.copy())
 
         self.energies = pd.DataFrame({"y": energies, "x": scale_space})
 

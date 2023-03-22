@@ -78,3 +78,15 @@ def proj_path(tmp_path, request) -> pathlib.Path:
     dvc.cli.main(["init"])
 
     return tmp_path
+
+
+@pytest.fixture
+def data_repo(tmp_path, request) -> pathlib.Path:
+    git.Repo.clone_from(r"https://dagshub.com/PythonFZ/IPS_test_data.git", tmp_path)
+    shutil.copy(request.module.__file__, tmp_path)
+    os.chdir(tmp_path)
+    dvc.cli.main(["pull"])
+    # we must pull here, because the HTTP remote is not supported by DVCFileSystem
+    # and S3 requires credentials.
+
+    return tmp_path
