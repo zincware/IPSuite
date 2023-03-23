@@ -42,7 +42,7 @@ def test_UniformArangeSelection(proj_path, traj_file, eager):
     if not eager:
         selection.load()
 
-    assert selection.selected_configurations == [0, 10, 20, 30, 40, 50, 60]
+    assert selection.selected_configurations == [0, 10, 20, 30, 40]
 
 
 @pytest.mark.parametrize("eager", [False])
