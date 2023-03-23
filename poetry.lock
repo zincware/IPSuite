@@ -2822,20 +2822,18 @@ zookeeper = ["kazoo (>=1.3.1)"]
 
 [[package]]
 name = "libclang"
-version = "15.0.6.1"
+version = "16.0.0"
 description = "Clang Python Bindings, mirrored from the official LLVM repo: https://github.com/llvm/llvm-project/tree/main/clang/bindings/python, to make the installation process easier."
 category = "main"
 optional = true
 python-versions = "*"
 files = [
-    {file = "libclang-15.0.6.1-py2.py3-none-macosx_10_9_x86_64.whl", hash = "sha256:8621795e07b87e17fc7aac9f071bc7fe6b52ed6110c0a96a9975d8113c8c2527"},
-    {file = "libclang-15.0.6.1-py2.py3-none-manylinux2010_x86_64.whl", hash = "sha256:69b01a23ab543908a661532595daa23cf88bd96d80e41f58ba0eaa6a378fe0d8"},
-    {file = "libclang-15.0.6.1-py2.py3-none-manylinux2014_aarch64.whl", hash = "sha256:4a5188184b937132c198ee9de9a8a2316d5fdd1a825398d5ad1a8f5e06f9b40e"},
-    {file = "libclang-15.0.6.1-py2.py3-none-manylinux2014_armv7l.whl", hash = "sha256:f7ffa02ac5e586cfffde039dcccc439d88d0feac7d77bf9426d9ba7543d16545"},
-    {file = "libclang-15.0.6.1-py2.py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:aaebb6aa1db73bac3a0ac41e57ef78743079eb68728adbf7e80ee917ae171529"},
-    {file = "libclang-15.0.6.1-py2.py3-none-win_amd64.whl", hash = "sha256:85afb47630d2070e74b886040ceea1846097ca53cc88d0f1d7751d0f49220028"},
-    {file = "libclang-15.0.6.1-py2.py3-none-win_arm64.whl", hash = "sha256:687d8549c110c700fece58dd87727421d0710fdd111aa7eecb01faf8e3f50d4e"},
-    {file = "libclang-15.0.6.1.tar.gz", hash = "sha256:a1a8fe038af2962c787c5bac81bfa4b82bb8e279e61e70cc934c10f6e20c73ec"},
+    {file = "libclang-16.0.0-py2.py3-none-macosx_10_9_x86_64.whl", hash = "sha256:65258a6bb3e7dc31dc9b26f8d42f53c9d3b959643ade291fcd1aef4855303ca6"},
+    {file = "libclang-16.0.0-py2.py3-none-macosx_11_0_arm64.whl", hash = "sha256:af55a4aa86fdfe6b2ec68bc8cfe5fdac6c448d591ca7648be86ca17099b41ca8"},
+    {file = "libclang-16.0.0-py2.py3-none-manylinux2014_aarch64.whl", hash = "sha256:eb59652cb0559c0e71784ff4c8ba24c14644becc907b1446563ecfaa622d523b"},
+    {file = "libclang-16.0.0-py2.py3-none-manylinux2014_armv7l.whl", hash = "sha256:7b6686b67a0daa84b4c614bcc119578329fc4fbb52b919565b7376b507c4793b"},
+    {file = "libclang-16.0.0-py2.py3-none-win_amd64.whl", hash = "sha256:ee20bf93e3dd330f71fc50cdbf13b92ced0aec8e540be64251db53502a9b33f7"},
+    {file = "libclang-16.0.0-py2.py3-none-win_arm64.whl", hash = "sha256:bf4628fc4da7a1dd06a244f9b8e121c5ec68076a763c59d6b13cbb103acc935b"},
 ]
 
 [[package]]
@@ -6087,14 +6085,14 @@ test = ["zope.testing"]
 
 [[package]]
 name = "znflow"
-version = "0.1.7"
+version = "0.1.8"
 description = "A general purpose framework for building and running computational graphs."
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "znflow-0.1.7-py3-none-any.whl", hash = "sha256:addee706b4f52c1dd8d935a483b6dfb405f3e637454ef3a99e9e03e520385310"},
-    {file = "znflow-0.1.7.tar.gz", hash = "sha256:898a64a638c6950f1f03815526e72b4a7e63da05efbd3f3e90b77f05e18d1dfb"},
+    {file = "znflow-0.1.8-py3-none-any.whl", hash = "sha256:868f4dbb19079858da92c3cc77c58f72970b4d9628b8d647dbdfb6ca706960fa"},
+    {file = "znflow-0.1.8.tar.gz", hash = "sha256:73d00f6f70a90d2a8afe471302baa22b0812ebe7ccaa09003913d104abb1eb96"},
 ]
 
 [package.dependencies]
