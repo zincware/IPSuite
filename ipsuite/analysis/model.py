@@ -1,6 +1,8 @@
+from collections import deque
 import contextlib
 import logging
 import pathlib
+import typing
 
 import ase
 import matplotlib.pyplot as plt
@@ -12,8 +14,12 @@ import zntrack
 from ase import units
 from ase.calculators.calculator import PropertyNotImplementedError
 from ase.md.langevin import Langevin
+from ase.md.verlet import VelocityVerlet
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from scipy.interpolate import interpn
+from tqdm import trange
+from ase.neighborlist import build_neighbor_list
+from ase.io import write
 
 from ipsuite import base, models, utils
 
@@ -559,3 +565,200 @@ class BoxHeatUp(base.ProcessSingleAtom):
             self.steps_before_explosion = -1
 
         self.plot_temperature()
+
+
+def print_energy_terms(atoms: ase.Atoms) -> typing.Tuple[float, float]:
+    """Compute the temperature and the total energy.
+
+    Parameters
+    ----------
+    atoms: ase.Atoms
+        Atoms objects for which energy will be calculated
+
+    Returns
+    -------
+    temperature: float
+        temperature of the system
+    np.squeeze(total): float
+        total energy of the system
+
+    """
+    epot = atoms.get_potential_energy() / len(atoms)
+    ekin = atoms.get_kinetic_energy() / len(atoms)
+
+    etot = epot + ekin
+
+    return etot, ekin, epot
+
+
+
+class NaNCheck:
+
+    def initialize(self, atoms):
+        pass
+
+    def check(self, atoms):
+
+        positions = atoms.positions
+        epot = atoms.get_potential_energy()
+        forces = atoms.get_forces()
+
+        positions_is_none = np.any(positions is None)
+        epot_is_none = epot is None
+        forces_is_none = np.any(forces is None)
+
+        unstable = any([positions_is_none, epot_is_none, forces_is_none])
+        return unstable
+
+class ConnectivityCheck:
+
+    def __init__(self) -> None:
+        self.nl = None
+        self.first_cm = None
+        self.is_initialized = False
+
+    def initialize(self, atoms):
+        self.nl = build_neighbor_list(atoms, self_interaction=False)
+        self.first_cm = self.nl.get_connectivity_matrix(sparse=False)
+        self.is_initialized = True
+
+    def check(self, atoms):
+        # if not self.is_initialized:
+        #     self.initialize(atoms)
+
+        self.nl.update(atoms)
+        cm = self.nl.get_connectivity_matrix(sparse=False)
+
+        connectivity_change = np.sum(np.abs(self.first_cm - cm))
+
+        unstable = connectivity_change > 0
+        return unstable
+
+
+class EnergySpikeCheck:
+    def __init__(self, max_factor=2.0, min_factor=0.5) -> None:
+        self.max_factor = max_factor
+        self.min_factor = min_factor
+
+        self.is_initialized = False
+        self.max_energy = None
+        self.min_energy = None
+
+    def initialize(self, atoms):
+        # Save first epot
+        epot = atoms.get_potential_energy()
+        self.max_energy = epot * self.max_factor
+        self.min_energy = epot * self.min_factor
+
+        self.is_initialized = True
+
+    def check(self, atoms):
+        # if not self.is_initialized:
+        #     self.initialize(atoms)
+
+        epot = atoms.get_potential_energy()
+        # energy is negative, hence sign convention
+        if epot < self.max_energy or epot > self.min_energy:
+            unstable= True
+        else:
+            unstable = False
+        return unstable
+
+
+
+def run_stability_nve(atoms, time_step, max_steps, init_temperature, checks):
+
+    sampling_rate = 1
+    pbar_update = 10
+
+    stable_steps = 0
+
+    MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
+    etot, ekin, epot = print_energy_terms(atoms)
+    last_n_atoms = deque(maxlen=2)
+    last_n_atoms.append(atoms.copy())
+
+    for check in checks:
+        check.initialize(atoms)
+
+    def get_desc():
+        """TQDM description."""
+        return (
+            f"Etot: {etot:.3f} eV  \t Ekin: {ekin:.3f} eV \t Epot {epot:.3f} eV"
+        )
+
+    dyn = VelocityVerlet(atoms, timestep=time_step * units.fs)
+    with trange(
+            max_steps,
+            desc=get_desc(),
+            leave=False,
+            ncols=120,
+            position=1,
+        ) as pbar:
+        for idx in range(max_steps):
+            dyn.run(sampling_rate)
+            last_n_atoms.append(atoms.copy())
+            etot, ekin, epot = print_energy_terms(atoms)
+
+            if idx % pbar_update == 0:
+                pbar.set_description(get_desc())
+                pbar.update(pbar_update)
+
+            check_results = [check.check(atoms) for check in checks]
+            unstable = any(check_results)
+            if unstable:
+                stable_steps = idx
+                break
+
+    return stable_steps, last_n_atoms
+
+
+class MDStabilityAnalysis(base.ProcessAtoms):
+    model = zntrack.zn.nodes()
+    max_steps: int = zntrack.zn.params()
+    # checks: list = zntrack.zn.nodes()
+    time_step: float = zntrack.zn.params(0.5)
+    pbc: bool = zntrack.zn.params(True)
+    bins: int = zntrack.zn.params(None)
+
+    traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.extxyz")
+    plots_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "plots")
+    stable_steps_df: pd.DataFrame = zntrack.zn.plots()
+
+    @property
+    def atoms(self) -> typing.List[ase.Atoms]:
+        return list(ase.io.iread(self.traj_file))
+    
+    def get_hist(self):
+        """Create a pandas dataframe from the given data."""
+        labels = self.get_labels()
+        if self.bins is None:
+            self.bins = int(np.ceil(len(labels) / 100))
+        counts, bin_edges = np.histogram(labels, self.bins)
+        return counts, bin_edges
+
+    def run(self) -> None:
+        data_lst = self.get_data()
+        initial_temperature = 300
+
+        checks = [NaNCheck(), ConnectivityCheck(), EnergySpikeCheck(2.0, 0.5)]
+
+        stable_steps = []
+
+        for ii in tqdm.trange(0, len(data_lst), desc="Atoms",leave=True,
+            ncols=120, position=0):
+            atoms = data_lst[ii].copy()
+            atoms.pbc = self.pbc
+            atoms.calc = self.model.calc
+            n_steps, last_n_atoms = run_stability_nve(
+                atoms, self.time_step, self.max_steps, initial_temperature, checks=checks
+            )
+            write(
+                self.traj_file,
+                last_n_atoms,
+                format="extxyz",
+                append=True,
+            )
+            stable_steps.append(n_steps)
+        
+        self.stable_steps_df = pd.DataFrame({"stable_steps": np.array(stable_steps)})
