@@ -1,5 +1,6 @@
 import ase
 import numpy as np
+from ase.calculators.singlepoint import SinglePointCalculator
 
 from ipsuite.geometry.graphs import edges_from_atoms
 
@@ -56,6 +57,7 @@ def unwrap_system(atoms: ase.Atoms, components: list[np.ndarray]) -> list[ase.At
     molecules = []
     for component in components:
         mol = atoms[component].copy()
+        mol.calc = SinglePointCalculator(mol, forces=atoms.get_forces()[component])
         edges = edges_from_atoms(mol)
         closest_atom = closest_atom_to_center(atoms)
         unwrap(mol, edges, idx=closest_atom)
