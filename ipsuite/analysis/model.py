@@ -559,3 +559,118 @@ class BoxHeatUp(base.ProcessSingleAtom):
             self.steps_before_explosion = -1
 
         self.plot_temperature()
+
+
+class InterIntraForces(base.AnalyseProcessAtoms):
+    mapping = zntrack.zn.nodes()
+
+    pred_forces = zntrack.zn.outs()
+    true_forces = zntrack.zn.outs()
+
+    rot_force_plt = zntrack.dvc.outs(zntrack.nwd / "rot_force.png")
+    trans_force_plt = zntrack.dvc.outs(zntrack.nwd / "trans_force.png")
+    vib_force_plt = zntrack.dvc.outs(zntrack.nwd / "vib_force.png")
+
+    def get_trans_forces(self, mol):
+        all_forces = np.sum(mol.get_forces(), axis=0)
+        mol_mas = np.sum(mol.get_masses())
+
+        return (mol.get_masses() / mol_mas)[:, None] * all_forces
+
+    def get_moment_of_intertia_tensor(self, atoms):
+        positions = atoms.get_positions()
+        positions -= atoms.get_center_of_mass()
+        masses = atoms.get_masses()
+        n_atoms = len(positions)
+        data = []
+
+        for alpha in range(3):
+            for beta in range(3):
+                alpha_mask = np.full(n_atoms, alpha)
+                beta_mask = np.full(n_atoms, beta)
+                value = np.where(
+                    alpha_mask == beta_mask, np.linalg.norm(positions, axis=1), 0
+                )
+                value -= positions[:, alpha] * positions[:, beta]
+                value *= masses
+                data.append(np.sum(value))
+        return np.reshape(data, (3, 3))
+
+    def get_rot_forces(self, mol):
+        mol_copy = mol.copy()
+        mol_copy.positions -= mol_copy.get_center_of_mass()
+        f_x_r = []
+        for position, force in zip(mol_copy.get_positions(), mol.get_forces()):
+            f_x_r.append(np.cross(position, force))
+        f_x_r = np.sum(f_x_r, axis=0)
+
+        res = []
+        I_ab_inv = np.linalg.inv(self.get_moment_of_intertia_tensor(mol_copy))
+        for x in range(len(mol)):
+            mi_ri = mol_copy.get_masses()[x] * mol_copy.get_positions()[x]
+            res.append(np.cross(mi_ri, I_ab_inv) @ f_x_r)
+
+        return res
+
+    def run(self):
+        true_atoms, pred_atoms = self.get_data()
+        true_trans_forces = []
+        true_rot_forces = []
+        true_vib_forces = []
+        for atom in tqdm.tqdm(true_atoms):
+            _, molecules = self.mapping.forward_mapping(atom)
+            for molecule in molecules:
+                true_trans_forces.append(self.get_trans_forces(molecule))
+                true_rot_forces.append(self.get_rot_forces(molecule))
+                true_vib_forces.append(
+                    molecule.get_forces() - true_trans_forces[-1] - true_rot_forces[-1]
+                )
+        pred_trans_forces = []
+        pred_rot_forces = []
+        pred_vib_forces = []
+        for atom in tqdm.tqdm(pred_atoms):
+            _, molecules = self.mapping.forward_mapping(atom)
+            for molecule in molecules:
+                pred_trans_forces.append(self.get_trans_forces(molecule))
+                pred_rot_forces.append(self.get_rot_forces(molecule))
+                pred_vib_forces.append(
+                    molecule.get_forces() - pred_trans_forces[-1] - pred_rot_forces[-1]
+                )
+
+        self.pred_forces = {
+            "trans": np.concatenate(pred_trans_forces),
+            "rot": np.concatenate(pred_rot_forces),
+            "vib": np.concatenate(pred_vib_forces),
+        }
+        self.true_forces = {
+            "trans": np.concatenate(true_trans_forces),
+            "rot": np.concatenate(true_rot_forces),
+            "vib": np.concatenate(true_vib_forces),
+        }
+
+        fig = get_figure(
+            np.reshape(self.true_forces["trans"], -1),
+            np.reshape(self.pred_forces["trans"], -1),
+            datalabel="",
+            xlabel=r"$ab~initio$ forces",
+            ylabel=r"predicted forces",
+        )
+        fig.savefig(self.trans_force_plt)
+
+        fig = get_figure(
+            np.reshape(self.true_forces["rot"], -1),
+            np.reshape(self.pred_forces["rot"], -1),
+            datalabel="",
+            xlabel=r"$ab~initio$ forces",
+            ylabel=r"predicted forces",
+        )
+        fig.savefig(self.rot_force_plt)
+
+        fig = get_figure(
+            np.reshape(self.true_forces["vib"], -1),
+            np.reshape(self.pred_forces["vib"], -1),
+            datalabel="",
+            xlabel=r"$ab~initio$ forces",
+            ylabel=r"predicted forces",
+        )
+        fig.savefig(self.vib_force_plt)
