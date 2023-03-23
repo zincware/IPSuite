@@ -22,6 +22,7 @@ from ase.neighborlist import build_neighbor_list
 from ase.io import write
 
 from ipsuite import base, models, utils
+from ipsuite.analysis.bin_property import get_histogram_figure
 
 log = logging.getLogger(__name__)
 
@@ -714,7 +715,7 @@ def run_stability_nve(atoms, time_step, max_steps, init_temperature, checks):
 
 
 class MDStabilityAnalysis(base.ProcessAtoms):
-    model = zntrack.zn.nodes()
+    model = zntrack.zn.deps()
     max_steps: int = zntrack.zn.params()
     # checks: list = zntrack.zn.nodes()
     time_step: float = zntrack.zn.params(0.5)
@@ -729,17 +730,27 @@ class MDStabilityAnalysis(base.ProcessAtoms):
     def atoms(self) -> typing.List[ase.Atoms]:
         return list(ase.io.iread(self.traj_file))
     
-    def get_hist(self):
-        """Create a pandas dataframe from the given data."""
-        labels = self.get_labels()
+    def get_plots(self, stable_steps):
+        """Create figures for all available data."""
         if self.bins is None:
-            self.bins = int(np.ceil(len(labels) / 100))
-        counts, bin_edges = np.histogram(labels, self.bins)
-        return counts, bin_edges
+            self.bins = int(np.ceil(len(stable_steps) / 100))
+        counts, bin_edges = np.histogram(stable_steps, self.bins)
+    
+        self.plots_dir.mkdir()
+
+        label_hist = get_histogram_figure(
+            bin_edges,
+            counts,
+            datalabel="NVE",
+            xlabel="Number of stable time steps",
+            ylabel="Occurences",
+        )
+        label_hist.savefig(self.plots_dir / "hist.png")
 
     def run(self) -> None:
         data_lst = self.get_data()
         initial_temperature = 300
+        calculator = self.model.calc
 
         checks = [NaNCheck(), ConnectivityCheck(), EnergySpikeCheck(2.0, 0.5)]
 
@@ -749,7 +760,7 @@ class MDStabilityAnalysis(base.ProcessAtoms):
             ncols=120, position=0):
             atoms = data_lst[ii].copy()
             atoms.pbc = self.pbc
-            atoms.calc = self.model.calc
+            atoms.calc = calculator
             n_steps, last_n_atoms = run_stability_nve(
                 atoms, self.time_step, self.max_steps, initial_temperature, checks=checks
             )
@@ -761,4 +772,5 @@ class MDStabilityAnalysis(base.ProcessAtoms):
             )
             stable_steps.append(n_steps)
         
+        self.get_plots(stable_steps)
         self.stable_steps_df = pd.DataFrame({"stable_steps": np.array(stable_steps)})
