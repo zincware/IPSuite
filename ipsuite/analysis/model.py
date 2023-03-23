@@ -562,6 +562,7 @@ class BoxHeatUp(base.ProcessSingleAtom):
 
 
 class InterIntraForces(base.AnalyseProcessAtoms):
+    # TODO: metrics, add relative RMSE
     mapping = zntrack.zn.nodes()
 
     pred_forces = zntrack.zn.outs()
@@ -572,12 +573,14 @@ class InterIntraForces(base.AnalyseProcessAtoms):
     vib_force_plt = zntrack.dvc.outs(zntrack.nwd / "vib_force.png")
 
     def get_trans_forces(self, mol):
+        """Compute translational forces of a molecule."""
         all_forces = np.sum(mol.get_forces(), axis=0)
         mol_mas = np.sum(mol.get_masses())
 
         return (mol.get_masses() / mol_mas)[:, None] * all_forces
 
     def get_moment_of_intertia_tensor(self, atoms):
+        """Get the moment of inertia tensor of a molecule."""
         positions = atoms.get_positions()
         positions -= atoms.get_center_of_mass()
         masses = atoms.get_masses()
@@ -601,7 +604,7 @@ class InterIntraForces(base.AnalyseProcessAtoms):
         mol_copy.positions -= mol_copy.get_center_of_mass()
         f_x_r = []
         for position, force in zip(mol_copy.get_positions(), mol.get_forces()):
-            f_x_r.append(np.cross(position, force))
+            f_x_r.append(np.cross(force, position))
         f_x_r = np.sum(f_x_r, axis=0)
 
         res = []
@@ -618,6 +621,7 @@ class InterIntraForces(base.AnalyseProcessAtoms):
         true_rot_forces = []
         true_vib_forces = []
         for atom in tqdm.tqdm(true_atoms):
+            # TODO we should only need to do the mapping once
             _, molecules = self.mapping.forward_mapping(atom)
             for molecule in molecules:
                 true_trans_forces.append(self.get_trans_forces(molecule))
