@@ -13,6 +13,7 @@ python = ">=3.10,<3.12"
 ase = "^3.22.1"
 
 znh5md = "^0.1.1"
+znflow = "^0.1.9"
 
 seaborn = "^0.12.2"
 cp2k-input-tools = "^0.8.2"
