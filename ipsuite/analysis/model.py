@@ -561,6 +561,61 @@ class BoxHeatUp(base.ProcessSingleAtom):
         self.plot_temperature()
 
 
+def compute_trans_forces(mol):
+    """Compute translational forces of a molecule."""
+
+    all_forces = np.sum(mol.get_forces(), axis=0)
+    masses = mol.get_masses()
+    mol_mas = np.sum(masses)
+    res = (masses / mol_mas)[:, None] * all_forces
+    return res
+
+
+def compute_intertia_tensor(centered_positions, masses):
+    r_sq = np.linalg.norm(centered_positions,ord=2, axis=1) ** 2 * masses
+    r_sq = np.sum(r_sq)
+    A = np.diag(np.full((3,), r_sq))
+    mr_k = centered_positions * masses[:, None]
+    B = np.einsum("ki, kj -> ij", centered_positions, mr_k)
+    
+    I_ab = A - B
+    return I_ab
+
+def compute_rot_forces(mol):
+    mol_positions = mol.get_positions()
+    mol_positions -= mol.get_center_of_mass()
+    masses = mol.get_masses()
+
+    f_x_r = np.sum(np.cross(mol.get_forces(), mol_positions), axis=0)
+    I_ab = compute_intertia_tensor(mol_positions, masses)
+    I_ab_inv = np.linalg.inv(I_ab)
+
+    mi_ri = masses[:,None] * mol_positions
+    res = np.cross(mi_ri, (I_ab_inv @ f_x_r))
+
+    return res
+
+def force_decomposition(atom, mapping):
+
+    # TODO we should only need to do the mapping once
+    _, molecules = mapping.forward_mapping(atom)
+    full_forces = np.zeros_like(atom.positions)
+    atom_trans_forces = np.zeros_like(atom.positions)
+    atom_rot_forces = np.zeros_like(atom.positions)
+    total_n_atoms = 0
+
+    for molecule in molecules:
+        n_atoms = len(molecule)
+        full_forces[total_n_atoms:total_n_atoms + n_atoms] = molecule.get_forces()
+        atom_trans_forces[total_n_atoms:total_n_atoms + n_atoms] = compute_trans_forces(molecule)
+        atom_rot_forces[total_n_atoms:total_n_atoms + n_atoms] = compute_rot_forces(molecule)
+        total_n_atoms += n_atoms
+
+    atom_vib_froces = full_forces - atom_trans_forces - atom_rot_forces
+
+    return atom_trans_forces, atom_rot_forces, atom_vib_froces
+
+
 class InterIntraForces(base.AnalyseProcessAtoms):
     # TODO: metrics, add relative RMSE
     mapping = zntrack.zn.nodes()
@@ -572,84 +627,42 @@ class InterIntraForces(base.AnalyseProcessAtoms):
     trans_force_plt = zntrack.dvc.outs(zntrack.nwd / "trans_force.png")
     vib_force_plt = zntrack.dvc.outs(zntrack.nwd / "vib_force.png")
 
-    def get_trans_forces(self, mol):
-        """Compute translational forces of a molecule."""
-        all_forces = np.sum(mol.get_forces(), axis=0)
-        mol_mas = np.sum(mol.get_masses())
-
-        return (mol.get_masses() / mol_mas)[:, None] * all_forces
-
-    def get_moment_of_intertia_tensor(self, atoms):
-        """Get the moment of inertia tensor of a molecule."""
-        positions = atoms.get_positions()
-        positions -= atoms.get_center_of_mass()
-        masses = atoms.get_masses()
-        n_atoms = len(positions)
-        data = []
-
-        for alpha in range(3):
-            for beta in range(3):
-                alpha_mask = np.full(n_atoms, alpha)
-                beta_mask = np.full(n_atoms, beta)
-                value = np.where(
-                    alpha_mask == beta_mask, np.linalg.norm(positions, axis=1), 0
-                )
-                value -= positions[:, alpha] * positions[:, beta]
-                value *= masses
-                data.append(np.sum(value))
-        return np.reshape(data, (3, 3))
-
-    def get_rot_forces(self, mol):
-        mol_copy = mol.copy()
-        mol_copy.positions -= mol_copy.get_center_of_mass()
-        f_x_r = []
-        for position, force in zip(mol_copy.get_positions(), mol.get_forces()):
-            f_x_r.append(np.cross(force, position))
-        f_x_r = np.sum(f_x_r, axis=0)
-
-        res = []
-        I_ab_inv = np.linalg.inv(self.get_moment_of_intertia_tensor(mol_copy))
-        for x in range(len(mol)):
-            mi_ri = mol_copy.get_masses()[x] * mol_copy.get_positions()[x]
-            res.append(np.cross(mi_ri, I_ab_inv) @ f_x_r)
-
-        return res
 
     def run(self):
         true_atoms, pred_atoms = self.get_data()
+
         true_trans_forces = []
         true_rot_forces = []
         true_vib_forces = []
+
         for atom in tqdm.tqdm(true_atoms):
-            # TODO we should only need to do the mapping once
-            _, molecules = self.mapping.forward_mapping(atom)
-            for molecule in molecules:
-                true_trans_forces.append(self.get_trans_forces(molecule))
-                true_rot_forces.append(self.get_rot_forces(molecule))
-                true_vib_forces.append(
-                    molecule.get_forces() - true_trans_forces[-1] - true_rot_forces[-1]
-                )
+            force_decomposition(atom, self.mapping)
+
+        true_trans_forces = np.concatenate(true_trans_forces)
+        true_rot_forces = np.concatenate(true_rot_forces)
+        true_vib_forces = np.concatenate(true_vib_forces)
+
         pred_trans_forces = []
         pred_rot_forces = []
         pred_vib_forces = []
+
         for atom in tqdm.tqdm(pred_atoms):
-            _, molecules = self.mapping.forward_mapping(atom)
-            for molecule in molecules:
-                pred_trans_forces.append(self.get_trans_forces(molecule))
-                pred_rot_forces.append(self.get_rot_forces(molecule))
-                pred_vib_forces.append(
-                    molecule.get_forces() - pred_trans_forces[-1] - pred_rot_forces[-1]
-                )
+            force_decomposition(atom, self.mapping)
+
+        pred_trans_forces = np.concatenate(pred_trans_forces)
+        pred_rot_forces = np.concatenate(pred_rot_forces)
+        pred_vib_forces = np.concatenate(pred_vib_forces)
+        
 
         self.pred_forces = {
-            "trans": np.concatenate(pred_trans_forces),
-            "rot": np.concatenate(pred_rot_forces),
-            "vib": np.concatenate(pred_vib_forces),
+            "trans": pred_trans_forces,
+            "rot": pred_rot_forces,
+            "vib": pred_vib_forces,
         }
         self.true_forces = {
-            "trans": np.concatenate(true_trans_forces),
-            "rot": np.concatenate(true_rot_forces),
-            "vib": np.concatenate(true_vib_forces),
+            "trans": true_trans_forces,
+            "rot": true_rot_forces,
+            "vib": true_vib_forces,
         }
 
         fig = get_figure(
