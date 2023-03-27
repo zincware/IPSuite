@@ -24,6 +24,8 @@ class ExcludeIds:
                             ids[key].append(value)
                         else:
                             ids[key] = [value]
+                for key, ids in self.ids.items():
+                    self.ids[key] = np.sort(ids).astype(int)
             else:
                 self.ids = np.sort(self.ids).astype(int)
         else:
