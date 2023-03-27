@@ -37,9 +37,6 @@ class Bootstrap(base.ProcessSingleAtom):
         rng = default_rng(self.seed)
         atoms_list = self.bootstrap_configs(
             atoms,
-            self.displacement_range,
-            self.n_configs,
-            self.include_original,
             rng,
         )
 
