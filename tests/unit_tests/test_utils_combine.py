@@ -78,6 +78,10 @@ def test_ExcludeIds_dict_multi():
         "b": [0, 1, 2, 4, 5, 6, 8, 9],
         "c": [0, 2, 3, 4, 5, 6, 7, 8, 9],
     }
+
+    assert exclude.get_clean_data(flatten=True) == combine.get_flat_data_from_dict(
+        exclude.get_clean_data()
+    )
     assert exclude.get_original_ids([0, 1, 2, 3, 4, 5]) == [1, 2, 3, 4, 6, 7]
     assert exclude.get_original_ids([8 + 0]) == [2 + 8]
     assert exclude.get_original_ids([8 + 0, 8 + 1, 8 + 2, 8 + 3, 8 + 4, 8 + 5]) == [
@@ -100,3 +104,7 @@ def test_ExcludeIds_dict_multi():
     ]  # [missing + size of a + size of b, idx]
     for x in exclude.get_original_ids([0, 1, 2, 3, 8 + 10 + 0, 8 + 10 + 1]):
         assert x not in exclude.ids_as_list
+
+    assert exclude.get_original_ids(
+        [8 + 10 + 0, 8 + 10 + 1], per_key=True
+    ) == combine.get_ids_per_key(data, exclude.get_original_ids([8 + 10 + 0, 8 + 10 + 1]))
