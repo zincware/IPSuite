@@ -16,6 +16,7 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from scipy.interpolate import interpn
 
 from ipsuite import base, models, utils
+from ipsuite.geometry import BarycenterMapping
 
 log = logging.getLogger(__name__)
 
@@ -622,8 +623,12 @@ def force_decomposition(atom, mapping):
 
 
 class InterIntraForces(base.AnalyseProcessAtoms):
+    """Node for decomposing forces in a system of molecular units into translational, rotational and vibrational components.
+
+    The implementation follows the method described in https://doi.org/10.26434/chemrxiv-2022-l4tb9
+    """
     # TODO: metrics, add relative RMSE
-    mapping = zntrack.zn.nodes()
+    # mapping = zntrack.zn.nodes()
 
     pred_forces = zntrack.zn.outs()
     true_forces = zntrack.zn.outs()
@@ -634,13 +639,14 @@ class InterIntraForces(base.AnalyseProcessAtoms):
 
     def run(self):
         true_atoms, pred_atoms = self.get_data()
+        mapping = BarycenterMapping(data=None)
 
         true_trans_forces = []
         true_rot_forces = []
         true_vib_forces = []
 
         for atom in tqdm.tqdm(true_atoms):
-            force_decomposition(atom, self.mapping)
+            force_decomposition(atom, mapping)
 
         true_trans_forces = np.concatenate(true_trans_forces)
         true_rot_forces = np.concatenate(true_rot_forces)
@@ -651,7 +657,7 @@ class InterIntraForces(base.AnalyseProcessAtoms):
         pred_vib_forces = []
 
         for atom in tqdm.tqdm(pred_atoms):
-            force_decomposition(atom, self.mapping)
+            force_decomposition(atom, mapping)
 
         pred_trans_forces = np.concatenate(pred_trans_forces)
         pred_rot_forces = np.concatenate(pred_rot_forces)
