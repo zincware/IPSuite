@@ -5,8 +5,16 @@ import typing
 import numpy as np
 
 
-def get_flat_data_from_dict(data: dict) -> list:
+def get_flat_data_from_dict(data: dict, silent_ignore: bool = False) -> list:
     """Flatten a dictionary of lists into a single list.
+
+    Parameters
+    ----------
+    data : dict
+        Dictionary of lists.
+    silent_ignore : bool, optional
+        If True, the function will return the input if it is not a
+        dictionary. If False, it will raise a TypeError.
 
     Example
     -------
@@ -14,13 +22,21 @@ def get_flat_data_from_dict(data: dict) -> list:
         >>> get_flat_data_from_dict(data)
         >>> # [1, 2, 3, 4, 5, 6]
     """
+    if not isinstance(data, dict):
+        if silent_ignore:
+            return data
+        else:
+            raise TypeError(f"data must be a dictionary and not {type(data)}")
+
     flat_data = []
     for x in data.values():
         flat_data.extend(x)
     return flat_data
 
 
-def get_ids_per_key(data: dict, ids: list) -> typing.Dict[str, list]:
+def get_ids_per_key(
+    data: dict, ids: list, silent_ignore: bool = False
+) -> typing.Dict[str, list]:
     """Get the ids per key from a dictionary of lists.
 
     Parameters
@@ -30,6 +46,9 @@ def get_ids_per_key(data: dict, ids: list) -> typing.Dict[str, list]:
     ids : list
         List of ids. The ids are assumed to be in the same order as
         'get_flat_data_from_dict(data)'.
+    silent_ignore : bool, optional
+        If True, the function will return the input if it is not a
+        dictionary. If False, it will raise a TypeError.
 
     Example
     -------
@@ -37,6 +56,12 @@ def get_ids_per_key(data: dict, ids: list) -> typing.Dict[str, list]:
         >>> get_ids_per_key(data, [0, 1, 3, 5])
         >>> # {'a': [0, 1], 'b': [0, 2]}
     """
+    if not isinstance(data, dict):
+        if silent_ignore:
+            return ids
+        else:
+            raise TypeError(f"data must be a dictionary and not {type(data)}")
+
     ids_per_key = {}
     ids = np.array(ids).astype(int)
     start = 0
