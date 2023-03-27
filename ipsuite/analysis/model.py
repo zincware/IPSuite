@@ -630,8 +630,9 @@ class InterIntraForces(base.AnalyseProcessAtoms):
     https://doi.org/10.26434/chemrxiv-2022-l4tb9
     """
 
-    pred_forces = zntrack.zn.outs()
-    true_forces = zntrack.zn.outs()
+    trans_forces: dict = zntrack.zn.metrics()
+    rot_forces: dict = zntrack.zn.metrics()
+    vib_forces: dict = zntrack.zn.metrics()
 
     rot_force_plt = zntrack.dvc.outs(zntrack.nwd / "rot_force.png")
     trans_force_plt = zntrack.dvc.outs(zntrack.nwd / "trans_force.png")
@@ -668,15 +669,39 @@ class InterIntraForces(base.AnalyseProcessAtoms):
     def get_metrics(self):
         """Update the metrics."""
 
-        self.trans_forces = utils.metrics.get_full_metrics(
-            np.array(self.true_forces["trans"]), np.array(self.pred_forces["trans"])
-        )
-        self.rot_forces = utils.metrics.get_full_metrics(
-            np.array(self.true_forces["rot"]), np.array(self.pred_forces["rot"])
-        )
-        self.vib_forces = utils.metrics.get_full_metrics(
-            np.array(self.true_forces["vib"]), np.array(self.pred_forces["vib"])
-        )
+        self.trans_forces = {
+            "rmse": utils.metrics.root_mean_squared_error(
+                np.array(self.true_forces["trans"]), np.array(self.pred_forces["trans"])
+            ),
+            "mae": utils.metrics.mean_absolute_error(
+                np.array(self.true_forces["trans"]), np.array(self.pred_forces["trans"])
+            ),
+            "max": utils.metrics.maximum_error(
+                np.array(self.true_forces["trans"]), np.array(self.pred_forces["trans"])
+            ),
+        }
+        self.rot_forces = {
+            "rmse": utils.metrics.root_mean_squared_error(
+                np.array(self.true_forces["rot"]), np.array(self.pred_forces["rot"])
+            ),
+            "mae": utils.metrics.mean_absolute_error(
+                np.array(self.true_forces["rot"]), np.array(self.pred_forces["rot"])
+            ),
+            "max": utils.metrics.maximum_error(
+                np.array(self.true_forces["rot"]), np.array(self.pred_forces["rot"])
+            ),
+        }
+        self.vib_forces = {
+            "rmse": utils.metrics.root_mean_squared_error(
+                np.array(self.true_forces["vib"]), np.array(self.pred_forces["vib"])
+            ),
+            "mae": utils.metrics.mean_absolute_error(
+                np.array(self.true_forces["vib"]), np.array(self.pred_forces["vib"])
+            ),
+            "max": utils.metrics.maximum_error(
+                np.array(self.true_forces["vib"]), np.array(self.pred_forces["vib"])
+            ),
+        }
 
     def run(self):
         true_atoms, pred_atoms = self.get_data()
@@ -687,7 +712,12 @@ class InterIntraForces(base.AnalyseProcessAtoms):
         true_vib_forces = []
 
         for atom in tqdm.tqdm(true_atoms):
-            force_decomposition(atom, mapping)
+            atom_trans_forces, atom_rot_forces, atom_vib_forces = force_decomposition(
+                atom, mapping
+            )
+            true_trans_forces.append(atom_trans_forces)
+            true_rot_forces.append(atom_rot_forces)
+            true_vib_forces.append(atom_vib_forces)
 
         true_trans_forces = np.concatenate(true_trans_forces)
         true_rot_forces = np.concatenate(true_rot_forces)
@@ -698,7 +728,12 @@ class InterIntraForces(base.AnalyseProcessAtoms):
         pred_vib_forces = []
 
         for atom in tqdm.tqdm(pred_atoms):
-            force_decomposition(atom, mapping)
+            atom_trans_forces, atom_rot_forces, atom_vib_forces = force_decomposition(
+                atom, mapping
+            )
+            pred_trans_forces.append(atom_trans_forces)
+            pred_rot_forces.append(atom_rot_forces)
+            pred_vib_forces.append(atom_vib_forces)
 
         pred_trans_forces = np.concatenate(pred_trans_forces)
         pred_rot_forces = np.concatenate(pred_rot_forces)
