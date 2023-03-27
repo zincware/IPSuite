@@ -44,8 +44,9 @@ def get_ids_per_key(
     data : dict
         Dictionary of lists.
     ids : list
-        List of ids. The ids are assumed to be in the same order as
-        'get_flat_data_from_dict(data)'.
+        List of ids. The ids are assumed to be taken from the flattened
+        'get_flat_data_from_dict(data)' data. If the ids aren't sorted,
+        they will be sorted.
     silent_ignore : bool, optional
         If True, the function will return the input if it is not a
         dictionary. If False, it will raise a TypeError.
@@ -64,6 +65,7 @@ def get_ids_per_key(
 
     ids_per_key = {}
     ids = np.array(ids).astype(int)
+    ids = np.sort(ids)
     start = 0
 
     for key, val in data.items():
