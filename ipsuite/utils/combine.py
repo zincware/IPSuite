@@ -1,8 +1,29 @@
 """Helpers to work with inputs from multiple nodes."""
 
+import dataclasses
 import typing
 
 import numpy as np
+
+
+@dataclasses.dataclass
+class ExcludeIds:
+    """Remove entries from a dataset."""
+
+    data: list
+    ids: list
+
+    def get_clean_data(self):
+        """Remove the 'ids' from the 'data'."""
+        return [x for i, x in enumerate(self.data) if i not in self.ids]
+
+    def get_original_ids(self, ids: list):
+        """Shift the 'ids' such that they are valid for the initial data."""
+        ids = np.array(ids).astype(int)
+        ids = np.sort(ids)
+        for removed_id in self.ids:
+            ids[ids >= removed_id] += 1
+        return ids.tolist()
 
 
 def get_flat_data_from_dict(data: dict, silent_ignore: bool = False) -> list:

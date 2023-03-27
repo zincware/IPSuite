@@ -23,3 +23,18 @@ def test_get_ids_per_key():
 
     with pytest.raises(TypeError):
         combine.get_ids_per_key([0, 1, 3, 5], [0, 1, 3, 5])
+
+
+def test_ExcludeIds():
+    data = list(range(10))
+    exclude = combine.ExcludeIds(data, ids=[0])
+    assert [1, 2, 3, 4, 5, 6, 7, 8, 9] == exclude.get_clean_data()
+
+    # we have excluded [0] so everything after [0] is shifted by 1
+    assert exclude.get_original_ids([0, 1, 2]) == [1, 2, 3]
+
+    # we have excluded [0, 5] so everything after [0] is shifted by 1
+    #  and everything after [5] is shifted by 1+1 = 2
+    exclude = combine.ExcludeIds(data, ids=[0, 5])
+    assert exclude.get_clean_data() == [1, 2, 3, 4, 6, 7, 8, 9]
+    assert exclude.get_original_ids([0, 1, 5, 6]) == [1, 2, 7, 8]
