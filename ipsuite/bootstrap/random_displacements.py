@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 
 class Bootstrap(base.ProcessSingleAtom):
     """Baseclass for dataset bootstrapping.
-    Derived classes need to implement a `bootstrap_config` method
+    Derived classes need to implement a `bootstrap_config` method.
 
     Attributes
     ----------
@@ -71,20 +71,10 @@ class RattleAtoms(Bootstrap):
 
 
 class TranslateMolecules(Bootstrap):
-    """Create randomly displaced versions of a particular atomic configuration.
+    """Create versions of a particular atomic configuration with
+    randomly displaced molecular units.
+    Only applicable if there are covalent units present in the system.
     Useful for learning on the fly applications.
-
-    Attributes
-    ----------
-    n_configs: int
-        Number of displaced configurations.
-    displacement_range: float
-        Bounds for uniform distribution from which displacments are drawn.
-    include_original: bool
-        Whether or not to include the orignal configuration in `self.atoms`.
-    seed: int
-        Random seed.
-
     """
 
     def bootstrap_configs(self, atoms, rng):
@@ -117,20 +107,10 @@ class TranslateMolecules(Bootstrap):
 
 
 class RotateMolecules(Bootstrap):
-    """Create randomly displaced versions of a particular atomic configuration.
+    """Create versions of a particular atomic configuration with
+    randomly rotated molecular units.
+    Only applicable if there are covalent units present in the system.
     Useful for learning on the fly applications.
-
-    Attributes
-    ----------
-    n_configs: int
-        Number of displaced configurations.
-    displacement_range: float
-        Bounds for uniform distribution from which displacments are drawn.
-    include_original: bool
-        Whether or not to include the orignal configuration in `self.atoms`.
-    seed: int
-        Random seed.
-
     """
 
     def bootstrap_configs(self, atoms, rng):
