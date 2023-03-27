@@ -20,9 +20,11 @@ class ExcludeIds:
             for key, ids in self.ids.items():
                 self.ids[key] = np.sort(ids).astype(int)
 
-    def get_clean_data(self) -> list:
+    def get_clean_data(self, flatten: bool = False) -> list:
         """Remove the 'ids' from the 'data'."""
         # TODO do we need a dict return here or could we just return a flat list?
+        if self.ids is None:
+            return self.data
         if isinstance(self.data, list) and isinstance(self.ids, list):
             return [x for i, x in enumerate(self.data) if i not in self.ids]
         elif isinstance(self.data, dict) and isinstance(self.ids, dict):
@@ -34,11 +36,16 @@ class ExcludeIds:
                     ]
                 else:
                     clean_data[key] = data
+            if flatten:
+                return get_flat_data_from_dict(clean_data)
             return clean_data
         else:
-            raise TypeError("Something went wrong.")
+            raise TypeError(
+                "ids and data must be of the same type. "
+                f"ids is {type(self.ids)} and data is {type(self.data)}"
+            )
 
-    def get_original_ids(self, ids: list):
+    def get_original_ids(self, ids: list, per_key: bool = False) -> list:
         """Shift the 'ids' such that they are valid for the initial data."""
         ids = np.array(ids).astype(int)
         ids = np.sort(ids)
@@ -46,11 +53,12 @@ class ExcludeIds:
         if isinstance(self.ids, list):
             for removed_id in self.ids:
                 ids[ids >= removed_id] += 1
-            return ids.tolist()
         elif isinstance(self.ids, dict):
             for removed_id in self.ids_as_list:
                 ids[ids >= removed_id] += 1
-            return ids.tolist()
+        if per_key:
+            return get_ids_per_key(self.data, ids, silent_ignore=True)
+        return ids.tolist()
 
     @property
     def ids_as_list(self) -> list:
