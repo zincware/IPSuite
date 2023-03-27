@@ -64,7 +64,11 @@ class ExcludeIds:
             if key in self.ids:
                 ids.append(np.array(self.ids[key]) + size)
             size += len(self.data[key])
-        return np.sort(np.concatenate(ids)).astype(int).tolist()
+        if len(ids):
+            ids = np.concatenate(ids)
+            ids = np.sort(ids)
+            return ids.astype(int).tolist()
+        return []
 
 
 def get_flat_data_from_dict(data: dict, silent_ignore: bool = False) -> list:
