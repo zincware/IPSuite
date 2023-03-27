@@ -27,6 +27,7 @@ class Bootstrap(base.ProcessSingleAtom):
     seed: int
         Random seed.
     """
+
     n_configs: int = zntrack.zn.params()
     range_maximum: float = zntrack.zn.params()
     include_original: bool = zntrack.zn.params(True)
