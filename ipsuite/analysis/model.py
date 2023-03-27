@@ -623,12 +623,12 @@ def force_decomposition(atom, mapping):
 
 
 class InterIntraForces(base.AnalyseProcessAtoms):
-    """Node for decomposing forces in a system of molecular units into translational, rotational and vibrational components.
+    """Node for decomposing forces in a system of molecular units into
+    translational, rotational and vibrational components.
 
-    The implementation follows the method described in https://doi.org/10.26434/chemrxiv-2022-l4tb9
+    The implementation follows the method described in
+    https://doi.org/10.26434/chemrxiv-2022-l4tb9
     """
-    # TODO: metrics, add relative RMSE
-    # mapping = zntrack.zn.nodes()
 
     pred_forces = zntrack.zn.outs()
     true_forces = zntrack.zn.outs()
@@ -636,6 +636,47 @@ class InterIntraForces(base.AnalyseProcessAtoms):
     rot_force_plt = zntrack.dvc.outs(zntrack.nwd / "rot_force.png")
     trans_force_plt = zntrack.dvc.outs(zntrack.nwd / "trans_force.png")
     vib_force_plt = zntrack.dvc.outs(zntrack.nwd / "vib_force.png")
+
+    def get_plots(self):
+        fig = get_figure(
+            np.linalg.norm(self.true_forces["trans"], axis=-1),
+            np.linalg.norm(self.pred_forces["trans"], axis=-1),
+            datalabel="",
+            xlabel=r"$ab~initio$ forces / eV$ \cdot \AA^{-1}",
+            ylabel=r"predicted forces / eV$ \cdot \AA^{-1}",
+        )
+        fig.savefig(self.trans_force_plt)
+
+        fig = get_figure(
+            np.linalg.norm(self.true_forces["rot"], axis=-1),
+            np.linalg.norm(self.pred_forces["rot"], axis=-1),
+            datalabel="",
+            xlabel=r"$ab~initio$ forces / eV$ \cdot \AA^{-1}",
+            ylabel=r"predicted forces / eV$ \cdot \AA^{-1}",
+        )
+        fig.savefig(self.rot_force_plt)
+
+        fig = get_figure(
+            np.linalg.norm(self.true_forces["vib"], axis=-1),
+            np.linalg.norm(self.pred_forces["vib"], axis=-1),
+            datalabel="",
+            xlabel=r"$ab~initio$ forces / eV$ \cdot \AA^{-1}",
+            ylabel=r"predicted forces / eV$ \cdot \AA^{-1}",
+        )
+        fig.savefig(self.vib_force_plt)
+
+    def get_metrics(self):
+        """Update the metrics."""
+
+        self.trans_forces = utils.metrics.get_full_metrics(
+            np.array(self.true_forces["trans"]), np.array(self.pred_forces["trans"])
+        )
+        self.rot_forces = utils.metrics.get_full_metrics(
+            np.array(self.true_forces["rot"]), np.array(self.pred_forces["rot"])
+        )
+        self.vib_forces = utils.metrics.get_full_metrics(
+            np.array(self.true_forces["vib"]), np.array(self.pred_forces["vib"])
+        )
 
     def run(self):
         true_atoms, pred_atoms = self.get_data()
@@ -673,30 +714,5 @@ class InterIntraForces(base.AnalyseProcessAtoms):
             "rot": true_rot_forces,
             "vib": true_vib_forces,
         }
-
-        fig = get_figure(
-            np.reshape(self.true_forces["trans"], -1),
-            np.reshape(self.pred_forces["trans"], -1),
-            datalabel="",
-            xlabel=r"$ab~initio$ forces",
-            ylabel=r"predicted forces",
-        )
-        fig.savefig(self.trans_force_plt)
-
-        fig = get_figure(
-            np.reshape(self.true_forces["rot"], -1),
-            np.reshape(self.pred_forces["rot"], -1),
-            datalabel="",
-            xlabel=r"$ab~initio$ forces",
-            ylabel=r"predicted forces",
-        )
-        fig.savefig(self.rot_force_plt)
-
-        fig = get_figure(
-            np.reshape(self.true_forces["vib"], -1),
-            np.reshape(self.pred_forces["vib"], -1),
-            datalabel="",
-            xlabel=r"$ab~initio$ forces",
-            ylabel=r"predicted forces",
-        )
-        fig.savefig(self.vib_force_plt)
+        self.get_metrics()
+        self.get_plots()

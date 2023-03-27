@@ -11,10 +11,9 @@ import shutil
 import typing
 
 import ase
+from ase import Atoms
 import ase.calculators.singlepoint
 import ase.io
-from ase import Atoms
-from ase.calculators.singlepoint import SinglePointCalculator
 import dvc.cli
 import git
 import numpy as np
@@ -127,6 +126,8 @@ def atoms_with_composed_forces():
             [0.0, -1.0, 0.0],
         ]
     )
-    atoms.calc = SinglePointCalculator(atoms, forces=ft + fr + fv)
+    atoms.calc = ase.calculators.singlepoint.SinglePointCalculator(
+        atoms, forces=ft + fr + fv
+    )
 
     return atoms, ft, fr, fv
