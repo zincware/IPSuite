@@ -15,7 +15,17 @@ class ExcludeIds:
 
     def _post_init_(self):
         if isinstance(self.ids, list):
-            self.ids = np.sort(self.ids).astype(int)
+            if isinstance(self.ids[0], dict):
+                # we assume list[dict]. IF mixed it will raise some error
+                ids = {}
+                for data in self.ids:
+                    for key, value in data.items():
+                        if key in ids:
+                            ids[key].append(value)
+                        else:
+                            ids[key] = [value]
+            else:
+                self.ids = np.sort(self.ids).astype(int)
         else:
             for key, ids in self.ids.items():
                 self.ids[key] = np.sort(ids).astype(int)

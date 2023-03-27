@@ -69,9 +69,16 @@ def test_ids_as_list():
     assert exclude.ids_as_list == [0, 5, 8 + 10 + 1]
 
 
-def test_ExcludeIds_dict_multi():
+@pytest.mark.parametrize(
+    "ids",
+    [
+        {"a": [0, 5], "b": [3, 7], "c": [1]},
+        [{"a": [0, 5], "b": [3]}, {"a": [], "b": [7], "c": [1]}],
+    ],
+)
+def test_ExcludeIds_dict_multi(ids):
     data = {"a": list(range(8)), "b": list(range(10)), "c": list(range(10))}
-    exclude = combine.ExcludeIds(data, ids={"a": [0, 5], "b": [3, 7], "c": [1]})
+    exclude = combine.ExcludeIds(data, ids=ids)
     assert exclude.ids_as_list == [0, 5, 8 + 3, 8 + 7, 8 + 10 + 1]
     assert exclude.get_clean_data() == {
         "a": [1, 2, 3, 4, 6, 7],
