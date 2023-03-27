@@ -1,33 +1,40 @@
-import ase
+import logging
+
+import numpy as np
 import zntrack
 from numpy.random import default_rng
+from scipy.spatial.transform import Rotation
 
+import ipsuite as ips
 from ipsuite import base
 
+log = logging.getLogger(__name__)
 
-def create_initial_configurations(
-    atoms: ase.Atoms,
-    displacement_range: float,
-    n_configs: int,
-    include_original: bool,
-    rng,
-):
-    if include_original:
-        atoms_list = [atoms]
-    else:
-        atoms_list = []
 
-    for _ in range(n_configs):
-        new_atoms = atoms.copy()
-        displacement = rng.uniform(
-            -displacement_range, displacement_range, size=new_atoms.positions.shape
+class Bootstrap(base.ProcessSingleAtom):
+    n_configs: int = zntrack.zn.params()
+    range_maximum: float = zntrack.zn.params()
+    include_original: bool = zntrack.zn.params(True)
+    seed: int = zntrack.zn.params(0)
+
+    def run(self) -> None:
+        atoms = self.get_data()
+        rng = default_rng(self.seed)
+        atoms_list = self.bootstrap_configs(
+            atoms,
+            self.displacement_range,
+            self.n_configs,
+            self.include_original,
+            rng,
         )
-        new_atoms.positions += displacement
-        atoms_list.append(new_atoms)
-    return atoms_list
+
+        self.atoms = atoms_list
+
+    def bootstrap_configs(sefl, atoms, rng):
+        raise NotImplementedError
 
 
-class RattleAtoms(base.ProcessSingleAtom):
+class RattleAtoms(Bootstrap):
     """Create randomly displaced versions of a particular atomic configuration.
     Useful for learning on the fly applications.
 
@@ -44,20 +51,115 @@ class RattleAtoms(base.ProcessSingleAtom):
 
     """
 
-    n_configs: int = zntrack.zn.params()
-    displacement_range: float = zntrack.zn.params(0.1)
-    include_original: bool = zntrack.zn.params(True)
-    seed: int = zntrack.zn.params(0)
+    def bootstrap_configs(self, atoms, rng):
+        if self.include_original:
+            atoms_list = [atoms]
+        else:
+            atoms_list = []
 
-    def run(self) -> None:
-        atoms = self.get_data()
-        rng = default_rng(self.seed)
-        atoms_list = create_initial_configurations(
-            atoms,
-            self.displacement_range,
-            self.n_configs,
-            self.include_original,
-            rng,
-        )
+        for _ in range(self.n_configs):
+            new_atoms = atoms.copy()
+            displacement = rng.uniform(
+                -self.range_maximum, self.range_maximum, size=new_atoms.positions.shape
+            )
+            new_atoms.positions += displacement
+            atoms_list.append(new_atoms)
+        return atoms_list
 
-        self.atoms = atoms_list
+
+class TranslateMolecules(Bootstrap):
+    """Create randomly displaced versions of a particular atomic configuration.
+    Useful for learning on the fly applications.
+
+    Attributes
+    ----------
+    n_configs: int
+        Number of displaced configurations.
+    displacement_range: float
+        Bounds for uniform distribution from which displacments are drawn.
+    include_original: bool
+        Whether or not to include the orignal configuration in `self.atoms`.
+    seed: int
+        Random seed.
+
+    """
+
+    def bootstrap_configs(self, atoms, rng):
+        if self.include_original:
+            atoms_list = [atoms]
+        else:
+            atoms_list = []
+
+        mapping = ips.geometry.BarycenterMapping(data=None)
+
+        _, molecules = mapping.forward_mapping(atoms)
+        for _ in range(self.n_configs):
+            molecule_lst = []
+            for molecule in molecules:
+                mol = molecule.copy()
+
+                displacement = rng.uniform(
+                    -self.range_maximum, self.range_maximum, size=(3,)
+                )
+                mol.positions += displacement
+
+                molecule_lst.append(mol)
+
+            new_atoms = molecule_lst[0]
+            for i in range(1, len(molecule_lst)):
+                new_atoms += molecule_lst[i]
+            atoms_list.append(new_atoms)
+
+        return atoms_list
+
+
+class RotateMolecules(Bootstrap):
+    """Create randomly displaced versions of a particular atomic configuration.
+    Useful for learning on the fly applications.
+
+    Attributes
+    ----------
+    n_configs: int
+        Number of displaced configurations.
+    displacement_range: float
+        Bounds for uniform distribution from which displacments are drawn.
+    include_original: bool
+        Whether or not to include the orignal configuration in `self.atoms`.
+    seed: int
+        Random seed.
+
+    """
+
+    def bootstrap_configs(self, atoms, rng):
+        if self.include_original:
+            atoms_list = [atoms]
+        else:
+            atoms_list = []
+
+        if self.range_maximum > 2 * np.pi:
+            log.warning("Setting range_maximum to 2 Pi.")
+
+        mapping = ips.geometry.BarycenterMapping(data=None)
+
+        _, molecules = mapping.forward_mapping(atoms)
+        for _ in range(self.n_configs):
+            molecule_lst = []
+            for molecule in molecules:
+                mol = molecule.copy()
+
+                euler_angles = rng.uniform(0, self.range_maximum, size=(3,))
+                rotate = Rotation.from_euler("zyx", euler_angles, degrees=False)
+                pos = mol.positions
+                barycenter = np.mean(pos, axis=0)
+                pos -= barycenter
+                pos_rotated = rotate.apply(pos)
+                mol.positions = barycenter + pos_rotated
+
+                molecule_lst.append(mol)
+
+            new_atoms = molecule_lst[0]
+            for i in range(1, len(molecule_lst)):
+                new_atoms += molecule_lst[i]
+            atoms_list.append(new_atoms)
+
+        return atoms_list
