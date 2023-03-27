@@ -55,11 +55,8 @@ class ExcludeIds:
         # [1, 2, 1+10, 3+10]
         ids = []
         size = 0
-        for (
-            key
-        ) in (
-            self.data
-        ):  # we iterate through data, not ids, because ids must not contain all keys
+        for key in self.data:
+            # we iterate through data, not ids, because ids must not contain all keys
             if key in self.ids:
                 ids.append(np.array(self.ids[key]) + size)
             size += len(self.data[key])
