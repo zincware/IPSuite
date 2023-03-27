@@ -572,14 +572,15 @@ def compute_trans_forces(mol):
 
 
 def compute_intertia_tensor(centered_positions, masses):
-    r_sq = np.linalg.norm(centered_positions,ord=2, axis=1) ** 2 * masses
+    r_sq = np.linalg.norm(centered_positions, ord=2, axis=1) ** 2 * masses
     r_sq = np.sum(r_sq)
     A = np.diag(np.full((3,), r_sq))
     mr_k = centered_positions * masses[:, None]
     B = np.einsum("ki, kj -> ij", centered_positions, mr_k)
-    
+
     I_ab = A - B
     return I_ab
+
 
 def compute_rot_forces(mol):
     mol_positions = mol.get_positions()
@@ -590,13 +591,13 @@ def compute_rot_forces(mol):
     I_ab = compute_intertia_tensor(mol_positions, masses)
     I_ab_inv = np.linalg.inv(I_ab)
 
-    mi_ri = masses[:,None] * mol_positions
+    mi_ri = masses[:, None] * mol_positions
     res = np.cross(mi_ri, (I_ab_inv @ f_x_r))
 
     return res
 
-def force_decomposition(atom, mapping):
 
+def force_decomposition(atom, mapping):
     # TODO we should only need to do the mapping once
     _, molecules = mapping.forward_mapping(atom)
     full_forces = np.zeros_like(atom.positions)
@@ -606,14 +607,18 @@ def force_decomposition(atom, mapping):
 
     for molecule in molecules:
         n_atoms = len(molecule)
-        full_forces[total_n_atoms:total_n_atoms + n_atoms] = molecule.get_forces()
-        atom_trans_forces[total_n_atoms:total_n_atoms + n_atoms] = compute_trans_forces(molecule)
-        atom_rot_forces[total_n_atoms:total_n_atoms + n_atoms] = compute_rot_forces(molecule)
+        full_forces[total_n_atoms : total_n_atoms + n_atoms] = molecule.get_forces()
+        atom_trans_forces[total_n_atoms : total_n_atoms + n_atoms] = compute_trans_forces(
+            molecule
+        )
+        atom_rot_forces[total_n_atoms : total_n_atoms + n_atoms] = compute_rot_forces(
+            molecule
+        )
         total_n_atoms += n_atoms
 
-    atom_vib_froces = full_forces - atom_trans_forces - atom_rot_forces
+    atom_vib_forces = full_forces - atom_trans_forces - atom_rot_forces
 
-    return atom_trans_forces, atom_rot_forces, atom_vib_froces
+    return atom_trans_forces, atom_rot_forces, atom_vib_forces
 
 
 class InterIntraForces(base.AnalyseProcessAtoms):
@@ -626,7 +631,6 @@ class InterIntraForces(base.AnalyseProcessAtoms):
     rot_force_plt = zntrack.dvc.outs(zntrack.nwd / "rot_force.png")
     trans_force_plt = zntrack.dvc.outs(zntrack.nwd / "trans_force.png")
     vib_force_plt = zntrack.dvc.outs(zntrack.nwd / "vib_force.png")
-
 
     def run(self):
         true_atoms, pred_atoms = self.get_data()
@@ -652,7 +656,6 @@ class InterIntraForces(base.AnalyseProcessAtoms):
         pred_trans_forces = np.concatenate(pred_trans_forces)
         pred_rot_forces = np.concatenate(pred_rot_forces)
         pred_vib_forces = np.concatenate(pred_vib_forces)
-        
 
         self.pred_forces = {
             "trans": pred_trans_forces,
