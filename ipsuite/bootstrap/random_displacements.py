@@ -49,6 +49,7 @@ class Bootstrap(base.ProcessSingleAtom):
 class RattleAtoms(Bootstrap):
     """Create randomly displaced versions of a particular atomic configuration.
     Useful for learning on the fly applications.
+    `range_maximum` specifies the maximal atomic displacement.
     """
 
     def bootstrap_configs(self, atoms, rng):
@@ -72,6 +73,7 @@ class TranslateMolecules(Bootstrap):
     randomly displaced molecular units.
     Only applicable if there are covalent units present in the system.
     Useful for learning on the fly applications.
+    `range_maximum` specifies the maximal molecular displacement.
     """
 
     def bootstrap_configs(self, atoms, rng):
@@ -108,6 +110,7 @@ class RotateMolecules(Bootstrap):
     randomly rotated molecular units.
     Only applicable if there are covalent units present in the system.
     Useful for learning on the fly applications.
+    `range_maximum` specifies the maximal molecular rotation in degrees.
     """
 
     def bootstrap_configs(self, atoms, rng):
