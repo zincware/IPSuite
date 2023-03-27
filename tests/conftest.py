@@ -13,6 +13,8 @@ import typing
 import ase
 import ase.calculators.singlepoint
 import ase.io
+from ase import Atoms
+from ase.calculators.singlepoint import SinglePointCalculator
 import dvc.cli
 import git
 import numpy as np
@@ -90,3 +92,41 @@ def data_repo(tmp_path, request) -> pathlib.Path:
     # and S3 requires credentials.
 
     return tmp_path
+
+
+@pytest.fixture
+def atoms_with_composed_forces():
+    atoms = Atoms(
+        "OH2",
+        positions=np.array(
+            [
+                [0.0, 0.0, 0.0],
+                [1.0, 0.0, 0.0],
+                [0.0, 1.0, 0.0],
+            ]
+        ),
+    )
+    ft = np.array(
+        [
+            [0.0, 0.0, 1.0 * 15.999],
+            [0.0, 0.0, 1.008],
+            [0.0, 0.0, 1.008],
+        ]
+    )
+    fr = np.array(
+        [
+            [0.0, 0.0, 0.0],
+            [0.0, 0.0, 1.008],
+            [0.0, 0.0, -1.008],
+        ]
+    )
+    fv = np.array(
+        [
+            [1.0, 1.0, 0.0],
+            [-1.0, 0.0, 0.0],
+            [0.0, -1.0, 0.0],
+        ]
+    )
+    atoms.calc = SinglePointCalculator(atoms, forces=ft + fr + fv)
+
+    return atoms, ft, fr, fv
