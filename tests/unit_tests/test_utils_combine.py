@@ -54,6 +54,10 @@ def test_ExcludeIds_dict():
     assert exclude.get_clean_data() == {"a": [1, 2, 3, 4, 6, 7, 8, 9]}
     assert exclude.get_original_ids([0, 1, 5, 6]) == [1, 2, 7, 8]
 
+    exclude = combine.ExcludeIds(data, ids={})
+    assert exclude.get_clean_data() == {"a": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}
+    assert exclude.get_original_ids([0, 1, 5, 6]) == [0, 1, 5, 6]
+
 
 def test_ids_as_list():
     data = {"a": list(range(8)), "b": list(range(10)), "c": list(range(10))}

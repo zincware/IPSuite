@@ -22,14 +22,18 @@ class ExcludeIds:
 
     def get_clean_data(self) -> list:
         """Remove the 'ids' from the 'data'."""
+        # TODO do we need a dict return here or could we just return a flat list?
         if isinstance(self.data, list) and isinstance(self.ids, list):
             return [x for i, x in enumerate(self.data) if i not in self.ids]
         elif isinstance(self.data, dict) and isinstance(self.ids, dict):
             clean_data = {}
             for key, data in self.data.items():
-                clean_data[key] = [
-                    x for i, x in enumerate(data) if i not in self.ids[key]
-                ]
+                if key in self.ids:
+                    clean_data[key] = [
+                        x for i, x in enumerate(data) if i not in self.ids[key]
+                    ]
+                else:
+                    clean_data[key] = data
             return clean_data
         else:
             raise TypeError("Something went wrong.")
