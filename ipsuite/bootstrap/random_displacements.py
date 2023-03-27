@@ -1,5 +1,6 @@
 import logging
 
+import ase
 import numpy as np
 import zntrack
 from numpy.random import default_rng
@@ -12,6 +13,20 @@ log = logging.getLogger(__name__)
 
 
 class Bootstrap(base.ProcessSingleAtom):
+    """Baseclass for dataset bootstrapping.
+    Derived classes need to implement a `bootstrap_config` method
+
+    Attributes
+    ----------
+    n_configs: int
+        Number of displaced configurations.
+    range_maximum: float
+        Bounds for uniform distribution from which displacments are drawn.
+    include_original: bool
+        Whether or not to include the orignal configuration in `self.atoms`.
+    seed: int
+        Random seed.
+    """
     n_configs: int = zntrack.zn.params()
     range_maximum: float = zntrack.zn.params()
     include_original: bool = zntrack.zn.params(True)
@@ -30,25 +45,13 @@ class Bootstrap(base.ProcessSingleAtom):
 
         self.atoms = atoms_list
 
-    def bootstrap_configs(sefl, atoms, rng):
+    def bootstrap_configs(sefl, atoms: ase.Atoms, rng):
         raise NotImplementedError
 
 
 class RattleAtoms(Bootstrap):
     """Create randomly displaced versions of a particular atomic configuration.
     Useful for learning on the fly applications.
-
-    Attributes
-    ----------
-    n_configs: int
-        Number of displaced configurations.
-    displacement_range: float
-        Bounds for uniform distribution from which displacments are drawn.
-    include_original: bool
-        Whether or not to include the orignal configuration in `self.atoms`.
-    seed: int
-        Random seed.
-
     """
 
     def bootstrap_configs(self, atoms, rng):
