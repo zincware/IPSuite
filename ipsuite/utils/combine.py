@@ -10,20 +10,60 @@ import numpy as np
 class ExcludeIds:
     """Remove entries from a dataset."""
 
-    data: list
-    ids: list
+    data: typing.Union[list, dict]
+    ids: typing.Union[list, dict]
 
-    def get_clean_data(self):
+    def _post_init_(self):
+        if isinstance(self.ids, list):
+            self.ids = np.sort(self.ids).astype(int)
+        else:
+            for key, ids in self.ids.items():
+                self.ids[key] = np.sort(ids).astype(int)
+
+    def get_clean_data(self) -> list:
         """Remove the 'ids' from the 'data'."""
-        return [x for i, x in enumerate(self.data) if i not in self.ids]
+        if isinstance(self.data, list) and isinstance(self.ids, list):
+            return [x for i, x in enumerate(self.data) if i not in self.ids]
+        elif isinstance(self.data, dict) and isinstance(self.ids, dict):
+            clean_data = {}
+            for key, data in self.data.items():
+                clean_data[key] = [
+                    x for i, x in enumerate(data) if i not in self.ids[key]
+                ]
+            return clean_data
+        else:
+            raise TypeError("Something went wrong.")
 
     def get_original_ids(self, ids: list):
         """Shift the 'ids' such that they are valid for the initial data."""
         ids = np.array(ids).astype(int)
         ids = np.sort(ids)
-        for removed_id in self.ids:
-            ids[ids >= removed_id] += 1
-        return ids.tolist()
+
+        if isinstance(self.ids, list):
+            for removed_id in self.ids:
+                ids[ids >= removed_id] += 1
+            return ids.tolist()
+        elif isinstance(self.ids, dict):
+            for removed_id in self.ids_as_list:
+                ids[ids >= removed_id] += 1
+            return ids.tolist()
+
+    @property
+    def ids_as_list(self) -> list:
+        # {a: [1, 2], b: [1, 3]}
+        # {a: list(10), b:list(10)}
+        # [1, 2, 1+10, 3+10]
+        ids = []
+        size = 0
+        for (
+            key
+        ) in (
+            self.data
+        ):  # we iterate through data, not ids, because ids must not contain all keys
+            if key in self.ids:
+                ids.append(np.array(self.ids[key]) + size)
+            size += len(self.data[key])
+        return np.sort(np.concatenate(ids)).astype(int).tolist()
 
 
 def get_flat_data_from_dict(data: dict, silent_ignore: bool = False) -> list:
