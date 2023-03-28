@@ -32,7 +32,7 @@ class Atoms(zntrack.Field):
 
         db = znh5md.io.DataWriter(filename=file)
         db.initialize_database_groups()
-        db.add(znh5md.io.AtomsReader(atoms, frames_per_chunk=100000))
+        db.add(znh5md.io.AtomsReader(atoms, frames_per_chunk=100000, use_pbc_group=True))
 
     def get_data(self, instance: zntrack.Node) -> base.protocol.ATOMS_LST:
         """Get data from znh5md File."""
