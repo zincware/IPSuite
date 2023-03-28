@@ -1,9 +1,12 @@
 """Helpers to work with inputs from multiple nodes."""
 
 import dataclasses
+import logging
 import typing
 
 import numpy as np
+
+log = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass
@@ -13,9 +16,11 @@ class ExcludeIds:
     data: typing.Union[list, dict]
     ids: typing.Union[list, dict]
 
-    def _post_init_(self):
+    def __post_init__(self):
         if isinstance(self.ids, list):
+            log.debug("ids is list")
             if isinstance(self.ids[0], dict):
+                log.debug("ids is list of dicts")
                 # we assume list[dict]. IF mixed it will raise some error
                 ids = {}
                 for data in self.ids:
@@ -29,11 +34,14 @@ class ExcludeIds:
                                     f" {value} instead."
                                 )
                             ids[key] = value
-                for key, ids in self.ids.items():
-                    self.ids[key] = np.sort(ids).astype(int)
+                self.ids = {}
+                for key, val in ids.items():
+                    self.ids[key] = np.sort(val).astype(int)
             else:
+                log.debug("ids is list of ints")
                 self.ids = np.sort(self.ids).astype(int)
         else:
+            log.debug("ids is dict")
             for key, ids in self.ids.items():
                 self.ids[key] = np.sort(ids).astype(int)
 
