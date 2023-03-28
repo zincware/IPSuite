@@ -20,6 +20,7 @@ from scipy.interpolate import interpn
 from tqdm import trange
 from ase.neighborlist import build_neighbor_list
 from ase.io import write
+import zntrack
 
 from ipsuite import base, models, utils
 from ipsuite.analysis.bin_property import get_histogram_figure
@@ -592,8 +593,16 @@ def print_energy_terms(atoms: ase.Atoms) -> typing.Tuple[float, float]:
     return etot, ekin, epot
 
 
+class CheckBase(zntrack.Node):
+    def initialize(self, atoms):
+        pass
 
-class NaNCheck:
+    def check(self, atoms):
+        raise NotImplementedError
+
+
+
+class NaNCheck(CheckBase):
 
     def initialize(self, atoms):
         pass
@@ -611,7 +620,7 @@ class NaNCheck:
         unstable = any([positions_is_none, epot_is_none, forces_is_none])
         return unstable
 
-class ConnectivityCheck:
+class ConnectivityCheck(CheckBase):
 
     def __init__(self) -> None:
         self.nl = None
@@ -624,8 +633,6 @@ class ConnectivityCheck:
         self.is_initialized = True
 
     def check(self, atoms):
-        # if not self.is_initialized:
-        #     self.initialize(atoms)
 
         self.nl.update(atoms)
         cm = self.nl.get_connectivity_matrix(sparse=False)
@@ -636,8 +643,8 @@ class ConnectivityCheck:
         return unstable
 
 
-class EnergySpikeCheck:
-    def __init__(self, max_factor=2.0, min_factor=0.5) -> None:
+class EnergySpikeCheck(CheckBase):
+    def __init__(self, min_factor=0.5, max_factor=2.0) -> None:
         self.max_factor = max_factor
         self.min_factor = min_factor
 
@@ -654,8 +661,6 @@ class EnergySpikeCheck:
         self.is_initialized = True
 
     def check(self, atoms):
-        # if not self.is_initialized:
-        #     self.initialize(atoms)
 
         epot = atoms.get_potential_energy()
         # energy is negative, hence sign convention
@@ -692,7 +697,7 @@ def run_stability_nve(atoms, time_step, max_steps, init_temperature, checks):
     with trange(
             max_steps,
             desc=get_desc(),
-            leave=False,
+            leave=True,
             ncols=120,
             position=1,
         ) as pbar:
@@ -717,7 +722,7 @@ def run_stability_nve(atoms, time_step, max_steps, init_temperature, checks):
 class MDStabilityAnalysis(base.ProcessAtoms):
     model = zntrack.zn.deps()
     max_steps: int = zntrack.zn.params()
-    # checks: list = zntrack.zn.nodes()
+    checks: list = zntrack.zn.nodes()
     time_step: float = zntrack.zn.params(0.5)
     pbc: bool = zntrack.zn.params(True)
     bins: int = zntrack.zn.params(None)
@@ -752,8 +757,6 @@ class MDStabilityAnalysis(base.ProcessAtoms):
         initial_temperature = 300
         calculator = self.model.calc
 
-        checks = [NaNCheck(), ConnectivityCheck(), EnergySpikeCheck(2.0, 0.5)]
-
         stable_steps = []
 
         for ii in tqdm.trange(0, len(data_lst), desc="Atoms",leave=True,
@@ -762,7 +765,7 @@ class MDStabilityAnalysis(base.ProcessAtoms):
             atoms.pbc = self.pbc
             atoms.calc = calculator
             n_steps, last_n_atoms = run_stability_nve(
-                atoms, self.time_step, self.max_steps, initial_temperature, checks=checks
+                atoms, self.time_step, self.max_steps, initial_temperature, checks=self.checks
             )
             write(
                 self.traj_file,

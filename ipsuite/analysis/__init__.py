@@ -11,6 +11,9 @@ from ipsuite.analysis.model import (
     BoxScaleAnalysis,
     PredictWithModel,
     RattleAnalysis,
+    NaNCheck,
+    EnergySpikeCheck,
+    ConnectivityCheck,
     MDStabilityAnalysis,
 )
 from ipsuite.analysis.sensitivity import (
@@ -30,6 +33,9 @@ __all__ = [
     "PredictWithModel",
     "BoxScaleAnalysis",
     "BoxHeatUp",
+    "NaNCheck",
+    "ConnectivityCheck",
+    "EnergySpikeCheck",
     "MDStabilityAnalysis",
     "MoveSingleParticle",
     "AnalyseGlobalForceSensitivity",
