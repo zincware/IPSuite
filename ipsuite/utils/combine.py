@@ -21,9 +21,14 @@ class ExcludeIds:
                 for data in self.ids:
                     for key, value in data.items():
                         if key in ids:
-                            ids[key].append(value)
+                            ids[key].extend(value)
                         else:
-                            ids[key] = [value]
+                            if not isinstance(value, list):
+                                raise ValueError(
+                                    f"Ids can not be {type(value)} but must be int Found"
+                                    f" {value} instead."
+                                )
+                            ids[key] = value
                 for key, ids in self.ids.items():
                     self.ids[key] = np.sort(ids).astype(int)
             else:
