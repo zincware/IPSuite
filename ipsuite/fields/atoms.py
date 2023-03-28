@@ -39,7 +39,7 @@ class Atoms(zntrack.Field):
         file = self.get_files(instance)[0]
 
         def file_handle(filename):
-            file = instance.state.get_file_system().open(filename, "rb")
+            file = instance.state.fs.open(filename, "rb")
             return h5py.File(file)
 
         data = znh5md.ASEH5MD(
