@@ -36,14 +36,14 @@ class ExcludeIds:
                             ids[key] = value
                 self.ids = {}
                 for key, val in ids.items():
-                    self.ids[key] = np.sort(val).astype(int)
+                    self.ids[key] = np.sort(val).astype(int).tolist()
             else:
                 log.debug("ids is list of ints")
-                self.ids = np.sort(self.ids).astype(int)
+                self.ids = np.sort(self.ids).astype(int).tolist()
         else:
             log.debug("ids is dict")
             for key, ids in self.ids.items():
-                self.ids[key] = np.sort(ids).astype(int)
+                self.ids[key] = np.sort(ids).astype(int).tolist()
 
     def get_clean_data(self, flatten: bool = False) -> list:
         """Remove the 'ids' from the 'data'."""
