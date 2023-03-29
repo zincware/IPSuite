@@ -18,9 +18,9 @@ class Bootstrap(base.ProcessSingleAtom):
 
     Attributes
     ----------
-    n_configs: int
+    n_configurations: int
         Number of displaced configurations.
-    range_maximum: float
+    maximum: float
         Bounds for uniform distribution from which displacments are drawn.
     include_original: bool
         Whether or not to include the orignal configuration in `self.atoms`.
@@ -28,8 +28,8 @@ class Bootstrap(base.ProcessSingleAtom):
         Random seed.
     """
 
-    n_configs: int = zntrack.zn.params()
-    range_maximum: float = zntrack.zn.params()
+    n_configurations: int = zntrack.zn.params()
+    maximum: float = zntrack.zn.params()
     include_original: bool = zntrack.zn.params(True)
     seed: int = zntrack.zn.params(0)
 
@@ -59,10 +59,10 @@ class RattleAtoms(Bootstrap):
         else:
             atoms_list = []
 
-        for _ in range(self.n_configs):
+        for _ in range(self.n_configurations):
             new_atoms = atoms.copy()
             displacement = rng.uniform(
-                -self.range_maximum, self.range_maximum, size=new_atoms.positions.shape
+                -self.maximum, self.maximum, size=new_atoms.positions.shape
             )
             new_atoms.positions += displacement
             atoms_list.append(new_atoms)
@@ -86,14 +86,12 @@ class TranslateMolecules(Bootstrap):
         mapping = ips.geometry.BarycenterMapping(data=None)
 
         _, molecules = mapping.forward_mapping(atoms)
-        for _ in range(self.n_configs):
+        for _ in range(self.n_configurations):
             molecule_lst = []
             for molecule in molecules:
                 mol = molecule.copy()
 
-                displacement = rng.uniform(
-                    -self.range_maximum, self.range_maximum, size=(3,)
-                )
+                displacement = rng.uniform(-self.maximum, self.maximum, size=(3,))
                 mol.positions += displacement
 
                 molecule_lst.append(mol)
@@ -120,18 +118,18 @@ class RotateMolecules(Bootstrap):
         else:
             atoms_list = []
 
-        if self.range_maximum > 2 * np.pi:
+        if self.maximum > 2 * np.pi:
             log.warning("Setting range_maximum to 2 Pi.")
 
         mapping = ips.geometry.BarycenterMapping(data=None)
 
         _, molecules = mapping.forward_mapping(atoms)
-        for _ in range(self.n_configs):
+        for _ in range(self.n_configurations):
             molecule_lst = []
             for molecule in molecules:
                 mol = molecule.copy()
 
-                euler_angles = rng.uniform(0, self.range_maximum, size=(3,))
+                euler_angles = rng.uniform(0, self.maximum, size=(3,))
                 rotate = Rotation.from_euler("zyx", euler_angles, degrees=False)
                 pos = mol.positions
                 barycenter = np.mean(pos, axis=0)
