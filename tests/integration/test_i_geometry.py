@@ -1,7 +1,7 @@
-import pytest
 import numpy as np
-from ase import Atoms
 import pytest
+from ase import Atoms
+
 import ipsuite as ips
 
 
