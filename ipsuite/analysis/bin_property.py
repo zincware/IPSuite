@@ -70,7 +70,7 @@ class LabelHistogram(base.AnalyseAtoms):
 
     def _post_init_(self):
         """Load metrics - if available."""
-        self.atoms = get_deps_if_node(self.data, "atoms")
+        self.data = get_deps_if_node(self.data, "atoms")
 
     def get_labels(self):
         raise NotImplementedError
@@ -111,7 +111,7 @@ class EnergyHistogram(LabelHistogram):
     xlabel = r"$E$ / eV"
 
     def get_labels(self):
-        return [x.get_potential_energy() for x in self.atoms]
+        return [x.get_potential_energy() for x in self.data]
 
 
 class ForcesHistogram(LabelHistogram):
@@ -121,7 +121,7 @@ class ForcesHistogram(LabelHistogram):
     xlabel = r"$F$ / eV/Ang"
 
     def get_labels(self):
-        labels = np.concatenate([x.get_forces() for x in self.atoms], axis=0)
+        labels = np.concatenate([x.get_forces() for x in self.data], axis=0)
         # compute magnitude of vector labels. Histogram works element wise for N-D Arrays
         labels = np.linalg.norm(labels, ord=2, axis=1)
         return labels
@@ -134,7 +134,7 @@ class DipoleHistogram(LabelHistogram):
     xlabel = r"$\mu$ / eV Ang"
 
     def get_labels(self):
-        labels = np.array([x.calc.results["dipole"] for x in self.atoms])
+        labels = np.array([x.calc.results["dipole"] for x in self.data])
         # compute magnitude of vector labels. Histogram works element wise for N-D Arrays
         labels = np.linalg.norm(labels, ord=2, axis=1)
         return labels

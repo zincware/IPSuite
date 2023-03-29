@@ -1,6 +1,5 @@
 import pytest
-import numpy as np
-from ase import Atoms
+
 import ipsuite as ips
 
 
@@ -11,7 +10,7 @@ def test_ips_bin_property(data_repo, eager):
 
     with ips.Project() as project:
         e_hist = ips.analysis.EnergyHistogram(data=data.atoms)
-        f_hist = ips.analysis.ForcesHistogram(data=data.atoms)
+        f_hist = ips.analysis.ForcesHistogram(data=data.atoms, bins=100)
 
     project.run(eager=eager)
     if not eager:
@@ -19,3 +18,4 @@ def test_ips_bin_property(data_repo, eager):
         f_hist.load()
 
     assert e_hist.labels_df["bin_edges"].shape == (1,)
+    assert f_hist.labels_df["bin_edges"].shape == (100,)
