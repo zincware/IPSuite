@@ -121,7 +121,7 @@ class ForcesHistogram(LabelHistogram):
     xlabel = r"$F$ / eV/Ang"
 
     def get_labels(self):
-        labels = np.concatenate([x.calc.results["forces"] for x in self.atoms], axis=0)
+        labels = np.concatenate([x.get_forces() for x in self.atoms], axis=0)
         # compute magnitude of vector labels. Histogram works element wise for N-D Arrays
         labels = np.linalg.norm(labels, ord=2, axis=1)
         return labels
