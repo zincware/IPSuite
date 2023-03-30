@@ -16,6 +16,7 @@ def get_histogram_figure(
     datalabel: str,
     xlabel: str,
     ylabel: str,
+    logy_scale=True,
     figsize: tuple = (10, 7),
 ) -> plt.Figure:
     """Creates a Matplotlib figure based on precomputed bin edges and counts.
@@ -43,6 +44,8 @@ def get_histogram_figure(
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.legend()
+    if logy_scale:
+        ax.set_yscale("log")
     return fig
 
 
@@ -63,10 +66,11 @@ class LabelHistogram(base.AnalyseAtoms):
     datalabel: str = None
     xlabel: str = None
     ylabel: str = "Occurences"
+    logy_scale: bool = True
 
     def _post_init_(self):
         """Load metrics - if available."""
-        self.atoms = get_deps_if_node(self.data, "atoms")
+        self.data = get_deps_if_node(self.data, "atoms")
 
     def get_labels(self):
         raise NotImplementedError
@@ -89,6 +93,7 @@ class LabelHistogram(base.AnalyseAtoms):
             datalabel=self.datalabel,
             xlabel=self.xlabel,
             ylabel=self.ylabel,
+            logy_scale=self.logy_scale,
         )
         label_hist.savefig(self.plots_dir / "hist.png")
 
@@ -106,7 +111,7 @@ class EnergyHistogram(LabelHistogram):
     xlabel = r"$E$ / eV"
 
     def get_labels(self):
-        return [x.get_potential_energy() for x in self.atoms]
+        return [x.get_potential_energy() for x in self.data]
 
 
 class ForcesHistogram(LabelHistogram):
@@ -116,9 +121,9 @@ class ForcesHistogram(LabelHistogram):
     xlabel = r"$F$ / eV/Ang"
 
     def get_labels(self):
-        labels = np.array([x.calc.results["forces"] for x in self.atoms])
+        labels = np.concatenate([x.get_forces() for x in self.data], axis=0)
         # compute magnitude of vector labels. Histogram works element wise for N-D Arrays
-        labels = np.linalg.norm(labels, ord=2, axis=2)
+        labels = np.linalg.norm(labels, ord=2, axis=1)
         return labels
 
 
@@ -129,7 +134,7 @@ class DipoleHistogram(LabelHistogram):
     xlabel = r"$\mu$ / eV Ang"
 
     def get_labels(self):
-        labels = np.array([x.calc.results["dipole"] for x in self.atoms])
+        labels = np.array([x.calc.results["dipole"] for x in self.data])
         # compute magnitude of vector labels. Histogram works element wise for N-D Arrays
         labels = np.linalg.norm(labels, ord=2, axis=1)
         return labels
