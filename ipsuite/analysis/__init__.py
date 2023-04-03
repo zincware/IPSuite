@@ -9,6 +9,7 @@ from ipsuite.analysis.model import (
     AnalysePrediction,
     BoxHeatUp,
     BoxScaleAnalysis,
+    InterIntraForces,
     PredictWithModel,
     RattleAnalysis,
 )
@@ -32,4 +33,5 @@ __all__ = [
     "MoveSingleParticle",
     "AnalyseGlobalForceSensitivity",
     "AnalyseSingleForceSensitivity",
+    "InterIntraForces",
 ]
