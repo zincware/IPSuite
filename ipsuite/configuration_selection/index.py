@@ -1,10 +1,7 @@
 """Select configurations by item, e.g. slice or list of indices."""
-
-"""Module for selecting Atoms randomly."""
 import typing
 
 import ase
-import numpy as np
 import zntrack
 
 from ipsuite.configuration_selection import ConfigurationSelection

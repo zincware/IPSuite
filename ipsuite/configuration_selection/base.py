@@ -1,10 +1,11 @@
 """Base Node for ConfigurationSelection."""
+import logging
 import typing
 
 import ase
 import znflow
 import zntrack
-import logging
+
 from ipsuite import base
 from ipsuite.utils import combine
 
@@ -38,7 +39,6 @@ class ConfigurationSelection(base.ProcessAtoms):
         exclude = combine.ExcludeIds(self.get_data(), self.exclude_configurations)
         data = exclude.get_clean_data(flatten=True)
 
-        assert isinstance(data, list), f"data must be a list, not {type(data)}"
         log.critical(f"Selecting from {len(data)} configurations.")
 
         selected_configurations = self.select_atoms(data)
