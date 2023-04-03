@@ -102,7 +102,7 @@ class ASEMD(base.ProcessSingleAtom):
     def run(self):
         """Run the simulation."""
         atoms = self.get_atoms()
-        atoms.set_calculator(self.model.calc)
+        atoms.calc = self.model.calc
         # Initialize velocities
         MaxwellBoltzmannDistribution(atoms, temperature_K=self.temperature)
         # initialize thermostat
