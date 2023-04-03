@@ -32,14 +32,14 @@ class Atoms(zntrack.Field):
 
         db = znh5md.io.DataWriter(filename=file)
         db.initialize_database_groups()
-        db.add(znh5md.io.AtomsReader(atoms, frames_per_chunk=100000))
+        db.add(znh5md.io.AtomsReader(atoms, frames_per_chunk=100000, use_pbc_group=True))
 
     def get_data(self, instance: zntrack.Node) -> base.protocol.ATOMS_LST:
         """Get data from znh5md File."""
         file = self.get_files(instance)[0]
 
         def file_handle(filename):
-            file = instance.state.get_file_system().open(filename, "rb")
+            file = instance.state.fs.open(filename, "rb")
             return h5py.File(file)
 
         data = znh5md.ASEH5MD(

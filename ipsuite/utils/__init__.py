@@ -1,9 +1,4 @@
 """ipsuite utils module."""
-import znflow
+from ipsuite.utils import ase_sim, combine, helpers, metrics
 
-from ipsuite.utils import ase_sim, helpers, metrics
-
-__all__ = ["helpers", "metrics", "ase_sim"]
-
-
-combine = znflow.combine
+__all__ = ["helpers", "metrics", "ase_sim", "combine"]

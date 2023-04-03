@@ -43,4 +43,4 @@ jobs:
           git config --global init.defaultBranch "main"
       - name: Pytest
         run: |
-          pytest .
+          pytest . -vv
