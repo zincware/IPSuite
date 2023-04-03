@@ -4,6 +4,7 @@ import typing
 import ase
 import tqdm
 import zntrack
+import znflow
 
 from ipsuite import fields, utils
 
@@ -33,7 +34,12 @@ class ProcessAtoms(zntrack.Node):
 
     def _post_init_(self):
         if self.data is not None:
-            self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
+            try:
+                self.data = znflow.combine(
+                    self.data, attribute="atoms", return_dict_attr="name"
+                )
+            except TypeError:
+                self.data = znflow.combine(self.data, attribute="atoms")
 
     def update_data(self):
         """Update the data attribute."""

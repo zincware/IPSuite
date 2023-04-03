@@ -18,6 +18,7 @@ import dvc.cli
 import git
 import numpy as np
 import pytest
+import ipsuite as ips
 
 
 @pytest.fixture
@@ -79,6 +80,15 @@ def proj_path(tmp_path, request) -> pathlib.Path:
     dvc.cli.main(["init"])
 
     return tmp_path
+
+@pytest.fixture
+def proj_w_data(proj_path, traj_file, request) -> typing.Tuple[ips.Project, ips.AddData]:
+    data = []
+    with ips.Project() as proj:
+        for idx in range(request.param):
+            data.append(ips.AddData(file=traj_file, name=f"data_{idx}"))
+    proj.run()
+    return proj, data
 
 
 @pytest.fixture
