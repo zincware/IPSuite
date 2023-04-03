@@ -34,12 +34,7 @@ class ProcessAtoms(zntrack.Node):
 
     def _post_init_(self):
         if self.data is not None and not isinstance(self.data, dict):
-            try:
-                self.data = znflow.combine(
-                    self.data, attribute="atoms", return_dict_attr="name"
-                )
-            except TypeError:
-                self.data = znflow.combine(self.data, attribute="atoms")
+            self.data = znflow.combine(self.data, attribute="atoms")
 
     def update_data(self):
         """Update the data attribute."""

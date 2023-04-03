@@ -33,6 +33,15 @@ class ConfigurationSelection(base.ProcessAtoms):
 
     _name_ = "ConfigurationSelection"
 
+    def _post_init_(self):
+        if self.data is not None and not isinstance(self.data, dict):
+            try:
+                self.data = znflow.combine(
+                    self.data, attribute="atoms", return_dict_attr="name"
+                )
+            except TypeError:
+                self.data = znflow.combine(self.data, attribute="atoms")
+
     def run(self):
         """ZnTrack Node Run method."""
 
