@@ -6,7 +6,7 @@ import ase
 @pytest.mark.parametrize(
     ("cls", "selected_ids"),
     [
-        (ips.configuration_selection.RandomSelection, [3, 13, 2]),
+        (ips.configuration_selection.RandomSelection, [2, 3, 13]),
         (ips.configuration_selection.UniformEnergeticSelection, [0, 10, 20]),
         # they are the same because energy is increasing uniformly
         (ips.configuration_selection.UniformTemporalSelection, [0, 10, 20]),
