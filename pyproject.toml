@@ -13,7 +13,7 @@ python = ">=3.10,<3.12"
 # temporary version constraints
 libclang = "^15"
 
-znh5md = "^0.1.4"
+znh5md = "^0.1.5"
 zntrack = "^0.6.0a3"
 
 ase = "^3.22.1"
