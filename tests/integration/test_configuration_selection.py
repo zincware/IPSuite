@@ -45,9 +45,7 @@ def test_UniformArangeSelection(proj_path, traj_file, eager):
 
     atoms = data[0].atoms + data[1].atoms
 
-    assert selection.selected_configurations == [
-        atoms[x] for x in range(0, len(atoms), 10)
-    ]
+    assert selection.selected_configurations == {"data1": [0, 10, 20], "data2": [9, 19]}
 
 
 @pytest.mark.parametrize("eager", [False])

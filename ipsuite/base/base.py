@@ -33,7 +33,7 @@ class ProcessAtoms(zntrack.Node):
     atoms: list[ase.Atoms] = fields.Atoms()
 
     def _post_init_(self):
-        if self.data is not None and not isinstance(self.data, dict):
+        if self.data is not None:
             self.data = znflow.combine(self.data, attribute="atoms")
 
     def update_data(self):
