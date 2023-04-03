@@ -3361,14 +3361,14 @@ test = ["flaky", "ipykernel", "ipython", "ipywidgets", "nbconvert (>=7.0.0)", "p
 
 [[package]]
 name = "nbconvert"
-version = "7.2.10"
+version = "7.3.0"
 description = "Converting Jupyter Notebooks"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "nbconvert-7.2.10-py3-none-any.whl", hash = "sha256:e41118f81698d3d59b3c7c2887937446048f741aba6c367c1c1a77810b3e2d08"},
-    {file = "nbconvert-7.2.10.tar.gz", hash = "sha256:8eed67bd8314f3ec87c4351c2f674af3a04e5890ab905d6bd927c05aec1cf27d"},
+    {file = "nbconvert-7.3.0-py3-none-any.whl", hash = "sha256:8983a83d0b083d56b076019f0a319f63bc16af70c9372892b86a0aab0a264b1d"},
+    {file = "nbconvert-7.3.0.tar.gz", hash = "sha256:b970a13aba97529c223d805dd0706c2fe04dfc05e250ad4e6f7ae33daf6fede1"},
 ]
 
 [package.dependencies]
@@ -6131,14 +6131,14 @@ dask = ["bokeh (>=2.4.2,<3.0.0)", "dask (>=2022.12.1,<2023.0.0)", "dask-jobqueue
 
 [[package]]
 name = "znh5md"
-version = "0.1.5"
+version = "0.1.6a0"
 description = "High Performance Interface for H5MD Trajectories"
 category = "main"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "znh5md-0.1.5-py3-none-any.whl", hash = "sha256:b0c4dd750657052710aafe1ddf40307db3e5d22e7ddb8f6f40efe00f62b4476a"},
-    {file = "znh5md-0.1.5.tar.gz", hash = "sha256:de670d8cddc9af44a3cca5a666c802ec0f7edd89e1422fef7917591c0457d825"},
+    {file = "znh5md-0.1.6a0-py3-none-any.whl", hash = "sha256:0ec4b9b20a2e439ad6c7dc731a7ca9e6fa69c4fa1edb5a39b5028f1b6c11921c"},
+    {file = "znh5md-0.1.6a0.tar.gz", hash = "sha256:d24a49ef4ae40036f929455d45a4d1ae2e7afd8b2f7dd902a1744c5ba6255b9d"},
 ]
 
 [package.dependencies]
@@ -6206,4 +6206,4 @@ nequip = ["nequip"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "16c264162f7629cdf8811608b84ddbef2738552e01a1a095bcdf9191bdc54516"
+content-hash = "a75ea4bcab56dc61755bf098f83a28fbc6bddd9d3955672cd6e04ce997029be1"
