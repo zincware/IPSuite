@@ -22,8 +22,9 @@ def test_configuration_selection(proj_path, traj_file, eager, cls, selected_ids)
 
     if not eager:
         selection.load()
+        data.load()
 
-    assert selection.selected_configurations == selected_ids
+    assert selection.atoms == [data.atoms[x] for x in selected_ids]
 
 
 @pytest.mark.parametrize("eager", [True, False])
@@ -41,8 +42,14 @@ def test_UniformArangeSelection(proj_path, traj_file, eager):
 
     if not eager:
         selection.load()
+        data[0].load()
+        data[1].load()
 
-    assert selection.selected_configurations == [0, 10, 20, 30, 40]
+    atoms = data[0].atoms + data[1].atoms
+
+    assert selection.selected_configurations == [
+        atoms[x] for x in range(0, len(atoms), 10)
+    ]
 
 
 @pytest.mark.parametrize("eager", [False])
