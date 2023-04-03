@@ -83,7 +83,9 @@ def proj_path(tmp_path, request) -> pathlib.Path:
 
 @pytest.fixture
 def data_repo(tmp_path, request) -> pathlib.Path:
-    git.Repo.clone_from(r"https://dagshub.com/PythonFZ/IPS_test_data.git", tmp_path)
+    git.Repo.clone_from(
+        r"https://dagshub.com/PythonFZ/IPS_test_data.git", tmp_path, branch="znh5md_fix"
+    )
     shutil.copy(request.module.__file__, tmp_path)
     os.chdir(tmp_path)
     dvc.cli.main(["pull"])
