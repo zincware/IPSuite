@@ -34,9 +34,7 @@ def test_UniformArangeSelection(proj_path, traj_file, eager):
             ips.AddData(file=traj_file, name="data1"),
             ips.AddData(file=traj_file, name="data2"),
         ]
-        selection = ips.configuration_selection.UniformArangeSelection(
-            data=ips.combine(data, attribute="atoms"), step=10
-        )
+        selection = ips.configuration_selection.UniformArangeSelection(data=data, step=10)
 
     project.run(eager=eager, save=not eager)
 
