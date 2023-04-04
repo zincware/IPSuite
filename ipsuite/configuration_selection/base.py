@@ -97,13 +97,17 @@ class ConfigurationSelection(base.ProcessAtoms):
         with znflow.disable_graph():
             results = []
             data = self.get_data()
-            if isinstance(data, list):
-                for idx, atoms in enumerate(self.get_data()):
+            if isinstance(data, list) and isinstance(self.selected_configurations, list):
+                for idx, atoms in enumerate(data):
                     if idx not in self.selected_configurations:
                         results.append(atoms)
-            elif isinstance(data, dict):
+            elif isinstance(data, dict) and isinstance(
+                self.selected_configurations, dict
+            ):
                 for key, atoms_lst in data.items():
                     if key not in self.selected_configurations:
+                        results.extend(atoms_lst)
+                    else:
                         for idx, atoms in enumerate(atoms_lst):
                             if idx not in self.selected_configurations[key]:
                                 results.append(atoms)
