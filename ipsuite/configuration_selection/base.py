@@ -48,7 +48,7 @@ class ConfigurationSelection(base.ProcessAtoms):
         exclude = combine.ExcludeIds(self.get_data(), self.exclude_configurations)
         data = exclude.get_clean_data(flatten=True)
 
-        log.critical(f"Selecting from {len(data)} configurations.")
+        log.debug(f"Selecting from {len(data)} configurations.")
 
         selected_configurations = self.select_atoms(data)
 

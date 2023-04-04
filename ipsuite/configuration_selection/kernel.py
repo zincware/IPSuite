@@ -78,10 +78,6 @@ class KernelSelection(ConfigurationSelection):
         self.kernel.load_analyte = False
         self.kernel.disable_tqdm = True
 
-        print("###############################################################")
-        print(len(self.kernel.analyte))
-        print(len(self.kernel.analyte[0]))
-
         self.kernel_results = []
         # TODO do not use the atoms in atoms_list but store the ids directly
         for _ in tqdm.trange(self.n_configurations):
