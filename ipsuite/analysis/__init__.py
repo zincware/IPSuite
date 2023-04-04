@@ -11,9 +11,9 @@ from ipsuite.analysis.model import (
     BoxScaleAnalysis,
     ConnectivityCheck,
     EnergySpikeCheck,
+    InterIntraForces,
     MDStabilityAnalysis,
     NaNCheck,
-    InterIntraForces,
     PredictWithModel,
     RattleAnalysis,
 )

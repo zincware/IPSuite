@@ -22,8 +22,8 @@ from scipy.interpolate import interpn
 from tqdm import trange
 
 from ipsuite import base, models, utils
-from ipsuite.geometry import BarycenterMapping
 from ipsuite.analysis.bin_property import get_histogram_figure
+from ipsuite.geometry import BarycenterMapping
 
 log = logging.getLogger(__name__)
 
