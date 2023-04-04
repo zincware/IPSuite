@@ -78,7 +78,7 @@ def test_KernelSelect(proj_path, traj_file, eager):
         seed_configs = ips.configuration_selection.RandomSelection(
             data=data_1, n_configurations=1, seed=42, name="seed"
         )
-        mmk_selection = ips.configuration_selection.KernelSelectionNode(
+        mmk_selection = ips.configuration_selection.KernelSelection(
             correlation_time=1,
             n_configurations=5,
             kernel=mmk_kernel,
@@ -86,7 +86,7 @@ def test_KernelSelect(proj_path, traj_file, eager):
             data=data_1,
             name="MMK",
         )
-        REMatch_selection = ips.configuration_selection.KernelSelectionNode(
+        REMatch_selection = ips.configuration_selection.KernelSelection(
             correlation_time=1,
             n_configurations=5,
             kernel=rematch_kernel,
@@ -179,7 +179,7 @@ def test_MMKSelectMethod(proj_path, test_traj):
         seed_configs = ips.configuration_selection.RandomSelection(
             data=data, n_configurations=1, name="seed"
         )
-        mmk_selection = ips.configuration_selection.KernelSelectionNode(
+        mmk_selection = ips.configuration_selection.KernelSelection(
             correlation_time=1,
             n_configurations=n_configurations - 1,  # remove the seed configuration
             kernel=mmk_kernel,
@@ -187,7 +187,7 @@ def test_MMKSelectMethod(proj_path, test_traj):
             data=data,
             name="MMK",
         )
-        rematch_selection = ips.configuration_selection.KernelSelectionNode(
+        rematch_selection = ips.configuration_selection.KernelSelection(
             correlation_time=1,
             n_configurations=n_configurations - 1,  # remove the seed configuration
             kernel=rematch_kernel,
