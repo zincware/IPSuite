@@ -1,8 +1,8 @@
-from collections import deque
 import contextlib
 import logging
 import pathlib
 import typing
+from collections import deque
 
 import ase
 import matplotlib.pyplot as plt
@@ -13,14 +13,13 @@ import tqdm
 import zntrack
 from ase import units
 from ase.calculators.calculator import PropertyNotImplementedError
+from ase.io import write
 from ase.md.langevin import Langevin
-from ase.md.verlet import VelocityVerlet
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
+from ase.md.verlet import VelocityVerlet
+from ase.neighborlist import build_neighbor_list
 from scipy.interpolate import interpn
 from tqdm import trange
-from ase.neighborlist import build_neighbor_list
-from ase.io import write
-import zntrack
 
 from ipsuite import base, models, utils
 from ipsuite.analysis.bin_property import get_histogram_figure
@@ -601,14 +600,11 @@ class CheckBase(zntrack.Node):
         raise NotImplementedError
 
 
-
 class NaNCheck(CheckBase):
-
     def initialize(self, atoms):
         pass
 
     def check(self, atoms):
-
         positions = atoms.positions
         epot = atoms.get_potential_energy()
         forces = atoms.get_forces()
@@ -620,12 +616,11 @@ class NaNCheck(CheckBase):
         unstable = any([positions_is_none, epot_is_none, forces_is_none])
         return unstable
 
-class ConnectivityCheck(CheckBase):
 
-    def __init__(self) -> None:
+class ConnectivityCheck(CheckBase):
+    def __post_init__(self) -> None:
         self.nl = None
         self.first_cm = None
-        self.is_initialized = False
 
     def initialize(self, atoms):
         self.nl = build_neighbor_list(atoms, self_interaction=False)
@@ -633,7 +628,6 @@ class ConnectivityCheck(CheckBase):
         self.is_initialized = True
 
     def check(self, atoms):
-
         self.nl.update(atoms)
         cm = self.nl.get_connectivity_matrix(sparse=False)
 
@@ -644,44 +638,35 @@ class ConnectivityCheck(CheckBase):
 
 
 class EnergySpikeCheck(CheckBase):
-    def __init__(self, min_factor=0.5, max_factor=2.0) -> None:
-        self.max_factor = max_factor
-        self.min_factor = min_factor
+    min_factor: float = zntrack.zn.params(0.5)
+    max_factor: float = zntrack.zn.params(2.0)
 
-        self.is_initialized = False
+    def __post_init__(self) -> None:
         self.max_energy = None
         self.min_energy = None
 
     def initialize(self, atoms):
-        # Save first epot
         epot = atoms.get_potential_energy()
         self.max_energy = epot * self.max_factor
         self.min_energy = epot * self.min_factor
 
-        self.is_initialized = True
-
     def check(self, atoms):
-
         epot = atoms.get_potential_energy()
         # energy is negative, hence sign convention
         if epot < self.max_energy or epot > self.min_energy:
-            unstable= True
+            unstable = True
         else:
             unstable = False
         return unstable
 
 
-
-def run_stability_nve(atoms, time_step, max_steps, init_temperature, checks):
-
-    sampling_rate = 1
+def run_stability_nve(atoms, time_step, max_steps, init_temperature, checks, save_last_n):
     pbar_update = 10
-
     stable_steps = 0
 
     MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
     etot, ekin, epot = print_energy_terms(atoms)
-    last_n_atoms = deque(maxlen=2)
+    last_n_atoms = deque(maxlen=save_last_n)
     last_n_atoms.append(atoms.copy())
 
     for check in checks:
@@ -689,20 +674,18 @@ def run_stability_nve(atoms, time_step, max_steps, init_temperature, checks):
 
     def get_desc():
         """TQDM description."""
-        return (
-            f"Etot: {etot:.3f} eV  \t Ekin: {ekin:.3f} eV \t Epot {epot:.3f} eV"
-        )
+        return f"Etot: {etot:.3f} eV  \t Ekin: {ekin:.3f} eV \t Epot {epot:.3f} eV"
 
     dyn = VelocityVerlet(atoms, timestep=time_step * units.fs)
     with trange(
-            max_steps,
-            desc=get_desc(),
-            leave=True,
-            ncols=120,
-            position=1,
-        ) as pbar:
+        max_steps,
+        desc=get_desc(),
+        leave=True,
+        ncols=120,
+        position=1,
+    ) as pbar:
         for idx in range(max_steps):
-            dyn.run(sampling_rate)
+            dyn.run(1)
             last_n_atoms.append(atoms.copy())
             etot, ekin, epot = print_energy_terms(atoms)
 
@@ -722,9 +705,10 @@ def run_stability_nve(atoms, time_step, max_steps, init_temperature, checks):
 class MDStabilityAnalysis(base.ProcessAtoms):
     model = zntrack.zn.deps()
     max_steps: int = zntrack.zn.params()
-    checks: list = zntrack.zn.nodes()
+    checks: list[zntrack.Node] = zntrack.zn.nodes()
     time_step: float = zntrack.zn.params(0.5)
-    pbc: bool = zntrack.zn.params(True)
+    initial_temperature: float = zntrack.zn.params(300)
+    save_last_n: int = zntrack.zn.params(1)
     bins: int = zntrack.zn.params(None)
 
     traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.extxyz")
@@ -734,13 +718,13 @@ class MDStabilityAnalysis(base.ProcessAtoms):
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
         return list(ase.io.iread(self.traj_file))
-    
+
     def get_plots(self, stable_steps):
         """Create figures for all available data."""
         if self.bins is None:
             self.bins = int(np.ceil(len(stable_steps) / 100))
         counts, bin_edges = np.histogram(stable_steps, self.bins)
-    
+
         self.plots_dir.mkdir()
 
         label_hist = get_histogram_figure(
@@ -754,18 +738,22 @@ class MDStabilityAnalysis(base.ProcessAtoms):
 
     def run(self) -> None:
         data_lst = self.get_data()
-        initial_temperature = 300
         calculator = self.model.calc
 
         stable_steps = []
 
-        for ii in tqdm.trange(0, len(data_lst), desc="Atoms",leave=True,
-            ncols=120, position=0):
+        for ii in tqdm.trange(
+            0, len(data_lst), desc="Atoms", leave=True, ncols=120, position=0
+        ):
             atoms = data_lst[ii].copy()
-            atoms.pbc = self.pbc
             atoms.calc = calculator
             n_steps, last_n_atoms = run_stability_nve(
-                atoms, self.time_step, self.max_steps, initial_temperature, checks=self.checks
+                atoms,
+                self.time_step,
+                self.max_steps,
+                self.initial_temperature,
+                checks=self.checks,
+                save_last_n=self.save_last_n,
             )
             write(
                 self.traj_file,
@@ -774,6 +762,6 @@ class MDStabilityAnalysis(base.ProcessAtoms):
                 append=True,
             )
             stable_steps.append(n_steps)
-        
+
         self.get_plots(stable_steps)
         self.stable_steps_df = pd.DataFrame({"stable_steps": np.array(stable_steps)})

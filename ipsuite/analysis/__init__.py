@@ -9,12 +9,12 @@ from ipsuite.analysis.model import (
     AnalysePrediction,
     BoxHeatUp,
     BoxScaleAnalysis,
+    ConnectivityCheck,
+    EnergySpikeCheck,
+    MDStabilityAnalysis,
+    NaNCheck,
     PredictWithModel,
     RattleAnalysis,
-    NaNCheck,
-    EnergySpikeCheck,
-    ConnectivityCheck,
-    MDStabilityAnalysis,
 )
 from ipsuite.analysis.sensitivity import (
     AnalyseGlobalForceSensitivity,
