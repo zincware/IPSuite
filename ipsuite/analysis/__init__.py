@@ -13,6 +13,7 @@ from ipsuite.analysis.model import (
     EnergySpikeCheck,
     MDStabilityAnalysis,
     NaNCheck,
+    InterIntraForces,
     PredictWithModel,
     RattleAnalysis,
 )
@@ -40,4 +41,5 @@ __all__ = [
     "MoveSingleParticle",
     "AnalyseGlobalForceSensitivity",
     "AnalyseSingleForceSensitivity",
+    "InterIntraForces",
 ]

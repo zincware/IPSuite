@@ -11,6 +11,7 @@ import shutil
 import typing
 
 import ase
+from ase import Atoms
 import ase.calculators.singlepoint
 import ase.io
 import dvc.cli
@@ -82,7 +83,9 @@ def proj_path(tmp_path, request) -> pathlib.Path:
 
 @pytest.fixture
 def data_repo(tmp_path, request) -> pathlib.Path:
-    git.Repo.clone_from(r"https://dagshub.com/PythonFZ/IPS_test_data.git", tmp_path)
+    git.Repo.clone_from(
+        r"https://dagshub.com/PythonFZ/IPS_test_data.git", tmp_path, branch="znh5md_fix"
+    )
     shutil.copy(request.module.__file__, tmp_path)
     os.chdir(tmp_path)
     dvc.cli.main(["pull"])
@@ -90,3 +93,43 @@ def data_repo(tmp_path, request) -> pathlib.Path:
     # and S3 requires credentials.
 
     return tmp_path
+
+
+@pytest.fixture
+def atoms_with_composed_forces():
+    atoms = Atoms(
+        "OH2",
+        positions=np.array(
+            [
+                [0.0, 0.0, 0.0],
+                [1.0, 0.0, 0.0],
+                [0.0, 1.0, 0.0],
+            ]
+        ),
+    )
+    ft = np.array(
+        [
+            [0.0, 0.0, 1.0 * 15.999],
+            [0.0, 0.0, 1.008],
+            [0.0, 0.0, 1.008],
+        ]
+    )
+    fr = np.array(
+        [
+            [0.0, 0.0, 0.0],
+            [0.0, 0.0, 1.008],
+            [0.0, 0.0, -1.008],
+        ]
+    )
+    fv = np.array(
+        [
+            [1.0, 1.0, 0.0],
+            [-1.0, 0.0, 0.0],
+            [0.0, -1.0, 0.0],
+        ]
+    )
+    atoms.calc = ase.calculators.singlepoint.SinglePointCalculator(
+        atoms, forces=ft + fr + fv
+    )
+
+    return atoms, ft, fr, fv

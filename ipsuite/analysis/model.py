@@ -22,6 +22,7 @@ from scipy.interpolate import interpn
 from tqdm import trange
 
 from ipsuite import base, models, utils
+from ipsuite.geometry import BarycenterMapping
 from ipsuite.analysis.bin_property import get_histogram_figure
 
 log = logging.getLogger(__name__)
@@ -566,6 +567,197 @@ class BoxHeatUp(base.ProcessSingleAtom):
             self.steps_before_explosion = -1
 
         self.plot_temperature()
+
+
+def compute_trans_forces(mol):
+    """Compute translational forces of a molecule."""
+
+    all_forces = np.sum(mol.get_forces(), axis=0)
+    masses = mol.get_masses()
+    mol_mas = np.sum(masses)
+    res = (masses / mol_mas)[:, None] * all_forces
+    return res
+
+
+def compute_intertia_tensor(centered_positions, masses):
+    r_sq = np.linalg.norm(centered_positions, ord=2, axis=1) ** 2 * masses
+    r_sq = np.sum(r_sq)
+    A = np.diag(np.full((3,), r_sq))
+    mr_k = centered_positions * masses[:, None]
+    B = np.einsum("ki, kj -> ij", centered_positions, mr_k)
+
+    I_ab = A - B
+    return I_ab
+
+
+def compute_rot_forces(mol):
+    mol_positions = mol.get_positions()
+    mol_positions -= mol.get_center_of_mass()
+    masses = mol.get_masses()
+
+    f_x_r = np.sum(np.cross(mol.get_forces(), mol_positions), axis=0)
+    I_ab = compute_intertia_tensor(mol_positions, masses)
+    I_ab_inv = np.linalg.inv(I_ab)
+
+    mi_ri = masses[:, None] * mol_positions
+    res = np.cross(mi_ri, (I_ab_inv @ f_x_r))
+
+    return res
+
+
+def force_decomposition(atom, mapping):
+    # TODO we should only need to do the mapping once
+    _, molecules = mapping.forward_mapping(atom)
+    full_forces = np.zeros_like(atom.positions)
+    atom_trans_forces = np.zeros_like(atom.positions)
+    atom_rot_forces = np.zeros_like(atom.positions)
+    total_n_atoms = 0
+
+    for molecule in molecules:
+        n_atoms = len(molecule)
+        full_forces[total_n_atoms : total_n_atoms + n_atoms] = molecule.get_forces()
+        atom_trans_forces[total_n_atoms : total_n_atoms + n_atoms] = compute_trans_forces(
+            molecule
+        )
+        atom_rot_forces[total_n_atoms : total_n_atoms + n_atoms] = compute_rot_forces(
+            molecule
+        )
+        total_n_atoms += n_atoms
+
+    atom_vib_forces = full_forces - atom_trans_forces - atom_rot_forces
+
+    return atom_trans_forces, atom_rot_forces, atom_vib_forces
+
+
+class InterIntraForces(base.AnalyseProcessAtoms):
+    """Node for decomposing forces in a system of molecular units into
+    translational, rotational and vibrational components.
+
+    The implementation follows the method described in
+    https://doi.org/10.26434/chemrxiv-2022-l4tb9
+    """
+
+    trans_forces: dict = zntrack.zn.metrics()
+    rot_forces: dict = zntrack.zn.metrics()
+    vib_forces: dict = zntrack.zn.metrics()
+
+    rot_force_plt = zntrack.dvc.outs(zntrack.nwd / "rot_force.png")
+    trans_force_plt = zntrack.dvc.outs(zntrack.nwd / "trans_force.png")
+    vib_force_plt = zntrack.dvc.outs(zntrack.nwd / "vib_force.png")
+
+    def get_plots(self):
+        fig = get_figure(
+            np.linalg.norm(self.true_forces["trans"], axis=-1),
+            np.linalg.norm(self.pred_forces["trans"], axis=-1),
+            datalabel="",
+            xlabel=r"$ab~initio$ forces / eV$ \cdot \AA^{-1}",
+            ylabel=r"predicted forces / eV$ \cdot \AA^{-1}",
+        )
+        fig.savefig(self.trans_force_plt)
+
+        fig = get_figure(
+            np.linalg.norm(self.true_forces["rot"], axis=-1),
+            np.linalg.norm(self.pred_forces["rot"], axis=-1),
+            datalabel="",
+            xlabel=r"$ab~initio$ forces / eV$ \cdot \AA^{-1}",
+            ylabel=r"predicted forces / eV$ \cdot \AA^{-1}",
+        )
+        fig.savefig(self.rot_force_plt)
+
+        fig = get_figure(
+            np.linalg.norm(self.true_forces["vib"], axis=-1),
+            np.linalg.norm(self.pred_forces["vib"], axis=-1),
+            datalabel="",
+            xlabel=r"$ab~initio$ forces / eV$ \cdot \AA^{-1}",
+            ylabel=r"predicted forces / eV$ \cdot \AA^{-1}",
+        )
+        fig.savefig(self.vib_force_plt)
+
+    def get_metrics(self):
+        """Update the metrics."""
+
+        self.trans_forces = {
+            "rmse": utils.metrics.root_mean_squared_error(
+                np.array(self.true_forces["trans"]), np.array(self.pred_forces["trans"])
+            ),
+            "mae": utils.metrics.mean_absolute_error(
+                np.array(self.true_forces["trans"]), np.array(self.pred_forces["trans"])
+            ),
+            "max": utils.metrics.maximum_error(
+                np.array(self.true_forces["trans"]), np.array(self.pred_forces["trans"])
+            ),
+        }
+        self.rot_forces = {
+            "rmse": utils.metrics.root_mean_squared_error(
+                np.array(self.true_forces["rot"]), np.array(self.pred_forces["rot"])
+            ),
+            "mae": utils.metrics.mean_absolute_error(
+                np.array(self.true_forces["rot"]), np.array(self.pred_forces["rot"])
+            ),
+            "max": utils.metrics.maximum_error(
+                np.array(self.true_forces["rot"]), np.array(self.pred_forces["rot"])
+            ),
+        }
+        self.vib_forces = {
+            "rmse": utils.metrics.root_mean_squared_error(
+                np.array(self.true_forces["vib"]), np.array(self.pred_forces["vib"])
+            ),
+            "mae": utils.metrics.mean_absolute_error(
+                np.array(self.true_forces["vib"]), np.array(self.pred_forces["vib"])
+            ),
+            "max": utils.metrics.maximum_error(
+                np.array(self.true_forces["vib"]), np.array(self.pred_forces["vib"])
+            ),
+        }
+
+    def run(self):
+        true_atoms, pred_atoms = self.get_data()
+        mapping = BarycenterMapping(data=None)
+
+        true_trans_forces = []
+        true_rot_forces = []
+        true_vib_forces = []
+
+        for atom in tqdm.tqdm(true_atoms):
+            atom_trans_forces, atom_rot_forces, atom_vib_forces = force_decomposition(
+                atom, mapping
+            )
+            true_trans_forces.append(atom_trans_forces)
+            true_rot_forces.append(atom_rot_forces)
+            true_vib_forces.append(atom_vib_forces)
+
+        true_trans_forces = np.concatenate(true_trans_forces)
+        true_rot_forces = np.concatenate(true_rot_forces)
+        true_vib_forces = np.concatenate(true_vib_forces)
+
+        pred_trans_forces = []
+        pred_rot_forces = []
+        pred_vib_forces = []
+
+        for atom in tqdm.tqdm(pred_atoms):
+            atom_trans_forces, atom_rot_forces, atom_vib_forces = force_decomposition(
+                atom, mapping
+            )
+            pred_trans_forces.append(atom_trans_forces)
+            pred_rot_forces.append(atom_rot_forces)
+            pred_vib_forces.append(atom_vib_forces)
+
+        pred_trans_forces = np.concatenate(pred_trans_forces)
+        pred_rot_forces = np.concatenate(pred_rot_forces)
+        pred_vib_forces = np.concatenate(pred_vib_forces)
+
+        self.pred_forces = {
+            "trans": pred_trans_forces,
+            "rot": pred_rot_forces,
+            "vib": pred_vib_forces,
+        }
+        self.true_forces = {
+            "trans": true_trans_forces,
+            "rot": true_rot_forces,
+            "vib": true_vib_forces,
+        }
+        self.get_metrics()
+        self.get_plots()
 
 
 def print_energy_terms(atoms: ase.Atoms) -> typing.Tuple[float, float]:

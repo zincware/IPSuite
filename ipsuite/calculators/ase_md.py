@@ -7,9 +7,9 @@ import ase.constraints
 import ase.geometry
 import numpy as np
 import pandas as pd
+import znh5md
 import zntrack
 from ase import units
-from ase.io import write
 from ase.md.langevin import Langevin
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from tqdm import trange
@@ -73,6 +73,9 @@ class ASEMD(base.ProcessSingleAtom):
         number of repeats
     traj_file: Path
         path where to save the trajectory
+    dump_rate: int, default=1000
+        Keep a cache of the last 'dump_rate' atoms and
+        write them to the trajectory file every 'dump_rate' steps.
     """
 
     model = zntrack.zn.deps()
@@ -81,12 +84,13 @@ class ASEMD(base.ProcessSingleAtom):
     friction = zntrack.zn.params()
     steps = zntrack.zn.params()
     sampling_rate = zntrack.zn.params()
+    dump_rate = zntrack.zn.params(1000)
     max_temperature = zntrack.zn.params(10000.0)
     flux_data = zntrack.zn.plots()  # temperature / energy
     repeat = zntrack.zn.params((1, 1, 1))
     steps_before_explosion: int = zntrack.zn.metrics()
 
-    traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.extxyz")
+    traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.h5")
 
     def get_constraint(self):
         return []
@@ -97,12 +101,12 @@ class ASEMD(base.ProcessSingleAtom):
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
-        return list(ase.io.iread(self.traj_file))
+        return znh5md.ASEH5MD(self.traj_file).get_atoms_list()
 
     def run(self):
         """Run the simulation."""
         atoms = self.get_atoms()
-        atoms.set_calculator(self.model.calc)
+        atoms.calc = self.model.calc
         # Initialize velocities
         MaxwellBoltzmannDistribution(atoms, temperature_K=self.temperature)
         # initialize thermostat
@@ -129,6 +133,9 @@ class ASEMD(base.ProcessSingleAtom):
 
         atoms_cache = []
 
+        db = znh5md.io.DataWriter(self.traj_file)
+        db.initialize_database_groups()
+
         with trange(
             total_fs,
             desc=get_desc(),
@@ -140,13 +147,16 @@ class ASEMD(base.ProcessSingleAtom):
                 temperature, total_energy = print_energy(atoms)
                 energy.append([temperature, total_energy])
                 atoms_cache.append(atoms.copy())
-                write(
-                    self.traj_file,
-                    atoms_cache,
-                    format="extxyz",
-                    append=True,
-                )
-                atoms_cache = []
+                if len(atoms_cache) == self.dump_rate:
+                    db.add(
+                        znh5md.io.AtomsReader(
+                            atoms_cache,
+                            frames_per_chunk=self.dump_rate,
+                            step=1,
+                            time=self.sampling_rate,
+                        )
+                    )
+                    atoms_cache = []
                 if idx % (1 / self.time_step) == 0:
                     pbar.set_description(get_desc())
                     pbar.update(self.sampling_rate)
@@ -156,6 +166,15 @@ class ASEMD(base.ProcessSingleAtom):
                         f" {self.max_temperature} K. Simulation was stopped."
                     )
                     break
+        # save the last configurations
+        db.add(
+            znh5md.io.AtomsReader(
+                atoms_cache,
+                frames_per_chunk=self.dump_rate,
+                step=1,
+                time=self.sampling_rate,
+            )
+        )
         self.flux_data = pd.DataFrame(energy, columns=["temperature", "energy"])
         self.flux_data.index.name = "step"
         if temperature > self.max_temperature:
