@@ -17,6 +17,7 @@ def test_ase_md(proj_path, traj_file):
             calculator=model.calc,
             checker_list=[checker],
             thermostat=thermostat,
+            init_temperature=1,
             steps=100,
             sampling_rate=1,
             dump_rate=33,
