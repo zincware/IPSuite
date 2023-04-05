@@ -1,3 +1,4 @@
+import abc
 import collections.abc
 import typing
 
@@ -166,3 +167,23 @@ class Mapping(ProcessAtoms):
         self, cg_atoms: ase.Atoms, molecules: list[ase.Atoms]
     ) -> list[ase.Atoms]:
         raise NotImplementedError
+
+
+class CheckBase(zntrack.Node):
+    """Base class for check nodes.
+    These are callbacks that can be used to preemptively terminate
+    a molecular dynamics simulation if a vertain condition is met.
+    """
+
+    def initialize(self, atoms: ase.Atoms) -> None:
+        """Stores some reference property to compare the current property
+        against and see whether the simulation should be stopped.
+        Derived classes do not need to override this if they consider
+        absolute values and not comparissons.
+        """
+        pass
+
+    @abc.abstractmethod
+    def check(self, atoms: ase.Atoms) -> bool:
+        """method to check whether a simulation should be stopped."""
+        ...

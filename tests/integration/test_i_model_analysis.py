@@ -118,3 +118,31 @@ def test_BoxScaleAnalysis(trained_model):
     analysis.load()
 
     assert analysis.energies is not None
+
+
+@pytest.mark.parametrize("eager", [True, False])
+def test_MDStabilityAnalysis(trained_model, eager):
+    project, model, validation_selection = trained_model
+
+    checks = [
+        ipsuite.analysis.NaNCheck(),
+        ipsuite.analysis.ConnectivityCheck(),
+        ipsuite.analysis.EnergySpikeCheck(min_factor=0.5, max_factor=2.0),
+    ]
+    with project:
+        analysis = ipsuite.analysis.MDStabilityAnalysis(
+            model=model,
+            data=validation_selection.atoms,
+            max_steps=500,
+            time_step=0.05,
+            checks=checks,
+            bins=10,
+            save_last_n=1,
+        )
+    project.run(eager=eager)
+
+    if not eager:
+        analysis.load()
+
+    validation_selection.load()
+    assert len(analysis.atoms) == len(validation_selection.atoms)
