@@ -55,7 +55,7 @@ class PredictWithModel(base.ProcessAtoms):
             ):
                 properties["forces"] = atoms.get_forces()
             with contextlib.suppress(
-                ase.calculators.singlepoint.PropertyNotImplementedError
+                ase.calculators.singlepoint.PropertyNotImplementedError, ValueError
             ):
                 properties["stress"] = atoms.get_stress()
 
