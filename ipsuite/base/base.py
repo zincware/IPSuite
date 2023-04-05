@@ -3,9 +3,10 @@ import typing
 
 import ase
 import tqdm
+import znflow
 import zntrack
 
-from ipsuite import fields, utils
+from ipsuite import fields
 
 # TODO raise error if both data and data_file are given
 
@@ -33,7 +34,7 @@ class ProcessAtoms(zntrack.Node):
 
     def _post_init_(self):
         if self.data is not None:
-            self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
+            self.data = znflow.combine(self.data, attribute="atoms")
 
     def update_data(self):
         """Update the data attribute."""
