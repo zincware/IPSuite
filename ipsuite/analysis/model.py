@@ -24,6 +24,7 @@ from tqdm import trange
 from ipsuite import base, models, utils
 from ipsuite.analysis.bin_property import get_histogram_figure
 from ipsuite.geometry import BarycenterMapping
+from ipsuite.utils.md import get_energy_terms
 
 log = logging.getLogger(__name__)
 
@@ -760,30 +761,6 @@ class InterIntraForces(base.AnalyseProcessAtoms):
         self.get_plots()
 
 
-def print_energy_terms(atoms: ase.Atoms) -> typing.Tuple[float, float]:
-    """Compute the temperature and the total energy.
-
-    Parameters
-    ----------
-    atoms: ase.Atoms
-        Atoms objects for which energy will be calculated
-
-    Returns
-    -------
-    temperature: float
-        temperature of the system
-    np.squeeze(total): float
-        total energy of the system
-
-    """
-    epot = atoms.get_potential_energy() / len(atoms)
-    ekin = atoms.get_kinetic_energy() / len(atoms)
-
-    etot = epot + ekin
-
-    return etot, ekin, epot
-
-
 class CheckBase(zntrack.Node):
     def initialize(self, atoms):
         pass
@@ -810,7 +787,7 @@ class NaNCheck(CheckBase):
 
 
 class ConnectivityCheck(CheckBase):
-    def __post_init__(self) -> None:
+    def _post_init_(self) -> None:
         self.nl = None
         self.first_cm = None
 
@@ -833,7 +810,7 @@ class EnergySpikeCheck(CheckBase):
     min_factor: float = zntrack.zn.params(0.5)
     max_factor: float = zntrack.zn.params(2.0)
 
-    def __post_init__(self) -> None:
+    def _post_init_(self) -> None:
         self.max_energy = None
         self.min_energy = None
 
