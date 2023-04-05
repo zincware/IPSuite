@@ -4,10 +4,10 @@ from ipsuite.base import protocol
 from ipsuite.base.base import (
     AnalyseAtoms,
     AnalyseProcessAtoms,
+    CheckBase,
     Mapping,
     ProcessAtoms,
     ProcessSingleAtom,
-    CheckBase,
 )
 
 __all__ = [

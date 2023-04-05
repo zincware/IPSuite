@@ -1,5 +1,7 @@
-import ase
 import typing
+
+import ase
+
 
 def get_energy_terms(atoms: ase.Atoms) -> typing.Tuple[float, float, float]:
     """Returns total, kinetic and potentials energy terms.

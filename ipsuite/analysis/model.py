@@ -7,7 +7,6 @@ from collections import deque
 import ase
 import matplotlib.pyplot as plt
 import numpy as np
-from numpy.random import default_rng
 import pandas as pd
 import seaborn as sns
 import tqdm
@@ -15,11 +14,11 @@ import znh5md
 import zntrack
 from ase import units
 from ase.calculators.calculator import PropertyNotImplementedError
-from ase.io import write
 from ase.md.langevin import Langevin
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md.verlet import VelocityVerlet
 from ase.neighborlist import build_neighbor_list
+from numpy.random import default_rng
 from scipy.interpolate import interpn
 from tqdm import trange
 
@@ -782,10 +781,12 @@ class NaNCheck(base.CheckBase):
 
 
 class ConnectivityCheck(base.CheckBase):
-    """Check to see whether the covalent connectivity of the system changes during a simulation.
+    """Check to see whether the covalent connectivity of the system
+    changes during a simulation.
     The connectivity is based on ASE's natural cutoffs.
 
     """
+
     def _post_init_(self) -> None:
         self.nl = None
         self.first_cm = None
@@ -808,12 +809,13 @@ class ConnectivityCheck(base.CheckBase):
 class EnergySpikeCheck(base.CheckBase):
     """Check to see whether the potential energy of the system has fallen
     below a minimum or above a maximum threshold.
-    
+
     Attributes
     ----------
     min_factor: Simulation stops if `E(current) > E(initial) * min_factor`
     max_factor: Simulation stops if `E(current) < E(initial) * max_factor`
     """
+
     min_factor: float = zntrack.zn.params(0.5)
     max_factor: float = zntrack.zn.params(2.0)
 
@@ -836,7 +838,15 @@ class EnergySpikeCheck(base.CheckBase):
         return unstable
 
 
-def run_stability_nve(atoms: ase.Atoms, time_step: float, max_steps: int, init_temperature: float, checks: list[base.CheckBase], save_last_n: int, rng: typing.Optional[np.random.Generator]=None):
+def run_stability_nve(
+    atoms: ase.Atoms,
+    time_step: float,
+    max_steps: int,
+    init_temperature: float,
+    checks: list[base.CheckBase],
+    save_last_n: int,
+    rng: typing.Optional[np.random.Generator] = None,
+):
     """
     Runs an NVE trajectory for a single configuration until either max_steps
     is reached or one of the checks fails.
@@ -884,7 +894,8 @@ def run_stability_nve(atoms: ase.Atoms, time_step: float, max_steps: int, init_t
 
 class MDStabilityAnalysis(base.ProcessAtoms):
     """Perform NVE molecular dynamics for all supplied atoms using a trained model.
-    Several stability checks can be supplied to judge whether a particular trajectory is stable.
+    Several stability checks can be supplied to judge whether a particular
+    trajectory is stable.
     If the check fails, the trajectory is terminated.
     After all trajectories are done, a histogram of the duration of stability is created.
 
@@ -894,11 +905,13 @@ class MDStabilityAnalysis(base.ProcessAtoms):
     data: list[Atoms] to run MD for for
     max_steps: Maximum number of steps for each trajectory
     time_step: MD integration time step
-    initial_temperature: Initial velocities are drawn from a maxwell boltzman distribution.
+    initial_temperature: Initial velocities are drawn from a maxwell boltzman
+    distribution.
     save_last_n: how many configurations before the instability should be saved
     bins: number of bins in the histogram
     seed: seed for the MaxwellBoltzmann distribution
     """
+
     model = zntrack.zn.deps()
     max_steps: int = zntrack.zn.params()
     checks: list[zntrack.Node] = zntrack.zn.nodes()
@@ -939,9 +952,10 @@ class MDStabilityAnalysis(base.ProcessAtoms):
         rng = default_rng(self.seed)
 
         stable_steps = []
-        
+
         db = znh5md.io.DataWriter(self.traj_file)
         db.initialize_database_groups()
+        unstable_atoms = []
 
         for ii in tqdm.trange(
             0, len(data_lst), desc="Atoms", leave=True, ncols=120, position=0
@@ -957,14 +971,15 @@ class MDStabilityAnalysis(base.ProcessAtoms):
                 save_last_n=self.save_last_n,
                 rng=rng,
             )
-            db.add(
-                znh5md.io.AtomsReader(
-                    last_n_atoms,
-                    frames_per_chunk=self.save_last_n,
-                    step=1,
-                )
-            )
+            unstable_atoms.append(last_n_atoms)
             stable_steps.append(n_steps)
+        db.add(
+            znh5md.io.AtomsReader(
+                unstable_atoms,
+                frames_per_chunk=self.save_last_n,
+                step=1,
+            )
+        )
 
         self.get_plots(stable_steps)
         self.stable_steps_df = pd.DataFrame({"stable_steps": np.array(stable_steps)})
