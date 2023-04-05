@@ -38,3 +38,5 @@ __all__ = [
 
 __version__ = importlib.metadata.version(__name__)
 setup_logging(__name__)
+
+raise ValueError("This is a test")
