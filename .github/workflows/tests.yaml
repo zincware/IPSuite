@@ -57,7 +57,7 @@ jobs:
         branch:
           - intro
           - graph
-          - modify_graph
+          # - modify_graph
 
     steps:
       - uses: actions/checkout@v2
