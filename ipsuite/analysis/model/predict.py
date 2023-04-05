@@ -255,8 +255,8 @@ class InterIntraForces(base.AnalyseProcessAtoms):
             np.linalg.norm(self.true_forces["trans"], axis=-1),
             np.linalg.norm(self.pred_forces["trans"], axis=-1),
             datalabel="",
-            xlabel=r"$ab~initio$ forces / eV$ \cdot \AA^{-1}",
-            ylabel=r"predicted forces / eV$ \cdot \AA^{-1}",
+            xlabel=r"$ab~initio$ forces / eV$ \cdot \AA^{-1}$",
+            ylabel=r"predicted forces / eV$ \cdot \AA^{-1}$",
         )
         fig.savefig(self.trans_force_plt)
 
@@ -264,8 +264,8 @@ class InterIntraForces(base.AnalyseProcessAtoms):
             np.linalg.norm(self.true_forces["rot"], axis=-1),
             np.linalg.norm(self.pred_forces["rot"], axis=-1),
             datalabel="",
-            xlabel=r"$ab~initio$ forces / eV$ \cdot \AA^{-1}",
-            ylabel=r"predicted forces / eV$ \cdot \AA^{-1}",
+            xlabel=r"$ab~initio$ forces / eV$ \cdot \AA^{-1}$",
+            ylabel=r"predicted forces / eV$ \cdot \AA^{-1}$",
         )
         fig.savefig(self.rot_force_plt)
 
@@ -273,8 +273,8 @@ class InterIntraForces(base.AnalyseProcessAtoms):
             np.linalg.norm(self.true_forces["vib"], axis=-1),
             np.linalg.norm(self.pred_forces["vib"], axis=-1),
             datalabel="",
-            xlabel=r"$ab~initio$ forces / eV$ \cdot \AA^{-1}",
-            ylabel=r"predicted forces / eV$ \cdot \AA^{-1}",
+            xlabel=r"$ab~initio$ forces / eV$ \cdot \AA^{-1}$",
+            ylabel=r"predicted forces / eV$ \cdot \AA^{-1}$",
         )
         fig.savefig(self.vib_force_plt)
 
