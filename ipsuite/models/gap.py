@@ -6,7 +6,6 @@ regression from Gabor Csanyi.
 import dataclasses
 import importlib.resources as pkg_resources
 import logging
-import os
 import subprocess as sp
 import typing
 from collections import OrderedDict
