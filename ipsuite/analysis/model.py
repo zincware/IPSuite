@@ -7,6 +7,7 @@ from collections import deque
 import ase
 import matplotlib.pyplot as plt
 import numpy as np
+from numpy.random import default_rng
 import pandas as pd
 import seaborn as sns
 import tqdm
@@ -829,12 +830,12 @@ class EnergySpikeCheck(CheckBase):
         return unstable
 
 
-def run_stability_nve(atoms, time_step, max_steps, init_temperature, checks, save_last_n):
+def run_stability_nve(atoms, time_step, max_steps, init_temperature, checks, save_last_n, rng=None):
     pbar_update = 10
     stable_steps = 0
 
-    MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
-    etot, ekin, epot = print_energy_terms(atoms)
+    MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature, rng=rng)
+    etot, ekin, epot = get_energy_terms(atoms)
     last_n_atoms = deque(maxlen=save_last_n)
     last_n_atoms.append(atoms.copy())
 
@@ -856,7 +857,7 @@ def run_stability_nve(atoms, time_step, max_steps, init_temperature, checks, sav
         for idx in range(max_steps):
             dyn.run(1)
             last_n_atoms.append(atoms.copy())
-            etot, ekin, epot = print_energy_terms(atoms)
+            etot, ekin, epot = get_energy_terms(atoms)
 
             if idx % pbar_update == 0:
                 pbar.set_description(get_desc())
@@ -872,6 +873,22 @@ def run_stability_nve(atoms, time_step, max_steps, init_temperature, checks, sav
 
 
 class MDStabilityAnalysis(base.ProcessAtoms):
+    """Perform NVE molecular dynamics for all supplied atoms using a trained model.
+    Several stability checks can be supplied to judge whether a particular trajectory is stable.
+    If the check fails, the trajectory is terminated.
+    After all trajectories are done, a histogram of the duration of stability is created.
+
+    Attributes
+    ----------
+    model: A node which implements the `calc` property. Typically an MLModel instance.
+    data: list[Atoms] to run MD for for
+    max_steps: Maximum number of steps for each trajectory
+    time_step: MD integration time step
+    initial_temperature: Initial velocities are drawn from a maxwell boltzman distribution.
+    save_last_n: how many configurations before the instability should be saved
+    bins: number of bins in the histogram
+    seed: seed for the MaxwellBoltzmann distribution
+    """
     model = zntrack.zn.deps()
     max_steps: int = zntrack.zn.params()
     checks: list[zntrack.Node] = zntrack.zn.nodes()
@@ -879,6 +896,7 @@ class MDStabilityAnalysis(base.ProcessAtoms):
     initial_temperature: float = zntrack.zn.params(300)
     save_last_n: int = zntrack.zn.params(1)
     bins: int = zntrack.zn.params(None)
+    seed: int = zntrack.zn.params(0)
 
     traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.extxyz")
     plots_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "plots")
@@ -908,6 +926,7 @@ class MDStabilityAnalysis(base.ProcessAtoms):
     def run(self) -> None:
         data_lst = self.get_data()
         calculator = self.model.calc
+        rng = default_rng(self.seed)
 
         stable_steps = []
 
@@ -923,6 +942,7 @@ class MDStabilityAnalysis(base.ProcessAtoms):
                 self.initial_temperature,
                 checks=self.checks,
                 save_last_n=self.save_last_n,
+                rng=rng,
             )
             write(
                 self.traj_file,
