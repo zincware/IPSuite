@@ -762,19 +762,12 @@ class InterIntraForces(base.AnalyseProcessAtoms):
         self.get_plots()
 
 
-class CheckBase(zntrack.Node):
-    def initialize(self, atoms):
-        pass
+class NaNCheck(base.CheckBase):
+    """Check Node to see whether positions, energies or forces become NaN
+    during a simulation.
+    """
 
-    def check(self, atoms):
-        raise NotImplementedError
-
-
-class NaNCheck(CheckBase):
-    def initialize(self, atoms):
-        pass
-
-    def check(self, atoms):
+    def check(self, atoms: ase.Atoms) -> bool:
         positions = atoms.positions
         epot = atoms.get_potential_energy()
         forces = atoms.get_forces()
@@ -787,7 +780,11 @@ class NaNCheck(CheckBase):
         return unstable
 
 
-class ConnectivityCheck(CheckBase):
+class ConnectivityCheck(base.CheckBase):
+    """Check to see whether the covalent connectivity of the system changes during a simulation.
+    The connectivity is based on ASE's natural cutoffs.
+
+    """
     def _post_init_(self) -> None:
         self.nl = None
         self.first_cm = None
@@ -797,7 +794,7 @@ class ConnectivityCheck(CheckBase):
         self.first_cm = self.nl.get_connectivity_matrix(sparse=False)
         self.is_initialized = True
 
-    def check(self, atoms):
+    def check(self, atoms: ase.Atoms) -> bool:
         self.nl.update(atoms)
         cm = self.nl.get_connectivity_matrix(sparse=False)
 
@@ -807,7 +804,15 @@ class ConnectivityCheck(CheckBase):
         return unstable
 
 
-class EnergySpikeCheck(CheckBase):
+class EnergySpikeCheck(base.CheckBase):
+    """Check to see whether the potential energy of the system has fallen
+    below a minimum or above a maximum threshold.
+    
+    Attributes
+    ----------
+    min_factor: Simulation stops if `E(current) > E(initial) * min_factor`
+    max_factor: Simulation stops if `E(current) < E(initial) * max_factor`
+    """
     min_factor: float = zntrack.zn.params(0.5)
     max_factor: float = zntrack.zn.params(2.0)
 
@@ -815,12 +820,12 @@ class EnergySpikeCheck(CheckBase):
         self.max_energy = None
         self.min_energy = None
 
-    def initialize(self, atoms):
+    def initialize(self, atoms: ase.Atoms) -> None:
         epot = atoms.get_potential_energy()
         self.max_energy = epot * self.max_factor
         self.min_energy = epot * self.min_factor
 
-    def check(self, atoms):
+    def check(self, atoms: ase.Atoms) -> bool:
         epot = atoms.get_potential_energy()
         # energy is negative, hence sign convention
         if epot < self.max_energy or epot > self.min_energy:
@@ -830,8 +835,12 @@ class EnergySpikeCheck(CheckBase):
         return unstable
 
 
-def run_stability_nve(atoms, time_step, max_steps, init_temperature, checks, save_last_n, rng=None):
-    pbar_update = 10
+def run_stability_nve(atoms: ase.Atoms, time_step: float, max_steps: int, init_temperature: float, checks: list[base.CheckBase], save_last_n: int, rng: typing.Optional[np.random.Generator]=None):
+    """
+    Runs an NVE trajectory for a single configuration until either max_steps
+    is reached or one of the checks fails.
+    """
+    pbar_update = 50
     stable_steps = 0
 
     MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature, rng=rng)
@@ -906,7 +915,7 @@ class MDStabilityAnalysis(base.ProcessAtoms):
     def atoms(self) -> typing.List[ase.Atoms]:
         return list(ase.io.iread(self.traj_file))
 
-    def get_plots(self, stable_steps):
+    def get_plots(self, stable_steps: int) -> None:
         """Create figures for all available data."""
         if self.bins is None:
             self.bins = int(np.ceil(len(stable_steps) / 100))
