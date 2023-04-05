@@ -20,6 +20,10 @@ jobs:
           - "3.10"
         os:
           - ubuntu-latest
+        branch:
+          - intro
+          - graph
+          - modify_graph
 
     steps:
       - uses: actions/checkout@v2
@@ -39,21 +43,12 @@ jobs:
           git config --global user.name "John Doe"
           git config --global user.email johndoe@example.com
           git config --global init.defaultBranch "main"
-      - name: clone repository
+      - name: dvc repro
         run: |
           git clone https://github.com/PythonFZ/IPS-Examples 
           cd IPS-Examples
           git fetch origin
-      - name: intro
-        run: |
-          cd IPS-Examples
-          git checkout intro
+          git checkout ${{ matrix.branch }}
           poetry run dvc pull
           poetry run jupyter nbconvert --to notebook --execute main.ipynb
           poetry run dvc repro -f
-          rm -rf nodes/
-          git reset --hard
-
-
-
-
