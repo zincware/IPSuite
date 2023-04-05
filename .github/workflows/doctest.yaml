@@ -24,13 +24,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
+      - name: Install Poetry
+        run: |
+          pipx install poetry
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'poetry'
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
       - name: Install package
         run: |
           poetry install --all-extras
