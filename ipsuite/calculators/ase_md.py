@@ -156,7 +156,7 @@ class ASEMD(base.ProcessSingleAtom):
     metrics_dict = zntrack.zn.plots()
 
     steps_before_stopping: int = zntrack.zn.metrics()
-    velocity_cach = zntrack.zn.metrics()
+    velocity_cache = zntrack.zn.metrics()
 
     traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.h5")
 
@@ -265,7 +265,7 @@ class ASEMD(base.ProcessSingleAtom):
             )
         )
 
-        self.velocity_cach = atoms.get_velocities()
+        self.velocity_cache = atoms.get_velocities()
         self.metrics_dict = pd.DataFrame(metrics_dict)
 
         self.metrics_dict.index.name = "step"
