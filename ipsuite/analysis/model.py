@@ -11,6 +11,7 @@ from numpy.random import default_rng
 import pandas as pd
 import seaborn as sns
 import tqdm
+import znh5md
 import zntrack
 from ase import units
 from ase.calculators.calculator import PropertyNotImplementedError
@@ -907,13 +908,13 @@ class MDStabilityAnalysis(base.ProcessAtoms):
     bins: int = zntrack.zn.params(None)
     seed: int = zntrack.zn.params(0)
 
-    traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.extxyz")
+    traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.h5")
     plots_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "plots")
     stable_steps_df: pd.DataFrame = zntrack.zn.plots()
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
-        return list(ase.io.iread(self.traj_file))
+        return znh5md.ASEH5MD(self.traj_file).get_atoms_list()
 
     def get_plots(self, stable_steps: int) -> None:
         """Create figures for all available data."""
@@ -938,6 +939,9 @@ class MDStabilityAnalysis(base.ProcessAtoms):
         rng = default_rng(self.seed)
 
         stable_steps = []
+        
+        db = znh5md.io.DataWriter(self.traj_file)
+        db.initialize_database_groups()
 
         for ii in tqdm.trange(
             0, len(data_lst), desc="Atoms", leave=True, ncols=120, position=0
@@ -953,11 +957,12 @@ class MDStabilityAnalysis(base.ProcessAtoms):
                 save_last_n=self.save_last_n,
                 rng=rng,
             )
-            write(
-                self.traj_file,
-                last_n_atoms,
-                format="extxyz",
-                append=True,
+            db.add(
+                znh5md.io.AtomsReader(
+                    last_n_atoms,
+                    frames_per_chunk=self.save_last_n,
+                    step=1,
+                )
             )
             stable_steps.append(n_steps)
 
