@@ -281,39 +281,17 @@ class InterIntraForces(base.AnalyseProcessAtoms):
     def get_metrics(self):
         """Update the metrics."""
 
-        self.trans_forces = {
-            "rmse": utils.metrics.root_mean_squared_error(
-                np.array(self.true_forces["trans"]), np.array(self.pred_forces["trans"])
-            ),
-            "mae": utils.metrics.mean_absolute_error(
-                np.array(self.true_forces["trans"]), np.array(self.pred_forces["trans"])
-            ),
-            "max": utils.metrics.maximum_error(
-                np.array(self.true_forces["trans"]), np.array(self.pred_forces["trans"])
-            ),
-        }
-        self.rot_forces = {
-            "rmse": utils.metrics.root_mean_squared_error(
-                np.array(self.true_forces["rot"]), np.array(self.pred_forces["rot"])
-            ),
-            "mae": utils.metrics.mean_absolute_error(
-                np.array(self.true_forces["rot"]), np.array(self.pred_forces["rot"])
-            ),
-            "max": utils.metrics.maximum_error(
-                np.array(self.true_forces["rot"]), np.array(self.pred_forces["rot"])
-            ),
-        }
-        self.vib_forces = {
-            "rmse": utils.metrics.root_mean_squared_error(
-                np.array(self.true_forces["vib"]), np.array(self.pred_forces["vib"])
-            ),
-            "mae": utils.metrics.mean_absolute_error(
-                np.array(self.true_forces["vib"]), np.array(self.pred_forces["vib"])
-            ),
-            "max": utils.metrics.maximum_error(
-                np.array(self.true_forces["vib"]), np.array(self.pred_forces["vib"])
-            ),
-        }
+        self.trans_forces = utils.metrics.get_full_metrics(
+            np.array(self.true_forces["trans"]), np.array(self.pred_forces["trans"])
+        )
+
+        self.rot_forces = utils.metrics.get_full_metrics(
+            np.array(self.true_forces["rot"]), np.array(self.pred_forces["rot"])
+        )
+
+        self.vib_forces = utils.metrics.get_full_metrics(
+            np.array(self.true_forces["vib"]), np.array(self.pred_forces["vib"])
+        )
 
     def run(self):
         true_atoms, pred_atoms = self.get_data()

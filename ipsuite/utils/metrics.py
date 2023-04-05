@@ -1,6 +1,5 @@
 """Utils for computing metrics."""
 import numpy as np
-from scipy.stats import pearsonr
 
 
 def calculate_l_p_norm(y_true: np.ndarray, y_pred: np.ndarray, p: int = 2):
@@ -67,5 +66,5 @@ def get_full_metrics(true: np.ndarray, prediction: np.ndarray) -> dict:
         "mae": mean_absolute_error(true, prediction),
         "max": maximum_error(true, prediction),
         "lp4": calculate_l_p_norm(true, prediction, p=4),
-        "pearsonr": pearsonr(true, prediction)[0],
+        # "pearsonr": pearsonr(true, prediction)[0],
     }
