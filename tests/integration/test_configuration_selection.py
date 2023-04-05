@@ -42,12 +42,25 @@ def test_UniformArangeSelection(proj_path, traj_file, eager):
 
     if not eager:
         selection.load()
-        data[0].load()
-        data[1].load()
-
-    atoms = data[0].atoms + data[1].atoms
 
     assert selection.selected_configurations == {"data1": [0, 10, 20], "data2": [9, 19]}
+
+
+@pytest.mark.parametrize("eager", [True, False])
+def test_SplitSelection(proj_path, traj_file, eager):
+    with ips.Project() as project:
+        data = [
+            ips.AddData(file=traj_file, name="data1"),
+            ips.AddData(file=traj_file, name="data2"),
+        ]
+        selection = ips.configuration_selection.SplitSelection(data=data, split=0.3)
+
+    project.run(eager=eager, save=not eager)
+
+    if not eager:
+        selection.load()
+
+    assert selection.selected_configurations == {"data1": list(range(12)), "data2": []}
 
 
 @pytest.mark.parametrize("eager", [False])
