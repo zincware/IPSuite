@@ -297,47 +297,32 @@ class InterIntraForces(base.AnalyseProcessAtoms):
         true_atoms, pred_atoms = self.get_data()
         mapping = BarycenterMapping(data=None)
 
-        true_trans_forces = []
-        true_rot_forces = []
-        true_vib_forces = []
+        self.true_forces = {"trans": [], "rot": [], "vib": []}
+        self.pred_forces = {"trans": [], "rot": [], "vib": []}
 
         for atom in tqdm.tqdm(true_atoms):
             atom_trans_forces, atom_rot_forces, atom_vib_forces = force_decomposition(
                 atom, mapping
             )
-            true_trans_forces.append(atom_trans_forces)
-            true_rot_forces.append(atom_rot_forces)
-            true_vib_forces.append(atom_vib_forces)
+            self.true_forces["trans"].append(atom_trans_forces)
+            self.true_forces["rot"].append(atom_rot_forces)
+            self.true_forces["vib"].append(atom_vib_forces)
 
-        true_trans_forces = np.concatenate(true_trans_forces)
-        true_rot_forces = np.concatenate(true_rot_forces)
-        true_vib_forces = np.concatenate(true_vib_forces)
-
-        pred_trans_forces = []
-        pred_rot_forces = []
-        pred_vib_forces = []
+        self.true_forces["trans"] = np.concatenate(self.true_forces["trans"])
+        self.true_forces["rot"] = np.concatenate(self.true_forces["rot"])
+        self.true_forces["vib"] = np.concatenate(self.true_forces["vib"])
 
         for atom in tqdm.tqdm(pred_atoms):
             atom_trans_forces, atom_rot_forces, atom_vib_forces = force_decomposition(
                 atom, mapping
             )
-            pred_trans_forces.append(atom_trans_forces)
-            pred_rot_forces.append(atom_rot_forces)
-            pred_vib_forces.append(atom_vib_forces)
+            self.pred_forces["trans"].append(atom_trans_forces)
+            self.pred_forces["rot"].append(atom_rot_forces)
+            self.pred_forces["vib"].append(atom_vib_forces)
 
-        pred_trans_forces = np.concatenate(pred_trans_forces)
-        pred_rot_forces = np.concatenate(pred_rot_forces)
-        pred_vib_forces = np.concatenate(pred_vib_forces)
+        self.pred_forces["trans"] = np.concatenate(self.pred_forces["trans"])
+        self.pred_forces["rot"] = np.concatenate(self.pred_forces["rot"])
+        self.pred_forces["vib"] = np.concatenate(self.pred_forces["vib"])
 
-        self.pred_forces = {
-            "trans": pred_trans_forces,
-            "rot": pred_rot_forces,
-            "vib": pred_vib_forces,
-        }
-        self.true_forces = {
-            "trans": true_trans_forces,
-            "rot": true_rot_forces,
-            "vib": true_vib_forces,
-        }
         self.get_metrics()
         self.get_plots()
