@@ -16,6 +16,7 @@ from ipsuite import (
 )
 from ipsuite.data_loading.add_data_ase import AddData
 from ipsuite.project import Project
+from ipsuite.utils import combine
 from ipsuite.utils.logs import setup_logging
 
 __all__ = [
@@ -31,6 +32,7 @@ __all__ = [
     "fields",
     "calculators",
     "geometry",
+    "combine",
     "data_loading",
 ]
 

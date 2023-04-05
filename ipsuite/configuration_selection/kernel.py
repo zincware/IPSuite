@@ -15,7 +15,7 @@ if typing.TYPE_CHECKING:
     import ipsuite
 
 
-class KernelSelectionNode(ConfigurationSelection):
+class KernelSelection(ConfigurationSelection):
     """Use the chosen kernel to selected configurations furthes apart.
 
     Attributes
