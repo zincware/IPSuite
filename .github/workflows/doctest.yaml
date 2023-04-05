@@ -1,0 +1,75 @@
+# Test the example Notebooks of IPS
+
+name: pytest
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  schedule:
+    - cron: '14 3 * * 1'  # at 03:14 on Monday.
+
+jobs:
+  install:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+        os:
+          - ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: 1.2.2
+      - name: Install package
+        run: |
+          poetry config virtualenvs.create false
+          poetry install --all-extras
+      - name: Setup git user
+        run: |
+          git config --global user.name "John Doe"
+          git config --global user.email johndoe@example.com
+          git config --global init.defaultBranch "main"
+      - name: clone repository
+        run: |
+          git clone https://github.com/PythonFZ/IPS-Examples 
+          git fetch origin
+          cd IPS-Examples
+      - name: intro
+        run: |
+          git checkout intro
+          dvc pull
+          jupyter nbconvert --to notebook --execute main.ipynb
+          dvc repro -f
+          rm -rf nodes/
+          git reset --hard
+      - name: graph
+        run: |
+          git checkout graph
+          dvc pull
+          jupyter nbconvert --to notebook --execute main.ipynb
+          dvc repro -f
+          rm -rf nodes/
+          git reset --hard
+      - name: modify_graph
+        run: |
+          git checkout modify_graph
+          dvc pull
+          jupyter nbconvert --to notebook --execute main.ipynb
+          dvc repro -f
+          rm -rf nodes/
+          git reset --hard
+
+
+
+
