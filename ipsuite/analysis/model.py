@@ -846,7 +846,7 @@ def run_stability_nve(
     checks: list[base.CheckBase],
     save_last_n: int,
     rng: typing.Optional[np.random.Generator] = None,
-):
+) -> typing.Tuple[int, list[ase.Atoms]]:
     """
     Runs an NVE trajectory for a single configuration until either max_steps
     is reached or one of the checks fails.
@@ -889,7 +889,7 @@ def run_stability_nve(
                 stable_steps = idx
                 break
 
-    return stable_steps, last_n_atoms
+    return stable_steps, list(last_n_atoms)
 
 
 class MDStabilityAnalysis(base.ProcessAtoms):
@@ -971,7 +971,7 @@ class MDStabilityAnalysis(base.ProcessAtoms):
                 save_last_n=self.save_last_n,
                 rng=rng,
             )
-            unstable_atoms.append(last_n_atoms)
+            unstable_atoms.extend(last_n_atoms)
             stable_steps.append(n_steps)
         db.add(
             znh5md.io.AtomsReader(

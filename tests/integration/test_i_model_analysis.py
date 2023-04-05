@@ -120,7 +120,7 @@ def test_BoxScaleAnalysis(trained_model):
     assert analysis.energies is not None
 
 
-@pytest.mark.parametrize("eager", [True])  # False
+@pytest.mark.parametrize("eager", [True, False])
 def test_MDStabilityAnalysis(trained_model, eager):
     project, model, validation_selection = trained_model
 
