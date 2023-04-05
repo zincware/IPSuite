@@ -1,10 +1,13 @@
 from ipsuite.analysis.model.dynamics import (
     BoxHeatUp,
     BoxScaleAnalysis,
-    ConnectivityCheck,
-    EnergySpikeCheck,
     MDStabilityAnalysis,
     RattleAnalysis,
+)
+from ipsuite.analysis.model.dynamics_checks import (
+    ConnectivityCheck,
+    EnergySpikeCheck,
+    NaNCheck,
 )
 from ipsuite.analysis.model.predict import (
     AnalyseForceAngles,
@@ -23,5 +26,6 @@ __all__ = [
     "BoxScaleAnalysis",
     "EnergySpikeCheck",
     "ConnectivityCheck",
+    "NaNCheck",
     "MDStabilityAnalysis",
 ]

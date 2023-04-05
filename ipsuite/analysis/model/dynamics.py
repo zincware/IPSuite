@@ -14,7 +14,6 @@ from ase import units
 from ase.md.langevin import Langevin
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md.verlet import VelocityVerlet
-from ase.neighborlist import build_neighbor_list
 from numpy.random import default_rng
 from tqdm import trange
 
@@ -255,82 +254,6 @@ class BoxHeatUp(base.ProcessSingleAtom):
             self.steps_before_explosion = -1
 
         self.plot_temperature()
-
-
-class NaNCheck(base.CheckBase):
-    """Check Node to see whether positions, energies or forces become NaN
-    during a simulation.
-    """
-
-    def check(self, atoms: ase.Atoms) -> bool:
-        positions = atoms.positions
-        epot = atoms.get_potential_energy()
-        forces = atoms.get_forces()
-
-        positions_is_none = np.any(positions is None)
-        epot_is_none = epot is None
-        forces_is_none = np.any(forces is None)
-
-        unstable = any([positions_is_none, epot_is_none, forces_is_none])
-        return unstable
-
-
-class ConnectivityCheck(base.CheckBase):
-    """Check to see whether the covalent connectivity of the system
-    changes during a simulation.
-    The connectivity is based on ASE's natural cutoffs.
-
-    """
-
-    def _post_init_(self) -> None:
-        self.nl = None
-        self.first_cm = None
-
-    def initialize(self, atoms):
-        self.nl = build_neighbor_list(atoms, self_interaction=False)
-        self.first_cm = self.nl.get_connectivity_matrix(sparse=False)
-        self.is_initialized = True
-
-    def check(self, atoms: ase.Atoms) -> bool:
-        self.nl.update(atoms)
-        cm = self.nl.get_connectivity_matrix(sparse=False)
-
-        connectivity_change = np.sum(np.abs(self.first_cm - cm))
-
-        unstable = connectivity_change > 0
-        return unstable
-
-
-class EnergySpikeCheck(base.CheckBase):
-    """Check to see whether the potential energy of the system has fallen
-    below a minimum or above a maximum threshold.
-
-    Attributes
-    ----------
-    min_factor: Simulation stops if `E(current) > E(initial) * min_factor`
-    max_factor: Simulation stops if `E(current) < E(initial) * max_factor`
-    """
-
-    min_factor: float = zntrack.zn.params(0.5)
-    max_factor: float = zntrack.zn.params(2.0)
-
-    def _post_init_(self) -> None:
-        self.max_energy = None
-        self.min_energy = None
-
-    def initialize(self, atoms: ase.Atoms) -> None:
-        epot = atoms.get_potential_energy()
-        self.max_energy = epot * self.max_factor
-        self.min_energy = epot * self.min_factor
-
-    def check(self, atoms: ase.Atoms) -> bool:
-        epot = atoms.get_potential_energy()
-        # energy is negative, hence sign convention
-        if epot < self.max_energy or epot > self.min_energy:
-            unstable = True
-        else:
-            unstable = False
-        return unstable
 
 
 def run_stability_nve(
