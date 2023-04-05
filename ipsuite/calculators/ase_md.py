@@ -121,7 +121,7 @@ class ASEMD(base.ProcessSingleAtom):
     checker_list: list[CheckNodes]
         checker, which tracks various metrics and stops the
         simulation after a threshold is exceeded.
-    thermostat_node: ase dynamics
+    thermostat: ase dynamics
         dynamics method used for simulation
     init_temperature: float
         temperature in K to initialize velocities
@@ -142,9 +142,9 @@ class ASEMD(base.ProcessSingleAtom):
         write them to the trajectory file every 'dump_rate' steps.
     """
 
-    ase_calculator = zntrack.zn.deps()
+    calculator = zntrack.zn.deps()
     checker_list = zntrack.zn.nodes()
-    thermostat_node = zntrack.zn.nodes()
+    thermostat = zntrack.zn.nodes()
 
     steps = zntrack.zn.params()
     init_temperature = zntrack.zn.params(None)
@@ -174,7 +174,7 @@ class ASEMD(base.ProcessSingleAtom):
     def run(self):
         """Run the simulation."""
         atoms = self.get_atoms()
-        atoms.calc = self.ase_calculator.calculator
+        atoms.calc = self.calculator
 
         if self.init_temperature is not None and self.init_velocity is None:
             # Initialize velocities
@@ -186,8 +186,8 @@ class ASEMD(base.ProcessSingleAtom):
             raise ValueError("init_temperature or init_velocity has to be specified.")
 
         # initialize thermostat
-        time_step = self.thermostat_node.time_step
-        thermostat = self.thermostat_node.get_thermostat(atoms=atoms)
+        time_step = self.thermostat.time_step
+        thermostat = self.thermostat.get_thermostat(atoms=atoms)
 
         # initialize Atoms calculator and metrics_dict
         _ = get_energy(atoms)

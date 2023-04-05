@@ -5,12 +5,18 @@ def test_ase_md(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
         model = ips.models.GAP(data=data.atoms)
+        checker = ips.calculators.TemperatureCheck()
+        thermostat = ips.calculators.LagevinThermostat(
+            time_step=1,
+            temperature=1,
+            friction=1,
+        )
+
         md = ips.calculators.ASEMD(
             data=data.atoms,
-            model=model,
-            temperature=1,
-            time_step=1,
-            friction=1,
+            calculator=model.calc,
+            checker_list=[checker],
+            thermostat=thermostat,
             steps=100,
             sampling_rate=1,
             dump_rate=33,
