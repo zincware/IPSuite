@@ -45,6 +45,13 @@ def mean_absolute_error(data_a, data_b):
     return np.mean(np.abs(data_a - data_b))
 
 
+def relative_rmse(true, pred):
+    """Calculate the relative root mean squared error between data_ids."""
+    numerator = np.sum((np.array(true) - np.array(pred)) ** 2)
+    denominator = np.sum((np.array(true) - np.mean(true)) ** 2)
+    return np.sqrt(numerator / denominator)
+
+
 def get_u_vecs(vector):
     """Get unit vectors from a vector array."""
     return vector / np.linalg.norm(vector, axis=-1)[:, None]
@@ -66,5 +73,6 @@ def get_full_metrics(true: np.ndarray, prediction: np.ndarray) -> dict:
         "mae": mean_absolute_error(true, prediction),
         "max": maximum_error(true, prediction),
         "lp4": calculate_l_p_norm(true, prediction, p=4),
+        "rrmse": relative_rmse(true, prediction),
         # "pearsonr": pearsonr(true, prediction)[0],
     }
