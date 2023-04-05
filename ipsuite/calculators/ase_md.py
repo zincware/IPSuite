@@ -255,16 +255,6 @@ class ASEMD(base.ProcessSingleAtom):
                         pbar.set_description("\t".join(desc))
                         pbar.update(self.sampling_rate)
 
-        # save the last configurations
-        db.add(
-            znh5md.io.AtomsReader(
-                atoms_cache,
-                frames_per_chunk=self.dump_rate,
-                step=1,
-                time=self.sampling_rate,
-            )
-        )
-
         self.velocity_cache = atoms.get_velocities()
         self.metrics_dict = pd.DataFrame(metrics_dict)
 
