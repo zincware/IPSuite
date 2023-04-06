@@ -110,6 +110,8 @@ class BoxScaleAnalysis(base.ProcessSingleAtom):
     num: int = zntrack.zn.params(100)
     start: float = zntrack.zn.params(1)
 
+    plot = zntrack.dvc.outs(zntrack.nwd / "energy.png")
+
     energies: pd.DataFrame = zntrack.zn.plots(
         # x="x",
         # y="y",
@@ -148,6 +150,12 @@ class BoxScaleAnalysis(base.ProcessSingleAtom):
             self.atoms.append(eval_atoms.copy())
 
         self.energies = pd.DataFrame({"y": energies, "x": scale_space})
+
+        fig, ax = plt.subplots()
+        ax.plot(self.energies["x"], self.energies["y"])
+        ax.set_xlabel("Scale factor of the initial cell")
+        ax.set_ylabel("predicted energy")
+        fig.savefig(self.plot)
 
 
 class BoxHeatUp(base.ProcessSingleAtom):
