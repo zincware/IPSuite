@@ -9,7 +9,8 @@ import zntrack
 from ase.calculators.singlepoint import PropertyNotImplementedError, SinglePointCalculator
 
 from ipsuite import base, models, utils
-from ipsuite.analysis.model.utils import force_decomposition, get_figure, get_hist
+from ipsuite.analysis.model.math import force_decomposition
+from ipsuite.analysis.model.plots import get_figure, get_hist
 from ipsuite.geometry import BarycenterMapping
 
 
