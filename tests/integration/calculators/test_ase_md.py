@@ -4,7 +4,7 @@ import ipsuite as ips
 def test_ase_md(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
-        model = ips.models.GAP(data=data.atoms)
+        model = ips.models.GAP(data=data.atoms, openblas_num_threads="1")
         checker = ips.calculators.TemperatureCheck()
         thermostat = ips.calculators.LagevinThermostat(
             time_step=1,
