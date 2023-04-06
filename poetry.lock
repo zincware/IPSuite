@@ -3302,14 +3302,14 @@ files = [
 
 [[package]]
 name = "nbclassic"
-version = "0.5.4"
+version = "0.5.5"
 description = "Jupyter Notebook as a Jupyter Server extension."
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "nbclassic-0.5.4-py3-none-any.whl", hash = "sha256:df78e4ba143f35084ad060deec16cb1d4839dde47bfdbc4232beb7071a6d70ea"},
-    {file = "nbclassic-0.5.4.tar.gz", hash = "sha256:312b3f7d7ff2e6c261d51799bb12e6493498ab47d3469d3a01015d5533fd4d2b"},
+    {file = "nbclassic-0.5.5-py3-none-any.whl", hash = "sha256:47791b04dbcb89bf7fde910a3d848fd4793a4248a8936202453631a87da37d51"},
+    {file = "nbclassic-0.5.5.tar.gz", hash = "sha256:d2c91adc7909b0270c73e3e253d3687a6704b4f0a94bc156a37c85eba09f4d37"},
 ]
 
 [package.dependencies]
@@ -3455,20 +3455,20 @@ files = [
 
 [[package]]
 name = "networkx"
-version = "3.0"
+version = "3.1"
 description = "Python package for creating and manipulating graphs and networks"
 category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "networkx-3.0-py3-none-any.whl", hash = "sha256:58058d66b1818043527244fab9d41a51fcd7dcc271748015f3c181b8a90c8e2e"},
-    {file = "networkx-3.0.tar.gz", hash = "sha256:9a9992345353618ae98339c2b63d8201c381c2944f38a2ab49cb45a4c667e412"},
+    {file = "networkx-3.1-py3-none-any.whl", hash = "sha256:4f33f68cb2afcf86f28a45f43efc27a9386b535d567d2127f8f61d51dec58d36"},
+    {file = "networkx-3.1.tar.gz", hash = "sha256:de346335408f84de0eada6ff9fafafff9bcda11f0a0dfaa931133debb146ab61"},
 ]
 
 [package.extras]
 default = ["matplotlib (>=3.4)", "numpy (>=1.20)", "pandas (>=1.3)", "scipy (>=1.8)"]
-developer = ["mypy (>=0.991)", "pre-commit (>=2.20)"]
-doc = ["nb2plots (>=0.6)", "numpydoc (>=1.5)", "pillow (>=9.2)", "pydata-sphinx-theme (>=0.11)", "sphinx (==5.2.3)", "sphinx-gallery (>=0.11)", "texext (>=0.6.7)"]
+developer = ["mypy (>=1.1)", "pre-commit (>=3.2)"]
+doc = ["nb2plots (>=0.6)", "numpydoc (>=1.5)", "pillow (>=9.4)", "pydata-sphinx-theme (>=0.13)", "sphinx (>=6.1)", "sphinx-gallery (>=0.12)", "texext (>=0.6.7)"]
 extra = ["lxml (>=4.6)", "pydot (>=1.4.2)", "pygraphviz (>=1.10)", "sympy (>=1.10)"]
 test = ["codecov (>=2.1)", "pytest (>=7.2)", "pytest-cov (>=4.0)"]
 
@@ -5014,14 +5014,14 @@ test = ["asv", "gmpy2", "mpmath", "pooch", "pytest", "pytest-cov", "pytest-timeo
 
 [[package]]
 name = "scmrepo"
-version = "0.2.0"
+version = "0.2.1"
 description = "SCM wrapper and fsspec filesystem for Git for use in DVC"
 category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "scmrepo-0.2.0-py3-none-any.whl", hash = "sha256:7076890ad5dd137e9fdec5ca9879cd1787bd9739f90f954247d9f6707674fd85"},
-    {file = "scmrepo-0.2.0.tar.gz", hash = "sha256:d210a057e456377ad5d0317bff631c4f6eda6979b98bb086dadbb5ab340c3825"},
+    {file = "scmrepo-0.2.1-py3-none-any.whl", hash = "sha256:5d885f23649c416c8251f9cd5cd3bb4d85dcd737e4471dfec1050ce99f9957eb"},
+    {file = "scmrepo-0.2.1.tar.gz", hash = "sha256:99d1f7aa30ec4d895c21f7662b457fdedeba185af1bbc1b1008beff8da9a57bc"},
 ]
 
 [package.dependencies]
@@ -5109,14 +5109,14 @@ files = [
 
 [[package]]
 name = "shtab"
-version = "1.6.0"
+version = "1.6.1"
 description = "Automagic shell tab completion for Python CLI applications"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "shtab-1.6.0-py3-none-any.whl", hash = "sha256:98a93a1817ea2239e54effc2d8eb23e3363b3d6aa2a407505cfe6c34a1ff5195"},
-    {file = "shtab-1.6.0.tar.gz", hash = "sha256:3a5bc34e224a890c9bf09c55f087384e82da1992ac9debac182fa55ecc3cb947"},
+    {file = "shtab-1.6.1-py3-none-any.whl", hash = "sha256:db2c41d81a61c7ecefd1dad8212bdc4b667e7449b8172aa6445f557f901810c4"},
+    {file = "shtab-1.6.1.tar.gz", hash = "sha256:decc78082c3ffb518c1dfd3a8da99653a2d47e58e3104197bce8ae6507dad78b"},
 ]
 
 [[package]]
@@ -6177,14 +6177,14 @@ files = [
 
 [[package]]
 name = "zntrack"
-version = "0.6.0a3"
+version = "0.6.0a4"
 description = "Create, Run and Benchmark DVC Pipelines in Python"
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0.0"
 files = [
-    {file = "zntrack-0.6.0a3-py3-none-any.whl", hash = "sha256:69476751e17de6456022369a812cb16aa9cd1e4c2822066a3f69705014035902"},
-    {file = "zntrack-0.6.0a3.tar.gz", hash = "sha256:02b7e7bc44b588defd8465bd1ab0302d0722c7685a23767a9b1b00bc125fb5dd"},
+    {file = "zntrack-0.6.0a4-py3-none-any.whl", hash = "sha256:228bae9c6e46c1465bc8f4d3ad6d673dfd2a8b265a7507c7cb4275e5e5c540ba"},
+    {file = "zntrack-0.6.0a4.tar.gz", hash = "sha256:ddb4d7657b9c2e3f2057dfa972cf9714a6d82b8ac6140665b72902a02a682854"},
 ]
 
 [package.dependencies]
@@ -6206,4 +6206,4 @@ nequip = ["nequip"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "a75ea4bcab56dc61755bf098f83a28fbc6bddd9d3955672cd6e04ce997029be1"
+content-hash = "8d5478dc17c1289f186af50724b06bb0269bafe4c102d1a5c37dc86187ee7ebc"
