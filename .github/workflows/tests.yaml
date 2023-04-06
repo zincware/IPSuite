@@ -57,6 +57,7 @@ jobs:
         branch:
           - intro
           - graph
+          - generate_data
           # - modify_graph
 
     steps:
