@@ -17,6 +17,8 @@ class ExcludeIds:
     ids: typing.Union[list, dict]
 
     def __post_init__(self):
+        if self.ids is None:
+            return
         if isinstance(self.ids, list):
             log.debug("ids is list")
             if isinstance(self.ids[0], dict):
@@ -49,7 +51,12 @@ class ExcludeIds:
         """Remove the 'ids' from the 'data'."""
         # TODO do we need a dict return here or could we just return a flat list?
         if self.ids is None:
-            return self.data
+            if isinstance(self.data, list):
+                return self.data
+            elif isinstance(self.data, dict):
+                if flatten:
+                    return get_flat_data_from_dict(self.data)
+                return self.data
         if isinstance(self.data, list) and isinstance(self.ids, list):
             return [x for i, x in enumerate(self.data) if i not in self.ids]
         elif isinstance(self.data, dict) and isinstance(self.ids, dict):

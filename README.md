@@ -1,4 +1,4 @@
-![PyTest](https://github.com/zincware/IPSuite/actions/workflows/pytest.yaml/badge.svg)
+![PyTest](https://github.com/zincware/IPSuite/actions/workflows/tests.yaml/badge.svg)
 [![ZnTrack](https://img.shields.io/badge/Powered%20by-ZnTrack-%23007CB0)](https://zntrack.readthedocs.io/en/latest/)
 [![zincware](https://img.shields.io/badge/Powered%20by-zincware-darkcyan)](https://github.com/zincware)
 

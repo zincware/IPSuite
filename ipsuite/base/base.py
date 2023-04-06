@@ -1,11 +1,13 @@
+import abc
 import collections.abc
 import typing
 
 import ase
 import tqdm
+import znflow
 import zntrack
 
-from ipsuite import fields, utils
+from ipsuite import fields
 
 # TODO raise error if both data and data_file are given
 
@@ -33,7 +35,7 @@ class ProcessAtoms(zntrack.Node):
 
     def _post_init_(self):
         if self.data is not None:
-            self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
+            self.data = znflow.combine(self.data, attribute="atoms")
 
     def update_data(self):
         """Update the data attribute."""
@@ -165,3 +167,23 @@ class Mapping(ProcessAtoms):
         self, cg_atoms: ase.Atoms, molecules: list[ase.Atoms]
     ) -> list[ase.Atoms]:
         raise NotImplementedError
+
+
+class CheckBase(zntrack.Node):
+    """Base class for check nodes.
+    These are callbacks that can be used to preemptively terminate
+    a molecular dynamics simulation if a vertain condition is met.
+    """
+
+    def initialize(self, atoms: ase.Atoms) -> None:
+        """Stores some reference property to compare the current property
+        against and see whether the simulation should be stopped.
+        Derived classes do not need to override this if they consider
+        absolute values and not comparissons.
+        """
+        pass
+
+    @abc.abstractmethod
+    def check(self, atoms: ase.Atoms) -> bool:
+        """method to check whether a simulation should be stopped."""
+        ...

@@ -4,6 +4,7 @@ from ipsuite.base import protocol
 from ipsuite.base.base import (
     AnalyseAtoms,
     AnalyseProcessAtoms,
+    CheckBase,
     Mapping,
     ProcessAtoms,
     ProcessSingleAtom,
@@ -16,4 +17,5 @@ __all__ = [
     "AnalyseProcessAtoms",
     "protocol",
     "Mapping",
+    "CheckBase",
 ]

@@ -6,7 +6,6 @@ regression from Gabor Csanyi.
 import dataclasses
 import importlib.resources as pkg_resources
 import logging
-import os
 import subprocess as sp
 import typing
 from collections import OrderedDict
@@ -213,13 +212,10 @@ class GAP(MLModel):
     gap_input_script: Path = zntrack.dvc.outs(zntrack.nwd / "gap.input")
 
     #
-    openblas_num_threads = zntrack.meta.Text(None)
+    OPENBLAS_NUM_THREADS = zntrack.meta.Environment(None)
 
     #
     def _post_init_(self):
-        if self.openblas_num_threads is not None:
-            os.environ["OPENBLAS_NUM_THREADS"] = self.openblas_num_threads
-
         if not self.state.loaded:
             if self.soap is None:
                 self.soap = {}
