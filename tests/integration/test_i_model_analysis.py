@@ -36,9 +36,7 @@ def test_PredictWithModel(trained_model, eager):
     project, model, validation_selection = trained_model
 
     with project:
-        analysis = ipsuite.analysis.PredictWithModel(
-            model=model, data=validation_selection
-        )
+        analysis = ipsuite.analysis.Prediction(model=model, data=validation_selection)
     project.run(eager=eager)
     if not eager:
         analysis.load()
@@ -66,10 +64,8 @@ def test_AnalysePrediction(trained_model, eager):
     project, model, validation_selection = trained_model
 
     with project:
-        prediction = ipsuite.analysis.PredictWithModel(
-            model=model, data=validation_selection
-        )
-        analysis = ipsuite.analysis.AnalysePrediction(data=prediction)
+        prediction = ipsuite.analysis.Prediction(model=model, data=validation_selection)
+        analysis = ipsuite.analysis.Metrics(data=prediction)
     project.run(eager=eager)
     if not eager:
         analysis.load()
@@ -82,9 +78,7 @@ def test_AnalysePrediction(trained_model, eager):
 def test_AnalyseForceAngles(trained_model, eager):
     project, model, validation_selection = trained_model
     with project:
-        prediction = ipsuite.analysis.PredictWithModel(
-            model=model, data=validation_selection
-        )
+        prediction = ipsuite.analysis.Prediction(model=model, data=validation_selection)
         analysis = ipsuite.analysis.ForceAngles(data=prediction)
 
     project.run(eager=eager)

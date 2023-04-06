@@ -13,7 +13,7 @@ from ipsuite.analysis.model.utils import force_decomposition, get_figure, get_hi
 from ipsuite.geometry import BarycenterMapping
 
 
-class PredictWithModel(base.ProcessAtoms):
+class Prediction(base.ProcessAtoms):
     """Create and Save the predictions from model on atoms.
 
     Attributes
@@ -50,7 +50,7 @@ class PredictWithModel(base.ProcessAtoms):
             self.atoms.append(atoms)
 
 
-class AnalysePrediction(base.AnalyseProcessAtoms):
+class Metrics(base.AnalyseProcessAtoms):
     """Analyse the Models Prediction.
 
     This Node computes

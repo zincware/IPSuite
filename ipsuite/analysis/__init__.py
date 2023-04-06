@@ -5,16 +5,16 @@ from ipsuite.analysis.bin_property import (
 )
 from ipsuite.analysis.ensemble import ModelEnsembleAnalysis
 from ipsuite.analysis.model import (
-    ForceAngles,
-    AnalysePrediction,
     BoxHeatUp,
     BoxScale,
     ConnectivityCheck,
     EnergySpikeCheck,
+    ForceAngles,
     ForceDecomposition,
     MDStability,
+    Metrics,
     NaNCheck,
-    PredictWithModel,
+    Prediction,
     RattleAtoms,
 )
 from ipsuite.analysis.sensitivity import (
@@ -28,10 +28,10 @@ __all__ = [
     "ForcesHistogram",
     "DipoleHistogram",
     "ModelEnsembleAnalysis",
-    "AnalysePrediction",
+    "Metrics",
     "ForceAngles",
     "RattleAtoms",
-    "PredictWithModel",
+    "Prediction",
     "BoxScale",
     "BoxHeatUp",
     "NaNCheck",
