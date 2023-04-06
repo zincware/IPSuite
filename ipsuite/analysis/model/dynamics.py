@@ -24,7 +24,7 @@ from ipsuite.utils.md import get_energy_terms
 log = logging.getLogger(__name__)
 
 
-class RattleAnalysis(base.ProcessSingleAtom):
+class RattleAtoms(base.ProcessSingleAtom):
     """Move particles with a given stdev from a starting configuration and predict.
 
     Attributes
@@ -88,7 +88,7 @@ class RattleAnalysis(base.ProcessSingleAtom):
         self.energies = pd.DataFrame({"y": energies, "x": stdev_space})
 
 
-class BoxScaleAnalysis(base.ProcessSingleAtom):
+class BoxScale(base.ProcessSingleAtom):
     """Scale all particles and predict energies.
 
     Attributes
@@ -318,7 +318,7 @@ def run_stability_nve(
     return stable_steps, list(last_n_atoms)
 
 
-class MDStabilityAnalysis(base.ProcessAtoms):
+class MDStability(base.ProcessAtoms):
     """Perform NVE molecular dynamics for all supplied atoms using a trained model.
     Several stability checks can be supplied to judge whether a particular
     trajectory is stable.

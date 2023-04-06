@@ -203,7 +203,7 @@ class AnalysePrediction(base.AnalyseProcessAtoms):
         self.stress_df.to_csv(self.stress_df_file)
 
 
-class AnalyseForceAngles(base.AnalyseProcessAtoms):
+class ForceAngles(base.AnalyseProcessAtoms):
     plot: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "angle.png")
     log_plot: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "angle_ylog.png")
 
@@ -234,7 +234,7 @@ class AnalyseForceAngles(base.AnalyseProcessAtoms):
         fig.savefig(self.log_plot)
 
 
-class InterIntraForces(base.AnalyseProcessAtoms):
+class ForceDecomposition(base.AnalyseProcessAtoms):
     """Node for decomposing forces in a system of molecular units into
     translational, rotational and vibrational components.
 

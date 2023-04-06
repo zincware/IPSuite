@@ -85,7 +85,7 @@ def test_AnalyseForceAngles(trained_model, eager):
         prediction = ipsuite.analysis.PredictWithModel(
             model=model, data=validation_selection
         )
-        analysis = ipsuite.analysis.AnalyseForceAngles(data=prediction)
+        analysis = ipsuite.analysis.ForceAngles(data=prediction)
 
     project.run(eager=eager)
     if not eager:
@@ -100,7 +100,7 @@ def test_RattleAnalysis(trained_model):
     project, model, validation_selection = trained_model
 
     with project:
-        analysis = ipsuite.analysis.RattleAnalysis(model=model, data=validation_selection)
+        analysis = ipsuite.analysis.RattleAtoms(model=model, data=validation_selection)
     project.run()
 
     analysis.load()
@@ -111,7 +111,7 @@ def test_BoxScaleAnalysis(trained_model):
     project, model, validation_selection = trained_model
 
     with project:
-        analysis = ipsuite.analysis.BoxScaleAnalysis(
+        analysis = ipsuite.analysis.BoxScale(
             model=model, data=validation_selection, num=10, stop=1.1
         )
     project.run()
@@ -130,7 +130,7 @@ def test_MDStabilityAnalysis(trained_model, eager):
         ipsuite.analysis.EnergySpikeCheck(min_factor=0.5, max_factor=2.0),
     ]
     with project:
-        analysis = ipsuite.analysis.MDStabilityAnalysis(
+        analysis = ipsuite.analysis.MDStability(
             model=model,
             data=validation_selection.atoms,
             max_steps=500,

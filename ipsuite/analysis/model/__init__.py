@@ -1,8 +1,8 @@
 from ipsuite.analysis.model.dynamics import (
     BoxHeatUp,
-    BoxScaleAnalysis,
-    MDStabilityAnalysis,
-    RattleAnalysis,
+    BoxScale,
+    MDStability,
+    RattleAtoms,
 )
 from ipsuite.analysis.model.dynamics_checks import (
     ConnectivityCheck,
@@ -10,22 +10,22 @@ from ipsuite.analysis.model.dynamics_checks import (
     NaNCheck,
 )
 from ipsuite.analysis.model.predict import (
-    AnalyseForceAngles,
+    ForceAngles,
     AnalysePrediction,
-    InterIntraForces,
+    ForceDecomposition,
     PredictWithModel,
 )
 
 __all__ = [
     "PredictWithModel",
-    "AnalyseForceAngles",
+    "ForceAngles",
     "AnalysePrediction",
-    "InterIntraForces",
-    "RattleAnalysis",
+    "ForceDecomposition",
+    "RattleAtoms",
     "BoxHeatUp",
-    "BoxScaleAnalysis",
+    "BoxScale",
     "EnergySpikeCheck",
     "ConnectivityCheck",
     "NaNCheck",
-    "MDStabilityAnalysis",
+    "MDStability",
 ]
