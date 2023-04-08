@@ -6166,14 +6166,14 @@ test = ["zope.testing"]
 
 [[package]]
 name = "znflow"
-version = "0.1.10"
+version = "0.1.11"
 description = "A general purpose framework for building and running computational graphs."
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "znflow-0.1.10-py3-none-any.whl", hash = "sha256:074b5fac6c1e889021bdeba152e3eb62aa4723af3206f3e8268eedb5428305ee"},
-    {file = "znflow-0.1.10.tar.gz", hash = "sha256:a6b7164c739cfed6c9a632afb036bbeafb3f2bc69ce1667104978a4fbded6a5b"},
+    {file = "znflow-0.1.11-py3-none-any.whl", hash = "sha256:190f6424bb98fbc6f817d35c5714ada1239ee74db231d684dc57d04480b11619"},
+    {file = "znflow-0.1.11.tar.gz", hash = "sha256:9802f4604815aa64a1b42b6cdf4fcd042d277d21de800019c9040f7f35d0426f"},
 ]
 
 [package.dependencies]
@@ -6260,4 +6260,4 @@ nequip = ["nequip"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "a4fb7b7fa5d635be687e64b5c41473e659b0a1d19d95db7592d622fc09e2e44f"
+content-hash = "c97f7a4fac3760ff0f0d283acf6158f0fb5ea9591d1d859f7b3e30008d32eef8"
