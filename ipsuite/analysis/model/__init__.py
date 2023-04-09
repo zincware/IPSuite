@@ -12,14 +12,14 @@ from ipsuite.analysis.model.dynamics_checks import (
 from ipsuite.analysis.model.predict import (
     ForceAngles,
     ForceDecomposition,
-    Metrics,
+    EvaluationMetrics,
     Prediction,
 )
 
 __all__ = [
     "Prediction",
     "ForceAngles",
-    "Metrics",
+    "EvaluationMetrics",
     "ForceDecomposition",
     "RattleAtoms",
     "BoxHeatUp",

@@ -51,7 +51,7 @@ class Prediction(base.ProcessAtoms):
             self.atoms.append(atoms)
 
 
-class Metrics(base.AnalyseProcessAtoms):
+class EvaluationMetrics(base.AnalyseProcessAtoms):
     """Analyse the Models Prediction.
 
     This Node computes
