@@ -44,7 +44,7 @@ class MACE(MLModel):
     test_data = zntrack.zn.deps()
     test_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "test-data.extxyz")
     model_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "model")
-    training: pathlib.Path = zntrack.dvc.plots_no_cache(
+    training: pathlib.Path = zntrack.dvc.plots(
         zntrack.nwd / "training.csv",
         template=STATIC_PATH / "y_log.json",
         x="epoch",
