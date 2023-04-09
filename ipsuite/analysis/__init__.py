@@ -9,12 +9,12 @@ from ipsuite.analysis.model import (
     BoxScale,
     ConnectivityCheck,
     EnergySpikeCheck,
-    PredictionMetrics,
     ForceAngles,
     ForceDecomposition,
     MDStability,
     NaNCheck,
     Prediction,
+    PredictionMetrics,
     RattleAtoms,
 )
 from ipsuite.analysis.sensitivity import (
