@@ -10,7 +10,7 @@ from ipsuite.analysis.model.dynamics_checks import (
     NaNCheck,
 )
 from ipsuite.analysis.model.predict import (
-    EvaluationMetrics,
+    PredictionMetrics,
     ForceAngles,
     ForceDecomposition,
     Prediction,
@@ -19,7 +19,7 @@ from ipsuite.analysis.model.predict import (
 __all__ = [
     "Prediction",
     "ForceAngles",
-    "EvaluationMetrics",
+    "PredictionMetrics",
     "ForceDecomposition",
     "RattleAtoms",
     "BoxHeatUp",
