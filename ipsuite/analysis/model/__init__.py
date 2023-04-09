@@ -10,9 +10,9 @@ from ipsuite.analysis.model.dynamics_checks import (
     NaNCheck,
 )
 from ipsuite.analysis.model.predict import (
+    EvaluationMetrics,
     ForceAngles,
     ForceDecomposition,
-    EvaluationMetrics,
     Prediction,
 )
 
