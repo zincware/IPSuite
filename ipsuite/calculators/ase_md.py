@@ -15,33 +15,9 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from tqdm import trange
 
 from ipsuite import base
+from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
 
 log = logging.getLogger(__name__)
-
-
-def print_energy(atoms: ase.Atoms) -> typing.Tuple[float, float]:
-    """Compute the temperature and the total energy.
-
-    Parameters
-    ----------
-    atoms: ase.Atoms
-        Atoms objects for which energy will be calculated
-
-    Returns
-    -------
-    temperature: float
-        temperature of the system
-    np.squeeze(total): float
-        total energy of the system
-
-    """
-    epot = atoms.get_potential_energy() / len(atoms)
-    ekin = atoms.get_kinetic_energy() / len(atoms)
-
-    temperature = ekin / (1.5 * units.kB)
-    total = epot + ekin
-
-    return temperature, np.squeeze(total)
 
 
 class ASEMD(base.ProcessSingleAtom):
@@ -119,7 +95,7 @@ class ASEMD(base.ProcessSingleAtom):
         # Run simulation
 
         energy = []
-        temperature, total_energy = print_energy(atoms)
+        temperature, total_energy = get_energy(atoms)
         total_fs = int(self.steps * self.time_step * self.sampling_rate)
 
         atoms.set_constraint(self.get_constraint())
@@ -144,9 +120,9 @@ class ASEMD(base.ProcessSingleAtom):
         ) as pbar:
             for idx in range(self.steps):
                 thermostat.run(self.sampling_rate)
-                temperature, total_energy = print_energy(atoms)
+                temperature, total_energy = get_energy(atoms)
                 energy.append([temperature, total_energy])
-                atoms_cache.append(atoms.copy())
+                atoms_cache.append(freeze_copy_atoms(atoms))
                 if len(atoms_cache) == self.dump_rate:
                     db.add(
                         znh5md.io.AtomsReader(
