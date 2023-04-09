@@ -1,37 +1,3 @@
-import logging
+import lazy_loader as lazy
 
-from ipsuite.models.base import MLModel, Prediction
-from ipsuite.models.ensemble import EnsembleModel
-
-log = logging.getLogger(__name__)
-
-__all__ = ["Prediction", "MLModel", "EnsembleModel"]
-try:
-    from ipsuite.models.gap import GAP
-
-    __all__ += ["GAP"]
-except ImportError:  # ModuleNotFoundError is a subclass of ImportError
-    log.warning(
-        "No GAP installation was found. You can install GAP using 'pip install"
-        " ipsuite[gap]'"
-    )
-
-try:
-    from ipsuite.models.nequip import Nequip
-
-    __all__ += ["Nequip"]
-except ImportError:
-    log.warning(
-        "No Nequip installation was found. You can install GAP using 'pip install"
-        " ipsuite[nequip]'"
-    )
-
-try:
-    from ipsuite.models.mace_model import MACE
-
-    __all__ += ["MACE"]
-except ImportError:
-    log.warning(
-        "No MACE installation was found. The installation is described at"
-        " 'https://github.com/ACEsuit/mace'"
-    )
+__getattr__, __dir__, __all__ = lazy.attach_stub(__name__, __file__)

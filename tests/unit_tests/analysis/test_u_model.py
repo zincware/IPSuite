@@ -1,6 +1,6 @@
 import numpy as np
 
-from ipsuite.analysis.model import force_decomposition
+from ipsuite.analysis.model.math import force_decomposition
 from ipsuite.geometry import BarycenterMapping
 
 
