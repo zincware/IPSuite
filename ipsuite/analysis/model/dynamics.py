@@ -19,6 +19,7 @@ from tqdm import trange
 
 from ipsuite import base, models, utils
 from ipsuite.analysis.bin_property import get_histogram_figure
+from ipsuite.utils.ase_sim import freeze_copy_atoms
 from ipsuite.utils.md import get_energy_terms
 
 log = logging.getLogger(__name__)
@@ -83,7 +84,7 @@ class RattleAtoms(base.ProcessSingleAtom):
             atoms.positions = reference.positions
             atoms.rattle(stdev=stdev, seed=self.seed)
             energies.append(atoms.get_potential_energy())
-            self.atoms.append(atoms.copy())
+            self.atoms.append(freeze_copy_atoms(atoms))
 
         self.energies = pd.DataFrame({"y": energies, "x": stdev_space})
 
@@ -147,7 +148,7 @@ class BoxScale(base.ProcessSingleAtom):
                 eval_atoms.calc = self.model.calc
 
             energies.append(eval_atoms.get_potential_energy())
-            self.atoms.append(eval_atoms.copy())
+            self.atoms.append(freeze_copy_atoms(eval_atoms))
 
         self.energies = pd.DataFrame({"y": energies, "x": scale_space})
 
@@ -249,7 +250,7 @@ class BoxHeatUp(base.ProcessSingleAtom):
                         f" {self.max_temperature} K. Simulation was stopped."
                     )
                     break
-                self.atoms.append(atoms.copy())
+                self.atoms.append(freeze_copy_atoms(atoms))
 
         self.flux_data = pd.DataFrame(
             energy, columns=["meassured_temp", "energy", "set_temp"]
@@ -283,7 +284,7 @@ def run_stability_nve(
     MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature, rng=rng)
     etot, ekin, epot = get_energy_terms(atoms)
     last_n_atoms = deque(maxlen=save_last_n)
-    last_n_atoms.append(atoms.copy())
+    last_n_atoms.append(freeze_copy_atoms(atoms))
 
     for check in checks:
         check.initialize(atoms)
@@ -302,7 +303,7 @@ def run_stability_nve(
     ) as pbar:
         for idx in range(max_steps):
             dyn.run(1)
-            last_n_atoms.append(atoms.copy())
+            last_n_atoms.append(freeze_copy_atoms(atoms))
             etot, ekin, epot = get_energy_terms(atoms)
 
             if idx % pbar_update == 0:

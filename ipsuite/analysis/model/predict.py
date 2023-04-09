@@ -1,4 +1,3 @@
-import contextlib
 import pathlib
 
 import ase
@@ -6,12 +5,13 @@ import numpy as np
 import pandas as pd
 import tqdm
 import zntrack
-from ase.calculators.singlepoint import PropertyNotImplementedError, SinglePointCalculator
+from ase.calculators.singlepoint import PropertyNotImplementedError
 
 from ipsuite import base, models, utils
 from ipsuite.analysis.model.math import force_decomposition
 from ipsuite.analysis.model.plots import get_figure, get_hist
 from ipsuite.geometry import BarycenterMapping
+from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
 class Prediction(base.ProcessAtoms):
@@ -35,20 +35,9 @@ class Prediction(base.ProcessAtoms):
             # Run calculation
             atoms = configuration.copy()
             atoms.calc = calc
+            atoms.get_potential_energy()
 
-            # Save properties to SinglePointCalculator
-            # (Other calculators might not be saved.)
-            properties = {}
-            with contextlib.suppress(PropertyNotImplementedError):
-                properties["energy"] = atoms.get_potential_energy()
-            with contextlib.suppress(PropertyNotImplementedError):
-                properties["forces"] = atoms.get_forces()
-            with contextlib.suppress(PropertyNotImplementedError, ValueError):
-                properties["stress"] = atoms.get_stress()
-
-            if properties:
-                atoms.calc = SinglePointCalculator(atoms=atoms, **properties)
-            self.atoms.append(atoms)
+            self.atoms.append(freeze_copy_atoms(atoms))
 
 
 class PredictionMetrics(base.AnalyseProcessAtoms):
