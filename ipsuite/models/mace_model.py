@@ -48,7 +48,7 @@ class MACE(MLModel):
         zntrack.nwd / "training.csv",
         template=STATIC_PATH / "y_log.json",
         x="epoch",
-        y="loss",
+        y=["loss", "rmse_e_per_atom", "rmse_f"],
     )
 
     seed = zntrack.zn.params(42)
