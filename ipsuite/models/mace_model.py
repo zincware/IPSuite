@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
 
 def execute(cmd, **kwargs):
     """Execute a command and yield the output line by line.
-    
+
     Adapted from https://stackoverflow.com/a/4417735/10504481
     """
     popen = subprocess.Popen(
