@@ -24,7 +24,7 @@ class Packmol(zntrack.Node):
     def _post_init_(self):
         if len(self.data) != len(self.count):
             raise ValueError("The number of data and count must be the same.")
-        if isinstance(self.box, int):
+        if isinstance(self.box, (int, float)):
             self.box = [self.box, self.box, self.box]
 
     def run(self):
