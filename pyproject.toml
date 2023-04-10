@@ -1,10 +1,10 @@
 [tool.poetry]
 name = "ipsuite"
-version = "0.1.0a1"
+version = "0.1.0a2"
 description = "A suite of tools for machine learned interatomic potentials."
 authors = ["zincwarecode <zincwarecode@gmail.com>"]
 keywords = ["data-version-control", "machine-learning", "reproducibility", "interatomic potentials"]
-license = "EPL-2.0"
+license = "License :: OSI Approved :: Eclipse Public License 2.0 (EPL-2.0)"
 readme = "README.md"
 
 [tool.poetry.dependencies]
