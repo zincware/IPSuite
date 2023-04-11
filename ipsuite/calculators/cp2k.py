@@ -14,6 +14,7 @@ import cp2k_output_tools
 import pandas as pd
 import tqdm
 import yaml
+import znh5md
 import zntrack
 from ase.calculators.singlepoint import SinglePointCalculator
 from cp2k_input_tools.generator import CP2KInputGenerator
@@ -135,20 +136,34 @@ class CP2KYaml(base.ProcessSingleAtom):
 
 
 class CP2KSinglePoint(base.ProcessAtoms):
-    """Node for running CP2K Single point calculations."""
+    """Node for running CP2K Single point calculations.
+
+    Parameters
+    ----------
+    cp2k_shell : str
+        The cmd to run cp2k.
+    cp2k_params : str
+        The path to the cp2k yaml input file. cp2k-input-tools is used to
+        generate the input file from the yaml file.
+    cp2k_files : str
+        Additional dependencies for the cp2k calculation.
+    wfn_restart_file : str, optional
+        The path to the wfn restart file.
+    wfn_restart_node : str, optional
+        A cp2k Node that has a wfn restart file.
+    """
 
     cp2k_shell: str = zntrack.meta.Text("cp2k_shell.ssmp")
     cp2k_params = zntrack.dvc.params("cp2k.yaml")
-    cp2k_files = zntrack.dvc.deps()
+    cp2k_files = zntrack.dvc.deps(None)
 
-    wfn_restart: str = zntrack.dvc.deps(None)
-    output_file = zntrack.dvc.outs(zntrack.nwd / "atoms.extxyz")
+    wfn_restart_file: str = zntrack.dvc.deps(None)
+    wfn_restart_node = zntrack.zn.deps(None)
+    output_file = zntrack.dvc.outs(zntrack.nwd / "atoms.h5")
     cp2k_directory = zntrack.dvc.outs(zntrack.nwd / "cp2k")
 
     def run(self):
         """ZnTrack run method."""
-        self.atoms = self.get_data()
-
         self.cp2k_directory.mkdir(exist_ok=True)
         with pathlib.Path(self.cp2k_params).open("r") as file:
             cp2k_input_dict = yaml.safe_load(file)
@@ -157,8 +172,16 @@ class CP2KSinglePoint(base.ProcessAtoms):
 
         cp2k_input_script = "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
 
-        if self.wfn_restart is not None:
-            shutil.copy(self.wfn_restart, self.cp2k_directory / "cp2k-RESTART.wfn")
+        if self.wfn_restart_file is not None:
+            shutil.copy(self.wfn_restart_file, self.cp2k_directory / "cp2k-RESTART.wfn")
+        if self.wfn_restart_node is not None:
+            shutil.copy(
+                self.wfn_restart_node.cp2k_directory / "cp2k-RESTART.wfn",
+                self.cp2k_directory / "cp2k-RESTART.wfn",
+            )
+
+        db = znh5md.io.DataWriter(self.output_file)
+        db.initialize_database_groups()
 
         with patch(
             "ase.calculators.cp2k.Popen",
@@ -181,11 +204,16 @@ class CP2KSinglePoint(base.ProcessAtoms):
                 label="cp2k",
             )
 
-            for atom in tqdm.tqdm(self.atoms):
-                atom.calc = calculator
-                atom.get_potential_energy()
-                ase.io.write(self.output_file.as_posix(), atom, append=True)
+            for atoms in tqdm.tqdm(self.get_data()):
+                atoms.calc = calculator
+                atoms.get_potential_energy()
+                db.add(znh5md.io.AtomsReader([atoms]))
 
-        for file in self.cp2k_directory.glob("cp2k-RESTART.wfn*"):
-            # we don't need the restart files
+        for file in self.cp2k_directory.glob("cp2k-RESTART.wfn.*"):
+            # we don't need all restart files
             file.unlink()
+
+    @property
+    def atoms(self):
+        """Return the atoms object."""
+        return znh5md.io.AtomsReader(self.output_file)
