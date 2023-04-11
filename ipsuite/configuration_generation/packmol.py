@@ -17,7 +17,7 @@ class Packmol(zntrack.Node):
     Attributes
     ----------
     density : float
-        Density of the mixture in kg/m^3
+        Density of the system in kg/m^3. Either density or box is required.
 
     """
 
