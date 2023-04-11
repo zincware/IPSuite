@@ -1,6 +1,7 @@
 """MACE model module."""
 
 import functools
+import json
 import logging
 import pathlib
 import subprocess
@@ -8,6 +9,7 @@ import typing
 
 import ase
 import numpy as np
+import pandas as pd
 import torch
 import tqdm
 import zntrack
@@ -15,8 +17,23 @@ from mace.calculators import MACECalculator
 
 from ipsuite import utils
 from ipsuite.models import MLModel, Prediction
+from ipsuite.static_data import STATIC_PATH
 
 log = logging.getLogger(__name__)
+
+
+def execute(cmd, **kwargs):
+    """Execute a command and yield the output line by line.
+
+    Adapted from https://stackoverflow.com/a/4417735/10504481
+    """
+    popen = subprocess.Popen(
+        cmd, stdout=subprocess.PIPE, universal_newlines=True, **kwargs
+    )
+    yield from iter(popen.stdout.readline, "")
+    popen.stdout.close()
+    if return_code := popen.wait():  # finally a use for walrus operator
+        raise subprocess.CalledProcessError(return_code, cmd)
 
 
 class MACE(MLModel):
@@ -27,6 +44,12 @@ class MACE(MLModel):
     test_data = zntrack.zn.deps()
     test_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "test-data.extxyz")
     model_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "model")
+    training: pathlib.Path = zntrack.dvc.plots(
+        zntrack.nwd / "training.csv",
+        template=STATIC_PATH / "y_log.json",
+        x="epoch",
+        y=["loss", "rmse_e_per_atom", "rmse_f"],
+    )
 
     seed = zntrack.zn.params(42)
 
@@ -88,7 +111,19 @@ class MACE(MLModel):
 
         log.debug(f"Running: {cmd}")
 
-        subprocess.check_call(cmd, shell=True, cwd=self.model_dir)
+        for path in execute(cmd, shell=True, cwd=self.model_dir):
+            print(path, end="")
+            file = list((self.model_dir / "results").glob("*.*"))
+            if len(file) == 1:
+                data = []
+
+                with file[0].open() as f:
+                    for line in f.readlines():
+                        value = json.loads(line)
+                        if value["mode"] == "eval":
+                            data.append(value)
+
+                pd.DataFrame(data).set_index("epoch").to_csv(self.training)
 
     @functools.cached_property
     def calc(self):

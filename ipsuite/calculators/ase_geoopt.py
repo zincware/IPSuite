@@ -1,6 +1,7 @@
 import logging
 import pathlib
 
+import ase.io
 import ase.optimize
 import zntrack
 
@@ -28,4 +29,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
 
             dyn = optimizer(atoms, trajectory=self.traj.as_posix(), **self.init_kwargs)
             dyn.run(**self.run_kwargs)
-        self.atoms = [atoms]
+
+    @property
+    def atoms(self):
+        return list(ase.io.iread(self.traj.as_posix()))
