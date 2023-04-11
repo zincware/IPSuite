@@ -9,6 +9,7 @@ from ipsuite.analysis.model.dynamics_checks import (
     EnergySpikeCheck,
     NaNCheck,
 )
+from ipsuite.analysis.model.misc import MultiXYPlot
 from ipsuite.analysis.model.predict import (
     ForceAngles,
     ForceDecomposition,
@@ -28,4 +29,5 @@ __all__ = [
     "ConnectivityCheck",
     "NaNCheck",
     "MDStability",
+    "MultiXYPlot",
 ]
