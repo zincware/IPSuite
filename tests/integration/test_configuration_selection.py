@@ -68,7 +68,6 @@ def test_KernelSelect(proj_path, traj_file, eager):
     mmk_kernel = ips.configuration_comparison.MMKernel(
         use_jit=True,
         soap={
-            "atomic_keys": [6, 8],
             "r_cut": 1.1,
             "n_max": 3,
             "l_max": 3,
@@ -78,7 +77,6 @@ def test_KernelSelect(proj_path, traj_file, eager):
 
     rematch_kernel = ips.configuration_comparison.REMatch(
         soap={
-            "atomic_keys": [6, 8],
             "r_cut": 1.1,
             "n_max": 3,
             "l_max": 3,
@@ -169,7 +167,6 @@ def test_MMKSelectMethod(proj_path, test_traj):
 
     rematch_kernel = ips.configuration_comparison.REMatch(
         soap={
-            "atomic_keys": [1, 6],
             "r_cut": 3,
             "n_max": 3,
             "l_max": 3,
@@ -179,7 +176,6 @@ def test_MMKSelectMethod(proj_path, test_traj):
     mmk_kernel = ips.configuration_comparison.MMKernel(
         # use_jit=False,
         soap={
-            "atomic_keys": [1, 6],
             "r_cut": 3,
             "n_max": 3,
             "l_max": 3,
