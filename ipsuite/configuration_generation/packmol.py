@@ -1,4 +1,5 @@
 """Use packmole to create a periodic box"""
+import logging
 import pathlib
 import subprocess
 
@@ -6,6 +7,8 @@ import ase
 import ase.units
 import zntrack
 from ase.visualize import view
+
+log = logging.getLogger(__name__)
 
 
 class Packmol(zntrack.Node):
@@ -48,7 +51,7 @@ class Packmol(zntrack.Node):
             file += f"""
             structure {idx}.xyz
                 number {count}
-                inside box 0 0 0 {" ".join([str(x) for x in self.box])}
+                inside box 0 0 0 {" ".join([f"{x:.4f}" for x in self.box])}
             end structure
             """
         with pathlib.Path(self.structures / "packmole.inp").open("w") as f:
@@ -69,11 +72,12 @@ class Packmol(zntrack.Node):
         volume = molar_volume * (ase.units.m**3) / ase.units.mol
 
         self.box = [volume ** (1 / 3) for _ in range(3)]
-
-        self.box = ase.geometry.get_extended_cell(self.atoms, self.density).cell
+        log.info(f"estimated box size: {self.box}")
 
     @property
     def atoms(self):
+        if self.density is not None:
+            self._get_box_from_molar_volume()
         atoms = ase.io.read(self.structures / "mixture.xyz")
         atoms.cell = self.box
         atoms.pbc = True
