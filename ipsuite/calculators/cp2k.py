@@ -164,50 +164,16 @@ class CP2KSinglePoint(base.ProcessAtoms):
 
     def run(self):
         """ZnTrack run method."""
-        self.cp2k_directory.mkdir(exist_ok=True)
-        with pathlib.Path(self.cp2k_params).open("r") as file:
-            cp2k_input_dict = yaml.safe_load(file)
-
-        _update_paths(cp2k_input_dict)
-
-        cp2k_input_script = "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
-
-        if self.wfn_restart_file is not None:
-            shutil.copy(self.wfn_restart_file, self.cp2k_directory / "cp2k-RESTART.wfn")
-        if self.wfn_restart_node is not None:
-            shutil.copy(
-                self.wfn_restart_node.cp2k_directory / "cp2k-RESTART.wfn",
-                self.cp2k_directory / "cp2k-RESTART.wfn",
-            )
 
         db = znh5md.io.DataWriter(self.output_file)
         db.initialize_database_groups()
 
-        with patch(
-            "ase.calculators.cp2k.Popen",
-            wraps=functools.partial(subprocess.Popen, cwd=self.cp2k_directory),
-        ):
-            calculator = ase.calculators.cp2k.CP2K(
-                command=self.cp2k_shell,
-                inp=cp2k_input_script,
-                basis_set=None,
-                basis_set_file=None,
-                max_scf=None,
-                cutoff=None,
-                force_eval_method=None,
-                potential_file=None,
-                poisson_solver=None,
-                pseudo_potential=None,
-                stress_tensor=True,
-                xc=None,
-                print_level=None,
-                label="cp2k",
-            )
+        calc = self.calc
 
-            for atoms in tqdm.tqdm(self.get_data()):
-                atoms.calc = calculator
-                atoms.get_potential_energy()
-                db.add(znh5md.io.AtomsReader([atoms]))
+        for atoms in tqdm.tqdm(self.get_data()):
+            atoms.calc = calc
+            atoms.get_potential_energy()
+            db.add(znh5md.io.AtomsReader([atoms]))
 
         for file in self.cp2k_directory.glob("cp2k-RESTART.wfn.*"):
             # we don't need all restart files
@@ -217,3 +183,57 @@ class CP2KSinglePoint(base.ProcessAtoms):
     def atoms(self):
         """Return the atoms object."""
         return znh5md.io.AtomsReader(self.output_file)
+
+    def get_input_script(self):
+        """Return the input script.
+
+        We use cached_property, because this will also copy the restart file
+        to the cp2k directory.
+        """
+        if not self.cp2k_directory.exists():
+            self.cp2k_directory.mkdir(exist_ok=True)
+
+            if self.wfn_restart_file is not None:
+                shutil.copy(
+                    self.wfn_restart_file, self.cp2k_directory / "cp2k-RESTART.wfn"
+                )
+            if self.wfn_restart_node is not None:
+                shutil.copy(
+                    self.wfn_restart_node.cp2k_directory / "cp2k-RESTART.wfn",
+                    self.cp2k_directory / "cp2k-RESTART.wfn",
+                )
+
+        with pathlib.Path(self.cp2k_params).open("r") as file:
+            cp2k_input_dict = yaml.safe_load(file)
+
+        _update_paths(cp2k_input_dict)
+
+        return "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
+
+    @property
+    def calc(self):
+        """Return the calculator object."""
+
+        # patch.start will patch the object permanently.
+
+        patch(
+            "ase.calculators.cp2k.Popen",
+            wraps=functools.partial(subprocess.Popen, cwd=self.cp2k_directory),
+        ).start()
+
+        return ase.calculators.cp2k.CP2K(
+            command=self.cp2k_shell,
+            inp=self.get_input_script(),
+            basis_set=None,
+            basis_set_file=None,
+            max_scf=None,
+            cutoff=None,
+            force_eval_method=None,
+            potential_file=None,
+            poisson_solver=None,
+            pseudo_potential=None,
+            stress_tensor=True,
+            xc=None,
+            print_level=None,
+            label="cp2k",
+        )
