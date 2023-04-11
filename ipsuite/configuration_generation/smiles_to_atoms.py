@@ -13,6 +13,7 @@ class SmilesToAtoms(zntrack.Node):
     atoms = fields.Atoms()
 
     smiles: str = zntrack.zn.params()
+    cell: float = zntrack.zn.params(None)
     seed: int = zntrack.zn.params(1234)
     optimizer: str = zntrack.zn.params("UFF")
     image: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "molecule.png")
@@ -34,6 +35,9 @@ class SmilesToAtoms(zntrack.Node):
             numbers=[atom.GetAtomicNum() for atom in mol.GetAtoms()],
         )
         atoms.positions -= atoms.get_center_of_mass()
+        if self.cell is not None:
+            atoms.set_cell([self.cell, self.cell, self.cell])
+            atoms.center()
         self.atoms = [atoms]
 
     def view(self) -> view:
