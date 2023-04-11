@@ -33,6 +33,7 @@ jobs:
       - name: show conda-incubator/setup-miniconda
         run: |
           conda info
+          conda install -c conda-forge xtb-python
       - name: Install Poetry
         run: |
           pipx install poetry
