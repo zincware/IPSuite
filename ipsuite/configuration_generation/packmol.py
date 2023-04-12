@@ -66,7 +66,7 @@ class Packmol(zntrack.Node):
             for atoms, count in zip(self.data, self.count)
         ]
         molar_mass = sum(molar_mass)  #  g / mol
-        molar_volume = molar_mass / 626 / 1000  # m^3 / mol
+        molar_volume = molar_mass / self.density / 1000  # m^3 / mol
 
         # convert to particles / A^3
         volume = molar_volume * (ase.units.m**3) / ase.units.mol
