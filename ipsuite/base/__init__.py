@@ -1,6 +1,6 @@
 """Base classes and protocols for ipsuite nodes."""
 
-from ipsuite.base import protocol
+from ipsuite.base import calculators, protocol
 from ipsuite.base.base import (
     AnalyseAtoms,
     AnalyseProcessAtoms,
@@ -18,4 +18,5 @@ __all__ = [
     "protocol",
     "Mapping",
     "CheckBase",
+    "calculators",
 ]

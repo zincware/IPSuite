@@ -135,6 +135,22 @@ class CP2KYaml(base.ProcessSingleAtom):
         return atoms
 
 
+class LogPathCP2KCalc(ase.calculators.cp2k.CP2K, base.calculators.LogPathCalculator):
+    @property
+    def log_path(self):
+        self.__dict__.get("log_path")
+
+    @log_path.setter
+    def log_path(self, value):
+        self.__dict__["log_path"] = value
+
+        # TODO can we only patch this for the self instance?
+        patch(
+            "ase.calculators.cp2k.Popen",
+            wraps=functools.partial(subprocess.Popen, cwd=value),
+        ).start()
+
+
 class CP2KSinglePoint(base.ProcessAtoms):
     """Node for running CP2K Single point calculations.
 
@@ -216,12 +232,7 @@ class CP2KSinglePoint(base.ProcessAtoms):
 
         # patch.start will patch the object permanently.
 
-        patch(
-            "ase.calculators.cp2k.Popen",
-            wraps=functools.partial(subprocess.Popen, cwd=self.cp2k_directory),
-        ).start()
-
-        return ase.calculators.cp2k.CP2K(
+        calc = LogPathCP2KCalc(
             command=self.cp2k_shell,
             inp=self.get_input_script(),
             basis_set=None,
@@ -237,3 +248,5 @@ class CP2KSinglePoint(base.ProcessAtoms):
             print_level=None,
             label="cp2k",
         )
+        calc.log_path = self.cp2k_directory
+        return calc
