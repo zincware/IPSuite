@@ -8,6 +8,7 @@ from ipsuite.base.base import (
     Mapping,
     ProcessAtoms,
     ProcessSingleAtom,
+    ProcessSingleAtomCalc,
 )
 
 __all__ = [
@@ -15,6 +16,7 @@ __all__ = [
     "ProcessSingleAtom",
     "AnalyseAtoms",
     "AnalyseProcessAtoms",
+    "ProcessSingleAtomCalc",
     "protocol",
     "Mapping",
     "CheckBase",

@@ -10,9 +10,7 @@ from ipsuite import base
 log = logging.getLogger(__name__)
 
 
-class ASEGeoOpt(base.ProcessSingleAtom):
-    calculator = zntrack.zn.deps()
-
+class ASEGeoOpt(base.ProcessSingleAtomCalc):
     optimizer: str = zntrack.zn.params("FIRE")
     traj: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "optim.traj")
 
@@ -24,7 +22,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
         atoms = self.get_data()
         atoms = atoms.repeat(self.repeat)
         if self.optimizer is not None:
-            atoms.calc = self.calculator
+            atoms.calc = self.get_calc()
             optimizer = getattr(ase.optimize, self.optimizer)
 
             dyn = optimizer(atoms, trajectory=self.traj.as_posix(), **self.init_kwargs)

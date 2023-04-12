@@ -8,6 +8,7 @@ import znflow
 import zntrack
 
 from ipsuite import fields
+from ipsuite.base.calculators import LogPathCalculator
 
 # TODO raise error if both data and data_file are given
 
@@ -101,6 +102,23 @@ class ProcessSingleAtom(zntrack.Node):
         else:
             raise ValueError("No data given.")
         return atoms
+
+
+class ProcessSingleAtomCalc(ProcessSingleAtom):
+    calc = zntrack.zn.deps()
+    calc_logs = zntrack.zn.outs(None)
+
+    def _post_init_(self):
+        if isinstance(self.calc, LogPathCalculator):
+            # TODO we must ensure, that the calc property is being cached!
+            self.calc_logs = zntrack.nwd / "calc_logs"
+            self.calc.log_path = self.calc_logs
+
+    def get_calc(self):
+        calc = self.calc
+        if isinstance(calc, LogPathCalculator):
+            calc.log_path = self.calc_logs
+        return calc
 
 
 class AnalyseAtoms(zntrack.Node):
