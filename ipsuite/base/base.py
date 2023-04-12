@@ -106,13 +106,14 @@ class ProcessSingleAtom(zntrack.Node):
 
 class ProcessSingleAtomCalc(ProcessSingleAtom):
     calc = zntrack.zn.deps()
-    calc_logs = zntrack.zn.outs(None)
+    calc_logs = zntrack.dvc.outs(None)
 
     def _post_init_(self):
-        if isinstance(self.calc, LogPathCalculator):
-            # TODO we must ensure, that the calc property is being cached!
-            self.calc_logs = zntrack.nwd / "calc_logs"
-            self.calc.log_path = self.calc_logs
+        with znflow.disable_graph():
+            if isinstance(self.calc, LogPathCalculator):
+                # TODO we must ensure, that the calc property is being cached!
+                self.calc_logs = zntrack.nwd / "calc_logs"
+                self.calc.log_path = self.calc_logs
 
     def get_calc(self):
         calc = self.calc

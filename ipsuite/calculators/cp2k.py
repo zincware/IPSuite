@@ -9,6 +9,7 @@ import shutil
 import subprocess
 from unittest.mock import patch
 
+import ase.calculators.cp2k
 import ase.io
 import cp2k_output_tools
 import pandas as pd
