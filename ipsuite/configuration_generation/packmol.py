@@ -28,7 +28,7 @@ class Packmol(zntrack.Node):
     tolerance: float = zntrack.zn.params(2.0)
     box: list = zntrack.zn.params(None)
     density: float = zntrack.zn.params(None)
-    structures = zntrack.dvc.outs(zntrack.nwd)
+    structures = zntrack.dvc.outs(zntrack.nwd / "packmol")
     atoms = fields.Atoms()
 
     def _post_init_(self):
@@ -40,6 +40,7 @@ class Packmol(zntrack.Node):
             self.box = [self.box, self.box, self.box]
 
     def run(self):
+        self.structures.mkdir(exist_ok=True, parents=True)
         for idx, atoms in enumerate(self.data):
             ase.io.write(self.structures / f"{idx}.xyz", atoms)
 
