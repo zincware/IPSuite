@@ -23,6 +23,7 @@ class ASEGeoOpt(base.ProcessSingleAtomCalc):
         atoms = atoms.repeat(self.repeat)
         if self.optimizer is not None:
             atoms.calc = self.get_calc()
+            print(atoms.calc.log_path)
             optimizer = getattr(ase.optimize, self.optimizer)
 
             dyn = optimizer(atoms, trajectory=self.traj.as_posix(), **self.init_kwargs)

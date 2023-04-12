@@ -139,18 +139,20 @@ class CP2KYaml(base.ProcessSingleAtom):
 class LogPathCP2KCalc(ase.calculators.cp2k.CP2K, base.calculators.LogPathCalculator):
     @property
     def log_path(self):
-        self.__dict__.get("log_path")
+        return self.__dict__.get("log_path")
 
     @log_path.setter
     def log_path(self, value):
         self.__dict__["log_path"] = value
         pathlib.Path(value).mkdir(exist_ok=True, parents=True)
 
-        # TODO can we only patch this for the self instance?
-        patch(
+        # TODO how to handle restart file copies
+
+        with patch(
             "ase.calculators.cp2k.Popen",
             wraps=functools.partial(subprocess.Popen, cwd=value),
-        ).start()
+        ):
+            self._shell = ase.calculators.cp2k.Cp2kShell(self.command, self._debug)
 
 
 class CP2KSinglePoint(base.ProcessAtoms):
