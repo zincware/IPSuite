@@ -108,6 +108,8 @@ class ProcessSingleAtomCalc(ProcessSingleAtom):
     calc = zntrack.zn.deps()
     calc_logs = zntrack.dvc.outs(zntrack.nwd / "calc_logs")
 
+    # TODO remove restart files when finished?
+
     def get_calc(self):
         calc = self.calc
         if isinstance(calc, LogPathCalculator):

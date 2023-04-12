@@ -138,15 +138,21 @@ class CP2KYaml(base.ProcessSingleAtom):
 
 class LogPathCP2KCalc(ase.calculators.cp2k.CP2K, base.calculators.LogPathCalculator):
     @property
-    def log_path(self):
+    def log_path(self) -> pathlib.Path:
         return self.__dict__.get("log_path")
 
     @log_path.setter
     def log_path(self, value):
-        self.__dict__["log_path"] = value
-        pathlib.Path(value).mkdir(exist_ok=True, parents=True)
+        new_path = pathlib.Path(value)
+        new_path.mkdir(exist_ok=True, parents=True)
 
-        # TODO how to handle restart file copies
+        if self.__dict__.get("log_path") is not None:
+            wfn = self.__dict__["log_path"] / "cp2k-RESTART.wfn"
+            if wfn.exists():
+                # if there is a restart file in the original nwd,
+                # we copy it to the zn.deps node log directory.
+                shutil.copy(wfn, new_path / "cp2k-RESTART.wfn")
+        self.__dict__["log_path"] = value
 
         with patch(
             "ase.calculators.cp2k.Popen",
