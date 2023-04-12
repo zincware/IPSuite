@@ -8,6 +8,8 @@ import ase.units
 import zntrack
 from ase.visualize import view
 
+from ipsuite import fields
+
 log = logging.getLogger(__name__)
 
 
@@ -27,6 +29,7 @@ class Packmol(zntrack.Node):
     box: list = zntrack.zn.params(None)
     density: float = zntrack.zn.params(None)
     structures = zntrack.dvc.outs(zntrack.nwd)
+    atoms = fields.Atoms()
 
     def _post_init_(self):
         if self.box is None and self.density is None:
@@ -59,6 +62,11 @@ class Packmol(zntrack.Node):
 
         subprocess.check_call("packmol < packmole.inp", shell=True, cwd=self.structures)
 
+        atoms = ase.io.read(self.structures / "mixture.xyz")
+        atoms.cell = self.box
+        atoms.pbc = True
+        self.atoms = [atoms]
+
     def _get_box_from_molar_volume(self):
         """Get the box size from the molar volume"""
         molar_mass = [
@@ -73,15 +81,6 @@ class Packmol(zntrack.Node):
 
         self.box = [volume ** (1 / 3) for _ in range(3)]
         log.info(f"estimated box size: {self.box}")
-
-    @property
-    def atoms(self):
-        if self.density is not None:
-            self._get_box_from_molar_volume()
-        atoms = ase.io.read(self.structures / "mixture.xyz")
-        atoms.cell = self.box
-        atoms.pbc = True
-        return atoms
 
     def view(self) -> view:
         return view(self.atoms, viewer="x3d")
