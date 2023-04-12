@@ -115,6 +115,7 @@ class ProcessSingleAtomCalc(ProcessSingleAtom):
         if isinstance(calc, LogPathCalculator):
             calc.log_path = self.calc_logs
         else:
+            self.calc_logs.mkdir(parents=True, exist_ok=True)
             (self.calc_logs / "calc.log").write_text("# calc.log")
         return calc
 
