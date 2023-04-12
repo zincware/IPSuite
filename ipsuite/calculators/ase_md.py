@@ -20,7 +20,7 @@ from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
 log = logging.getLogger(__name__)
 
 
-class ASEMD(base.ProcessSingleAtom):
+class ASEMD(base.ProcessSingleAtomCalc):
     """Class to run a MD simulation with ASE.
 
     Attributes
@@ -54,7 +54,6 @@ class ASEMD(base.ProcessSingleAtom):
         write them to the trajectory file every 'dump_rate' steps.
     """
 
-    model = zntrack.zn.deps()
     temperature = zntrack.zn.params()
     time_step = zntrack.zn.params()
     friction = zntrack.zn.params()
@@ -82,7 +81,7 @@ class ASEMD(base.ProcessSingleAtom):
     def run(self):
         """Run the simulation."""
         atoms = self.get_atoms()
-        atoms.calc = self.model.calc
+        atoms.calc = self.get_calc()
         # Initialize velocities
         MaxwellBoltzmannDistribution(atoms, temperature_K=self.temperature)
         # initialize thermostat
