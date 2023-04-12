@@ -7,7 +7,7 @@ def test_ase_md(proj_path, traj_file):
         model = ips.models.GAP(data=data.atoms)
         md = ips.calculators.ASEMD(
             data=data.atoms,
-            model=model,
+            calc=model,
             temperature=1,
             time_step=1,
             friction=1,
