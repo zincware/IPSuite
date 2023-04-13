@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 import torch
 import tqdm
+import yaml
 import zntrack
 from mace.calculators import MACECalculator
 
@@ -44,6 +45,10 @@ class MACE(MLModel):
     test_data = zntrack.zn.deps()
     test_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "test-data.extxyz")
     model_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "model")
+
+    config: str = zntrack.dvc.deps("mace.yaml")
+    device: str = zntrack.meta.Text("cuda" if torch.cuda.is_available() else "cpu")
+
     training: pathlib.Path = zntrack.dvc.plots(
         zntrack.nwd / "training.csv",
         template=STATIC_PATH / "y_log.json",
@@ -51,30 +56,29 @@ class MACE(MLModel):
         y=["loss", "rmse_e_per_atom", "rmse_f"],
     )
 
-    seed = zntrack.zn.params(42)
-
-    hidden_irreps: str = zntrack.zn.params("16x0e + 16x1o")
-    r_max: float = zntrack.zn.params(5.0)
-    batch_size: int = zntrack.zn.params(10)
-    max_num_epochs: int = zntrack.zn.params(1000)
-    device: str = zntrack.meta.Text("cuda" if torch.cuda.is_available() else "cpu")
-
-    swa: bool = zntrack.zn.params(True)
-    start_swa: int = zntrack.zn.params(1200)
-
-    ema: bool = zntrack.zn.params(True)
-    ema_decay: int = zntrack.zn.params(0.99)
-
-    amsgrad: bool = zntrack.zn.params(True)
-
-    num_radial_basis: int = zntrack.zn.params(8)
-    num_cutoff_basis: int = zntrack.zn.params(5)
-
-    num_interactions: int = zntrack.zn.params(2)
-
     def _post_init_(self):
         self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
         self.test_data = utils.helpers.get_deps_if_node(self.test_data, "atoms")
+
+    @classmethod
+    def generate_config_file(self, file: str = "mace.yaml"):
+        example = {
+            "amsgrad": True,
+            "batch_size": 5,
+            "ema": True,
+            "ema_decay": 0.99,
+            "hidden_irreps": "128x0e + 128x1o",
+            "max_num_epochs": 1000,
+            "num_cutoff_basis": 5,
+            "num_interactions": 2,
+            "num_radial_basis": 8,
+            "r_max": 5.0,
+            "seed": 42,
+            "start_swa": 1200,
+            "swa": True,
+            "E0s": "average",
+        }
+        pathlib.Path(file).write_text(yaml.safe_dump(example))
 
     def run(self):
         """Train a MACE model."""
@@ -84,27 +88,14 @@ class MACE(MLModel):
         cmd += f'--train_file="{self.train_data_file.resolve().as_posix()}" '
         cmd += "--valid_fraction=0.05 "
         cmd += f'--test_file="{self.test_data_file.resolve().as_posix()}" '
-        # cmd += """--config_type_weights='{"Default":1.0}' """
-        cmd += """--E0s='average' """
-        cmd += """--model="MACE" """
-        cmd += f"""--seed={self.seed} """
-        cmd += f"""--hidden_irreps='{self.hidden_irreps}' """
-        cmd += f"--r_max={self.r_max} "
-        cmd += f"--batch_size={self.batch_size} "
-        cmd += f"--max_num_epochs={self.max_num_epochs} "
         cmd += f"--device={self.device} "
-        cmd += f"--num_radial_basis={self.num_radial_basis} "
-        cmd += f"--num_cutoff_basis={self.num_cutoff_basis} "
-        cmd += f"--num_interactions={self.num_interactions} "
-
-        if self.swa and self.start_swa < self.max_num_epochs:
-            cmd += f"--swa --start_swa={self.start_swa} "
-
-        if self.ema:
-            cmd += f"--ema --ema_decay={self.ema_decay} "
-
-        if self.amsgrad:
-            cmd += "--amsgrad "
+        for key, val in yaml.safe_load(pathlib.Path(self.config).read_text()).items():
+            if val is True:
+                cmd += f"--{key} "
+            elif val is False:
+                pass
+            else:
+                cmd += f'--{key}="{val}" '
 
         self.write_data_to_file(file=self.train_data_file, atoms_list=self.data)
         self.write_data_to_file(file=self.test_data_file, atoms_list=self.test_data)
