@@ -33,7 +33,7 @@ def test_ensemble_model(data_repo):
         )
 
         uncertainty_selection = ips.configuration_selection.ThresholdSelection(
-            data=md, n_configurations=1
+            data=md, n_configurations=1, threshold=0.0001
         )
 
         ips.analysis.ModelEnsembleAnalysis(

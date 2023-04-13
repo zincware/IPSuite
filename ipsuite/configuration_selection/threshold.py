@@ -20,7 +20,8 @@ class ThresholdSelection(ConfigurationSelection):
         the key in 'calc.results' to select from
     threshold: float, optional
         All values above (or below if negative) this threshold will be selected.
-        If n_configurations is given, this threshold will be prioritized.
+        If n_configurations is given, this threshold will be prioritized,
+        but a maximum of n_configurations will be selected.
     n_configurations: int, optional
         number of configurations to select.
         This will only be used if threshold is not given.
@@ -53,8 +54,12 @@ class ThresholdSelection(ConfigurationSelection):
         if self.threshold is not None:
             if self.threshold < 0:
                 indices = np.where(values < self.threshold)[0]
+                if self.n_configurations is not None:
+                    indices = np.argsort(values)[indices][: self.n_configurations]
             else:
                 indices = np.where(values > self.threshold)[0]
+                if self.n_configurations is not None:
+                    indices = np.argsort(values)[::-1][indices][: self.n_configurations]
         else:
             if np.mean(values) > 0:
                 indices = np.argsort(values)[::-1][: self.n_configurations]
