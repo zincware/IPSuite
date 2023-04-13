@@ -64,24 +64,25 @@ class EnsembleModel(zntrack.Node):
         """
         return EnsembleCalculator(calculators=[x.calc for x in self.models])
 
-    def predict(self, atoms: typing.List[ase.Atoms]) -> typing.List[ase.Atoms]:
+    def predict(self, atoms_list: typing.List[ase.Atoms]) -> typing.List[ase.Atoms]:
         """Predict energy, forces and stresses.
 
         based on what was used to train for given atoms objects.
 
         Parameters
         ----------
-        atoms: typing.List[ase.Atoms]
+        atoms_list: typing.List[ase.Atoms]
             list of atoms objects to predict on
 
         Returns
         -------
-        Prediction: typing.List[ase.Atoms]
+        typing.List[ase.Atoms]
             Atoms with updated calculators
         """
         calc = self.calc
         result = []
-        for configuration in tqdm(atoms, ncols=70):
-            configuration.calc = calc
-            result.append(freeze_copy_atoms(configuration))
+        for atoms in tqdm(atoms_list, ncols=120):
+            atoms.calc = calc
+            atoms.get_potential_energy()
+            result.append(freeze_copy_atoms(atoms))
         return result

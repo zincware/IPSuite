@@ -4,6 +4,7 @@ import typing
 
 import ase.calculators.calculator
 import ase.io
+import tqdm
 import zntrack
 
 from ipsuite import base
@@ -47,7 +48,7 @@ class MLModel(base.AnalyseAtoms):
         """
         calc = self.calc
         results = []
-        for atoms in atoms_list:
+        for atoms in tqdm.tqdm(atoms_list, ncols=120):
             atoms.calc = calc
             atoms.get_potential_energy()
             results.append(freeze_copy_atoms(atoms))
