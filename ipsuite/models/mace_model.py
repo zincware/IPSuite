@@ -47,6 +47,7 @@ class MACE(MLModel):
     model_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "model")
 
     config: str = zntrack.dvc.deps("mace.yaml")
+    config_kwargs: dict = zntrack.zn.params(None)
     device: str = zntrack.meta.Text("cuda" if torch.cuda.is_available() else "cpu")
 
     training: pathlib.Path = zntrack.dvc.plots(
@@ -89,7 +90,16 @@ class MACE(MLModel):
         cmd += "--valid_fraction=0.05 "
         cmd += f'--test_file="{self.test_data_file.resolve().as_posix()}" '
         cmd += f"--device={self.device} "
-        for key, val in yaml.safe_load(pathlib.Path(self.config).read_text()).items():
+
+        config = yaml.safe_load(pathlib.Path(self.config).read_text())
+        if self.config_kwargs:
+            log.warning(
+                f"Overwriting '{self.config}' with values from 'params.yaml':"
+                f" {self.config_kwargs}"
+            )
+            config.update(self.config_kwargs)
+
+        for key, val in config.items():
             if val is True:
                 cmd += f"--{key} "
             elif val is False:
