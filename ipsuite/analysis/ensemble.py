@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import zntrack
 
-from ipsuite import utils
+from ipsuite import base, utils
 
 
 def plot_with_uncertainty(value, ylabel: str, xlabel: str, **kwargs) -> dict:
@@ -40,7 +40,7 @@ def plot_with_uncertainty(value, ylabel: str, xlabel: str, **kwargs) -> dict:
     return fig, data
 
 
-class ModelEnsembleAnalysis(zntrack.Node):
+class ModelEnsembleAnalysis(base.AnalyseAtoms):
     """Attributes
     ----------
         models: list of models to ensemble
@@ -48,7 +48,6 @@ class ModelEnsembleAnalysis(zntrack.Node):
     """
 
     models: list = zntrack.zn.deps()
-    atoms: list = zntrack.zn.deps()
 
     normal_plot_path = zntrack.dvc.outs(zntrack.nwd / "normal_plot.png")
     sorted_plot_path = zntrack.dvc.outs(zntrack.nwd / "sorted_plot.png")
@@ -60,16 +59,16 @@ class ModelEnsembleAnalysis(zntrack.Node):
     bins: int = zntrack.zn.params(100)
 
     def _post_init_(self):
-        self.atoms = utils.helpers.get_deps_if_node(self.atoms, "atoms")
+        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
 
     def run(self):
         # TODO axis labels
         # TODO save indices
         # TODo rewrite this Node based on MLModel and then add a Analysis Node
-        self.prediction_list = [model.predict(self.atoms[:]) for model in self.models]
+        self.prediction_list = [model.predict(self.data[:]) for model in self.models]
 
         self.predictions = []
-        for idx, atom in enumerate(self.atoms):
+        for idx, atom in enumerate(self.data):
             atom.calc = ase.calculators.singlepoint.SinglePointCalculator(
                 atoms=atom,
                 energy=np.mean([p.energy[idx] for p in self.prediction_list]),
