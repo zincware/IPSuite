@@ -90,7 +90,9 @@ class ModelEnsembleAnalysis(base.AnalyseAtoms):
         raise NotImplementedError
 
     def get_plots(self):
-        energy = np.stack([p.energy for p in self.prediction_list])
+        energy = np.stack(
+            [np.stack(x.get_potential_energy() for x in p) for p in self.prediction_list]
+        )
 
         figures = []
         # Plot the energy

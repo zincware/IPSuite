@@ -7,6 +7,13 @@ import znflow
 from zntrack import Node
 
 
+def setup_ase():
+    """Add uncertainty keys to ASE all properties."""
+    from ase.calculators.calculator import all_properties
+
+    all_properties += ["forces_uncertainty", "energy_uncertainty"]
+
+
 def get_deps_if_node(obj, attribute: str):
     """Apply getdeps if obj is subclass/instance of a Node.
 
