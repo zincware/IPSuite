@@ -7,16 +7,14 @@ import typing
 
 import ase.io
 import ase.symbols
-import numpy as np
 import pandas as pd
 import torch
 import yaml
 import zntrack
 import zntrack.utils
-from tqdm import tqdm
 
 from ipsuite import utils
-from ipsuite.models import MLModel, Prediction
+from ipsuite.models import MLModel
 from ipsuite.utils.helpers import check_duplicate_keys
 
 log = logging.getLogger(__name__)
@@ -175,23 +173,6 @@ class Nequip(MLModel):
         return NequIPCalculator.from_deployed_model(
             model_path=self.deployed_model.as_posix(),
             device=self.device,
-        )
-
-    def predict(self, atoms: typing.List[ase.Atoms]) -> Prediction:
-        """Use the nequip model to run a prediction."""
-        validation_energy = []
-        validation_forces = []
-        for configuration in tqdm(atoms, ncols=70):
-            configuration.set_calculator(self.calc)
-            if self.use_energy:
-                validation_energy.append(configuration.get_potential_energy())
-            if self.use_forces:
-                validation_forces.append(configuration.get_forces())
-
-        return Prediction(
-            energy=np.array(validation_energy),
-            forces=np.array(validation_forces),
-            n_atoms=len(atoms[0]),
         )
 
     @property

@@ -72,8 +72,12 @@ class ModelEnsembleAnalysis(zntrack.Node):
         for idx, atom in enumerate(self.atoms):
             atom.calc = ase.calculators.singlepoint.SinglePointCalculator(
                 atoms=atom,
-                energy=np.mean([p.energy[idx] for p in self.prediction_list]),
-                forces=np.mean([p.forces[idx] for p in self.prediction_list], axis=0),
+                energy=np.mean(
+                    [p[idx].get_potential_energy() for p in self.prediction_list]
+                ),
+                forces=np.mean(
+                    [p[idx].get_forces() for p in self.prediction_list], axis=0
+                ),
             )
             self.predictions.append(atom)
 
