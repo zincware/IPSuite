@@ -1,4 +1,5 @@
 import ipsuite as ips
+import numpy as np
 
 
 def test_ensemble_model(data_repo):
@@ -32,9 +33,8 @@ def test_ensemble_model(data_repo):
         )
 
         uncertainty_selection = ips.configuration_selection.ThresholdSelection(
-            data=md, n_configurations=5
+            data=md, n_configurations=1
         )
-        # assert that these are the highest uncertainties
 
         ips.analysis.ModelEnsembleAnalysis(
             data=test_data, models=[model1, model2, model3]
@@ -45,4 +45,8 @@ def test_ensemble_model(data_repo):
 
     project.run(environment={"OPENBLAS_NUM_THREADS": "1"})
 
-    raise ValueError(data_repo)
+    uncertainty_selection.load()
+    md.load()
+
+    uncertainties = [x.calc.results["energy_uncertainty"] for x in md.atoms]
+    assert [md.atoms[np.argmax(uncertainties)]] == uncertainty_selection.atoms
