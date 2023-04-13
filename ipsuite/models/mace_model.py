@@ -5,19 +5,15 @@ import json
 import logging
 import pathlib
 import subprocess
-import typing
 
-import ase
-import numpy as np
 import pandas as pd
 import torch
-import tqdm
 import yaml
 import zntrack
 from mace.calculators import MACECalculator
 
 from ipsuite import utils
-from ipsuite.models import MLModel, Prediction
+from ipsuite.models import MLModel
 from ipsuite.static_data import STATIC_PATH
 
 log = logging.getLogger(__name__)
@@ -131,40 +127,4 @@ class MACE(MLModel):
         """Return the ASE calculator."""
         return MACECalculator(
             model_path=self.model_dir / "MACE_model.model", device=self.device
-        )
-
-    def predict(self, atoms: typing.List[ase.Atoms]) -> Prediction:
-        """Predict energy, forces and stresses.
-
-        based on what was used to train on with trained GAP potential.
-
-        Parameters
-        ----------
-        atoms: List[Atoms]
-            contains atoms objects to validate
-
-        Returns
-        -------
-        Prediction
-            dataclass contains predicted energy, force and stresses
-        """
-        potential = self.calc
-        validation_energy = []
-        validation_forces = []
-        validation_stresses = []
-        for configuration in tqdm.tqdm(atoms, ncols=70):
-            configuration.calc = potential
-            if self.use_energy:
-                validation_energy.append(configuration.get_potential_energy())
-            if self.use_forces:
-                validation_forces.append(configuration.get_forces())
-            if self.use_stresses:
-                validation_stresses.append(configuration.get_stress())
-
-        return Prediction(
-            energy=np.array(validation_energy),
-            forces=np.array(validation_forces),
-            # quippy potential output needs minus sign here
-            stresses=np.array(validation_stresses),
-            n_atoms=len(atoms[0]),
         )

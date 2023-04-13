@@ -7,7 +7,8 @@ import zntrack
 from ase.calculators.calculator import Calculator, all_changes
 from tqdm import tqdm
 
-from ipsuite.models.base import MLModel, Prediction
+from ipsuite.models.base import MLModel
+from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
 class EnsembleCalculator(Calculator):
@@ -36,6 +37,12 @@ class EnsembleCalculator(Calculator):
 
         self.results["energy"] = np.mean([x.get_potential_energy() for x in results])
         self.results["forces"] = np.mean([x.get_forces() for x in results], axis=0)
+        self.results["energy_uncertainty"] = np.std(
+            [x.get_potential_energy() for x in results]
+        )
+        self.results["forces_uncertainty"] = np.std(
+            [x.get_forces() for x in results], axis=0
+        )
 
 
 class EnsembleModel(zntrack.Node):
@@ -57,7 +64,7 @@ class EnsembleModel(zntrack.Node):
         """
         return EnsembleCalculator(calculators=[x.calc for x in self.models])
 
-    def predict(self, atoms: typing.List[ase.Atoms]) -> Prediction:
+    def predict(self, atoms: typing.List[ase.Atoms]) -> typing.List[ase.Atoms]:
         """Predict energy, forces and stresses.
 
         based on what was used to train for given atoms objects.
@@ -69,21 +76,12 @@ class EnsembleModel(zntrack.Node):
 
         Returns
         -------
-        Prediction: Prediction
-            dataclass which contains the predicted energy, forces and stresses
+        Prediction: typing.List[ase.Atoms]
+            Atoms with updated calculators
         """
-        potential = self.calc
-        validation_energy = []
-        validation_forces = []
+        calc = self.calc
+        result = []
         for configuration in tqdm(atoms, ncols=70):
-            configuration.calc = potential
-            if all(x.use_energy for x in self.models):
-                validation_energy.append(configuration.get_potential_energy())
-            if all(x.use_forces for x in self.models):
-                validation_forces.append(configuration.get_forces())
-
-        return Prediction(
-            energy=np.array(validation_energy),
-            forces=np.array(validation_forces),
-            n_atoms=len(atoms[0]),
-        )
+            configuration.calc = calc
+            result.append(freeze_copy_atoms(configuration))
+        return result
