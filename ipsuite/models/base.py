@@ -1,68 +1,14 @@
 """Base class for all MLModel Implementations."""
-import contextlib
-import dataclasses
 import pathlib
 import typing
 
 import ase.calculators.calculator
 import ase.io
-import numpy as np
-import znjson
+import tqdm
 import zntrack
 
 from ipsuite import base
-
-
-@dataclasses.dataclass
-class Prediction:
-    """Dataclass to store prediction values of the model.
-
-    Attributes
-    ----------
-    energy: np.ndarray
-        energy prediction with shape (b,)
-    forces: np.ndarray
-        force prediction with shape (b, atoms, 3)
-    virials: np.ndarray
-        virials prediction with shape (b, 6)
-    n_atoms: int
-        number of atoms
-    """
-
-    energy: np.ndarray = None
-    forces: np.ndarray = None
-    stresses: np.ndarray = None
-    n_atoms: int = None
-
-    def update_n_atoms(self):
-        """Update the number of atoms if they are not provided.
-
-        n_atoms has a higher priority than the shape of the forces
-        """
-        if self.n_atoms is None:
-            with contextlib.suppress(AttributeError):
-                self.n_atoms = self.forces.shape[1]
-
-    @property
-    def asdict(self) -> dict:
-        """Convert dataclass to dict."""
-        return dataclasses.asdict(self)
-
-
-class PredictionConverter(znjson.ConverterBase):
-    """Converter for Prediction dataclass."""
-
-    instance = Prediction
-    representation = "ipsuite.models.Prediction"
-
-    def encode(self, value: Prediction):
-        return value.asdict
-
-    def decode(self, value: str):
-        return Prediction(**value)
-
-
-znjson.config.register(PredictionConverter)
+from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
 class MLModel(base.AnalyseAtoms):
@@ -85,22 +31,28 @@ class MLModel(base.AnalyseAtoms):
         """
         raise NotImplementedError
 
-    def predict(self, atoms: typing.List[ase.Atoms]) -> Prediction:
+    def predict(self, atoms_list: typing.List[ase.Atoms]) -> typing.List[ase.Atoms]:
         """Predict energy, forces and stresses.
 
         based on what was used to train for given atoms objects.
 
         Parameters
         ----------
-        atoms: typing.List[ase.Atoms]
+        atoms_list: typing.List[ase.Atoms]
             list of atoms objects to predict on
 
         Returns
         -------
-        Prediction: Prediction
-            dataclass which contains the predicted energy, forces and stresses
+        Prediction: typing.List[ase.Atoms]
+            Atoms with updated calculators
         """
-        raise NotImplementedError
+        calc = self.calc
+        results = []
+        for atoms in tqdm.tqdm(atoms_list, ncols=120):
+            atoms.calc = calc
+            atoms.get_potential_energy()
+            results.append(freeze_copy_atoms(atoms))
+        return results
 
     @property
     def lammps_pair_style(self) -> str:

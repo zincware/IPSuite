@@ -2,7 +2,7 @@ import numpy as np
 import xmltodict
 
 import ipsuite
-from ipsuite.models.base import Prediction
+import ase
 
 
 def test_model_training(proj_path, traj_file):
@@ -23,7 +23,9 @@ def test_model_training(proj_path, traj_file):
     model.load()
     data.load()
 
-    assert isinstance(model.predict(data.atoms), Prediction)
+    prediction = model.predict(data.atoms)
+    assert isinstance(prediction, list)
+    assert isinstance(prediction[0], ase.Atoms)
 
     data.atoms[0].calc = model.calc
     with open(model.model_directory.resolve() / "model.xml", "r") as file:
