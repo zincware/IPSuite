@@ -131,6 +131,10 @@ class AnalyseAtoms(zntrack.Node):
 
     data: list[ase.Atoms] = zntrack.zn.deps()
 
+    def _post_init_(self):
+        if self.data is not None:
+            self.data = znflow.combine(self.data, attribute="atoms")
+
 
 class AnalyseProcessAtoms(zntrack.Node):
     """Analyse the output of a ProcessAtoms Node."""

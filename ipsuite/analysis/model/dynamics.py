@@ -89,7 +89,7 @@ class RattleAtoms(base.ProcessSingleAtom):
         self.energies = pd.DataFrame({"y": energies, "x": stdev_space})
 
 
-class BoxScale(base.ProcessSingleAtom):
+class BoxScale(base.ProcessSingleAtomCalc):
     """Scale all particles and predict energies.
 
     Attributes
@@ -104,7 +104,6 @@ class BoxScale(base.ProcessSingleAtom):
         The size of the generated space of stdev points
     """
 
-    model: models.MLModel = zntrack.zn.deps()
     mapping: base.Mapping = zntrack.zn.nodes(None)
 
     stop: float = zntrack.zn.params(2.0)
@@ -128,7 +127,8 @@ class BoxScale(base.ProcessSingleAtom):
 
         original_atoms = self.get_data()
         cell = original_atoms.copy().cell
-        original_atoms.calc = self.model.calc
+        calc = self.get_calc()
+        original_atoms.calc = calc
 
         energies = []
         self.atoms = []
@@ -145,7 +145,7 @@ class BoxScale(base.ProcessSingleAtom):
             else:
                 eval_atoms = self.mapping.backward_mapping(scaling_atoms, molecules)
                 # New atoms object, does not have the calculator.
-                eval_atoms.calc = self.model.calc
+                eval_atoms.calc = calc
 
             energies.append(eval_atoms.get_potential_energy())
             self.atoms.append(freeze_copy_atoms(eval_atoms))
