@@ -9,6 +9,7 @@ import zntrack
 
 from ipsuite import fields
 from ipsuite.base.calculators import LogPathCalculator
+from ipsuite.utils import helpers
 
 # TODO raise error if both data and data_file are given
 
@@ -109,6 +110,8 @@ class ProcessSingleAtomCalc(ProcessSingleAtom):
     calc_logs = zntrack.dvc.outs(zntrack.nwd / "calc_logs")
 
     # TODO remove restart files when finished?
+    def __post_init__(self):
+        self.data = helpers.get_deps_if_node(self.calc, "calc")
 
     def get_calc(self):
         calc = self.calc

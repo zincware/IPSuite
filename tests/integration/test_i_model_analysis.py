@@ -106,7 +106,7 @@ def test_BoxScaleAnalysis(trained_model):
 
     with project:
         analysis = ipsuite.analysis.BoxScale(
-            model=model, data=validation_selection, num=10, stop=1.1
+            calc=model, data=validation_selection, num=10, stop=1.1
         )
     project.run()
     analysis.load()
