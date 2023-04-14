@@ -15,8 +15,8 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from tqdm import trange
 
 from ipsuite import base
-from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
 from ipsuite.base import CheckBase
+from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
 
 log = logging.getLogger(__name__)
 
@@ -73,7 +73,7 @@ class LagevinThermostat(zntrack.Node):
             friction=self.friction,
         )
         return thermostat
-    
+
 
 class ASEMD(base.ProcessSingleAtom):
     """Class to run a MD simulation with ASE.
