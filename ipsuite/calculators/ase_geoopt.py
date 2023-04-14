@@ -1,6 +1,7 @@
 import logging
 import pathlib
 
+import ase.io
 import ase.optimize
 import zntrack
 
@@ -10,12 +11,12 @@ log = logging.getLogger(__name__)
 
 
 class ASEGeoOpt(base.ProcessSingleAtom):
-    calculator = zntrack.zn.deps()  # type hint ase.calc?
+    calculator = zntrack.zn.deps()
 
-    optimizer: str = zntrack.zn.params("BFGS")
+    optimizer: str = zntrack.zn.params("FIRE")
     traj: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "optim.traj")
 
-    repeat: list = zntrack.zn.params([2, 2, 2])
+    repeat: list = zntrack.zn.params([1, 1, 1])
     run_kwargs: dict = zntrack.zn.params({"fmax": 0.05})
     init_kwargs: dict = zntrack.zn.params({})
 
@@ -28,4 +29,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
 
             dyn = optimizer(atoms, trajectory=self.traj.as_posix(), **self.init_kwargs)
             dyn.run(**self.run_kwargs)
-        self.atoms = [atoms]
+
+    @property
+    def atoms(self):
+        return list(ase.io.iread(self.traj.as_posix()))

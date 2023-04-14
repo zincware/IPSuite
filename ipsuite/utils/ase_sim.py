@@ -1,9 +1,11 @@
 """Utils that help running simulations with ASE."""
+import functools
 import typing
 
 import ase
 import numpy as np
 from ase import units
+from ase.calculators.singlepoint import SinglePointCalculator
 
 
 def get_energy(atoms: ase.Atoms) -> typing.Tuple[float, float]:
@@ -34,3 +36,15 @@ def get_energy(atoms: ase.Atoms) -> typing.Tuple[float, float]:
 def get_desc(temperature: float, total_energy: float):
     """TQDM description."""
     return f"Temp: {temperature:.3f} K \t Energy {total_energy:.3f} eV - (TQDM in fs)"
+
+
+@functools.singledispatch
+def freeze_copy_atoms(atoms) -> ase.Atoms:
+    result = atoms.copy()
+    result.calc = SinglePointCalculator(result, **atoms.calc.results)
+    return result
+
+
+@freeze_copy_atoms.register
+def _(atoms: list) -> list[ase.Atoms]:
+    return [freeze_copy_atoms(x) for x in atoms]
