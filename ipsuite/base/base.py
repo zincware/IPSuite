@@ -115,7 +115,7 @@ class ProcessSingleAtomCalc(ProcessSingleAtom):
     # TODO remove restart files when finished?
     def __post_init__(self):
         super().__post_init__()
-        self.data = helpers.get_deps_if_node(self.calc, "calc")
+        self.calc = helpers.get_deps_if_node(self.calc, "calc")
 
     def get_calc(self):
         calc = self.calc
