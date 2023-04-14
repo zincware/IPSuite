@@ -182,7 +182,7 @@ class CP2KSinglePoint(base.ProcessAtoms):
     @property
     def atoms(self):
         """Return the atoms object."""
-        return znh5md.io.AtomsReader(self.output_file)
+        return znh5md.ASEH5MD(self.output_file).get_atoms_list()
 
     def get_input_script(self):
         """Return the input script.
