@@ -13,10 +13,10 @@ from ipsuite.analysis.model import (
     ForceDecomposition,
     MDStability,
     NaNCheck,
-    TemperatureCheck,
     Prediction,
     PredictionMetrics,
     RattleAtoms,
+    TemperatureCheck,
 )
 from ipsuite.analysis.sensitivity import (
     AnalyseGlobalForceSensitivity,

@@ -2,9 +2,9 @@ import ase
 import numpy as np
 import zntrack
 from ase.neighborlist import build_neighbor_list
-from ipsuite.utils.ase_sim import get_energy
 
 from ipsuite import base
+from ipsuite.utils.ase_sim import get_energy
 
 
 class NaNCheck(base.CheckBase):
