@@ -20,11 +20,10 @@ class ThresholdSelection(ConfigurationSelection):
         the key in 'calc.results' to select from
     threshold: float, optional
         All values above (or below if negative) this threshold will be selected.
-        If n_configurations is given, this threshold will be prioritized,
+        If n_configurations is given, 'self.threshold' will be prioritized,
         but a maximum of n_configurations will be selected.
     n_configurations: int, optional
         number of configurations to select.
-        This will only be used if threshold is not given.
     """
 
     key = zntrack.zn.params("energy_uncertainty")
