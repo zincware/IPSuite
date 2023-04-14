@@ -15,22 +15,10 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from tqdm import trange
 
 from ipsuite import base
+from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
+from ipsuite.base import CheckBase
 
 log = logging.getLogger(__name__)
-
-
-class CheckBase(zntrack.Node):
-    def initialize(self, atoms):
-        pass
-
-    def check(self, atoms):
-        raise NotImplementedError
-
-    def get_metric(self):
-        return None
-
-    def get_desc(self):
-        return None
 
 
 class TemperatureCheck(CheckBase):
@@ -42,11 +30,10 @@ class TemperatureCheck(CheckBase):
         maximum temperature, when reaching it simulation will be stopped
     """
 
-    max_temperature = zntrack.zn.params(10000.0)
+    max_temperature: float = zntrack.zn.params(10000.0)
 
     def check(self, atoms):
-        ekin = atoms.get_kinetic_energy() / len(atoms)
-        self.temperature = ekin / (1.5 * units.kB)
+        self.temperature, _ = get_energy(atoms)
         unstable = self.temperature > self.max_temperature
         return unstable
 
@@ -73,9 +60,9 @@ class LagevinThermostat(zntrack.Node):
 
     """
 
-    time_step = zntrack.zn.params()
-    temperature = zntrack.zn.params()
-    friction = zntrack.zn.params()
+    time_step: int = zntrack.zn.params()
+    temperature: float = zntrack.zn.params()
+    friction: float = zntrack.zn.params()
 
     def get_thermostat(self, atoms):
         self.time_step *= units.fs
@@ -86,26 +73,7 @@ class LagevinThermostat(zntrack.Node):
             friction=self.friction,
         )
         return thermostat
-
-
-def get_energy(atoms: ase.Atoms) -> float:
-    """Compute the total energy.
-
-    Parameters
-    ----------
-    atoms: ase.Atoms
-        Atoms objects for which energy will be calculated
-
-    Returns
-    -------
-    np.squeeze(total): float
-        total energy of the system
-
-    """
-    e_tot = atoms.get_total_energy() / len(atoms)
-
-    return np.squeeze(e_tot)
-
+    
 
 class ASEMD(base.ProcessSingleAtom):
     """Class to run a MD simulation with ASE.
@@ -143,11 +111,11 @@ class ASEMD(base.ProcessSingleAtom):
     """
 
     calculator = zntrack.zn.deps()
-    checker_list = zntrack.zn.nodes()
+    checker_list: list = zntrack.zn.nodes()
     thermostat = zntrack.zn.nodes()
 
-    steps = zntrack.zn.params()
-    init_temperature = zntrack.zn.params(None)
+    steps: int = zntrack.zn.params()
+    init_temperature: float = zntrack.zn.params(None)
     init_velocity = zntrack.zn.params(None)
     sampling_rate = zntrack.zn.params(1)
     repeat = zntrack.zn.params((1, 1, 1))
@@ -155,7 +123,7 @@ class ASEMD(base.ProcessSingleAtom):
 
     metrics_dict = zntrack.zn.plots()
 
-    steps_before_stopping: int = zntrack.zn.metrics()
+    steps_before_stopping = zntrack.zn.metrics()
     velocity_cache = zntrack.zn.metrics()
 
     traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.h5")
@@ -167,6 +135,10 @@ class ASEMD(base.ProcessSingleAtom):
         atoms: ase.Atoms = self.get_data()
         return atoms.repeat(self.repeat)
 
+    def _post_init_(self) -> None:
+        if self.init_velocity is None ^ self.init_temperature is None:
+            raise ValueError("init_temperature or init_velocity has to be specified.")
+
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
         return znh5md.ASEH5MD(self.traj_file).get_atoms_list()
@@ -176,21 +148,19 @@ class ASEMD(base.ProcessSingleAtom):
         atoms = self.get_atoms()
         atoms.calc = self.calculator
 
-        if self.init_temperature is not None and self.init_velocity is None:
+        if self.init_temperature is not None:
             # Initialize velocities
             MaxwellBoltzmannDistribution(atoms, temperature_K=self.init_temperature)
-        elif self.init_velocity is not None and self.init_temperature is None:
+        else:
             # Continue with last md step
             atoms.set_velocities(self.init_velocity)
-        else:
-            raise ValueError("init_temperature or init_velocity has to be specified.")
 
         # initialize thermostat
         time_step = self.thermostat.time_step
         thermostat = self.thermostat.get_thermostat(atoms=atoms)
 
         # initialize Atoms calculator and metrics_dict
-        _ = get_energy(atoms)
+        _, _ = get_energy(atoms)
         metrics_dict = {"energy": []}
         for checker in self.checker_list:
             _ = checker.check(atoms)
@@ -218,7 +188,8 @@ class ASEMD(base.ProcessSingleAtom):
                 desc = []
                 stop = []
                 thermostat.run(self.sampling_rate)
-                metrics_dict["energy"].append(get_energy(atoms))
+                _, energy = get_energy(atoms)
+                metrics_dict["energy"].append(energy)
 
                 for checker in self.checker_list:
                     stop.append(checker.check(atoms))
@@ -233,37 +204,36 @@ class ASEMD(base.ProcessSingleAtom):
                             metrics_dict[key].append(val)
                         desc.append(checker.get_desc())
 
+                atoms_cache.append(freeze_copy_atoms(atoms))
+                if len(atoms_cache) == self.dump_rate:
+                    db.add(
+                        znh5md.io.AtomsReader(
+                            atoms_cache,
+                            frames_per_chunk=self.dump_rate,
+                            step=1,
+                            time=self.sampling_rate,
+                        )
+                    )
+                    atoms_cache = []
+
+                energy = metrics_dict["energy"][-1]
+                desc.append(f"E: {energy:.3f} eV")
+                if idx % (1 / time_step) == 0:
+                    pbar.set_description("\t".join(desc))
+                    pbar.update(self.sampling_rate)
+
                 if any(stop):
                     self.steps_before_stopping = len(metrics_dict["energy"])
                     break
-                else:
-                    atoms_cache.append(atoms.copy())
-                    if len(atoms_cache) == self.dump_rate:
-                        db.add(
-                            znh5md.io.AtomsReader(
-                                atoms_cache,
-                                frames_per_chunk=self.dump_rate,
-                                step=1,
-                                time=self.sampling_rate,
-                            )
-                        )
-                        atoms_cache = []
 
-                    energy = metrics_dict["energy"][-1]
-                    desc.append(f"E: {energy:.3f} eV")
-                    if idx % (1 / time_step) == 0:
-                        pbar.set_description("\t".join(desc))
-                        pbar.update(self.sampling_rate)
-
-        if not any(stop):
-            db.add(
-                znh5md.io.AtomsReader(
-                    atoms_cache,
-                    frames_per_chunk=self.dump_rate,
-                    step=1,
-                    time=self.sampling_rate,
-                )
+        db.add(
+            znh5md.io.AtomsReader(
+                atoms_cache,
+                frames_per_chunk=self.dump_rate,
+                step=1,
+                time=self.sampling_rate,
             )
+        )
 
         self.velocity_cache = atoms.get_velocities()
         self.metrics_dict = pd.DataFrame(metrics_dict)
