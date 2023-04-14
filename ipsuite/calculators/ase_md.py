@@ -15,33 +15,9 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from tqdm import trange
 
 from ipsuite import base
-from ipsuite.base import CheckBase
 from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
 
 log = logging.getLogger(__name__)
-
-
-class TemperatureCheck(CheckBase):
-    """Calculate and check teperature during a MD simulation
-
-    Attributes
-    ----------
-    max_temperature: float
-        maximum temperature, when reaching it simulation will be stopped
-    """
-
-    max_temperature: float = zntrack.zn.params(10000.0)
-
-    def check(self, atoms):
-        self.temperature, _ = get_energy(atoms)
-        unstable = self.temperature > self.max_temperature
-        return unstable
-
-    def get_metric(self):
-        return {"temperature": self.temperature}
-
-    def get_desc(self):
-        return f"Temp: {self.temperature:.3f} K"
 
 
 class LagevinThermostat(zntrack.Node):

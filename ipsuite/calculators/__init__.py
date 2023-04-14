@@ -3,7 +3,6 @@ from ipsuite.calculators.ase_md import (
     ASEMD,
     FixedSphereASEMD,
     LagevinThermostat,
-    TemperatureCheck,
 )
 from ipsuite.calculators.cp2k import CP2KSinglePoint, CP2KYaml
 from ipsuite.calculators.lj import LJSinglePoint
@@ -17,6 +16,5 @@ __all__ = [
     "FixedSphereASEMD",
     "xTBSinglePoint",
     "LJSinglePoint",
-    "TemperatureCheck",
     "LagevinThermostat",
 ]

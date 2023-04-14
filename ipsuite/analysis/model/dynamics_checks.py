@@ -2,6 +2,7 @@ import ase
 import numpy as np
 import zntrack
 from ase.neighborlist import build_neighbor_list
+from ipsuite.utils.ase_sim import get_energy
 
 from ipsuite import base
 
@@ -74,3 +75,26 @@ class EnergySpikeCheck(base.CheckBase):
         epot = atoms.get_potential_energy()
         # energy is negative, hence sign convention
         return epot < self.max_energy or epot > self.min_energy
+
+
+class TemperatureCheck(base.CheckBase):
+    """Calculate and check teperature during a MD simulation
+
+    Attributes
+    ----------
+    max_temperature: float
+        maximum temperature, when reaching it simulation will be stopped
+    """
+
+    max_temperature: float = zntrack.zn.params(10000.0)
+
+    def check(self, atoms):
+        self.temperature, _ = get_energy(atoms)
+        unstable = self.temperature > self.max_temperature
+        return unstable
+
+    def get_metric(self):
+        return {"temperature": self.temperature}
+
+    def get_desc(self):
+        return f"Temp: {self.temperature:.3f} K"

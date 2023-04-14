@@ -1,8 +1,7 @@
 import ipsuite as ips
 
-
 def test_ase_md(proj_path, traj_file):
-    checker = ips.calculators.TemperatureCheck()
+    checker = ips.analysis.TemperatureCheck()
     thermostat = ips.calculators.LagevinThermostat(
         time_step=1,
         temperature=1,
