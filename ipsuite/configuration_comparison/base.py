@@ -116,7 +116,7 @@ def write_dataset(
             pbar.update(1)
 
 
-class ConfigurationComparison(zntrack.Node):
+class ConfigurationComparison(base.IPSNode):
     """Base of comparison methods to compare atomic configurations.
 
     Attributes

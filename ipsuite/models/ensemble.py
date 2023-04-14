@@ -7,6 +7,7 @@ import zntrack
 from ase.calculators.calculator import Calculator, all_changes
 from tqdm import tqdm
 
+from ipsuite import base
 from ipsuite.models.base import MLModel
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
@@ -45,7 +46,7 @@ class EnsembleCalculator(Calculator):
         )
 
 
-class EnsembleModel(zntrack.Node):
+class EnsembleModel(base.IPSNode):
     models: typing.List[MLModel] = zntrack.zn.deps()
 
     uuid = zntrack.zn.outs()  # to connect this Node to other Nodes it requires an output.

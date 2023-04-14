@@ -4,8 +4,10 @@ import uuid
 import znh5md
 import zntrack
 
+from ipsuite import base
 
-class AddDataH5MD(zntrack.Node):
+
+class AddDataH5MD(base.IPSNode):
     """Load Data directly from a H5MD trajectory file."""
 
     file = zntrack.dvc.deps()

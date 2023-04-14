@@ -8,12 +8,12 @@ import ase.units
 import zntrack
 from ase.visualize import view
 
-from ipsuite import fields
+from ipsuite import base, fields
 
 log = logging.getLogger(__name__)
 
 
-class Packmol(zntrack.Node):
+class Packmol(base.IPSNode):
     """
 
     Attributes
