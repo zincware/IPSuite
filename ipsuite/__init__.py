@@ -13,6 +13,7 @@ from ipsuite import (
     fields,
     geometry,
     models,
+    nodes,
     utils,
 )
 from ipsuite.data_loading.add_data_ase import AddData
@@ -36,6 +37,7 @@ __all__ = [
     "geometry",
     "combine",
     "data_loading",
+    "nodes",
 ]
 
 __version__ = importlib.metadata.version(__name__)
