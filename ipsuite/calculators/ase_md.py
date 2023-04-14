@@ -136,7 +136,7 @@ class ASEMD(base.ProcessSingleAtom):
         return atoms.repeat(self.repeat)
 
     def _post_init_(self) -> None:
-        if self.init_velocity is None ^ self.init_temperature is None:
+        if not (self.init_velocity is None) ^ (self.init_temperature is None):
             raise ValueError("init_temperature or init_velocity has to be specified.")
 
     @property
