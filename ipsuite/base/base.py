@@ -85,6 +85,9 @@ class ProcessSingleAtom(zntrack.Node):
 
     atoms: typing.List[ase.Atoms] = fields.Atoms()
 
+    def __post_init__(self):
+        self.data = helpers.get_deps_if_node(self.data, "atoms")
+
     def get_data(self) -> ase.Atoms:
         """Get the atoms object to process given the 'data' and 'data_id'.
 
@@ -111,6 +114,7 @@ class ProcessSingleAtomCalc(ProcessSingleAtom):
 
     # TODO remove restart files when finished?
     def __post_init__(self):
+        super().__post_init__()
         self.data = helpers.get_deps_if_node(self.calc, "calc")
 
     def get_calc(self):

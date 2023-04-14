@@ -17,7 +17,7 @@ from ase.md.verlet import VelocityVerlet
 from numpy.random import default_rng
 from tqdm import trange
 
-from ipsuite import base, models, utils
+from ipsuite import base, utils
 from ipsuite.analysis.bin_property import get_histogram_figure
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 from ipsuite.utils.md import get_energy_terms
@@ -25,12 +25,11 @@ from ipsuite.utils.md import get_energy_terms
 log = logging.getLogger(__name__)
 
 
-class RattleAtoms(base.ProcessSingleAtom):
+class RattleAtoms(base.ProcessSingleAtomCalc):
     """Move particles with a given stdev from a starting configuration and predict.
 
     Attributes
     ----------
-    model: The MLModel node that implements the 'predict' method
     atoms: list[Atoms] to predict properties for
     logspace: bool, default=True
         Increase the stdev of rattle with 'np.logspace' instead of 'np.linspace'
@@ -43,8 +42,6 @@ class RattleAtoms(base.ProcessSingleAtom):
     atom_id: int, default = 0
         The atom to pick from self.atoms as a starting point
     """
-
-    model: models.MLModel = zntrack.zn.deps()
 
     logspace: bool = zntrack.zn.params(True)
     stop: float = zntrack.zn.params(3.0)
@@ -59,9 +56,6 @@ class RattleAtoms(base.ProcessSingleAtom):
         # y_label="predicted energy",
     )
 
-    def post_init(self):
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
-
     def run(self):
         if self.logspace:
             stdev_space = (
@@ -74,7 +68,7 @@ class RattleAtoms(base.ProcessSingleAtom):
 
         atoms = self.get_data()
         reference = atoms.copy()
-        atoms.calc = self.model.calc
+        atoms.calc = self.get_calc()
 
         energies = []
 
@@ -159,7 +153,7 @@ class BoxScale(base.ProcessSingleAtomCalc):
         fig.savefig(self.plot)
 
 
-class BoxHeatUp(base.ProcessSingleAtom):
+class BoxHeatUp(base.ProcessSingleAtomCalc):
     """Attributes
     ----------
     start_temperature: float
@@ -212,7 +206,7 @@ class BoxHeatUp(base.ProcessSingleAtom):
         if self.max_temperature is None:
             self.max_temperature = self.stop_temperature * 1.5
         atoms = self.get_atoms()
-        atoms.set_calculator(self.model.calc)
+        atoms.calc = self.get_calc()
         # Initialize velocities
         MaxwellBoltzmannDistribution(atoms, temperature_K=self.start_temperature)
         # initialize thermostat
