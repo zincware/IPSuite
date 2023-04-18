@@ -1,5 +1,6 @@
 import ipsuite as ips
 
+
 def test_ase_md(proj_path, traj_file):
     checker = ips.analysis.TemperatureCheck()
     thermostat = ips.calculators.LagevinThermostat(
@@ -9,7 +10,7 @@ def test_ase_md(proj_path, traj_file):
     )
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
-        model = ips.models.GAP(data=data.atoms, OPENBLAS_NUM_THREADS="1")
+        model = ips.models.GAP(data=data.atoms)
         md = ips.calculators.ASEMD(
             data=data.atoms,
             calculator=model.calc,
@@ -21,7 +22,7 @@ def test_ase_md(proj_path, traj_file):
             dump_rate=33,
         )
 
-    project.run()
+    project.run(environment={"OPENBLAS_NUM_THREADS": "1"})
 
     md.load()
 
