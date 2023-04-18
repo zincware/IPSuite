@@ -16,6 +16,7 @@ from ipsuite.analysis.model import (
     Prediction,
     PredictionMetrics,
     RattleAtoms,
+    TemperatureCheck,
 )
 from ipsuite.analysis.sensitivity import (
     AnalyseGlobalForceSensitivity,
@@ -35,6 +36,7 @@ __all__ = [
     "BoxScale",
     "BoxHeatUp",
     "NaNCheck",
+    "TemperatureCheck",
     "ConnectivityCheck",
     "EnergySpikeCheck",
     "MDStability",

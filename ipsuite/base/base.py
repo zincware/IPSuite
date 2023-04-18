@@ -185,5 +185,15 @@ class CheckBase(zntrack.Node):
 
     @abc.abstractmethod
     def check(self, atoms: ase.Atoms) -> bool:
-        """method to check whether a simulation should be stopped."""
+        """Method to check whether a simulation should be stopped."""
+        ...
+
+    @abc.abstractmethod
+    def get_metric(self) -> dict:
+        """Returnes the metric that is tracked for stopping."""
+        ...
+
+    @abc.abstractmethod
+    def get_desc(self) -> str:
+        """Returns the metric that is tracked for description within the progress bar"""
         ...
