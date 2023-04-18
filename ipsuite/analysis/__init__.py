@@ -12,6 +12,7 @@ from ipsuite.analysis.model import (
     ForceAngles,
     ForceDecomposition,
     MDStability,
+    MultiXYPlot,
     NaNCheck,
     Prediction,
     PredictionMetrics,
@@ -42,4 +43,5 @@ __all__ = [
     "AnalyseGlobalForceSensitivity",
     "AnalyseSingleForceSensitivity",
     "ForceDecomposition",
+    "MultiXYPlot",
 ]
