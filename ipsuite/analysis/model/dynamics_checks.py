@@ -98,3 +98,23 @@ class TemperatureCheck(base.CheckBase):
 
     def get_desc(self):
         return f"Temp: {self.temperature:.3f} K"
+
+
+class UncertaintyCheck(base.CheckBase):
+    """Calculate and check uncertainty during a MD simulation
+
+    Attributes
+    ----------
+    max_uncertainty: float
+        maximum uncertainty, when reaching it simulation will be stopped
+    """
+
+    max_uncertainty = zntrack.zn.params()
+
+    def check(self, atoms):
+        self.uncertainty = atoms.calc.results.get("energy_uncertainty")
+        uncertain = self.uncertainty > self.max_uncertainty
+        return uncertain
+
+    def get_desc(self):
+        return f"Uncertainty: {self.uncertainty:.3f} eV"
