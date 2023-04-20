@@ -20,6 +20,37 @@ from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
 log = logging.getLogger(__name__)
 
 
+class LagevinThermostat(zntrack.Node):
+    """Initialize the lagevin thermostat
+
+    Attributes
+    ----------
+    time_step: float
+        time step of simulation
+
+    temperature: float
+        temperature in K to simulate at
+
+    friction: float
+        friction of the Langevin simulator
+
+    """
+
+    time_step: int = zntrack.zn.params()
+    temperature: float = zntrack.zn.params()
+    friction: float = zntrack.zn.params()
+
+    def get_thermostat(self, atoms):
+        self.time_step *= units.fs
+        thermostat = Langevin(
+            atoms=atoms,
+            timestep=self.time_step,
+            temperature_K=self.temperature,
+            friction=self.friction,
+        )
+        return thermostat
+
+
 class ASEMD(base.ProcessSingleAtomCalc):
     """Class to run a MD simulation with ASE.
 
@@ -29,22 +60,23 @@ class ASEMD(base.ProcessSingleAtomCalc):
         list of atoms objects to start simulation from
     start_id: int
         starting id to pick from list of atoms
-    model: MLModel
-        Model to use for simulation
-    temperature: float
-        temperature in K to simulate at
-    time_step: float
-        time step of simulation
-    friction: float
-        friction of the Langevin simulator
+    ase_calculator: ase.calculator
+        ase calculator to use for simulation
+    checker_list: list[CheckNodes]
+        checker, which tracks various metrics and stops the
+        simulation after a threshold is exceeded.
+    thermostat: ase dynamics
+        dynamics method used for simulation
+    init_temperature: float
+        temperature in K to initialize velocities
+    init_velocity: np.array()
+        starting velocities to continue a simulation
     steps: int
         number of steps to simulate
     sampling_rate: int
         number of sample runs
-    max_temperature: float
-        maximum temperature, when reaching it simulation will be stopped
-    flux_data:
-        saved temperature and total energy
+    metrics_dict:
+        saved total energy and all metrics from the check nodes
     repeat: float
         number of repeats
     traj_file: Path
@@ -54,16 +86,21 @@ class ASEMD(base.ProcessSingleAtomCalc):
         write them to the trajectory file every 'dump_rate' steps.
     """
 
-    temperature = zntrack.zn.params()
-    time_step = zntrack.zn.params()
-    friction = zntrack.zn.params()
-    steps = zntrack.zn.params()
-    sampling_rate = zntrack.zn.params()
-    dump_rate = zntrack.zn.params(1000)
-    max_temperature = zntrack.zn.params(10000.0)
-    flux_data = zntrack.zn.plots()  # temperature / energy
+    calculator = zntrack.zn.deps()
+    checker_list: list = zntrack.zn.nodes(None)
+    thermostat: LagevinThermostat = zntrack.zn.nodes()
+
+    steps: int = zntrack.zn.params()
+    init_temperature: float = zntrack.zn.params(None)
+    init_velocity = zntrack.zn.params(None)
+    sampling_rate = zntrack.zn.params(1)
     repeat = zntrack.zn.params((1, 1, 1))
-    steps_before_explosion: int = zntrack.zn.metrics()
+    dump_rate = zntrack.zn.params(1000)
+
+    metrics_dict = zntrack.zn.plots()
+
+    steps_before_stopping = zntrack.zn.metrics()
+    velocity_cache = zntrack.zn.metrics()
 
     traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.h5")
 
@@ -78,8 +115,12 @@ class ASEMD(base.ProcessSingleAtomCalc):
     def atoms(self) -> typing.List[ase.Atoms]:
         return znh5md.ASEH5MD(self.traj_file).get_atoms_list()
 
-    def run(self):
+    def run(self):  # noqa: C901
         """Run the simulation."""
+        if self.checker_list is None:
+            self.checker_list = []
+        if (self.init_velocity is None) and (self.init_temperature is None):
+            self.init_temperature = self.thermostat.temperature
         atoms = self.get_atoms()
         atoms.calc = self.get_calc()
         # Initialize velocities
@@ -93,18 +134,31 @@ class ASEMD(base.ProcessSingleAtomCalc):
         )
         # Run simulation
 
-        energy = []
-        temperature, total_energy = get_energy(atoms)
-        total_fs = int(self.steps * self.time_step * self.sampling_rate)
+        if self.init_temperature is not None:
+            # Initialize velocities
+            MaxwellBoltzmannDistribution(atoms, temperature_K=self.init_temperature)
+        else:
+            # Continue with last md step
+            atoms.set_velocities(self.init_velocity)
+
+        # initialize thermostat
+        time_step = self.thermostat.time_step
+        thermostat = self.thermostat.get_thermostat(atoms=atoms)
+
+        # initialize Atoms calculator and metrics_dict
+        _, _ = get_energy(atoms)
+        metrics_dict = {"energy": []}
+        for checker in self.checker_list:
+            _ = checker.check(atoms)
+            metric = checker.get_metric()
+            if metric is not None:
+                for key in metric.keys():
+                    metrics_dict[key] = []
+
+        # Run simulation
+        total_fs = int(self.steps * time_step * self.sampling_rate)
 
         atoms.set_constraint(self.get_constraint())
-
-        def get_desc():
-            """TQDM description."""
-            return (
-                f"Temp: {temperature:.3f} K \t Energy {total_energy:.3f} eV - (TQDM"
-                " in fs)"
-            )
 
         atoms_cache = []
 
@@ -113,14 +167,29 @@ class ASEMD(base.ProcessSingleAtomCalc):
 
         with trange(
             total_fs,
-            desc=get_desc(),
             leave=True,
             ncols=120,
         ) as pbar:
             for idx in range(self.steps):
+                desc = []
+                stop = []
                 thermostat.run(self.sampling_rate)
-                temperature, total_energy = get_energy(atoms)
-                energy.append([temperature, total_energy])
+                _, energy = get_energy(atoms)
+                metrics_dict["energy"].append(energy)
+
+                for checker in self.checker_list:
+                    stop.append(checker.check(atoms))
+                    if stop[-1]:
+                        log.critical(
+                            f"\n {type(checker).__name__} returned false."
+                            "Simulation was stopped."
+                        )
+                    metric = checker.get_metric()
+                    if metric is not None:
+                        for key, val in metric.items():
+                            metrics_dict[key].append(val)
+                        desc.append(checker.get_desc())
+
                 atoms_cache.append(freeze_copy_atoms(atoms))
                 if len(atoms_cache) == self.dump_rate:
                     db.add(
@@ -132,16 +201,17 @@ class ASEMD(base.ProcessSingleAtomCalc):
                         )
                     )
                     atoms_cache = []
-                if idx % (1 / self.time_step) == 0:
-                    pbar.set_description(get_desc())
+
+                energy = metrics_dict["energy"][-1]
+                desc.append(f"E: {energy:.3f} eV")
+                if idx % (1 / time_step) == 0:
+                    pbar.set_description("\t".join(desc))
                     pbar.update(self.sampling_rate)
-                if temperature > self.max_temperature:
-                    log.critical(
-                        "Temperature of the simulation exceeded"
-                        f" {self.max_temperature} K. Simulation was stopped."
-                    )
+
+                if any(stop):
+                    self.steps_before_stopping = len(metrics_dict["energy"])
                     break
-        # save the last configurations
+
         db.add(
             znh5md.io.AtomsReader(
                 atoms_cache,
@@ -150,12 +220,12 @@ class ASEMD(base.ProcessSingleAtomCalc):
                 time=self.sampling_rate,
             )
         )
-        self.flux_data = pd.DataFrame(energy, columns=["temperature", "energy"])
-        self.flux_data.index.name = "step"
-        if temperature > self.max_temperature:
-            self.steps_before_explosion = len(energy)
-        else:
-            self.steps_before_explosion = -1
+
+        self.velocity_cache = atoms.get_velocities()
+        self.metrics_dict = pd.DataFrame(metrics_dict)
+
+        self.metrics_dict.index.name = "step"
+        self.steps_before_stopping = -1
 
 
 class FixedSphereASEMD(ASEMD):
