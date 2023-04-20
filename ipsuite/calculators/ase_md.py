@@ -87,8 +87,8 @@ class ASEMD(base.ProcessSingleAtom):
     """
 
     calculator = zntrack.zn.deps()
-    checker_list: list = zntrack.zn.nodes()
-    thermostat = zntrack.zn.nodes()
+    checker_list: list = zntrack.zn.nodes(None)
+    thermostat: LagevinThermostat = zntrack.zn.nodes()
 
     steps: int = zntrack.zn.params()
     init_temperature: float = zntrack.zn.params(None)
@@ -111,18 +111,18 @@ class ASEMD(base.ProcessSingleAtom):
         atoms: ase.Atoms = self.get_data()
         return atoms.repeat(self.repeat)
 
-    def _post_init_(self) -> None:
-        if not (self.init_velocity is None) ^ (self.init_temperature is None):
-            raise ValueError("init_temperature or init_velocity has to be specified.")
-
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
         return znh5md.ASEH5MD(self.traj_file).get_atoms_list()
 
-    def run(self):
+    def run(self):  # noqa: C901
         """Run the simulation."""
+        if self.checker_list is None:
+            self.checker_list = []
         atoms = self.get_atoms()
         atoms.calc = self.calculator
+        if (self.init_velocity is None) and (self.init_temperature is None):
+            self.init_temperature = self.thermostat.temperature
 
         if self.init_temperature is not None:
             # Initialize velocities
