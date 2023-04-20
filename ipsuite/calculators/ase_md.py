@@ -120,18 +120,9 @@ class ASEMD(base.ProcessSingleAtomCalc):
             self.checker_list = []
         if (self.init_velocity is None) and (self.init_temperature is None):
             self.init_temperature = self.thermostat.temperature
+
         atoms = self.get_atoms()
         atoms.calc = self.get_calc()
-        # Initialize velocities
-        MaxwellBoltzmannDistribution(atoms, temperature_K=self.temperature)
-        # initialize thermostat
-        thermostat = Langevin(
-            atoms,
-            timestep=self.time_step * units.fs,
-            temperature_K=self.temperature,
-            friction=self.friction,
-        )
-        # Run simulation
 
         if self.init_temperature is not None:
             # Initialize velocities
