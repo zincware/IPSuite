@@ -5,6 +5,10 @@ import numpy as np
 def test_ensemble_model(data_repo):
     water = ips.data_loading.AddDataH5MD.from_rev(name="water")
 
+    thermostat = ips.calculators.LagevinThermostat(
+        time_step=1.0, temperature=100.0, friction=0.01
+    )
+
     with ips.Project(automatic_node_names=True) as project:
         test_data = ips.configuration_selection.RandomSelection(
             data=water, n_configurations=5
@@ -24,10 +28,8 @@ def test_ensemble_model(data_repo):
 
         md = ips.calculators.ASEMD(
             data=test_data.atoms,
-            model=ensemble_model,
-            temperature=100,
-            time_step=1.0,
-            friction=0.01,
+            calculator=ensemble_model.calc,
+            thermostat=thermostat,
             steps=20,
             sampling_rate=1,
         )

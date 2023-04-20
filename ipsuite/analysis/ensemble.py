@@ -17,12 +17,15 @@ def plot_with_uncertainty(value, ylabel: str, xlabel: str, **kwargs) -> dict:
     -------
 
     """
-    data = {
-        "mean": np.mean(value, axis=0),
-        "std": np.std(value, axis=0),
-        "max": np.max(value, axis=0),
-        "min": np.min(value, axis=0),
-    }
+    if isinstance(value, dict):
+        data = value
+    else:
+        data = {
+            "mean": np.mean(value, axis=0),
+            "std": np.std(value, axis=0),
+            "max": np.max(value, axis=0),
+            "min": np.min(value, axis=0),
+        }
 
     fig, ax = plt.subplots(**kwargs)
     ax.fill_between(
@@ -31,13 +34,15 @@ def plot_with_uncertainty(value, ylabel: str, xlabel: str, **kwargs) -> dict:
         data["mean"] - data["std"],
         facecolor="lightblue",
     )
-    ax.plot(data["max"], linestyle="--", color="darkcyan")
-    ax.plot(data["min"], linestyle="--", color="darkcyan")
+    if "max" in data:
+        ax.plot(data["max"], linestyle="--", color="darkcyan")
+    if "min" in data:
+        ax.plot(data["min"], linestyle="--", color="darkcyan")
     ax.plot(data["mean"], color="black")
     ax.set_ylabel(ylabel)
     ax.set_xlabel(xlabel)
 
-    return fig, data
+    return fig, ax, data
 
 
 class ModelEnsembleAnalysis(base.AnalyseAtoms):
