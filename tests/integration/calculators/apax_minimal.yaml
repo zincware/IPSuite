@@ -1,0 +1,20 @@
+n_epochs: 5
+
+data:
+  batch_size: 1
+  valid_batch_size: 2
+
+model:
+  nn: [512,512]
+  n_basis: 7
+  n_radial: 5
+
+metrics:
+  - name: energy
+    reductions: [mae]
+  - name: forces
+    reductions: [mae]
+
+loss:
+  - name: energy
+  - name: forces
