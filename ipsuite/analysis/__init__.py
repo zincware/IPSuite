@@ -3,6 +3,7 @@ from ipsuite.analysis.bin_property import (
     EnergyHistogram,
     ForcesHistogram,
 )
+from ipsuite.analysis.bond_stretch import BondStretchAnalyses
 from ipsuite.analysis.ensemble import ModelEnsembleAnalysis
 from ipsuite.analysis.model import (
     BoxHeatUp,
@@ -46,4 +47,5 @@ __all__ = [
     "AnalyseSingleForceSensitivity",
     "ForceDecomposition",
     "UncertaintyCheck",
+    "BondStretchAnalyses",
 ]
