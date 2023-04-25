@@ -25,7 +25,8 @@ class BondStretchAnalyses(ProcessAtoms):
     n_steps: int
         number of steps that should be used for the bund elongation
     data_id: int
-        index of the structure in the list of structures used for the bond stretch analyses
+        index of the structure in the list of structures
+        used for the bond stretch analyses
     fig_size: (float, float)
         size of the plot
     """
