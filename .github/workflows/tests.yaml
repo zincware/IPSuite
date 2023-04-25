@@ -39,7 +39,8 @@ jobs:
           git config --global init.defaultBranch "main"
       - name: Install package
         run: |
-          git config credential.helper '!f() { sleep 1; echo "username=${{ secrets.APAX_USERNAME }}"; echo "password=${{ secrets.APAX_ACCESS }}"; }; f'
+          git config --global credential.helper store
+          echo "https://${{ secrets.APAX_USERNAME }}:${{ secrets.APAX_ACCESS }}@github.com" > ~/.git-credentials
           poetry install --all-extras
       - name: Pytest
         run: |
