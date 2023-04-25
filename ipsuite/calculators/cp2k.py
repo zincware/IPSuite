@@ -214,10 +214,14 @@ class CP2KSinglePoint(base.ProcessAtoms):
     def get_calculator(self, directory: str = None):
         if directory is None:
             directory = self.cp2k_directory
+        else:
+            restart_wfn = self.cp2k_directory / "cp2k-RESTART.wfn"
+            if restart_wfn.exists():
+                shutil.copy(restart_wfn, directory / "cp2k-RESTART.wfn")
 
         patch(
             "ase.calculators.cp2k.Popen",
-            wraps=functools.partial(subprocess.Popen, cwd=self.cp2k_directory),
+            wraps=functools.partial(subprocess.Popen, cwd=directory),
         ).start()
 
         return ase.calculators.cp2k.CP2K(
