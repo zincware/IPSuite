@@ -28,7 +28,7 @@ def test_ensemble_model(data_repo):
 
         md = ips.calculators.ASEMD(
             data=test_data.atoms,
-            calculator=ensemble_model.calc,
+            model=ensemble_model,
             thermostat=thermostat,
             steps=20,
             sampling_rate=1,
