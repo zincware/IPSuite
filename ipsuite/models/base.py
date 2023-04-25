@@ -20,9 +20,8 @@ class MLModel(base.AnalyseAtoms):
     use_forces: bool = zntrack.zn.params(True)
     use_stresses: bool = zntrack.zn.params(False)
 
-    @property
-    def calc(self) -> ase.calculators.calculator.Calculator:
-        """Property to return a model specific ase calculator object.
+    def get_calculator(self, **kwargs) -> ase.calculators.calculator.Calculator:
+        """Get a model specific ase calculator object.
 
         Returns
         -------

@@ -9,6 +9,7 @@ import shutil
 import subprocess
 from unittest.mock import patch
 
+import ase.calculators.cp2k
 import ase.io
 import cp2k_output_tools
 import pandas as pd
@@ -168,7 +169,7 @@ class CP2KSinglePoint(base.ProcessAtoms):
         db = znh5md.io.DataWriter(self.output_file)
         db.initialize_database_groups()
 
-        calc = self.calc
+        calc = self.get_calculator()
 
         for atoms in tqdm.tqdm(self.get_data()):
             atoms.calc = calc
@@ -210,11 +211,9 @@ class CP2KSinglePoint(base.ProcessAtoms):
 
         return "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
 
-    @property
-    def calc(self):
-        """Return the calculator object."""
-
-        # patch.start will patch the object permanently.
+    def get_calculator(self, directory: str = None):
+        if directory is None:
+            directory = self.cp2k_directory
 
         patch(
             "ase.calculators.cp2k.Popen",

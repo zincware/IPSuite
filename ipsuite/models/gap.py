@@ -283,8 +283,7 @@ class GAP(MLModel):
                 " information"
             )
 
-    @property
-    def calc(self):
+    def get_calculator(self, **kwargs):
         """Get the calculator object.
 
         Returns

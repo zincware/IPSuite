@@ -14,16 +14,14 @@ class LJSinglePoint(base.ProcessAtoms):
     def run(self):
         self.atoms = self.get_data()
 
-        calculator = self.calc
+        calculator = self.get_calculator()
 
         for atom in tqdm.tqdm(self.atoms):
             atom.calc = calculator
             atom.get_potential_energy()
             atom.get_stress()
 
-    @property
-    def calc(self):
+    def get_calculator(self):
         """Get an LJ ase calculator."""
 
-        calculator = LennardJones()
-        return calculator
+        return LennardJones()
