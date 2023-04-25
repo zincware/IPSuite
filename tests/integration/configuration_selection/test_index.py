@@ -47,3 +47,24 @@ def test_direct_selection(proj_w_data, eager, data_style):
 
     assert selection.atoms == data[0].atoms[:3]
     assert selection_w_exclusion.atoms == data[0].atoms[3:6]
+
+
+@pytest.mark.parametrize("proj_w_data", [1], indirect=True)
+def test_index_chained(proj_w_data):
+    proj, data = proj_w_data
+    data = data[0]
+
+    with proj:
+        a = ips.configuration_selection.IndexSelection(data=data, indices=[1])
+        b = ips.configuration_selection.IndexSelection(data=a, indices=[0])
+    proj.run()
+
+    b.load()
+    data.load()
+    assert b.atoms == [data.atoms[1]]
+
+    a.indices = [2]
+    proj.run()
+    b.load()
+    data.load()
+    assert b.atoms == [data.atoms[2]]
