@@ -18,6 +18,8 @@ jobs:
           poetry-version: 1.4.0
       - name: Install lint tools
         run: |
+          git config --global credential.helper store
+          echo "https://${{ secrets.APAX_USERNAME }}:${{ secrets.APAX_ACCESS }}@github.com" > ~/.git-credentials
           poetry config virtualenvs.create false
           poetry install --no-root --only=lint
       - name: black
