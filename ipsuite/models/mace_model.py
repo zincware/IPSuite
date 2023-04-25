@@ -1,6 +1,5 @@
 """MACE model module."""
 
-import functools
 import json
 import logging
 import pathlib
@@ -122,9 +121,9 @@ class MACE(MLModel):
 
                 pd.DataFrame(data).set_index("epoch").to_csv(self.training)
 
-    @functools.cached_property
-    def calc(self):
+    def get_calculator(self, device=None, **kwargs):
         """Return the ASE calculator."""
+        device = device or self.device
         return MACECalculator(
             model_path=self.model_dir / "MACE_model.model", device=self.device
         )
