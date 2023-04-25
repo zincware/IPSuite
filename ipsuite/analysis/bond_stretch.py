@@ -16,18 +16,18 @@ class BondStretchAnalyses(ProcessAtoms):
     ----------
     ase_calculator: ase.calculator
         ase calculator to use for simulation
-    idxs: int
-
+    idxs: [int, int]
+        indices of the two atoms that should be analyzed
     R_min: float
-        
+        minimal bond length
     R_max: float
-        
+        maximal bond length
     n_steps: int
-        
+        number of steps that should be used for the bund elongation
     data_id: int
-        
+        index of the structure in the list of structures used for the bond stretch analyses
     fig_size: (float, float)
-        
+        size of the plot
     """
 
     ase_calculator = zntrack.zn.deps()

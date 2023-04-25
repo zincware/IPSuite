@@ -1,8 +1,8 @@
 import pathlib
 import shutil
 
-from apax_nodes import apaxJaxMD, apaxModel
-
+from ipsuite.calculators import ApaxJaxMD
+from ipsuite.models import Apax
 import ipsuite as ips
 from ipsuite.configuration_selection.uniform_energetic import UniformEnergeticSelection
 
@@ -27,13 +27,13 @@ def test_model_training(proj_path, traj_file):
             data=train_selection.excluded_atoms, n_configurations=8, name="val_data"
         )
 
-        model = apaxModel(
+        model = Apax(
             parameter_file=model_minimal,
             data=train_selection.atoms,
             validation_data=val_selection.atoms,
         )
 
-        md = apaxJaxMD(
+        md = ApaxJaxMD(
             model=model,
             data=raw_data,
             md_parameter_file=md_minimal,

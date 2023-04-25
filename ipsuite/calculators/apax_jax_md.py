@@ -17,6 +17,19 @@ log = logging.getLogger(__name__)
 
 
 class ApaxJaxMD(ProcessSingleAtom):
+    """Class to run a more performant JaxMD simulation with a apax Model.
+
+    Attributes
+    ----------
+    model: ApaxModel
+        model to use for the simulation
+    repeat: float
+        number of repeats
+    md_parameter: dict
+        parameter for the MD simulation
+    md_parameter_file: str
+        path to the MD simulation parameter file
+    """
     model: Apax = zn.deps()
     repeat = zn.params(None)
 

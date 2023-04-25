@@ -17,6 +17,25 @@ log = logging.getLogger(__name__)
 
 
 class Apax(MLModel):
+    """Class for the implementation of the apax model
+
+    Attributes
+    ----------
+    parameter : dict
+        dict of the model parameter
+    parameter_file: str
+        path to the model parameter file
+    validation_data: ase.Atoms
+        atoms object with the validation data set
+    model_directory: pathlib.Path
+        model directory
+    train_log_file: pathlib.Path
+        log file directory
+    train_data_file: pathlib.Path
+        path to the training data
+    validation_data_file: pathlib.Path
+        path to the valdidation data
+    """
     parameter: dict = zn.params(None)
     parameter_file: str = dvc.params(None)
     validation_data = zn.deps()

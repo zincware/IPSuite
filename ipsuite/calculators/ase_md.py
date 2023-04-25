@@ -56,11 +56,7 @@ class ASEMD(base.ProcessSingleAtom):
 
     Attributes
     ----------
-    atoms_lst: list
-        list of atoms objects to start simulation from
-    start_id: int
-        starting id to pick from list of atoms
-    ase_calculator: ase.calculator
+    calculator: ase.calculator
         ase calculator to use for simulation
     checker_list: list[CheckNodes]
         checker, which tracks various metrics and stops the
