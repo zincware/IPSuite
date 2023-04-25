@@ -47,3 +47,40 @@ def test_direct_selection(proj_w_data, eager, data_style):
 
     assert selection.atoms == data[0].atoms[:3]
     assert selection_w_exclusion.atoms == data[0].atoms[3:6]
+
+
+def test_index_chained(proj_path, traj_file):
+    with ips.Project(automatic_node_names=True, remove_existing_graph=True) as project:
+        data = ips.AddData(file=traj_file)
+        pre_selection = ips.configuration_selection.IndexSelection(
+            data=data, indices=slice(0, 5, None)
+        )  # we use this to "change" the data
+        selection = ips.configuration_selection.IndexSelection(
+            data=pre_selection, indices=[0, 1, 2], name="selection"
+        )
+
+        histogram = ips.analysis.EnergyHistogram(data=selection)
+
+    project.run()
+
+    histogram.load()
+    assert histogram.labels_df.to_dict()["bin_edges"][0] == pytest.approx(
+        0.0952380952380952
+    )
+
+    with ips.Project(automatic_node_names=True, remove_existing_graph=True) as project:
+        data = ips.AddData(file=traj_file)
+        pre_selection = ips.configuration_selection.IndexSelection(
+            data=data, indices=slice(5, 10, None)
+        )  # we use this to "change" the data
+        selection = ips.configuration_selection.IndexSelection(
+            data=pre_selection, indices=[0, 1, 2], name="selection"
+        )
+
+        histogram = ips.analysis.EnergyHistogram(data=selection)
+
+    project.run()
+    histogram.load()
+    assert histogram.labels_df.to_dict()["bin_edges"][0] == pytest.approx(
+        0.3333333333333333
+    )

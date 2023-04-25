@@ -1,6 +1,7 @@
 """Base Node for ConfigurationSelection."""
 import logging
 import typing
+import uuid
 
 import ase
 import znflow
@@ -24,6 +25,7 @@ class ConfigurationSelection(base.ProcessAtoms):
 
     """
 
+    _hash = zntrack.zn.outs()
     exclude_configurations: typing.Union[
         typing.Dict[str, typing.List[int]], base.protocol.HasSelectedConfigurations
     ] = zntrack.zn.deps(
@@ -44,6 +46,7 @@ class ConfigurationSelection(base.ProcessAtoms):
 
     def run(self):
         """ZnTrack Node Run method."""
+        self._hash = str(uuid.uuid4())
 
         exclude = combine.ExcludeIds(self.get_data(), self.exclude_configurations)
         data = exclude.get_clean_data(flatten=True)
