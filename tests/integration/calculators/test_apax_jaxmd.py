@@ -1,10 +1,10 @@
 import pathlib
 import shutil
 
-from ipsuite.calculators import ApaxJaxMD
-from ipsuite.models import Apax
 import ipsuite as ips
+from ipsuite.calculators import ApaxJaxMD
 from ipsuite.configuration_selection.uniform_energetic import UniformEnergeticSelection
+from ipsuite.models import Apax
 
 TEST_PATH = pathlib.Path(__file__).parent.resolve()
 

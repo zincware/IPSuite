@@ -36,6 +36,7 @@ class Apax(MLModel):
     validation_data_file: pathlib.Path
         path to the valdidation data
     """
+
     parameter: dict = zn.params(None)
     parameter_file: str = dvc.params(None)
     validation_data = zn.deps()
