@@ -11,7 +11,9 @@ log = logging.getLogger(__name__)
 
 
 class ASEGeoOpt(base.ProcessSingleAtom):
-    calculator = zntrack.zn.deps()
+    calculator = (
+        zntrack.zn.deps()
+    )  # TODO this should be a model with a .get_calculator() method
 
     optimizer: str = zntrack.zn.params("FIRE")
     traj: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "optim.traj")

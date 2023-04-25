@@ -45,7 +45,7 @@ class MLModel(base.AnalyseAtoms):
         Prediction: typing.List[ase.Atoms]
             Atoms with updated calculators
         """
-        calc = self.calc
+        calc = self.get_calculator()
         results = []
         for atoms in tqdm.tqdm(atoms_list, ncols=120):
             atoms.calc = calc

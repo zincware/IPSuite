@@ -80,7 +80,7 @@ class EnsembleModel(zntrack.Node):
         typing.List[ase.Atoms]
             Atoms with updated calculators
         """
-        calc = self.calc
+        calc = self.get_calculator()
         result = []
         for atoms in tqdm(atoms_list, ncols=120):
             atoms.calc = calc

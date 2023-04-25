@@ -23,7 +23,7 @@ class xTBSinglePoint(base.ProcessAtoms):
     def run(self):
         self.atoms = []
 
-        calculator = self.calc
+        calculator = self.get_calculator()
 
         for atom in tqdm.tqdm(self.get_data()):
             atom.calc = calculator

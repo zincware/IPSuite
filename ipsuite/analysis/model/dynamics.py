@@ -74,7 +74,7 @@ class RattleAtoms(base.ProcessSingleAtom):
 
         atoms = self.get_data()
         reference = atoms.copy()
-        atoms.calc = self.model.calc
+        atoms.calc = self.model.get_calculator()
 
         energies = []
 
@@ -128,7 +128,7 @@ class BoxScale(base.ProcessSingleAtom):
 
         original_atoms = self.get_data()
         cell = original_atoms.copy().cell
-        original_atoms.calc = self.model.calc
+        original_atoms.calc = self.model.get_calculator()
 
         energies = []
         self.atoms = []
@@ -145,7 +145,7 @@ class BoxScale(base.ProcessSingleAtom):
             else:
                 eval_atoms = self.mapping.backward_mapping(scaling_atoms, molecules)
                 # New atoms object, does not have the calculator.
-                eval_atoms.calc = self.model.calc
+                eval_atoms.calc = self.model.get_calculator()
 
             energies.append(eval_atoms.get_potential_energy())
             self.atoms.append(freeze_copy_atoms(eval_atoms))
@@ -212,7 +212,7 @@ class BoxHeatUp(base.ProcessSingleAtom):
         if self.max_temperature is None:
             self.max_temperature = self.stop_temperature * 1.5
         atoms = self.get_atoms()
-        atoms.set_calculator(self.model.calc)
+        atoms.calc = self.model.get_calculator()
         # Initialize velocities
         MaxwellBoltzmannDistribution(atoms, temperature_K=self.start_temperature)
         # initialize thermostat
@@ -375,7 +375,7 @@ class MDStability(base.ProcessAtoms):
 
     def run(self) -> None:
         data_lst = self.get_data()
-        calculator = self.model.calc
+        calculator = self.model.get_calculator()
         rng = default_rng(self.seed)
 
         stable_steps = []

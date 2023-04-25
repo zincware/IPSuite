@@ -86,7 +86,9 @@ class ASEMD(base.ProcessSingleAtom):
         write them to the trajectory file every 'dump_rate' steps.
     """
 
-    calculator = zntrack.zn.deps()
+    calculator = (
+        zntrack.zn.deps()
+    )  # TODO this should be a model with a .get_calculator() method
     checker_list: list = zntrack.zn.nodes(None)
     thermostat: LagevinThermostat = zntrack.zn.nodes()
 
