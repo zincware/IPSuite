@@ -84,3 +84,54 @@ def test_index_chained(proj_path, traj_file):
     assert histogram.labels_df.to_dict()["bin_edges"][0] == pytest.approx(
         0.3333333333333333
     )
+
+
+def test_exclude_configurations(proj_path, traj_file):
+    with ips.Project(automatic_node_names=True, remove_existing_graph=True) as project:
+        data = ips.AddData(file=traj_file)
+        test_data = ips.configuration_selection.IndexSelection(
+            data=data, indices=slice(0, 5, None)
+        )
+
+        train_data = ips.configuration_selection.IndexSelection(
+            data=data, indices=slice(0, 5, None), exclude=test_data
+        )
+
+    project.run()
+
+    train_data.load()
+    test_data.load()
+
+    assert train_data.selected_configurations == {"AddData": [5, 6, 7, 8, 9]}
+    assert test_data.selected_configurations == {"AddData": [0, 1, 2, 3, 4]}
+
+
+def test_exclude_configurations_list(proj_path, traj_file):
+    train_data = []
+    test_data = []
+    with ips.Project(automatic_node_names=True, remove_existing_graph=True) as project:
+        data = ips.AddData(file=traj_file)
+        test_data.append(
+            ips.configuration_selection.IndexSelection(
+                data=data, indices=slice(0, 5, None)
+            )
+        )
+        train_data.append(
+            ips.configuration_selection.IndexSelection(
+                data=data, indices=slice(0, 5, None), exclude=test_data
+            )
+        )
+
+        validation_data = ips.configuration_selection.IndexSelection(
+            data=data, indices=slice(0, 5, None), exclude=train_data + test_data
+        )
+
+    project.run()
+
+    train_data[0].load()
+    test_data[0].load()
+    validation_data.load()
+
+    assert train_data[0].selected_configurations == {"AddData": [5, 6, 7, 8, 9]}
+    assert test_data[0].selected_configurations == {"AddData": [0, 1, 2, 3, 4]}
+    assert validation_data.selected_configurations == {"AddData": [10, 11, 12, 13, 14]}
