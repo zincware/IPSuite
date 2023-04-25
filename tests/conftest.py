@@ -85,7 +85,7 @@ def proj_path(tmp_path, request) -> pathlib.Path:
 @pytest.fixture
 def proj_w_data(proj_path, traj_file, request) -> typing.Tuple[ips.Project, ips.AddData]:
     data = []
-    with ips.Project(automatic_node_names=True) as proj:
+    with ips.Project() as proj:
         for idx in range(request.param):
             data.append(ips.AddData(file=traj_file, name=f"data_{idx}"))
     proj.run()

@@ -2,7 +2,6 @@
 
 import ipsuite as ips
 import pytest
-import ase
 
 
 @pytest.mark.parametrize("data_style", ["lst", "single", "attr", "attr_lst", "dct"])
