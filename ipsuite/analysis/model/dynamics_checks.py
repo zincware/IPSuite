@@ -123,6 +123,9 @@ class StandardDeviationCheck(base.CheckBase):
         Maximum value of the property to check before the simulation is stopped
     minimum_window_size: int, optional
         Minimum number of steps to average over before checking the standard deviation
+    larger_only: bool, optional
+        Only check the standard deviation of points that are larger than the mean.
+        E.g. useful for uncertainties, where a lower uncertainty is not a problem.
     """
 
     value: str = zntrack.zn.params()
@@ -130,6 +133,7 @@ class StandardDeviationCheck(base.CheckBase):
     window_size: int = zntrack.zn.params(500)
     max_value: float = zntrack.zn.params(None)
     minimum_window_size: int = zntrack.zn.params(50)
+    larger_only: bool = zntrack.zn.params(False)
 
     def _post_init_(self):
         if self.max_std is None and self.max_value is None:
@@ -145,9 +149,12 @@ class StandardDeviationCheck(base.CheckBase):
             return False
         mean = np.mean(self.values)
         std = np.std(self.values)
-        std_trigger = (
-            self.max_std is not None and np.abs(value - mean) > self.max_std * std
-        )
+
+        distance = value - mean
+        if self.larger_only:
+            distance = np.abs(distance)
+
+        std_trigger = self.max_std is not None and distance > self.max_std * std
         max_val_trigger = self.max_value is not None and value > self.max_value
 
         return any([std_trigger, max_val_trigger])
