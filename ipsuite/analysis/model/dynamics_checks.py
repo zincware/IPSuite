@@ -1,3 +1,5 @@
+import collections
+
 import ase
 import numpy as np
 import zntrack
@@ -98,3 +100,56 @@ class TemperatureCheck(base.CheckBase):
 
     def get_desc(self):
         return f"Temp: {self.temperature:.3f} K"
+
+
+class StandardDeviationCheck(base.CheckBase):
+    """Calculate and check standard deviation during a MD simulation
+
+    Compute the standard deviation of the selected property.
+    If the property is off by more than a selected amount from the
+    mean, the simulation will be stopped.
+
+    Attributes
+    ----------
+    value: str
+        name of the property to check
+    max_std: float, optional
+        Maximum number of standard deviations away from the mean to stop the simulation.
+        Roughly the value corresponds to the following percentiles:
+            {1: 68%, 2: 95%, 3: 99.7%}
+    window_size: int, optional
+        Number of steps to average over
+    max_value: float, optional
+        Maximum value of the property to check before the simulation is stopped
+    """
+
+    value: str = zntrack.zn.params()
+    max_std: float = zntrack.zn.params(None)
+    window_size: int = zntrack.zn.params(500)
+    max_value: float = zntrack.zn.params(None)
+
+    def _post_init_(self):
+        if self.max_std is None and self.max_value is None:
+            raise ValueError("Either max_std or max_value must be set")
+
+        self.values = collections.deque(maxlen=self.window_size)
+
+    def check(self, atoms):
+        value = atoms.calc.results[self.value]
+        self.values.append(value)
+        mean = np.mean(self.values)
+        std = np.std(self.values)
+        if self.max_std is not None and np.abs(value - mean) > self.max_std * std:
+            return True
+        if self.max_value is not None and value > self.max_value:
+            return True
+
+    def __str__(self) -> str:
+        return (
+            f"StandardDeviationCheck triggered by {self.value[-1]} for"
+            f" {np.mean(self.values):.3f} +- {np.std(self.values):.3f} and max value:"
+            f" {self.max_value}"
+        )
+
+    def get_desc(self) -> str:
+        return str(self)

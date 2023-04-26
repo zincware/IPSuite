@@ -16,6 +16,7 @@ from ipsuite.analysis.model import (
     Prediction,
     PredictionMetrics,
     RattleAtoms,
+    StandardDeviationCheck,
     TemperatureCheck,
 )
 from ipsuite.analysis.sensitivity import (
@@ -44,4 +45,5 @@ __all__ = [
     "AnalyseGlobalForceSensitivity",
     "AnalyseSingleForceSensitivity",
     "ForceDecomposition",
+    "StandardDeviationCheck",
 ]
