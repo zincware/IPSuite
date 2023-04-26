@@ -152,7 +152,7 @@ class BoxScale(base.ProcessSingleAtom):
             else:
                 eval_atoms = self.mapping.backward_mapping(scaling_atoms, molecules)
                 # New atoms object, does not have the calculator.
-                eval_atoms.calc = self.model.get_calculator()
+                eval_atoms.calc = original_atoms.calc
 
             energies.append(eval_atoms.get_potential_energy())
             self.atoms.append(freeze_copy_atoms(eval_atoms))
