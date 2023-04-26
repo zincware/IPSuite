@@ -60,8 +60,8 @@ class ASEMD(base.ProcessSingleAtom):
         list of atoms objects to start simulation from
     start_id: int
         starting id to pick from list of atoms
-    ase_calculator: ase.calculator
-        ase calculator to use for simulation
+    model: zntrack.Node
+        A node that implements a 'get_calculation' method
     checker_list: list[CheckNodes]
         checker, which tracks various metrics and stops the
         simulation after a threshold is exceeded.
@@ -86,7 +86,8 @@ class ASEMD(base.ProcessSingleAtom):
         write them to the trajectory file every 'dump_rate' steps.
     """
 
-    calculator = zntrack.zn.deps()
+    model = zntrack.zn.deps()
+    model_outs = zntrack.dvc.outs(zntrack.nwd / "model/")
     checker_list: list = zntrack.zn.nodes(None)
     thermostat: LagevinThermostat = zntrack.zn.nodes()
 
@@ -119,8 +120,11 @@ class ASEMD(base.ProcessSingleAtom):
         """Run the simulation."""
         if self.checker_list is None:
             self.checker_list = []
+
+        self.model_outs.mkdir(parents=True, exist_ok=True)
+        (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
         atoms = self.get_atoms()
-        atoms.calc = self.calculator
+        atoms.calc = self.model.get_calculator(directory=self.model_outs)
         if (self.init_velocity is None) and (self.init_temperature is None):
             self.init_temperature = self.thermostat.temperature
 

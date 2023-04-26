@@ -29,7 +29,7 @@ class Prediction(base.ProcessAtoms):
 
     def run(self):
         self.atoms = []
-        calc = self.model.calc
+        calc = self.model.get_calculator()
         for configuration in tqdm.tqdm(self.get_data(), ncols=70):
             configuration: ase.Atoms
             # Run calculation
