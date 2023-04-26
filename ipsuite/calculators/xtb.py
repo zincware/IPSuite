@@ -23,15 +23,14 @@ class xTBSinglePoint(base.ProcessAtoms):
     def run(self):
         self.atoms = []
 
-        calculator = self.calc
+        calculator = self.get_calculator()
 
         for atom in tqdm.tqdm(self.get_data()):
             atom.calc = calculator
             atom.get_potential_energy()
             self.atoms.append(freeze_copy_atoms(atom))
 
-    @property
-    def calc(self):
+    def get_calculator(self, **kwargs):
         """Get an xtb ase calculator."""
         try:
             from xtb.ase.calculator import XTB
@@ -41,5 +40,4 @@ class xTBSinglePoint(base.ProcessAtoms):
             )
             raise
 
-        xtb = XTB(method=self.method)
-        return xtb
+        return XTB(method=self.method)

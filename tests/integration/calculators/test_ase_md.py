@@ -13,7 +13,7 @@ def test_ase_md(proj_path, traj_file):
         model = ips.models.GAP(data=data.atoms)
         md = ips.calculators.ASEMD(
             data=data.atoms,
-            calculator=model.calc,
+            model=model,
             checker_list=[checker],
             thermostat=thermostat,
             init_temperature=1.0,
