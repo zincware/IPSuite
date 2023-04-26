@@ -146,9 +146,9 @@ class StandardDeviationCheck(base.CheckBase):
 
     def __str__(self) -> str:
         return (
-            f"StandardDeviationCheck triggered by {self.value[-1]} for"
-            f" {np.mean(self.values):.3f} +- {np.std(self.values):.3f} and max value:"
-            f" {self.max_value}"
+            f"StandardDeviationCheck for '{self.value}' triggered by '{self.value[-1]}'"
+            f" for '{np.mean(self.values):.3f} +- {np.std(self.values):.3f}' and"
+            f" max value '{self.max_value}'"
         )
 
     def get_desc(self) -> str:
