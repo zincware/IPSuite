@@ -121,34 +121,42 @@ class StandardDeviationCheck(base.CheckBase):
         Number of steps to average over
     max_value: float, optional
         Maximum value of the property to check before the simulation is stopped
+    minimum_window_size: int, optional
+        Minimum number of steps to average over before checking the standard deviation
     """
 
     value: str = zntrack.zn.params()
     max_std: float = zntrack.zn.params(None)
     window_size: int = zntrack.zn.params(500)
     max_value: float = zntrack.zn.params(None)
+    minimum_window_size: int = zntrack.zn.params(50)
 
     def _post_init_(self):
         if self.max_std is None and self.max_value is None:
             raise ValueError("Either max_std or max_value must be set")
 
+    def _post_load_(self) -> None:
         self.values = collections.deque(maxlen=self.window_size)
 
     def check(self, atoms):
         value = atoms.calc.results[self.value]
         self.values.append(value)
+        if len(self.values) < self.minimum_window_size:
+            return False
         mean = np.mean(self.values)
         std = np.std(self.values)
-        if self.max_std is not None and np.abs(value - mean) > self.max_std * std:
-            return True
-        if self.max_value is not None and value > self.max_value:
-            return True
+        std_trigger = (
+            self.max_std is not None and np.abs(value - mean) > self.max_std * std
+        )
+        max_val_trigger = self.max_value is not None and value > self.max_value
+
+        return any([std_trigger, max_val_trigger])
 
     def __str__(self) -> str:
         return (
-            f"StandardDeviationCheck for '{self.value}' triggered by '{self.value[-1]}'"
-            f" for '{np.mean(self.values):.3f} +- {np.std(self.values):.3f}' and"
-            f" max value '{self.max_value}'"
+            f"StandardDeviationCheck for '{self.value}' triggered by"
+            f" '{self.values[-1]:.3f}' for '{np.mean(self.values):.3f} +-"
+            f" {np.std(self.values):.3f}' and max value '{self.max_value}'"
         )
 
     def get_desc(self) -> str:
