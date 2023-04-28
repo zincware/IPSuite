@@ -18,9 +18,9 @@ class BondStretchAnalyses(ProcessAtoms):
         ase calculator to use for simulation
     idxs: [int, int]
         indices of the two atoms that should be analyzed
-    R_min: float
+    r_min: float
         minimal bond length
-    R_max: float
+    r_max: float
         maximal bond length
     n_steps: int
         number of steps that should be used for the bund elongation
@@ -34,8 +34,8 @@ class BondStretchAnalyses(ProcessAtoms):
     ase_calculator = zntrack.zn.deps()
 
     idxs = zntrack.zn.params()
-    R_min = zntrack.zn.params()
-    R_max = zntrack.zn.params()
+    r_min = zntrack.zn.params()
+    r_max = zntrack.zn.params()
     n_steps = zntrack.zn.params()
     data_id: typing.Optional[int] = zntrack.zn.params(0)
     fig_size = zntrack.zn.params((10, 7))
@@ -51,13 +51,13 @@ class BondStretchAnalyses(ProcessAtoms):
             train_bond_length.append(atoms.get_distance(self.idxs[0], self.idxs[1]))
 
         atoms.calc = self.ase_calculator
-        bond_lengths = np.linspace(self.R_min, self.R_max, self.n_steps)
+        bond_lengths = np.linspace(self.r_min, self.r_max, self.n_steps)
 
         results = {}
 
         ens_energies = []
         ens_forces = []
-        e_unvertainties = []
+        e_uncertainties = []
         f_uncertainties = []
 
         self.atoms = []
@@ -66,7 +66,7 @@ class BondStretchAnalyses(ProcessAtoms):
             ens_energies.append(atoms.get_total_energy())
             ens_forces.append(atoms.get_forces())
             if "energy_uncertainty" in atoms.calc.results:
-                e_unvertainties.append(atoms.calc.results.get("energy_uncertainty"))
+                e_uncertainties.append(atoms.calc.results.get("energy_uncertainty"))
             if "forces_uncertainty" in atoms.calc.results:
                 f_uncertainties.append(atoms.calc.results.get("forces_uncertainty"))
 
@@ -75,7 +75,7 @@ class BondStretchAnalyses(ProcessAtoms):
         results["energy"] = np.asarray(ens_energies)
         results["forces"] = np.asarray(ens_forces)
         if "energy_uncertainty" in atoms.calc.results:
-            results["energy_uncertainty"] = np.asarray(e_unvertainties)
+            results["energy_uncertainty"] = np.asarray(e_uncertainties)
         if "forces_uncertainty" in atoms.calc.results:
             results["forces_uncertainty"] = np.asarray(f_uncertainties)
 

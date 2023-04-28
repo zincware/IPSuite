@@ -13,6 +13,10 @@ TEST_PATH = pathlib.Path(__file__).parent.resolve()
 def test_model_training(proj_path, traj_file):
     shutil.copy(TEST_PATH / "apax_minimal.yaml", proj_path / "apax_minimal.yaml")
 
+    rev_forces = np.array(
+        [[-0., -0., -0.00127511],
+        [-0., -0., 0.00127511]]
+    )
     with ips.Project() as project:
         raw_data = ips.AddData(file=traj_file, name="raw_data")
         train_selection = UniformEnergeticSelection(
@@ -28,7 +32,7 @@ def test_model_training(proj_path, traj_file):
             data=train_selection.atoms,
             validation_data=val_selection.atoms,
         )
-    project.run(environment={"OPENBLAS_NUM_THREADS": "1"})
+    project.run()
 
     raw_data.load()
     atoms = raw_data.atoms
@@ -40,7 +44,7 @@ def test_model_training(proj_path, traj_file):
     print(atoms[0].get_forces())
 
     assert isinstance(atoms[0].get_potential_energy(), float)
-    assert atoms[0].get_potential_energy() != 0.0
+    assert abs(atoms[0].get_potential_energy() - 0.472184) <= 1e-5
 
     assert isinstance(atoms[0].get_forces(), np.ndarray)
-    assert atoms[0].get_forces()[0, 2] != 0.0
+    assert np.all(atoms[0].get_forces() - rev_forces <= 1e-5)

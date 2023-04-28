@@ -14,7 +14,7 @@ def test_model_training(proj_path, traj_file):
         TEST_PATH / "apax_minimal.yaml", proj_path / "apax_minimal.yaml"
     )
     md_minimal = shutil.copy(
-        TEST_PATH / "md_minimal_apax.yaml", proj_path / "md_minimal_apax.yaml"
+        TEST_PATH / "apax_md_minimal.yaml", proj_path / "apax_md_minimal.yaml"
     )
 
     with ips.Project() as project:
@@ -38,7 +38,7 @@ def test_model_training(proj_path, traj_file):
             data=raw_data,
             md_parameter_file=md_minimal,
         )
-    project.run(environment={"OPENBLAS_NUM_THREADS": "1"})
+    project.run()
 
     md.load()
 
