@@ -32,19 +32,30 @@ def test_model_training(proj_path, traj_file):
             data=train_selection.atoms,
             validation_data=val_selection.atoms,
         )
+
+        prediction = ips.analysis.Prediction(model=model, data=val_selection.atoms)
+        analysis = ips.analysis.PredictionMetrics(data=prediction)
+
     project.run()
 
     raw_data.load()
     atoms = raw_data.atoms
 
     model.load()
-    atoms[0].calc = model.calc
-
-    print(atoms[0].get_potential_energy())
-    print(atoms[0].get_forces())
+    atoms[0].calc = model.get_calculator()
 
     assert isinstance(atoms[0].get_potential_energy(), float)
     assert abs(atoms[0].get_potential_energy() - 0.472184) <= 1e-5
 
     assert isinstance(atoms[0].get_forces(), np.ndarray)
     assert np.all(atoms[0].get_forces() - rev_forces <= 1e-5)
+
+    analysis.load()
+
+    assert analysis.energy and analysis.forces
+    assert not analysis.stress
+
+    for val in analysis.energy.values():
+        assert isinstance(val, float)
+    for val in analysis.forces.values():
+        assert isinstance(val, float)
