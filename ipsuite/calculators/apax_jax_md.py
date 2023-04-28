@@ -92,8 +92,3 @@ class ApaxJaxMD(ProcessSingleAtom):
     @functools.cached_property
     def atoms(self) -> typing.List[ase.Atoms]:
         return list(ase.io.iread(self.sim_dir / "md.traj"))  # filename sould be changable
-
-    @property
-    def last_atoms(self) -> ase.Atoms:
-        """Get the last Configuration of the simulated trajectory."""
-        return self.atoms[-1]
