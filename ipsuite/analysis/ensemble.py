@@ -90,10 +90,6 @@ class ModelEnsembleAnalysis(base.AnalyseAtoms):
         figures[1][0].savefig(self.sorted_plot_path)
         figures[2].savefig(self.histogram)
 
-    def calc(self):
-        # Ensemble could inherit from MLModel
-        raise NotImplementedError
-
     def get_plots(self):
         energy = np.stack(
             [np.stack(x.get_potential_energy() for x in p) for p in self.prediction_list]
@@ -121,7 +117,3 @@ class ModelEnsembleAnalysis(base.AnalyseAtoms):
         ax.set_xlabel("Energy standard deviation histogram")
         figures.append(fig)
         return figures
-
-    def predict(self, data):
-        # TODO create prediction object with uncertainties
-        pass
