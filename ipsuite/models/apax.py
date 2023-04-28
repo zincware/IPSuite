@@ -122,8 +122,7 @@ class Apax(MLModel):
         self.move_metrics()
         self.get_metrics_from_plots()
 
-    @property
-    def calc(self):
+    def get_calculator(self):
         """Get a apax ase calculator"""
         from apax.md import ASECalculator
 
