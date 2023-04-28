@@ -141,6 +141,7 @@ class StandardDeviationCheck(base.CheckBase):
 
     def _post_load_(self) -> None:
         self.values = collections.deque(maxlen=self.window_size)
+        self.status = self.__class__.__name__
 
     def check(self, atoms):
         value = atoms.calc.results[self.value]
@@ -157,14 +158,17 @@ class StandardDeviationCheck(base.CheckBase):
         std_trigger = self.max_std is not None and distance > self.max_std * std
         max_val_trigger = self.max_value is not None and value > self.max_value
 
-        return any([std_trigger, max_val_trigger])
+        if any([std_trigger, max_val_trigger]):
+            self.status = (
+                f"StandardDeviationCheck for '{self.value}' triggered by"
+                f" '{self.values[-1]:.3f}' for '{np.mean(self.values):.3f} +-"
+                f" {np.std(self.values):.3f}' and max value '{self.max_value}'"
+            )
+            return True
+        return False
 
     def __str__(self) -> str:
-        return (
-            f"StandardDeviationCheck for '{self.value}' triggered by"
-            f" '{self.values[-1]:.3f}' for '{np.mean(self.values):.3f} +-"
-            f" {np.std(self.values):.3f}' and max value '{self.max_value}'"
-        )
+        return self.status
 
     def get_desc(self) -> str:
         return str(self)
