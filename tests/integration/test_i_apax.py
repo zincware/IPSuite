@@ -13,10 +13,7 @@ TEST_PATH = pathlib.Path(__file__).parent.resolve()
 def test_model_training(proj_path, traj_file):
     shutil.copy(TEST_PATH / "apax_minimal.yaml", proj_path / "apax_minimal.yaml")
 
-    rev_forces = np.array(
-        [[-0., -0., -0.00127511],
-        [-0., -0., 0.00127511]]
-    )
+    rev_forces = np.array([[-0.0, -0.0, -0.00127511], [-0.0, -0.0, 0.00127511]])
     with ips.Project() as project:
         raw_data = ips.AddData(file=traj_file, name="raw_data")
         train_selection = UniformEnergeticSelection(

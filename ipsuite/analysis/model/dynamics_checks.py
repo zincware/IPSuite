@@ -93,7 +93,10 @@ class TemperatureCheck(base.CheckBase):
         unstable = self.temperature > self.max_temperature
 
         if unstable:
-            self.status = f"Temperature Check failed: last {self.temperature} > {self.max_temperature}"
+            self.status = (
+                f"Temperature Check failed: last {self.temperature} >"
+                f" {self.max_temperature}"
+            )
         else:
             self.status = f"Temperature Check {self.temperature} < {self.max_temperature}"
 
@@ -122,7 +125,9 @@ class UncertaintyCheck(base.CheckBase):
         uncertain = uncertainty > self.max_uncertainty
 
         if uncertain:
-            self.status = f"Uncertainty Check failed: last {uncertainty:.3f} eV > {self.max}"
+            self.status = (
+                f"Uncertainty Check failed: last {uncertainty:.3f} eV > {self.max}"
+            )
         else:
             self.status = f"Uncertainty: {uncertainty:.3f} eV"
 

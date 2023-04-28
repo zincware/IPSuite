@@ -101,9 +101,9 @@ class ASEMD(base.ProcessSingleAtom):
     metrics_dict = zntrack.zn.plots()
 
     steps_before_stopping = zntrack.zn.metrics()
-    
+
     velocity_cache = zntrack.zn.outs()
-    
+
     traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.h5")
 
     def get_constraint(self):
