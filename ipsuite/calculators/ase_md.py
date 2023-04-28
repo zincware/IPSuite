@@ -56,8 +56,12 @@ class ASEMD(base.ProcessSingleAtom):
 
     Attributes
     ----------
-    calculator: ase.calculator
-        ase calculator to use for simulation
+    atoms_lst: list
+        list of atoms objects to start simulation from
+    start_id: int
+        starting id to pick from list of atoms
+    model: zntrack.Node
+        A node that implements a 'get_calculation' method
     checker_list: list[CheckNodes]
         checker, which tracks various metrics and stops the
         simulation after a threshold is exceeded.
@@ -98,7 +102,8 @@ class ASEMD(base.ProcessSingleAtom):
 
     steps_before_stopping = zntrack.zn.metrics()
     
-    velocity_cache = zntrack.dvc.outs()
+    velocity_cache = zntrack.zn.outs()
+    
     traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.h5")
 
     def get_constraint(self):

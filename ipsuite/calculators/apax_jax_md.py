@@ -93,7 +93,7 @@ class ApaxJaxMD(ProcessSingleAtom):
     def atoms(self) -> typing.List[ase.Atoms]:
         return list(
             ase.io.iread(self.sim_dir / "md.traj")
-        )  # anpassen in der konfig kann man traj name frei waehlen
+        ) # filename sould be changable
 
     @property
     def last_atoms(self) -> ase.Atoms:
