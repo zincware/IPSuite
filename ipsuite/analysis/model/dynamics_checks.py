@@ -91,13 +91,19 @@ class TemperatureCheck(base.CheckBase):
     def check(self, atoms):
         self.temperature, _ = get_energy(atoms)
         unstable = self.temperature > self.max_temperature
+
+        if unstable:
+            self.status = f"Temperature Check failed: last {self.temperature} > {self.max_temperature}"
+        else:
+            self.status = f"Temperature Check {self.temperature} < {self.max_temperature}"
+
         return unstable
 
     def get_metric(self):
         return {"temperature": self.temperature}
 
-    def get_desc(self):
-        return f"Temp: {self.temperature:.3f} K"
+    def __str__(self):
+        return self.status
 
 
 class UncertaintyCheck(base.CheckBase):
@@ -112,9 +118,15 @@ class UncertaintyCheck(base.CheckBase):
     max_uncertainty = zntrack.zn.params()
 
     def check(self, atoms):
-        self.uncertainty = atoms.calc.results.get("energy_uncertainty")
-        uncertain = self.uncertainty > self.max_uncertainty
+        uncertainty = atoms.calc.results.get("energy_uncertainty")
+        uncertain = uncertainty > self.max_uncertainty
+
+        if uncertain:
+            self.status = f"Uncertainty Check failed: last {uncertainty:.3f} eV > {self.max}"
+        else:
+            self.status = f"Uncertainty: {uncertainty:.3f} eV"
+
         return uncertain
 
-    def get_desc(self):
-        return f"Uncertainty: {self.uncertainty:.3f} eV"
+    def __str__(self):
+        return self.status

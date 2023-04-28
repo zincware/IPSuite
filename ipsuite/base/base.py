@@ -192,8 +192,3 @@ class CheckBase(zntrack.Node):
     def get_metric(self) -> dict:
         """Returnes the metric that is tracked for stopping."""
         ...
-
-    @abc.abstractmethod
-    def get_desc(self) -> str:
-        """Returns the metric that is tracked for description within the progress bar"""
-        ...
