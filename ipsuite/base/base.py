@@ -26,7 +26,7 @@ class ProcessAtoms(zntrack.Node):
         if you want to use 'data_file'.
     atoms: list[ase.Atoms]
         The processed atoms data. This is an output of the Node.
-        It mustn't be a 'field.Atoms' but can also be e.g. a 'property'.
+        It does not have to be 'field.Atoms' but can also be e.g. a 'property'.
     """
 
     data: list[ase.Atoms] = zntrack.zn.deps()
