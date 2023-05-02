@@ -1,7 +1,8 @@
 """Use index selection to test the selection base."""
 
-import ipsuite as ips
 import pytest
+
+import ipsuite as ips
 
 
 @pytest.mark.parametrize("data_style", ["lst", "single", "attr", "attr_lst", "dct"])
