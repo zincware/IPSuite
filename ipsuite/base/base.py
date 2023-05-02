@@ -71,7 +71,7 @@ class ProcessSingleAtom(zntrack.Node):
         if you want to use 'data_file'.
     atoms: list[ase.Atoms]
         The processed atoms data. This is an output of the Node.
-        It mustn't be a 'field.Atoms' but can also be e.g. a 'property'.
+        It does not have to be 'field.Atoms' but can also be e.g. a 'property'.
         Although, we only process a single atoms object, we return a list.
         This could e.g. be the case when we want to create a trajectory
         starting from a single atoms object.
