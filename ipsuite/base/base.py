@@ -26,7 +26,7 @@ class ProcessAtoms(zntrack.Node):
         if you want to use 'data_file'.
     atoms: list[ase.Atoms]
         The processed atoms data. This is an output of the Node.
-        It musn't be a 'field.Atoms' but can also be e.g. a 'property'.
+        It mustn't be a 'field.Atoms' but can also be e.g. a 'property'.
     """
 
     data: list[ase.Atoms] = zntrack.zn.deps()
@@ -71,8 +71,8 @@ class ProcessSingleAtom(zntrack.Node):
         if you want to use 'data_file'.
     atoms: list[ase.Atoms]
         The processed atoms data. This is an output of the Node.
-        It musn't be a 'field.Atoms' but can also be e.g. a 'property'.
-        Altough we only process a single atoms object, we return a list.
+        It mustn't be a 'field.Atoms' but can also be e.g. a 'property'.
+        Although, we only process a single atoms object, we return a list.
         This could e.g. be the case when we want to create a trajectory
         starting from a single atoms object.
     """
@@ -179,7 +179,7 @@ class CheckBase(zntrack.Node):
         """Stores some reference property to compare the current property
         against and see whether the simulation should be stopped.
         Derived classes do not need to override this if they consider
-        absolute values and not comparissons.
+        absolute values and not comparisons.
         """
         pass
 
@@ -190,7 +190,7 @@ class CheckBase(zntrack.Node):
 
     @abc.abstractmethod
     def get_metric(self) -> dict:
-        """Returnes the metric that is tracked for stopping."""
+        """Returns the metric that is tracked for stopping."""
         ...
 
     @abc.abstractmethod

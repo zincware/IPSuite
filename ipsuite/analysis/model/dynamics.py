@@ -380,7 +380,7 @@ class MDStability(base.ProcessAtoms):
             counts,
             datalabel="NVE",
             xlabel="Number of stable time steps",
-            ylabel="Occurences",
+            ylabel="Occurrences",
         )
         label_hist.savefig(self.plots_dir / "hist.png")
 
