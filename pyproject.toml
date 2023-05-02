@@ -120,3 +120,6 @@ line-length = 90
 
 # Assume Python 3.10.
 target-version = "py310"
+
+[tool.codespell]
+skip = "poetry.lock"
