@@ -9,6 +9,7 @@ from ipsuite.analysis.model.dynamics_checks import (
     EnergySpikeCheck,
     NaNCheck,
     TemperatureCheck,
+    ThresholdCheck,
 )
 from ipsuite.analysis.model.predict import (
     ForceAngles,
@@ -30,4 +31,5 @@ __all__ = [
     "NaNCheck",
     "MDStability",
     "TemperatureCheck",
+    "ThresholdCheck",
 ]
