@@ -16,8 +16,8 @@ from ipsuite.analysis.model import (
     Prediction,
     PredictionMetrics,
     RattleAtoms,
-    ThresholdCheck,
     TemperatureCheck,
+    ThresholdCheck,
 )
 from ipsuite.analysis.sensitivity import (
     AnalyseGlobalForceSensitivity,

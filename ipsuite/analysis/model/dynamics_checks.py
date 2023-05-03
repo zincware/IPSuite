@@ -107,7 +107,7 @@ class ThresholdCheck(base.CheckBase):
 
     Compute the standard deviation of the selected property.
     If the property is off by more than a selected amount from the
-    mean, the simulation will be stopped. 
+    mean, the simulation will be stopped.
     Furthermore, the simulation will be stopped if the property
     exceeds a threshold value.
 
@@ -144,10 +144,10 @@ class ThresholdCheck(base.CheckBase):
     def _post_load_(self) -> None:
         self.values = collections.deque(maxlen=self.window_size)
         self.status = self.__class__.__name__
-    
+
     def get_value(self, atoms):
         """Get the value of the property to check.
-        
+
         Extracted into method so it can be subclassed.
         """
         return atoms.calc.results[self.value]

@@ -8,8 +8,8 @@ from ipsuite.analysis.model.dynamics_checks import (
     ConnectivityCheck,
     EnergySpikeCheck,
     NaNCheck,
-    ThresholdCheck,
     TemperatureCheck,
+    ThresholdCheck,
 )
 from ipsuite.analysis.model.predict import (
     ForceAngles,
