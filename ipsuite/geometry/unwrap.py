@@ -47,7 +47,7 @@ def unwrap(atoms, edges, idx):
 
 
 def unwrap_system(atoms: ase.Atoms, components: list[np.ndarray]) -> list[ase.Atom]:
-    """Molecules in a system which extend across periodic bounaries are mapped such that
+    """Molecules in a system which extend across periodic boundaries are mapped such that
     they are connected but dangle out of the cell.
     Mapping to the side where the fragment of molecule is closest
     to the cell center is preferred.

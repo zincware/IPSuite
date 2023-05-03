@@ -1,5 +1,6 @@
-import ipsuite as ips
 import numpy as np
+
+import ipsuite as ips
 
 
 def test_ensemble_model(data_repo):

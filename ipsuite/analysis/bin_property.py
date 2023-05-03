@@ -26,7 +26,7 @@ def get_histogram_figure(
     bin_edges: np.array
         Edges of the histogram bins.
     counts: np.array
-        Number of occurences in each bin.
+        Number of occurrences in each bin.
     datalabel: str
         Labels for the figure legend.
     xlabel: str
@@ -65,7 +65,7 @@ class LabelHistogram(base.AnalyseAtoms):
     labels_df: pd.DataFrame = zntrack.zn.plots()
     datalabel: str = None
     xlabel: str = None
-    ylabel: str = "Occurences"
+    ylabel: str = "Occurrences"
     logy_scale: bool = True
 
     def _post_init_(self):

@@ -5,9 +5,9 @@ import subprocess
 import ase
 import numpy.testing as npt
 import pytest
+import znh5md
 
 import ipsuite
-import znh5md
 
 
 @pytest.mark.parametrize("eager", [True, False])
