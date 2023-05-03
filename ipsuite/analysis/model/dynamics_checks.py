@@ -113,6 +113,7 @@ class TemperatureCheck(base.CheckBase):
     def get_desc(self) -> str:
         return str(self)
 
+
 class ThresholdCheck(base.CheckBase):
     """Calculate and check a given threshold and std during a MD simulation
 

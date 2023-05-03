@@ -24,7 +24,7 @@ class BondStretchAnalyses(ProcessAtoms):
     r_max: float
         maximal bond length
     n_steps: int
-        number of steps that should be used for the bund elongation
+        number of steps that should be used for the bond elongation
     data_id: int
         index of the structure in the list of structures
         used for the bond stretch analyses
@@ -47,16 +47,16 @@ class BondStretchAnalyses(ProcessAtoms):
         atoms_list = self.get_data()
 
         train_bond_length = []
-        for struc in atoms_list:
-            train_bond_length.append(struc.get_distance(self.idxs[0], self.idxs[1]))
+        for struct in atoms_list:
+            train_bond_length.append(struct.get_distance(self.idxs[0], self.idxs[1]))
 
-        struc = atoms_list[self.data_id].copy()
-        struc.calc = self.ase_calculator
+        struct = atoms_list[self.data_id].copy()
+        struct.calc = self.ase_calculator
         bond_lengths = np.linspace(self.r_min, self.r_max, self.n_steps)
 
-        c_lists = split_molecule(self.idxs[0], self.idxs[1], struc)
+        c_lists = split_molecule(self.idxs[0], self.idxs[1], struct)
 
-        mask = np.full(struc.numbers.shape, 0)
+        mask = np.full(struct.numbers.shape, 0)
         if self.idxs[0] < self.idxs[1]:
             mask[c_lists[1]] = 1
         else:
@@ -69,26 +69,26 @@ class BondStretchAnalyses(ProcessAtoms):
 
         self.atoms = []
         for i in range(self.n_steps):
-            struc.set_distance(self.idxs[0], self.idxs[1], bond_lengths[i], mask=mask)
-            ens_energies.append(struc.get_total_energy())
-            ens_forces.append(struc.get_forces())
-            if "energy_uncertainty" in struc.calc.results:
-                e_uncertainties.append(struc.calc.results.get("energy_uncertainty"))
-            if "forces_uncertainty" in struc.calc.results:
-                f_uncertainties.append(struc.calc.results.get("forces_uncertainty"))
+            struct.set_distance(self.idxs[0], self.idxs[1], bond_lengths[i], mask=mask)
+            ens_energies.append(struct.get_total_energy())
+            ens_forces.append(struct.get_forces())
+            if "energy_uncertainty" in struct.calc.results:
+                e_uncertainties.append(struct.calc.results.get("energy_uncertainty"))
+            if "forces_uncertainty" in struct.calc.results:
+                f_uncertainties.append(struct.calc.results.get("forces_uncertainty"))
 
-            self.atoms.append(struc.copy())
+            self.atoms.append(struct.copy())
 
         results = {
             "energy": np.asarray(ens_energies),
             "forces": np.asarray(ens_forces),
         }
-        if "energy_uncertainty" in struc.calc.results:
+        if "energy_uncertainty" in struct.calc.results:
             results["energy_uncertainty"] = np.asarray(e_uncertainties)
-        if "forces_uncertainty" in struc.calc.results:
+        if "forces_uncertainty" in struct.calc.results:
             results["forces_uncertainty"] = np.asarray(f_uncertainties)
 
-        chem_symbols = struc.get_chemical_symbols()
+        chem_symbols = struct.get_chemical_symbols()
         chem_symbols = [
             chem_symbols[self.idxs[0]],
             chem_symbols[self.idxs[1]],

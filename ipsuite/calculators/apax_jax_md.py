@@ -91,4 +91,4 @@ class ApaxJaxMD(ProcessSingleAtom):
 
     @functools.cached_property
     def atoms(self) -> typing.List[ase.Atoms]:
-        return list(ase.io.iread(self.sim_dir / "md.traj"))  # filename sould be changable
+        return list(ase.io.iread(self.sim_dir / "md.traj"))  # filename should be changeable
