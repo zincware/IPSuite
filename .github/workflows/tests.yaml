@@ -82,7 +82,7 @@ jobs:
           git config --global init.defaultBranch "main"
       - name: prepare repo
         run: |
-          git clone https://github.com/PythonFZ/IPS-Examples 
+          git clone https://github.com/PythonFZ/IPS-Examples
           cd IPS-Examples
           git fetch origin
           git checkout ${{ matrix.branch }}

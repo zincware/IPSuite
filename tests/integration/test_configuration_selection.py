@@ -1,8 +1,10 @@
-import ipsuite as ips
-import pytest
-import ase
-import typing
 import random
+import typing
+
+import ase
+import pytest
+
+import ipsuite as ips
 
 
 @pytest.mark.parametrize(

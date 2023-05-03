@@ -1,4 +1,4 @@
-"""Selecting atoms with a given step inbetween."""
+"""Selecting atoms with a given step between them."""
 import typing
 
 import ase

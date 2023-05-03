@@ -6,12 +6,15 @@
 
 IPS provides you with tools to generate Machine Learned Interatomic Potentials.
 
-Install the package to get started or check out an interactive notebook [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/zincware/IPSuite/HEAD) 
+Install the package to get started or check out an interactive notebook
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/zincware/IPSuite/HEAD)
+
 ```python
 pip install ipsuite
 ```
 
 Examples can be found at:
+
 - https://dagshub.com/PythonFZ/IPS-Examples/src/intro/main.ipynb
 - https://dagshub.com/PythonFZ/IPS-Examples/src/graph/main.ipynb
 - https://dagshub.com/PythonFZ/IPS-Examples/src/modifiy_graph/main.ipynb
