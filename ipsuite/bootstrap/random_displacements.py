@@ -21,9 +21,9 @@ class Bootstrap(base.ProcessSingleAtom):
     n_configurations: int
         Number of displaced configurations.
     maximum: float
-        Bounds for uniform distribution from which displacments are drawn.
+        Bounds for uniform distribution from which displacements are drawn.
     include_original: bool
-        Whether or not to include the orignal configuration in `self.atoms`.
+        Whether or not to include the original configuration in `self.atoms`.
     seed: int
         Random seed.
     """

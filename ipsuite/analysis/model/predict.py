@@ -47,7 +47,7 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
     - MAE
     - RMSE
     - L4 Error
-    - Maxium Error
+    - Maximum Error
     """
 
     energy_df_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "energy_df.csv")

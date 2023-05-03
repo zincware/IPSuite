@@ -1,8 +1,8 @@
+import ase
 import numpy as np
 import xmltodict
 
 import ipsuite
-import ase
 
 
 def test_model_training(proj_path, traj_file):

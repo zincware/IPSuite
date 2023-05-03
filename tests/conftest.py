@@ -11,13 +11,14 @@ import shutil
 import typing
 
 import ase
-from ase import Atoms
 import ase.calculators.singlepoint
 import ase.io
 import dvc.cli
 import git
 import numpy as np
 import pytest
+from ase import Atoms
+
 import ipsuite as ips
 
 
