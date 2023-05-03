@@ -1,6 +1,7 @@
+import os
 import pathlib
 import shutil
-import os
+
 import ipsuite as ips
 from ipsuite.calculators import ApaxJaxMD
 from ipsuite.configuration_selection.uniform_energetic import UniformEnergeticSelection
@@ -10,11 +11,10 @@ TEST_PATH = pathlib.Path(__file__).parent.resolve()
 
 
 def test_model_training(proj_path, traj_file):
-
     minmal_path = pathlib.Path(os.path.dirname(TEST_PATH))
 
     model_minimal = shutil.copy(
-       minmal_path / "apax_minimal.yaml", proj_path / "apax_minimal.yaml"
+        minmal_path / "apax_minimal.yaml", proj_path / "apax_minimal.yaml"
     )
     md_minimal = shutil.copy(
         TEST_PATH / "apax_md_minimal.yaml", proj_path / "apax_md_minimal.yaml"

@@ -28,8 +28,8 @@ def split_molecule(a0, a1, atoms):
 
     try:
         G.remove_edge(a0, a1)
-    except:
-        raise ValueError(f'Atom {a0} and {a1} are not bonded. Pleas pick bonded atoms.')
+    except ValueError:
+        print(f"Atom {a0} and {a1} are not bonded. Pleas pick bonded atoms.")
 
     components = nx.connected_components(G)
     c_list = [np.array(list(c)) for c in components]

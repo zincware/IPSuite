@@ -8,6 +8,7 @@ import zntrack
 from ipsuite.base import ProcessAtoms
 from ipsuite.geometry.graphs import split_molecule
 
+
 class BondStretchAnalyses(ProcessAtoms):
     """Analyses a Model by evaluating the elongation of a bond
         in terms of energy, forces and optionally the uncertainty.
