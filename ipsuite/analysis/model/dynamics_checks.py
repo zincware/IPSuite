@@ -102,12 +102,14 @@ class TemperatureCheck(base.CheckBase):
         return f"Temp: {self.temperature:.3f} K"
 
 
-class StandardDeviationCheck(base.CheckBase):
-    """Calculate and check standard deviation during a MD simulation
+class ThresholdCheck(base.CheckBase):
+    """Calculate and check a given threshold and std during a MD simulation
 
     Compute the standard deviation of the selected property.
     If the property is off by more than a selected amount from the
-    mean, the simulation will be stopped.
+    mean, the simulation will be stopped. 
+    Furthermore, the simulation will be stopped if the property
+    exceeds a threshold value.
 
     Attributes
     ----------
@@ -142,12 +144,17 @@ class StandardDeviationCheck(base.CheckBase):
     def _post_load_(self) -> None:
         self.values = collections.deque(maxlen=self.window_size)
         self.status = self.__class__.__name__
+    
+    def get_value(self, atoms):
+        """Get the value of the property to check.
+        
+        Extracted into method so it can be subclassed.
+        """
+        return atoms.calc.results[self.value]
 
-    def check(self, atoms):
-        value = atoms.calc.results[self.value]
+    def check(self, atoms) -> bool:
+        value = self.get_value(atoms)
         self.values.append(value)
-        if len(self.values) < self.minimum_window_size:
-            return False
         mean = np.mean(self.values)
         std = np.std(self.values)
 
@@ -155,10 +162,14 @@ class StandardDeviationCheck(base.CheckBase):
         if self.larger_only:
             distance = np.abs(distance)
 
-        std_trigger = self.max_std is not None and distance > self.max_std * std
-        max_val_trigger = self.max_value is not None and value > self.max_value
+        if self.max_value is not None and value > self.max_value:
+            # max value trigger is independent of the window size.
+            return True
 
-        if any([std_trigger, max_val_trigger]):
+        if len(self.values) < self.minimum_window_size:
+            return False
+
+        if self.max_std is not None and distance > self.max_std * std:
             self.status = (
                 f"StandardDeviationCheck for '{self.value}' triggered by"
                 f" '{self.values[-1]:.3f}' for '{np.mean(self.values):.3f} +-"

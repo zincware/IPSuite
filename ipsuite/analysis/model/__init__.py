@@ -8,7 +8,7 @@ from ipsuite.analysis.model.dynamics_checks import (
     ConnectivityCheck,
     EnergySpikeCheck,
     NaNCheck,
-    StandardDeviationCheck,
+    ThresholdCheck,
     TemperatureCheck,
 )
 from ipsuite.analysis.model.predict import (
@@ -31,5 +31,5 @@ __all__ = [
     "NaNCheck",
     "MDStability",
     "TemperatureCheck",
-    "StandardDeviationCheck",
+    "ThresholdCheck",
 ]
