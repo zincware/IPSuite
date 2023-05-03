@@ -23,6 +23,19 @@ def identify_molecules(atoms: ase.Atoms) -> list[np.ndarray]:
     return c_list
 
 
+def split_molecule(a0, a1, atoms):
+    G = atoms_to_graph(atoms)
+
+    try:
+        G.remove_edge(a0, a1)
+    except:
+        raise ValueError(f'Atom {a0} and {a1} are not bonded. Pleas pick bonded atoms.')
+
+    components = nx.connected_components(G)
+    c_list = [np.array(list(c)) for c in components]
+    return c_list
+
+
 def edges_from_atoms(atoms: ase.Atoms) -> np.ndarray:
     """Returns the graph edges of a molecular graph."""
     G = atoms_to_graph(atoms)

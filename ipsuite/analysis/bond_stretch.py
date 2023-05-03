@@ -6,7 +6,7 @@ import numpy as np
 import zntrack
 
 from ipsuite.base import ProcessAtoms
-
+from ipsuite.geometry.graphs import split_molecule
 
 class BondStretchAnalyses(ProcessAtoms):
     """Analyses a Model by evaluating the elongation of a bond
@@ -44,16 +44,22 @@ class BondStretchAnalyses(ProcessAtoms):
 
     def run(self):
         atoms_list = self.get_data()
-        atoms = atoms_list[self.data_id].copy()
 
         train_bond_length = []
-        for atoms in atoms_list:
-            train_bond_length.append(atoms.get_distance(self.idxs[0], self.idxs[1]))
+        for struc in atoms_list:
+            train_bond_length.append(struc.get_distance(self.idxs[0], self.idxs[1]))
 
-        atoms.calc = self.ase_calculator
+        struc = atoms_list[self.data_id].copy()
+        struc.calc = self.ase_calculator
         bond_lengths = np.linspace(self.r_min, self.r_max, self.n_steps)
 
-        results = {}
+        c_lists = split_molecule(self.idxs[0], self.idxs[1], struc)
+
+        mask = np.full(struc.numbers.shape, 0)
+        if self.idxs[0] < self.idxs[1]:
+            mask[c_lists[1]] = 1
+        else:
+            mask[c_lists[0]] = 1
 
         ens_energies = []
         ens_forces = []
@@ -62,24 +68,26 @@ class BondStretchAnalyses(ProcessAtoms):
 
         self.atoms = []
         for i in range(self.n_steps):
-            atoms.set_distance(self.idxs[0], self.idxs[1], bond_lengths[i], fix=0)
-            ens_energies.append(atoms.get_total_energy())
-            ens_forces.append(atoms.get_forces())
-            if "energy_uncertainty" in atoms.calc.results:
-                e_uncertainties.append(atoms.calc.results.get("energy_uncertainty"))
-            if "forces_uncertainty" in atoms.calc.results:
-                f_uncertainties.append(atoms.calc.results.get("forces_uncertainty"))
+            struc.set_distance(self.idxs[0], self.idxs[1], bond_lengths[i], mask=mask)
+            ens_energies.append(struc.get_total_energy())
+            ens_forces.append(struc.get_forces())
+            if "energy_uncertainty" in struc.calc.results:
+                e_uncertainties.append(struc.calc.results.get("energy_uncertainty"))
+            if "forces_uncertainty" in struc.calc.results:
+                f_uncertainties.append(struc.calc.results.get("forces_uncertainty"))
 
-            self.atoms.append(atoms.copy())
+            self.atoms.append(struc.copy())
 
-        results["energy"] = np.asarray(ens_energies)
-        results["forces"] = np.asarray(ens_forces)
-        if "energy_uncertainty" in atoms.calc.results:
+        results = {
+            "energy": np.asarray(ens_energies),
+            "forces": np.asarray(ens_forces),
+        }
+        if "energy_uncertainty" in struc.calc.results:
             results["energy_uncertainty"] = np.asarray(e_uncertainties)
-        if "forces_uncertainty" in atoms.calc.results:
+        if "forces_uncertainty" in struc.calc.results:
             results["forces_uncertainty"] = np.asarray(f_uncertainties)
 
-        chem_symbols = atoms.get_chemical_symbols()
+        chem_symbols = struc.get_chemical_symbols()
         chem_symbols = [
             chem_symbols[self.idxs[0]],
             chem_symbols[self.idxs[1]],
