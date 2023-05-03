@@ -101,7 +101,8 @@ class ASEMD(base.ProcessSingleAtom):
     metrics_dict = zntrack.zn.plots()
 
     steps_before_stopping = zntrack.zn.metrics()
-    velocity_cache = zntrack.zn.metrics()
+
+    velocity_cache = zntrack.zn.outs()
 
     traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.h5")
 
@@ -182,7 +183,7 @@ class ASEMD(base.ProcessSingleAtom):
                     if metric is not None:
                         for key, val in metric.items():
                             metrics_dict[key].append(val)
-                        desc.append(checker.get_desc())
+                        desc.append(str(checker))
 
                 atoms_cache.append(freeze_copy_atoms(atoms))
                 if len(atoms_cache) == self.dump_rate:

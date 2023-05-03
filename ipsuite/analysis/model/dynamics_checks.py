@@ -93,13 +93,25 @@ class TemperatureCheck(base.CheckBase):
     def check(self, atoms):
         self.temperature, _ = get_energy(atoms)
         unstable = self.temperature > self.max_temperature
+
+        if unstable:
+            self.status = (
+                f"Temperature Check failed: last {self.temperature} >"
+                f" {self.max_temperature}"
+            )
+        else:
+            self.status = f"Temperature Check {self.temperature} < {self.max_temperature}"
+
         return unstable
 
     def get_metric(self):
         return {"temperature": self.temperature}
 
-    def get_desc(self):
-        return f"Temp: {self.temperature:.3f} K"
+    def __str__(self):
+        return self.status
+
+    def get_desc(self) -> str:
+        return str(self)
 
 
 class ThresholdCheck(base.CheckBase):

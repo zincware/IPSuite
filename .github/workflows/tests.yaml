@@ -32,14 +32,16 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'poetry'
-      - name: Install package
-        run: |
-          poetry install --all-extras
       - name: Setup git user
         run: |
           git config --global user.name "John Doe"
           git config --global user.email johndoe@example.com
           git config --global init.defaultBranch "main"
+      - name: Install package
+        run: |
+          git config --global credential.helper store
+          echo "https://${{ secrets.APAX_USERNAME }}:${{ secrets.APAX_ACCESS }}@github.com" > ~/.git-credentials
+          poetry install --all-extras
       - name: Pytest
         run: |
           poetry run pytest . -vv
