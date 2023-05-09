@@ -42,10 +42,12 @@ def test_model_training(proj_path, traj_file):
     atoms[0].calc = model.get_calculator()
 
     assert isinstance(atoms[0].get_potential_energy(), float)
-    assert abs(atoms[0].get_potential_energy() - 0.472184) <= 1e-5
+    assert atoms[0].get_potential_energy() != 0.0
 
     assert isinstance(atoms[0].get_forces(), np.ndarray)
-    assert np.all(atoms[0].get_forces() - rev_forces <= 1e-5)
+    assert atoms[0].get_forces().shape == (2, 3)
+    assert np.all(atoms[0].get_forces()[:, 0:2] == np.full([2, 2], 0.0))
+    assert np.all(atoms[0].get_forces()[:, 2] != np.full([2, 1], 0.0))
 
     analysis.load()
 

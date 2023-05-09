@@ -20,8 +20,8 @@ from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
 log = logging.getLogger(__name__)
 
 
-class LagevinThermostat(zntrack.Node):
-    """Initialize the lagevin thermostat
+class LangevinThermostat(zntrack.Node):
+    """Initialize the langevin thermostat
 
     Attributes
     ----------
@@ -89,7 +89,7 @@ class ASEMD(base.ProcessSingleAtom):
     model = zntrack.zn.deps()
     model_outs = zntrack.dvc.outs(zntrack.nwd / "model/")
     checker_list: list = zntrack.zn.nodes(None)
-    thermostat: LagevinThermostat = zntrack.zn.nodes()
+    thermostat = zntrack.zn.nodes()
 
     steps: int = zntrack.zn.params()
     init_temperature: float = zntrack.zn.params(None)

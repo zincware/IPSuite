@@ -6,7 +6,7 @@ import ipsuite as ips
 def test_ensemble_model(data_repo):
     water = ips.data_loading.AddDataH5MD.from_rev(name="water")
 
-    thermostat = ips.calculators.LagevinThermostat(
+    thermostat = ips.calculators.LangevinThermostat(
         time_step=1.0, temperature=100.0, friction=0.01
     )
 
