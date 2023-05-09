@@ -21,7 +21,7 @@ log = logging.getLogger(__name__)
 
 
 class LangevinThermostat(zntrack.Node):
-    """Initialize the lagevin thermostat
+    """Initialize the langevin thermostat
 
     Attributes
     ----------
