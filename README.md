@@ -17,4 +17,4 @@ Examples can be found at:
 
 - https://dagshub.com/PythonFZ/IPS-Examples/src/intro/main.ipynb
 - https://dagshub.com/PythonFZ/IPS-Examples/src/graph/main.ipynb
-- https://dagshub.com/PythonFZ/IPS-Examples/src/modifiy_graph/main.ipynb
+- https://dagshub.com/PythonFZ/IPS-Examples/src/modify_graph/main.ipynb
