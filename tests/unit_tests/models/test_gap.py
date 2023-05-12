@@ -10,7 +10,6 @@ from ase import Atoms
 from ase.calculators.singlepoint import SinglePointCalculator
 from ase.io import read
 
-from ipsuite.models.base import Prediction
 from ipsuite.models.gap import GAP
 
 
@@ -83,8 +82,8 @@ def test_predict(traj_file_1, tmp_path):
     gap.use_stresses = True
     gap.data = train_atoms
     gap.run()
-    predicted_values = gap.predict(atoms=test_atoms)
-    assert isinstance(predicted_values, Prediction)
-    assert np.shape(predicted_values.energy) == (len(test_atoms),)
-    assert np.shape(predicted_values.forces) == (len(test_atoms), len(test_atoms[0]), 3)
-    assert np.shape(predicted_values.stresses) == (len(test_atoms), 6)
+    predicted_values = gap.predict(test_atoms)
+    assert isinstance(predicted_values, list)
+    assert isinstance(predicted_values[0], ase.Atoms)
+    assert isinstance(predicted_values[0].get_potential_energy(), float)
+    assert isinstance(predicted_values[0].get_forces(), np.ndarray)

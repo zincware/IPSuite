@@ -1,6 +1,7 @@
 import logging
 import pathlib
 
+import ase.io
 import ase.optimize
 import zntrack
 
@@ -10,8 +11,16 @@ log = logging.getLogger(__name__)
 
 
 class ASEGeoOpt(base.ProcessSingleAtom):
-    calculator = zntrack.zn.deps()
+    """Class to run a geometry optimization with ASE.
 
+    Parameters
+    ----------
+    model: zntrack.Node
+        A node that implements 'get_calculator'.
+    """
+
+    model = zntrack.zn.deps()
+    model_outs = zntrack.dvc.outs(zntrack.nwd / "model_outs")
     optimizer: str = zntrack.zn.params("FIRE")
     traj: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "optim.traj")
 
@@ -20,12 +29,18 @@ class ASEGeoOpt(base.ProcessSingleAtom):
     init_kwargs: dict = zntrack.zn.params({})
 
     def run(self):
+        self.model_outs.mkdir(parents=True, exist_ok=True)
+        (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
+        calculator = self.model.get_calculator(directory=self.model_outs)
         atoms = self.get_data()
         atoms = atoms.repeat(self.repeat)
         if self.optimizer is not None:
-            atoms.calc = self.calculator
+            atoms.calc = calculator
             optimizer = getattr(ase.optimize, self.optimizer)
 
             dyn = optimizer(atoms, trajectory=self.traj.as_posix(), **self.init_kwargs)
             dyn.run(**self.run_kwargs)
-        self.atoms = [atoms]
+
+    @property
+    def atoms(self):
+        return list(ase.io.iread(self.traj.as_posix()))

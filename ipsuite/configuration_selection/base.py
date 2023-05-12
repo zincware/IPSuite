@@ -1,6 +1,7 @@
 """Base Node for ConfigurationSelection."""
 import logging
 import typing
+import uuid
 
 import ase
 import znflow
@@ -20,15 +21,17 @@ class ConfigurationSelection(base.ProcessAtoms):
     data: list[Atoms]|list[list[Atoms]]|utils.types.SupportsAtoms
         the data to select from
     exclude_configurations: dict[str, list]|utils.types.SupportsSelectedConfigurations
-        Atoms to exclude from the selection
+        Atoms to exclude from the
+    exclude: list[zntrack.Node]|zntrack.Node|None
+        Exclude the selected configurations from these nodes.
 
     """
 
+    _hash = zntrack.zn.outs()
     exclude_configurations: typing.Union[
         typing.Dict[str, typing.List[int]], base.protocol.HasSelectedConfigurations
-    ] = zntrack.zn.deps(
-        None
-    )  # TODO allow list of dicts that can be combined
+    ] = zntrack.zn.deps(None)
+    exclude: typing.Union[zntrack.Node, typing.List[zntrack.Node]] = zntrack.zn.deps(None)
     selected_configurations: typing.Dict[str, typing.List[int]] = zntrack.zn.outs()
 
     _name_ = "ConfigurationSelection"
@@ -44,6 +47,22 @@ class ConfigurationSelection(base.ProcessAtoms):
 
     def run(self):
         """ZnTrack Node Run method."""
+        self._hash = str(uuid.uuid4())
+        if self.exclude is not None:
+            if self.exclude_configurations is None:
+                self.exclude_configurations = {}
+            if not isinstance(self.exclude, list):
+                self.exclude = [self.exclude]
+            for exclude in self.exclude:
+                for key in exclude.selected_configurations:
+                    if key in self.exclude_configurations:
+                        self.exclude_configurations[key].extend(
+                            exclude.selected_configurations[key]
+                        )
+                    else:
+                        self.exclude_configurations[key] = (
+                            exclude.selected_configurations[key]
+                        )
 
         exclude = combine.ExcludeIds(self.get_data(), self.exclude_configurations)
         data = exclude.get_clean_data(flatten=True)

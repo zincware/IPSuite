@@ -10,22 +10,18 @@ import subprocess as sp
 import typing
 from collections import OrderedDict
 from pathlib import Path
-from typing import List
 
 import ase
 import ase.io
-import numpy as np
 import quippy.potential
 import xmltodict
 import znflow
 import zntrack
-from ase import Atoms
 from jinja2 import Template
-from tqdm import tqdm
 from znjson import ConverterBase, config
 
 from ipsuite import static_data, utils
-from ipsuite.models import MLModel, Prediction
+from ipsuite.models import MLModel
 
 log = logging.getLogger(__name__)
 
@@ -200,7 +196,7 @@ class GAP(MLModel):
         atoms object to train the model on
     """
 
-    SOAP
+    # SOAP
     soap: typing.Union[dict, SOAP] = zntrack.zn.params(SOAP())
     # DistanceNb
     distance_nb: typing.Union[dict, DistanceNb] = zntrack.zn.params(DistanceNb())
@@ -238,7 +234,7 @@ class GAP(MLModel):
         self.train_model()
 
     @property
-    def gap_input(self) -> (str, str):
+    def gap_input(self) -> typing.Tuple[str, str]:
         """Return the gap input string and the rendered template.
 
         Returns
@@ -287,46 +283,7 @@ class GAP(MLModel):
                 " information"
             )
 
-    #
-    def predict(self, atoms: List[Atoms]) -> Prediction:
-        """Predict energy, forces and stresses.
-
-        based on what was used to train on with trained GAP potential.
-
-        Parameters
-        ----------
-        atoms: List[Atoms]
-            contains atoms objects to validate
-
-        Returns
-        -------
-        Prediction
-            dataclass contains predicted energy, force and stresses
-        """
-        potential = self.calc
-        validation_energy = []
-        validation_forces = []
-        validation_stresses = []
-        for configuration in tqdm(atoms, ncols=70):
-            configuration.calc = potential
-            if self.use_energy:
-                validation_energy.append(configuration.get_potential_energy())
-            if self.use_forces:
-                validation_forces.append(configuration.get_forces())
-            if self.use_stresses:
-                validation_stresses.append(configuration.get_stress())
-
-        return Prediction(
-            energy=np.array(validation_energy),
-            forces=np.array(validation_forces),
-            # quippy potential output needs minus sign here
-            stresses=np.array(validation_stresses),
-            n_atoms=len(atoms[0]),
-        )
-
-    #
-    @property
-    def calc(self):
+    def get_calculator(self, **kwargs):
         """Get the calculator object.
 
         Returns
