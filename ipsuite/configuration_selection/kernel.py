@@ -105,7 +105,7 @@ class KernelSelection(ConfigurationSelection):
 
         return selected_ids
 
-    def plot_kernel(self, fps: int = 2, remove: bool = True):
+    def plot_kernel(self, duration: int = 1000, remove: bool = True):
         """Generate an animation of the Kernel change while extending the reference.
 
         Raises
@@ -135,7 +135,7 @@ class KernelSelection(ConfigurationSelection):
             plt.savefig(img_dir / f"{str(idx).zfill(4)}.png")
             plt.close()
 
-        with imageio.get_writer("kernel_selection.gif", mode="I", fps=fps) as writer:
+        with imageio.get_writer("kernel_selection.gif", mode="I", duration=duration, loop=0) as writer:
             for filename in sorted(img_dir.glob("*.png")):
                 image = imageio.v2.imread(filename)
                 writer.append_data(image)
