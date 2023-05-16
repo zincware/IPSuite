@@ -59,6 +59,7 @@ jobs:
         branch:
           - intro
           - graph
+          - ConfigurationSelection
           # - generate_data
           # - modify_graph
 
