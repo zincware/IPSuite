@@ -135,7 +135,9 @@ class KernelSelection(ConfigurationSelection):
             plt.savefig(img_dir / f"{str(idx).zfill(4)}.png")
             plt.close()
 
-        with imageio.get_writer("kernel_selection.gif", mode="I", duration=duration, loop=0) as writer:
+        with imageio.get_writer(
+            "kernel_selection.gif", mode="I", duration=duration, loop=0
+        ) as writer:
             for filename in sorted(img_dir.glob("*.png")):
                 image = imageio.v2.imread(filename)
                 writer.append_data(image)
