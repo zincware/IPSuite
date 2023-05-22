@@ -68,6 +68,10 @@ coverage = "^7.2.1"
 [tool.poetry.group.dev.dependencies]
 imageio = "^2.28.1"
 
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "^7.0.1"
+
 [tool.poetry.extras]
 comparison = ["h5py", "tensorflow", "llvmlite", "numba", "dscribe"]
 gap = ["quippy-ase", "xmltodict"]
