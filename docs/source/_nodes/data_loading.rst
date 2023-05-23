@@ -6,3 +6,4 @@ Internally, atomistic data is represented by ASE's `Atoms` objects which are ser
 
 .. automodule:: ipsuite.data_loading
     :members:
+    :show-inheritance:

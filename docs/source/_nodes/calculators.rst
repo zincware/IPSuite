@@ -6,3 +6,4 @@ For all cases, ASE calculators are used.
 
 .. automodule:: ipsuite.calculators
     :members:
+    :show-inheritance:

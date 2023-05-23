@@ -6,3 +6,4 @@ This can be useful when starting out from a single configuration and iteratively
 
 .. automodule:: ipsuite.bootstrap
     :members:
+    :show-inheritance:

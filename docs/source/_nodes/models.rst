@@ -19,3 +19,4 @@ If you would like to add other models to IPS, please consider this guide.
 
 .. automodule:: ipsuite.models
     :members:
+    :show-inheritance:

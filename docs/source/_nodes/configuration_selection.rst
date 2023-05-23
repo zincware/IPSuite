@@ -6,3 +6,4 @@ A simple 80:20 random split can be achieved with a single Node, but multiple Nod
 
 .. automodule:: ipsuite.configuration_selection
     :members:
+    :show-inheritance:

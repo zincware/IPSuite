@@ -9,3 +9,4 @@ This ranges from simple prediction correlation plots to force decompositions and
 
 .. automodule:: ipsuite.analysis
     :members:
+    :show-inheritance:

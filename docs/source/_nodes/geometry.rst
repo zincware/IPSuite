@@ -8,3 +8,4 @@ Note that they do not implement `run` methods and are thus intended to be used a
 
 .. automodule:: ipsuite.geometry
     :members:
+    :show-inheritance:

@@ -8,3 +8,4 @@ The PACKMOL interface can then be used to create the actual starting configurati
 
 .. automodule:: ipsuite.configuration_generation
     :members:
+    :show-inheritance:
