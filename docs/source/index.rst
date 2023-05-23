@@ -16,6 +16,7 @@ Example
 =======
 
 Routine workflows are easy to set up and can be easily extended for more complex tasks.
+Training any of the interfaced models only requires a few lines of code:
 
 .. code-block:: python
 
