@@ -18,8 +18,8 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "sphinx_copybutton",
-    # "nbsphinx",
-    # "nbsphinx_link",
+    "nbsphinx",
+    "nbsphinx_link",
     "sphinx.ext.viewcode",
 ]
 
