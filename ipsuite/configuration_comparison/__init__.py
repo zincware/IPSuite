@@ -1,4 +1,4 @@
-"""Configuration Comparison Module."""
+"""Provides kernel based similarity measures for comparing configruations."""
 import lazy_loader as lazy
 
 __getattr__, __dir__, __all__ = lazy.attach_stub(__name__, __file__)

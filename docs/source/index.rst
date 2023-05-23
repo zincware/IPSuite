@@ -18,9 +18,16 @@ Example
 Routine workflows are easy to set up and can be easily extended for more complex tasks.
 
 .. code-block:: python
-   
-   # TODO simple training example
-   print("hello")
+
+   import ipsuite as ips
+
+   with ips.Project() as project:
+      data = ips.AddData(file="dataset.extxyz")
+      random_selection = ips.configuration_selection.RandomSelection(
+          data=data, n_configurations=100
+      )
+
+      model = ips.models.GAP(data=random_selection)
 
 
 
