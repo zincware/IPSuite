@@ -7,6 +7,23 @@ from ase.neighborlist import build_neighbor_list
 
 from ipsuite import base
 from ipsuite.utils.ase_sim import get_energy
+from ase.geometry import conditional_find_mic
+
+class NaNCheck(base.CheckBase):
+    """Check Node to see whether positions, energies or forces become NaN
+    during a simulation.
+    """
+
+    def check(self, atoms: ase.Atoms) -> bool:
+        positions = atoms.positions
+        epot = atoms.get_potential_energy()
+        forces = atoms.get_forces()
+
+        positions_is_none = np.any(positions is None)
+        epot_is_none = epot is None
+        forces_is_none = np.any(forces is None)
+
+        return any([positions_is_none, epot_is_none, forces_is_none])
 
 
 class NaNCheck(base.CheckBase):
@@ -26,29 +43,79 @@ class NaNCheck(base.CheckBase):
         return any([positions_is_none, epot_is_none, forces_is_none])
 
 
+def setdiff2d(arr1, arr2):
+    idx = (arr1[:, None] != arr2).any(-1).all(1)
+    return arr1[idx]
+
+def check_distances(a, idx_i, idx_j, d_min=None, d_max=None):
+    p1 = a.positions[idx_i]
+    p2 = a.positions[idx_j]
+    _ , dists = conditional_find_mic(p1-p2, a.cell, a.pbc)
+    unstable = False
+    if d_min:
+        unstable = unstable or np.min(dists) < d_min
+    if d_max:
+        unstable = unstable or np.max(dists) > d_max
+    return unstable
+
+
+
 class ConnectivityCheck(base.CheckBase):
     """Check to see whether the covalent connectivity of the system
     changes during a simulation.
     The connectivity is based on ASE's natural cutoffs.
 
     """
+    bonded_min_dist: float = zntrack.zn.params(0.6)
+    bonded_max_dist: float = zntrack.zn.params(2.0)
+    nonbonded_H_min_dist: float = zntrack.zn.params(1.1)
+    nonbonded_other_min_dist: float = zntrack.zn.params(1.6)
 
     def _post_init_(self) -> None:
         self.nl = None
         self.first_cm = None
 
     def initialize(self, atoms):
-        self.nl = build_neighbor_list(atoms, self_interaction=False)
-        self.first_cm = self.nl.get_connectivity_matrix(sparse=False)
+        from ase.neighborlist import natural_cutoffs, NeighborList
+        cutoffs = natural_cutoffs(atoms, mult=1.5)
+        nl = build_neighbor_list(atoms, cutoffs=cutoffs, skin=0.0, self_interaction=False, bothways=False)
+        first_cm = nl.get_connectivity_matrix(sparse=True)
+        self.indices = np.vstack(first_cm.nonzero()).T
+        self.idx_i, self.idx_j = self.indices.T
+
+        cutoffs = natural_cutoffs(atoms, mult=0.7)
+        self.contact_nl = build_neighbor_list(atoms, cutoffs=cutoffs, skin=0.5, self_interaction=False, bothways=False)
         self.is_initialized = True
 
     def check(self, atoms: ase.Atoms) -> bool:
-        self.nl.update(atoms)
-        cm = self.nl.get_connectivity_matrix(sparse=False)
+        unstable = False
+        bonded_check = check_distances(atoms, self.idx_i, self.idx_j, d_min=self.bonded_min_dist, d_max=self.bonded_max_dist)
+        unstable = unstable or bonded_check
 
-        connectivity_change = np.sum(np.abs(self.first_cm - cm))
+        self.contact_nl.update(atoms)
+        nearest_cm = self.contact_nl.get_connectivity_matrix(sparse=True)
+        nearest_indices = np.vstack(nearest_cm.nonzero()).T
+        diff_indices = setdiff2d(nearest_indices, self.indices)
 
-        return connectivity_change > 0
+        if len(diff_indices) > 0:
+            diff_idx_i, diff_idx_j = diff_indices.T
+            Zij = np.stack([atoms.numbers[diff_idx_i], atoms.numbers[diff_idx_j]]).T
+
+            both_H = np.any((Zij - 1) == 0, axis=1)
+            if np.any(both_H):
+                H_idx_i, H_idx_j = diff_indices[both_H].T
+                H_check = check_distances(atoms, H_idx_i, H_idx_j, d_min=self.nonbonded_H_min_dist, d_max=None)
+                unstable = unstable or H_check
+
+            not_both_H = np.ones_like(both_H).astype(bool)
+            not_both_H[both_H] = False
+            if np.any(not_both_H):
+                other_idx_i, other_idx_j = diff_indices[not_both_H].T
+                not_both_H_check = check_distances(atoms, other_idx_i, other_idx_j, d_min=self.nonbonded_other_min_dist, d_max=None)
+                unstable = unstable or not_both_H_check
+
+        return unstable
+
 
 
 class EnergySpikeCheck(base.CheckBase):
