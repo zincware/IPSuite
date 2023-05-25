@@ -41,8 +41,6 @@ class SOAPParameter:
 
     Attributes
     ----------
-    atomic_keys: typing.List[int]
-        atomic numbers of the species
     r_cut: float
         cutoff radius of the soap descriptor in Angstrom
     n_max: int
@@ -61,7 +59,6 @@ class SOAPParameter:
         Contains the options which control the weighting of the atomic density.
     """
 
-    atomic_keys: typing.List[int] = None
     r_cut: float = 9.0
     n_max: int = 7
     l_max: int = 7
@@ -211,8 +208,9 @@ class ConfigurationComparison(zntrack.Node):
         It will create SOAP descriptor for each configurations
          and save them ordered in a hdf5 file.
         """
+        species = [int(x) for x in set(self.analyte[0].get_atomic_numbers())]
         _soap = SOAP(
-            species=self.soap.atomic_keys,
+            species=species,
             periodic=self.soap.periodic,
             rcut=self.soap.r_cut,
             nmax=self.soap.n_max,

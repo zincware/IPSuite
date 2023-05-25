@@ -1,6 +1,7 @@
-from ipsuite.utils import combine
 import numpy.testing as npt
 import pytest
+
+from ipsuite.utils import combine
 
 
 def test_get_flat_data_from_dict():
