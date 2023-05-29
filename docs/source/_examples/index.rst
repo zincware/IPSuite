@@ -23,9 +23,8 @@ Examples
     :maxdepth: 0
 
     01_Data_Loading_and_Selection
-    02_Bootstrapping_Datasets
-    03_Labeling_with_Calculators
-    04_Data_Splitting_and_Configuration_Selection
-    05_Training_Models
-    06_Analysing_Datasets_and_Model_Predictions
-    07_Molecular_Dynamics_Structure_Generation_and_Simulation
+    02_Training_Models
+    03_Analysing_Datasets_and_Model_Predictions
+    04_Molecular_Dynamics_Structure_Generation_and_Simulation
+    05_Labeling_with_Calculators
+    06_Bootstrapping_Datasets
