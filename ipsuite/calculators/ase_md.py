@@ -20,7 +20,7 @@ from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
 log = logging.getLogger(__name__)
 
 
-class LangevinThermostat(zntrack.Node):
+class LangevinThermostat(base.IPSNode):
     """Initialize the langevin thermostat
 
     Attributes

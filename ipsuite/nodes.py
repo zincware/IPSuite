@@ -12,6 +12,7 @@ class _Nodes:
     EnsembleModel = "ipsuite.models.EnsembleModel"
     MACE = "ipsuite.models.MACE"
     Nequip = "ipsuite.models.Nequip"
+    Apax = "ipsuite.models.Apax"
 
     # Configuration Selection
     IndexSelection = "ipsuite.configuration_selection.IndexSelection"
@@ -23,6 +24,7 @@ class _Nodes:
         "ipsuite.configuration_selection.UniformEnergeticSelection"
     )
     UniformTemporalSelection = "ipsuite.configuration_selection.UniformTemporalSelection"
+    ThresholdSelection = "ipsuite.configuration_selection.ThresholdSelection"
 
     # Configuration Comparison
     REMatch = "ipsuite.configuration_comparison.REMatch"
@@ -60,6 +62,7 @@ class _Nodes:
     AnalyseGlobalForceSensitivity = "ipsuite.analysis.AnalyseGlobalForceSensitivity"
     AnalyseSingleForceSensitivity = "ipsuite.analysis.AnalyseSingleForceSensitivity"
     ForceDecomposition = "ipsuite.analysis.ForceDecomposition"
+    ThresholdCheck = "ipsuite.analysis.ThresholdCheck"
 
     # calculators
     CP2KSinglePoint = "ipsuite.calculators.CP2KSinglePoint"
@@ -69,6 +72,8 @@ class _Nodes:
     FixedSphereASEMD = "ipsuite.calculators.FixedSphereASEMD"
     xTBSinglePoint = "ipsuite.calculators.xTBSinglePoint"
     LJSinglePoint = "ipsuite.calculators.LJSinglePoint"
+
+    LangevinThermostat = "ipsuite.calculators.LangevinThermostat"
 
     # Geometry
     BarycenterMapping = "ipsuite.geometry.BarycenterMapping"
