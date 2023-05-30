@@ -30,7 +30,7 @@ class ProcessAtoms(IPSNode):
         if you want to use 'data_file'.
     atoms: list[ase.Atoms]
         The processed atoms data. This is an output of the Node.
-        It musn't be a 'field.Atoms' but can also be e.g. a 'property'.
+        It does not have to be 'field.Atoms' but can also be e.g. a 'property'.
     """
 
     data: list[ase.Atoms] = zntrack.zn.deps()
@@ -75,8 +75,8 @@ class ProcessSingleAtom(IPSNode):
         if you want to use 'data_file'.
     atoms: list[ase.Atoms]
         The processed atoms data. This is an output of the Node.
-        It musn't be a 'field.Atoms' but can also be e.g. a 'property'.
-        Altough we only process a single atoms object, we return a list.
+        It does not have to be 'field.Atoms' but can also be e.g. a 'property'.
+        Although, we only process a single atoms object, we return a list.
         This could e.g. be the case when we want to create a trajectory
         starting from a single atoms object.
     """
@@ -183,11 +183,16 @@ class CheckBase(IPSNode):
         """Stores some reference property to compare the current property
         against and see whether the simulation should be stopped.
         Derived classes do not need to override this if they consider
-        absolute values and not comparissons.
+        absolute values and not comparisons.
         """
         pass
 
     @abc.abstractmethod
     def check(self, atoms: ase.Atoms) -> bool:
-        """method to check whether a simulation should be stopped."""
+        """Method to check whether a simulation should be stopped."""
+        ...
+
+    @abc.abstractmethod
+    def get_metric(self) -> dict:
+        """Returns the metric that is tracked for stopping."""
         ...

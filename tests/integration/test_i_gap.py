@@ -1,8 +1,8 @@
+import ase
 import numpy as np
 import xmltodict
 
 import ipsuite
-import ase
 
 
 def test_model_training(proj_path, traj_file):
@@ -27,7 +27,7 @@ def test_model_training(proj_path, traj_file):
     assert isinstance(prediction, list)
     assert isinstance(prediction[0], ase.Atoms)
 
-    data.atoms[0].calc = model.calc
+    data.atoms[0].calc = model.get_calculator()
     with open(model.model_directory.resolve() / "model.xml", "r") as file:
         second_line = file.readlines()[1]
     content_as_dict = xmltodict.parse(second_line)

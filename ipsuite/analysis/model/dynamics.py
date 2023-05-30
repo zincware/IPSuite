@@ -45,6 +45,7 @@ class RattleAtoms(base.ProcessSingleAtom):
     """
 
     model: models.MLModel = zntrack.zn.deps()
+    model_outs = zntrack.dvc.outs(zntrack.nwd / "model/")
 
     logspace: bool = zntrack.zn.params(True)
     stop: float = zntrack.zn.params(3.0)
@@ -63,6 +64,9 @@ class RattleAtoms(base.ProcessSingleAtom):
         self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
 
     def run(self):
+        self.model_outs.mkdir(parents=True, exist_ok=True)
+        (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
+
         if self.logspace:
             stdev_space = (
                 np.logspace(start=0.0, stop=self.stop, num=self.num) * self.factor
@@ -74,7 +78,7 @@ class RattleAtoms(base.ProcessSingleAtom):
 
         atoms = self.get_data()
         reference = atoms.copy()
-        atoms.calc = self.model.calc
+        atoms.calc = self.model.get_calculator(directory=self.model_outs)
 
         energies = []
 
@@ -105,6 +109,7 @@ class BoxScale(base.ProcessSingleAtom):
     """
 
     model: models.MLModel = zntrack.zn.deps()
+    model_outs = zntrack.dvc.outs(zntrack.nwd / "model")
     mapping: base.Mapping = zntrack.zn.nodes(None)
 
     stop: float = zntrack.zn.params(2.0)
@@ -124,11 +129,13 @@ class BoxScale(base.ProcessSingleAtom):
         self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
 
     def run(self):
+        self.model_outs.mkdir(parents=True, exist_ok=True)
+        (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
         scale_space = np.linspace(start=self.start, stop=self.stop, num=self.num)
 
         original_atoms = self.get_data()
         cell = original_atoms.copy().cell
-        original_atoms.calc = self.model.calc
+        original_atoms.calc = self.model.get_calculator(directory=self.model_outs)
 
         energies = []
         self.atoms = []
@@ -145,7 +152,7 @@ class BoxScale(base.ProcessSingleAtom):
             else:
                 eval_atoms = self.mapping.backward_mapping(scaling_atoms, molecules)
                 # New atoms object, does not have the calculator.
-                eval_atoms.calc = self.model.calc
+                eval_atoms.calc = original_atoms.calc
 
             energies.append(eval_atoms.get_potential_energy())
             self.atoms.append(freeze_copy_atoms(eval_atoms))
@@ -187,6 +194,7 @@ class BoxHeatUp(base.ProcessSingleAtom):
     flux_data = zntrack.zn.plots()
 
     model = zntrack.zn.deps()
+    model_outs = zntrack.dvc.outs(zntrack.nwd / "model")
 
     plots = zntrack.dvc.outs(zntrack.nwd / "temperature.png")
 
@@ -209,10 +217,12 @@ class BoxHeatUp(base.ProcessSingleAtom):
         fig.savefig(self.plots)
 
     def run(self):
+        self.model_outs.mkdir(parents=True, exist_ok=True)
+        (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
         if self.max_temperature is None:
             self.max_temperature = self.stop_temperature * 1.5
         atoms = self.get_atoms()
-        atoms.set_calculator(self.model.calc)
+        atoms.calc = self.model.get_calculator(directory=self.model_outs)
         # Initialize velocities
         MaxwellBoltzmannDistribution(atoms, temperature_K=self.start_temperature)
         # initialize thermostat
@@ -340,6 +350,7 @@ class MDStability(base.ProcessAtoms):
     """
 
     model = zntrack.zn.deps()
+    model_outs = zntrack.dvc.outs(zntrack.nwd / "model_outs")
     max_steps: int = zntrack.zn.params()
     checks: list[zntrack.Node] = zntrack.zn.nodes()
     time_step: float = zntrack.zn.params(0.5)
@@ -369,13 +380,15 @@ class MDStability(base.ProcessAtoms):
             counts,
             datalabel="NVE",
             xlabel="Number of stable time steps",
-            ylabel="Occurences",
+            ylabel="Occurrences",
         )
         label_hist.savefig(self.plots_dir / "hist.png")
 
     def run(self) -> None:
+        self.model_outs.mkdir(parents=True, exist_ok=True)
+        (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
         data_lst = self.get_data()
-        calculator = self.model.calc
+        calculator = self.model.get_calculator(directory=self.model_outs)
         rng = default_rng(self.seed)
 
         stable_steps = []

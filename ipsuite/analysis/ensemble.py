@@ -17,12 +17,15 @@ def plot_with_uncertainty(value, ylabel: str, xlabel: str, **kwargs) -> dict:
     -------
 
     """
-    data = {
-        "mean": np.mean(value, axis=0),
-        "std": np.std(value, axis=0),
-        "max": np.max(value, axis=0),
-        "min": np.min(value, axis=0),
-    }
+    if isinstance(value, dict):
+        data = value
+    else:
+        data = {
+            "mean": np.mean(value, axis=0),
+            "std": np.std(value, axis=0),
+            "max": np.max(value, axis=0),
+            "min": np.min(value, axis=0),
+        }
 
     fig, ax = plt.subplots(**kwargs)
     ax.fill_between(
@@ -31,16 +34,18 @@ def plot_with_uncertainty(value, ylabel: str, xlabel: str, **kwargs) -> dict:
         data["mean"] - data["std"],
         facecolor="lightblue",
     )
-    ax.plot(data["max"], linestyle="--", color="darkcyan")
-    ax.plot(data["min"], linestyle="--", color="darkcyan")
+    if "max" in data:
+        ax.plot(data["max"], linestyle="--", color="darkcyan")
+    if "min" in data:
+        ax.plot(data["min"], linestyle="--", color="darkcyan")
     ax.plot(data["mean"], color="black")
     ax.set_ylabel(ylabel)
     ax.set_xlabel(xlabel)
 
-    return fig, data
+    return fig, ax, data
 
 
-class ModelEnsembleAnalysis(base.IPSNode):
+class ModelEnsembleAnalysis(base.AnalyseAtoms):
     """Attributes
     ----------
         models: list of models to ensemble
@@ -48,7 +53,6 @@ class ModelEnsembleAnalysis(base.IPSNode):
     """
 
     models: list = zntrack.zn.deps()
-    atoms: list = zntrack.zn.deps()
 
     normal_plot_path = zntrack.dvc.outs(zntrack.nwd / "normal_plot.png")
     sorted_plot_path = zntrack.dvc.outs(zntrack.nwd / "sorted_plot.png")
@@ -60,16 +64,16 @@ class ModelEnsembleAnalysis(base.IPSNode):
     bins: int = zntrack.zn.params(100)
 
     def _post_init_(self):
-        self.atoms = utils.helpers.get_deps_if_node(self.atoms, "atoms")
+        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
 
     def run(self):
         # TODO axis labels
         # TODO save indices
         # TODo rewrite this Node based on MLModel and then add a Analysis Node
-        self.prediction_list = [model.predict(self.atoms[:]) for model in self.models]
+        self.prediction_list = [model.predict(self.data[:]) for model in self.models]
 
         self.predictions = []
-        for idx, atom in enumerate(self.atoms):
+        for idx, atom in enumerate(self.data):
             atom.calc = ase.calculators.singlepoint.SinglePointCalculator(
                 atoms=atom,
                 energy=np.mean(
@@ -86,12 +90,10 @@ class ModelEnsembleAnalysis(base.IPSNode):
         figures[1][0].savefig(self.sorted_plot_path)
         figures[2].savefig(self.histogram)
 
-    def calc(self):
-        # Ensemble could inherit from MLModel
-        raise NotImplementedError
-
     def get_plots(self):
-        energy = np.stack([p.energy for p in self.prediction_list])
+        energy = np.stack(
+            [np.stack(x.get_potential_energy() for x in p) for p in self.prediction_list]
+        )
 
         figures = []
         # Plot the energy
@@ -115,7 +117,3 @@ class ModelEnsembleAnalysis(base.IPSNode):
         ax.set_xlabel("Energy standard deviation histogram")
         figures.append(fig)
         return figures
-
-    def predict(self, data):
-        # TODO create prediction object with uncertainties
-        pass

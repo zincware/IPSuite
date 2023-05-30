@@ -165,8 +165,7 @@ class Nequip(MLModel):
         self.get_metrics_from_plots()
         self.deploy_model()
 
-    @property
-    def calc(self):
+    def get_calculator(self, **kwargs):
         """Get a nequip ase calculator."""
         from nequip.ase.nequip_calculator import NequIPCalculator
 

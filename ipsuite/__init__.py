@@ -42,3 +42,5 @@ __all__ = [
 
 __version__ = importlib.metadata.version(__name__)
 setup_logging(__name__)
+
+utils.helpers.setup_ase()

@@ -3,6 +3,7 @@ from ipsuite.analysis.bin_property import (
     EnergyHistogram,
     ForcesHistogram,
 )
+from ipsuite.analysis.bond_stretch import BondStretchAnalyses
 from ipsuite.analysis.ensemble import ModelEnsembleAnalysis
 from ipsuite.analysis.model import (
     BoxHeatUp,
@@ -16,6 +17,8 @@ from ipsuite.analysis.model import (
     Prediction,
     PredictionMetrics,
     RattleAtoms,
+    TemperatureCheck,
+    ThresholdCheck,
 )
 from ipsuite.analysis.sensitivity import (
     AnalyseGlobalForceSensitivity,
@@ -35,6 +38,7 @@ __all__ = [
     "BoxScale",
     "BoxHeatUp",
     "NaNCheck",
+    "TemperatureCheck",
     "ConnectivityCheck",
     "EnergySpikeCheck",
     "MDStability",
@@ -42,4 +46,6 @@ __all__ = [
     "AnalyseGlobalForceSensitivity",
     "AnalyseSingleForceSensitivity",
     "ForceDecomposition",
+    "ThresholdCheck",
+    "BondStretchAnalyses",
 ]
