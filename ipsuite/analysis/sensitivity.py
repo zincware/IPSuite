@@ -7,6 +7,8 @@ import numpy as np
 import scipy
 import zntrack
 
+from ipsuite import base
+
 
 def nonuniform_imshow(ax, x, y, z, aspect=1, cmap=plt.cm.rainbow):
     """Plot a non-uniformly sampled 2D array.
@@ -33,7 +35,7 @@ def nonuniform_imshow(ax, x, y, z, aspect=1, cmap=plt.cm.rainbow):
     ax.set_aspect(aspect)
 
 
-class MoveSingleParticle(zntrack.Node):
+class MoveSingleParticle(base.IPSNode):
     """Move a single particle in a given direction."""
 
     atoms_list = zntrack.zn.deps()
@@ -62,7 +64,7 @@ class MoveSingleParticle(zntrack.Node):
         return [str(self.atoms_path / f"atoms_{idx}.xyz") for idx in range(self.samples)]
 
 
-class AnalyseGlobalForceSensitivity(zntrack.Node):
+class AnalyseGlobalForceSensitivity(base.IPSNode):
     atoms_list = zntrack.zn.deps()
     plots = zntrack.dvc.outs(zntrack.nwd / "plots")
 
@@ -101,7 +103,7 @@ class IsConstraintMD(typing.Protocol):
     radius: float
 
 
-class AnalyseSingleForceSensitivity(zntrack.Node):
+class AnalyseSingleForceSensitivity(base.IPSNode):
     """Attributes
     ----------
     sim_list : list[]

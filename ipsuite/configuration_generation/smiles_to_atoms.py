@@ -6,10 +6,10 @@ from ase.visualize import view
 from rdkit import Chem
 from rdkit.Chem import AllChem, Draw
 
-from ipsuite import fields
+from ipsuite import base, fields
 
 
-class SmilesToAtoms(zntrack.Node):
+class SmilesToAtoms(base.IPSNode):
     atoms = fields.Atoms()
 
     smiles: str = zntrack.zn.params()

@@ -12,7 +12,11 @@ from ipsuite import fields
 # TODO raise error if both data and data_file are given
 
 
-class ProcessAtoms(zntrack.Node):
+class IPSNode(zntrack.Node):
+    _module_ = "ipsuite.nodes"
+
+
+class ProcessAtoms(IPSNode):
     """Protocol for objects that process atoms.
 
     Attributes
@@ -52,7 +56,7 @@ class ProcessAtoms(zntrack.Node):
             raise ValueError("No data given.")
 
 
-class ProcessSingleAtom(zntrack.Node):
+class ProcessSingleAtom(IPSNode):
     """Protocol for objects that process a single atom.
 
     Attributes
@@ -103,7 +107,7 @@ class ProcessSingleAtom(zntrack.Node):
         return atoms
 
 
-class AnalyseAtoms(zntrack.Node):
+class AnalyseAtoms(IPSNode):
     """Protocol for objects that analyse atoms.
 
     Attributes
@@ -115,7 +119,7 @@ class AnalyseAtoms(zntrack.Node):
     data: list[ase.Atoms] = zntrack.zn.deps()
 
 
-class AnalyseProcessAtoms(zntrack.Node):
+class AnalyseProcessAtoms(IPSNode):
     """Analyse the output of a ProcessAtoms Node."""
 
     data: ProcessAtoms = zntrack.zn.deps()
@@ -169,7 +173,7 @@ class Mapping(ProcessAtoms):
         raise NotImplementedError
 
 
-class CheckBase(zntrack.Node):
+class CheckBase(IPSNode):
     """Base class for check nodes.
     These are callbacks that can be used to preemptively terminate
     a molecular dynamics simulation if a vertain condition is met.
