@@ -49,6 +49,8 @@ class Packmol(base.IPSNode):
             raise ValueError("Either box or density must be set.")
         if len(self.data) != len(self.count):
             raise ValueError("The number of data and count must be the same.")
+        if self.data_ids is not None and len(self.data) != len(self.data_ids):
+            raise ValueError("The number of data and data_ids must be the same.")
         if self.box is not None and isinstance(self.box, (int, float)):
             self.box = [self.box, self.box, self.box]
 
