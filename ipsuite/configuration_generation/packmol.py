@@ -18,12 +18,25 @@ class Packmol(base.IPSNode):
 
     Attributes
     ----------
+    data: list[list[ase.Atoms]]
+        For each entry in the list the last ase.Atoms object is used to create the
+        new structure.
+    data_ids: list[int]
+        The id of the data to use for each entry in data. If None the last entry.
+        Has to be the same length as data. data: [[A], [B]], [-1, 3] -> [A[-1], B[3]]
+    count: list[int]
+        Number of molecules to add for each entry in data.
+    tolerance : float
+        Tolerance for the distance of atoms in angstrom.
+    box : list[float]
+        Box size in angstrom. Either density or box is required.
     density : float
         Density of the system in kg/m^3. Either density or box is required.
 
     """
 
-    data: list = zntrack.zn.deps()
+    data: list[list[ase.Atoms]] = zntrack.zn.deps()
+    data_ids: list[int] = zntrack.zn.params(None)
     count: list = zntrack.zn.params()
     tolerance: float = zntrack.zn.params(2.0)
     box: list = zntrack.zn.params(None)
@@ -42,6 +55,7 @@ class Packmol(base.IPSNode):
     def run(self):
         self.structures.mkdir(exist_ok=True, parents=True)
         for idx, atoms in enumerate(self.data):
+            atoms = atoms[-1] if self.data_ids is None else atoms[self.data_ids[idx]]
             ase.io.write(self.structures / f"{idx}.xyz", atoms)
 
         if self.density is not None:
