@@ -45,5 +45,5 @@ class EMTSinglePoint(base.ProcessAtoms):
             atom.get_potential_energy()
 
     def get_calculator(self, **kwargs):
-        """Get an LJ ase calculator."""
+        """Get an EMT ase calculator."""
         return EMT()
