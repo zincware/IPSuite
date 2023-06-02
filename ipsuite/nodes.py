@@ -63,6 +63,7 @@ class _Nodes:
     AnalyseSingleForceSensitivity = "ipsuite.analysis.AnalyseSingleForceSensitivity"
     ForceDecomposition = "ipsuite.analysis.ForceDecomposition"
     ThresholdCheck = "ipsuite.analysis.ThresholdCheck"
+    TemperatureCheck = "ipsuite.analysis.TemperatureCheck"
 
     # calculators
     CP2KSinglePoint = "ipsuite.calculators.CP2KSinglePoint"
@@ -72,8 +73,10 @@ class _Nodes:
     FixedSphereASEMD = "ipsuite.calculators.FixedSphereASEMD"
     xTBSinglePoint = "ipsuite.calculators.xTBSinglePoint"
     LJSinglePoint = "ipsuite.calculators.LJSinglePoint"
+    EMTSinglePoint = "ipsuite.calculators.EMTSinglePoint"
 
     LangevinThermostat = "ipsuite.calculators.LangevinThermostat"
+    RescaleBoxModifier = "ipsuite.calculators.RescaleBoxModifier"
 
     # Geometry
     BarycenterMapping = "ipsuite.geometry.BarycenterMapping"

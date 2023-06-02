@@ -20,6 +20,28 @@ from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
 log = logging.getLogger(__name__)
 
 
+class RescaleBoxModifier(base.IPSNode):
+    cell: int = zntrack.zn.params()
+
+    def modify(self, thermostat, step, total_steps):
+        # we use the thermostat, so we can also modify e.g. temperature
+        if isinstance(self.cell, int):
+            self.cell = np.array(
+                [[self.cell, 0, 0], [0, self.cell, 0], [0, 0, self.cell]]
+            )
+        elif isinstance(self.cell, list):
+            self.cell = np.array(
+                [[self.cell[0], 0, 0], [0, self.cell[1], 0], [0, 0, self.cell[2]]]
+            )
+
+        cell = thermostat.atoms.get_cell()
+        print(thermostat.atoms.get_cell())
+        percentage = step / (total_steps - 1)
+        new_cell = (1 - percentage) * cell + percentage * self.cell
+        print(new_cell)
+        thermostat.atoms.set_cell(new_cell, scale_atoms=True)
+
+
 class LangevinThermostat(base.IPSNode):
     """Initialize the langevin thermostat
 
@@ -89,6 +111,7 @@ class ASEMD(base.ProcessSingleAtom):
     model = zntrack.zn.deps()
     model_outs = zntrack.dvc.outs(zntrack.nwd / "model/")
     checker_list: list = zntrack.zn.nodes(None)
+    modifier: list = zntrack.zn.nodes(None)
     thermostat = zntrack.zn.nodes()
 
     steps: int = zntrack.zn.params()
@@ -121,6 +144,8 @@ class ASEMD(base.ProcessSingleAtom):
         """Run the simulation."""
         if self.checker_list is None:
             self.checker_list = []
+        if self.modifier is None:
+            self.modifier = []
 
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
@@ -168,6 +193,8 @@ class ASEMD(base.ProcessSingleAtom):
             for idx in range(self.steps):
                 desc = []
                 stop = []
+                for modifier in self.modifier:
+                    modifier.modify(thermostat, step=idx, total_steps=self.steps)
                 thermostat.run(self.sampling_rate)
                 _, energy = get_energy(atoms)
                 metrics_dict["energy"].append(energy)

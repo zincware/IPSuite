@@ -18,6 +18,7 @@ import git
 import numpy as np
 import pytest
 from ase import Atoms
+from ase.lattice.cubic import FaceCenteredCubic
 
 import ipsuite as ips
 
@@ -48,6 +49,18 @@ def atoms_list() -> typing.List[ase.Atoms]:
         )
 
     return atoms
+
+
+@pytest.fixture
+def cu_box() -> typing.List[ase.Atoms]:
+    return [
+        FaceCenteredCubic(
+            directions=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            symbol="Cu",
+            size=(2, 2, 2),
+            pbc=True,
+        )
+    ]
 
 
 @pytest.fixture()
