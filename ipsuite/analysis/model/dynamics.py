@@ -323,9 +323,9 @@ def run_stability_nve(
             check_results = [check.check(atoms) for check in checks]
             unstable = any(check_results)
             if unstable:
-                stable_steps = idx
                 break
 
+    stable_steps = idx
     return stable_steps, list(last_n_atoms)
 
 
