@@ -7,8 +7,8 @@ from .ase_md import (
     RescaleBoxModifier,
     TemperatureRampModifier,
 )
+from .ase_standard import EMTSinglePoint, LJSinglePoint
 from .cp2k import CP2KSinglePoint, CP2KYaml
-from .lj import EMTSinglePoint, LJSinglePoint
 from .xtb import xTBSinglePoint
 
 __all__ = [
