@@ -20,6 +20,40 @@ from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
 log = logging.getLogger(__name__)
 
 
+class RescaleBoxModifier(base.IPSNode):
+    cell: int = zntrack.zn.params()
+    _initial_cell = None
+
+    def modify(self, thermostat, step, total_steps):
+        # we use the thermostat, so we can also modify e.g. temperature
+        if isinstance(self.cell, int):
+            self.cell = np.array(
+                [[self.cell, 0, 0], [0, self.cell, 0], [0, 0, self.cell]]
+            )
+        elif isinstance(self.cell, list):
+            self.cell = np.array(
+                [[self.cell[0], 0, 0], [0, self.cell[1], 0], [0, 0, self.cell[2]]]
+            )
+
+        if self._initial_cell is None:
+            self._initial_cell = thermostat.atoms.get_cell()
+        percentage = step / (total_steps - 1)
+        new_cell = (1 - percentage) * self._initial_cell + percentage * self.cell
+        thermostat.atoms.set_cell(new_cell, scale_atoms=True)
+
+
+class TemperatureRampModifier(base.IPSNode):
+    temperature: float = zntrack.zn.params()
+
+    def modify(self, thermostat, step, total_steps):
+        # we use the thermostat, so we can also modify e.g. temperature
+        percentage = step / (total_steps - 1)
+        new_temperature = (
+            1 - percentage
+        ) * thermostat.temp + percentage * self.temperature
+        thermostat.set_temperature(temperature_K=new_temperature)
+
+
 class LangevinThermostat(base.IPSNode):
     """Initialize the langevin thermostat
 
@@ -89,6 +123,7 @@ class ASEMD(base.ProcessSingleAtom):
     model = zntrack.zn.deps()
     model_outs = zntrack.dvc.outs(zntrack.nwd / "model/")
     checker_list: list = zntrack.zn.nodes(None)
+    modifier: list = zntrack.zn.nodes(None)
     thermostat = zntrack.zn.nodes()
 
     steps: int = zntrack.zn.params()
@@ -121,6 +156,8 @@ class ASEMD(base.ProcessSingleAtom):
         """Run the simulation."""
         if self.checker_list is None:
             self.checker_list = []
+        if self.modifier is None:
+            self.modifier = []
 
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
@@ -168,6 +205,8 @@ class ASEMD(base.ProcessSingleAtom):
             for idx in range(self.steps):
                 desc = []
                 stop = []
+                for modifier in self.modifier:
+                    modifier.modify(thermostat, step=idx, total_steps=self.steps)
                 thermostat.run(self.sampling_rate)
                 _, energy = get_energy(atoms)
                 metrics_dict["energy"].append(energy)
