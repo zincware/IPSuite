@@ -77,6 +77,7 @@ class _Nodes:
 
     LangevinThermostat = "ipsuite.calculators.LangevinThermostat"
     RescaleBoxModifier = "ipsuite.calculators.RescaleBoxModifier"
+    TemperatureRampModifier = "ipsuite.calculators.TemperatureRampModifier"
 
     # Geometry
     BarycenterMapping = "ipsuite.geometry.BarycenterMapping"

@@ -22,6 +22,7 @@ log = logging.getLogger(__name__)
 
 class RescaleBoxModifier(base.IPSNode):
     cell: int = zntrack.zn.params()
+    _initial_cell = None
 
     def modify(self, thermostat, step, total_steps):
         # we use the thermostat, so we can also modify e.g. temperature
@@ -34,12 +35,24 @@ class RescaleBoxModifier(base.IPSNode):
                 [[self.cell[0], 0, 0], [0, self.cell[1], 0], [0, 0, self.cell[2]]]
             )
 
-        cell = thermostat.atoms.get_cell()
-        print(thermostat.atoms.get_cell())
+        if self._initial_cell is None:
+            self._initial_cell = thermostat.atoms.get_cell()
         percentage = step / (total_steps - 1)
-        new_cell = (1 - percentage) * cell + percentage * self.cell
-        print(new_cell)
+        new_cell = (1 - percentage) * self._initial_cell + percentage * self.cell
+        print(new_cell[0][0])
         thermostat.atoms.set_cell(new_cell, scale_atoms=True)
+
+
+class TemperatureRampModifier(base.IPSNode):
+    temperature: float = zntrack.zn.params()
+
+    def modify(self, thermostat, step, total_steps):
+        # we use the thermostat, so we can also modify e.g. temperature
+        percentage = step / (total_steps - 1)
+        new_temperature = (
+            1 - percentage
+        ) * thermostat.temp + percentage * self.temperature
+        thermostat.set_temperature(temperature_K=new_temperature)
 
 
 class LangevinThermostat(base.IPSNode):

@@ -12,6 +12,7 @@ def test_ase_md(proj_path, cu_box):
         friction=1,
     )
     rescale_box = ips.calculators.RescaleBoxModifier(cell=10)
+    temperature_ramp = ips.calculators.TemperatureRampModifier(temperature=300)
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
         model = ips.calculators.EMTSinglePoint(data=data.atoms)
@@ -19,7 +20,7 @@ def test_ase_md(proj_path, cu_box):
             data=data.atoms,
             model=model,
             checker_list=[checker],
-            modifier=[rescale_box],
+            modifier=[rescale_box, temperature_ramp],
             thermostat=thermostat,
             init_temperature=1.0,
             steps=30,
