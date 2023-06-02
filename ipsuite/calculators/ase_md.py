@@ -39,7 +39,6 @@ class RescaleBoxModifier(base.IPSNode):
             self._initial_cell = thermostat.atoms.get_cell()
         percentage = step / (total_steps - 1)
         new_cell = (1 - percentage) * self._initial_cell + percentage * self.cell
-        print(new_cell[0][0])
         thermostat.atoms.set_cell(new_cell, scale_atoms=True)
 
 
