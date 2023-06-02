@@ -11,6 +11,7 @@ from zntrack import dvc, zn
 
 from ipsuite import utils
 from ipsuite.models.base import MLModel
+from ipsuite.static_data import STATIC_PATH
 from ipsuite.utils.helpers import check_duplicate_keys
 
 log = logging.getLogger(__name__)
@@ -51,10 +52,11 @@ class Apax(MLModel):
 
     metrics_epoch = dvc.plots(
         zntrack.nwd / "log.csv",
-        # x="epoch",
-        # x_label="epochs",
-        # y="val_loss",
-        # y_label="validation loss",
+        template=STATIC_PATH / "y_log.json",
+        x="epoch",
+        x_label="epochs",
+        y="val_loss",
+        y_label="validation loss",
     )
     metrics = zn.metrics()
 
