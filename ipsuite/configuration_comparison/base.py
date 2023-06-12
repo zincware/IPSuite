@@ -203,7 +203,7 @@ class ConfigurationComparison(base.IPSNode):
         species = [int(x) for x in set(self.analyte[0].get_atomic_numbers())]
         _soap = SOAP(
             species=species,
-            periodic=any(self.analyte[0].pbc),
+            periodic=False,  # any(self.analyte[0].pbc),
             rcut=self.soap.r_cut,
             nmax=self.soap.n_max,
             lmax=self.soap.l_max,
