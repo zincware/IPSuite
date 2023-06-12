@@ -25,7 +25,7 @@ from ipsuite.utils.md import get_energy_terms
 log = logging.getLogger(__name__)
 
 
-class RattleAtoms(base.ProcessSingleAtom):
+class RattleAnalysis(base.ProcessSingleAtom):
     """Move particles with a given stdev from a starting configuration and predict.
 
     Attributes
