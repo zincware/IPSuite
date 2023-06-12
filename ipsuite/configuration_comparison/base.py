@@ -47,8 +47,6 @@ class SOAPParameter:
         number of radial basis functions
     l_max: int
         maximum degree of spherical harmonics
-    periodic: bool
-        set to true to respect periodicity of the atomic system
     n_jobs: int
         number of parallel jobs to instantiate
     sigma: float
@@ -62,7 +60,6 @@ class SOAPParameter:
     r_cut: float = 9.0
     n_max: int = 7
     l_max: int = 7
-    periodic: bool = True
     n_jobs: int = -1
     sigma: float = 1.0
     rbf: str = "gto"
@@ -206,7 +203,7 @@ class ConfigurationComparison(base.IPSNode):
         species = [int(x) for x in set(self.analyte[0].get_atomic_numbers())]
         _soap = SOAP(
             species=species,
-            periodic=self.soap.periodic,
+            periodic=any(self.analyte[0].pbc),
             rcut=self.soap.r_cut,
             nmax=self.soap.n_max,
             lmax=self.soap.l_max,
