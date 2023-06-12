@@ -16,7 +16,7 @@ from ipsuite.analysis.model import (
     NaNCheck,
     Prediction,
     PredictionMetrics,
-    RattleAtoms,
+    RattleAnalysis,
     TemperatureCheck,
     ThresholdCheck,
 )
@@ -33,7 +33,7 @@ __all__ = [
     "ModelEnsembleAnalysis",
     "PredictionMetrics",
     "ForceAngles",
-    "RattleAtoms",
+    "RattleAnalysis",
     "Prediction",
     "BoxScale",
     "BoxHeatUp",

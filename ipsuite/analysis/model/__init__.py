@@ -2,7 +2,7 @@ from ipsuite.analysis.model.dynamics import (
     BoxHeatUp,
     BoxScale,
     MDStability,
-    RattleAtoms,
+    RattleAnalysis,
 )
 from ipsuite.analysis.model.dynamics_checks import (
     ConnectivityCheck,
@@ -23,7 +23,7 @@ __all__ = [
     "ForceAngles",
     "PredictionMetrics",
     "ForceDecomposition",
-    "RattleAtoms",
+    "RattleAnalysis",
     "BoxHeatUp",
     "BoxScale",
     "EnergySpikeCheck",

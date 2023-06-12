@@ -50,7 +50,7 @@ class _Nodes:
     ModelEnsembleAnalysis = "ipsuite.analysis.ModelEnsembleAnalysis"
     PredictionMetrics = "ipsuite.analysis.PredictionMetrics"
     ForceAngles = "ipsuite.analysis.ForceAngles"
-    RattleAtoms = "ipsuite.analysis.RattleAtoms"
+    RattleAnalysis = "ipsuite.analysis.RattleAnalysis"
     Prediction = "ipsuite.analysis.Prediction"
     BoxScale = "ipsuite.analysis.BoxScale"
     BoxHeatUp = "ipsuite.analysis.BoxHeatUp"
