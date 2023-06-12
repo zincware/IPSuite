@@ -43,7 +43,7 @@ class MACE(MLModel):
 
     config: str = zntrack.dvc.deps("mace.yaml")
     config_kwargs: dict = zntrack.zn.params(None)
-    device: str = zntrack.meta.Text("cuda" if torch.cuda.is_available() else "cpu")
+    device: str = zntrack.meta.Text(None)
 
     training: pathlib.Path = zntrack.dvc.plots(
         zntrack.nwd / "training.csv",
@@ -55,6 +55,10 @@ class MACE(MLModel):
     def _post_init_(self):
         self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
         self.test_data = utils.helpers.get_deps_if_node(self.test_data, "atoms")
+
+    def _post_load_(self) -> None:
+        if self.device is None:
+            self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
     @classmethod
     def generate_config_file(self, file: str = "mace.yaml"):
