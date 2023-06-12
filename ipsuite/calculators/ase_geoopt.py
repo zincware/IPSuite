@@ -43,4 +43,5 @@ class ASEGeoOpt(base.ProcessSingleAtom):
 
     @property
     def atoms(self):
-        return list(ase.io.iread(self.traj.as_posix()))
+        with self.state.fs.open(self.traj.as_posix()) as f:
+            return list(ase.io.iread(f))

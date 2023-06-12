@@ -1,5 +1,6 @@
 import abc
 import collections.abc
+import pathlib
 import typing
 
 import ase
@@ -51,7 +52,12 @@ class ProcessAtoms(IPSNode):
         if self.data is not None:
             return self.data
         elif self.data_file is not None:
-            return list(ase.io.iread(self.data_file))
+            try:
+                with self.state.fs.open(pathlib.Path(self.data_file).as_posix()) as f:
+                    return list(ase.io.iread(f))
+            except FileNotFoundError:
+                # File can not be opened with DVCFileSystem, try normal open
+                return list(ase.io.iread(self.data_file))
         else:
             raise ValueError("No data given.")
 
@@ -101,7 +107,12 @@ class ProcessSingleAtom(IPSNode):
             else:
                 atoms = self.data.copy()
         elif self.data_file is not None:
-            atoms = list(ase.io.iread(self.data_file))[self.data_id]
+            try:
+                with self.state.fs.open(pathlib.Path(self.data_file).as_posix()) as f:
+                    atoms = list(ase.io.iread(f))[self.data_id]
+            except FileNotFoundError:
+                # File can not be opened with DVCFileSystem, try normal open
+                atoms = list(ase.io.iread(self.data_file))[self.data_id]
         else:
             raise ValueError("No data given.")
         return atoms

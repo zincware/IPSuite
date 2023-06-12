@@ -4,6 +4,7 @@ References
 ----------
 https://docs.pytest.org/en/6.2.x/fixture.html#scope-sharing-fixtures-across-classes-modules-packages-or-session
 """
+import logging
 import os
 import pathlib
 import random
@@ -17,10 +18,13 @@ import dvc.cli
 import git
 import numpy as np
 import pytest
+import zntrack
 from ase import Atoms
 from ase.lattice.cubic import FaceCenteredCubic
 
 import ipsuite as ips
+
+zntrack.config.log_level = logging.DEBUG
 
 
 @pytest.fixture

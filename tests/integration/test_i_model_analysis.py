@@ -94,7 +94,7 @@ def test_RattleAnalysis(trained_model):
     project, model, validation_selection = trained_model
 
     with project:
-        analysis = ipsuite.analysis.RattleAtoms(model=model, data=validation_selection)
+        analysis = ipsuite.analysis.RattleAnalysis(model=model, data=validation_selection)
     project.run()
 
     analysis.load()
