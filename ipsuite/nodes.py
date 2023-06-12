@@ -74,6 +74,7 @@ class _Nodes:
     xTBSinglePoint = "ipsuite.calculators.xTBSinglePoint"
     LJSinglePoint = "ipsuite.calculators.LJSinglePoint"
     EMTSinglePoint = "ipsuite.calculators.EMTSinglePoint"
+    ApaxJaxMD = "ipsuite.calculators.ApaxJaxMD"
 
     LangevinThermostat = "ipsuite.calculators.LangevinThermostat"
     RescaleBoxModifier = "ipsuite.calculators.RescaleBoxModifier"
