@@ -4,6 +4,7 @@ import json
 import logging
 import pathlib
 import subprocess
+import tempfile
 
 import pandas as pd
 import torch
@@ -127,13 +128,8 @@ class MACE(MLModel):
 
     def get_calculator(self, device=None, **kwargs):
         """Return the ASE calculator."""
-        device = device or self.device
-        import unittest.mock
+        with tempfile.TemporaryDirectory() as tmpdir:
+            target_file = pathlib.Path(tmpdir) / "MACE_model.model"
+            self.state.fs.get_file(self.model_dir / "MACE_model.model", target_file)
 
-        # replace open in torch module with self.state.fs.open
-        with unittest.mock.patch(
-            "torch.serialization._open_file_like", self.state.fs.open
-        ):
-            return MACECalculator(
-                model_path=self.model_dir / "MACE_model.model", device=self.device
-            )
+            return MACECalculator(model_path=target_file, device=device or self.device)
