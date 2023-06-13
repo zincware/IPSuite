@@ -128,6 +128,12 @@ class MACE(MLModel):
     def get_calculator(self, device=None, **kwargs):
         """Return the ASE calculator."""
         device = device or self.device
-        return MACECalculator(
-            model_path=self.model_dir / "MACE_model.model", device=self.device
-        )
+        import unittest.mock
+
+        # replace open in torch module with self.state.fs.open
+        with unittest.mock.patch(
+            "torch.serialization._open_file_like", self.state.fs.open
+        ):
+            return MACECalculator(
+                model_path=self.model_dir / "MACE_model.model", device=self.device
+            )
