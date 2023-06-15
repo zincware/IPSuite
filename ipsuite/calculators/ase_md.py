@@ -197,7 +197,7 @@ class ASEMD(base.ProcessSingleAtom):
 
         # initialize Atoms calculator and metrics_dict
         _, _ = get_energy(atoms)
-        metrics_dict = {"energy": [], "temperature": []}
+        metrics_dict = {"energy": [], "temp": []}
         for checker in self.checker_list:
             _ = checker.check(atoms)
             metric = checker.get_metric()
@@ -228,7 +228,7 @@ class ASEMD(base.ProcessSingleAtom):
                 thermostat.run(self.sampling_rate)
                 temperature, energy = get_energy(atoms)
                 metrics_dict["energy"].append(energy)
-                metrics_dict["temperature"].append(temperature)
+                metrics_dict["temp"].append(temperature)
 
                 for checker in self.checker_list:
                     stop.append(checker.check(atoms))
