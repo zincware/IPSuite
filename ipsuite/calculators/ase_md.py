@@ -43,15 +43,33 @@ class RescaleBoxModifier(base.IPSNode):
 
 
 class TemperatureRampModifier(base.IPSNode):
+    """Ramp the temperature from start_temperature to temperature.
+
+    Attributes
+    ----------
+    start_temperature: float, optional
+        temperature to start from, if None, the temperature of the thermostat is used.
+    temperature: float
+        temperature to ramp to.
+    interval: int, default 1
+        interval in which the temperature is changed.
+    """
+
+    start_temperature: float = zntrack.zn.params(None)
     temperature: float = zntrack.zn.params()
+    interval: int = zntrack.zn.params(1)
 
     def modify(self, thermostat, step, total_steps):
         # we use the thermostat, so we can also modify e.g. temperature
+        if self.start_temperature is None:
+            self.start_temperature = thermostat.temp / units.kB
+
         percentage = step / (total_steps - 1)
         new_temperature = (
             1 - percentage
-        ) * thermostat.temp + percentage * self.temperature
-        thermostat.set_temperature(temperature_K=new_temperature)
+        ) * self.start_temperature + percentage * self.temperature
+        if step % self.interval == 0:
+            thermostat.set_temperature(temperature_K=new_temperature)
 
 
 class LangevinThermostat(base.IPSNode):
@@ -179,7 +197,7 @@ class ASEMD(base.ProcessSingleAtom):
 
         # initialize Atoms calculator and metrics_dict
         _, _ = get_energy(atoms)
-        metrics_dict = {"energy": []}
+        metrics_dict = {"energy": [], "temperature": []}
         for checker in self.checker_list:
             _ = checker.check(atoms)
             metric = checker.get_metric()
@@ -208,8 +226,9 @@ class ASEMD(base.ProcessSingleAtom):
                 for modifier in self.modifier:
                     modifier.modify(thermostat, step=idx, total_steps=self.steps)
                 thermostat.run(self.sampling_rate)
-                _, energy = get_energy(atoms)
+                temperature, energy = get_energy(atoms)
                 metrics_dict["energy"].append(energy)
+                metrics_dict["temperature"].append(temperature)
 
                 for checker in self.checker_list:
                     stop.append(checker.check(atoms))
