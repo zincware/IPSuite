@@ -374,7 +374,6 @@ class ASEMD(base.ProcessSingleAtom):
 
                 energy = metrics_dict["energy"][-1]
                 desc.append(f"E: {energy:.3f} eV")
-                desc.append(f"V: {atoms.get_cell().volume:.3f} A3")
 
                 if idx % (1 / time_step) == 0:
                     pbar.set_description("\t".join(desc))

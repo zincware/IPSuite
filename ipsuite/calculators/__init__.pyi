@@ -4,7 +4,10 @@ from .ase_md import (
     ASEMD,
     FixedSphereASEMD,
     LangevinThermostat,
+    NPTThermostat,
+    PressureRampModifier,
     RescaleBoxModifier,
+    TemperatureOscillatingRampModifier,
     TemperatureRampModifier,
 )
 from .ase_standard import EMTSinglePoint, LJSinglePoint
@@ -24,4 +27,7 @@ __all__ = [
     "RescaleBoxModifier",
     "EMTSinglePoint",
     "TemperatureRampModifier",
+    "PressureRampModifier",
+    "TemperatureOscillatingRampModifier",
+    "NPTThermostat",
 ]
