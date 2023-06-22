@@ -18,7 +18,7 @@ from numpy.random import default_rng
 from tqdm import trange
 
 from ipsuite import base, models, utils
-from ipsuite.analysis.bin_property import get_histogram_figure
+from ipsuite.analysis.model.plots import get_histogram_figure
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 from ipsuite.utils.md import get_energy_terms
 
