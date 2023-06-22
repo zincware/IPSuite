@@ -47,6 +47,7 @@ class _Nodes:
     DipoleHistogram = "ipsuite.analysis.DipoleHistogram"
     EnergyHistogram = "ipsuite.analysis.EnergyHistogram"
     ForcesHistogram = "ipsuite.analysis.ForcesHistogram"
+    StressHistogram = "ipsuite.analysis.StressHistogram"
     ModelEnsembleAnalysis = "ipsuite.analysis.ModelEnsembleAnalysis"
     PredictionMetrics = "ipsuite.analysis.PredictionMetrics"
     ForceAngles = "ipsuite.analysis.ForceAngles"
@@ -77,7 +78,10 @@ class _Nodes:
     ApaxJaxMD = "ipsuite.calculators.ApaxJaxMD"
 
     LangevinThermostat = "ipsuite.calculators.LangevinThermostat"
+    NPTThermostat = "ipsuite.calculators.NPTThermostat"
     RescaleBoxModifier = "ipsuite.calculators.RescaleBoxModifier"
+    TemperatureRampModifier = "ipsuite.calculators.TemperatureRampModifier"
+    TemperatureOscillatingRampModifier = "ipsuite.calculators.TemperatureOscillatingRampModifier"
     TemperatureRampModifier = "ipsuite.calculators.TemperatureRampModifier"
 
     # Geometry
