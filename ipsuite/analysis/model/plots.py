@@ -95,3 +95,42 @@ def get_hist(data, label, xlabel, ylabel) -> typing.Tuple[plt.Figure, plt.Axes]:
     ax.legend()
 
     return fig, ax
+
+
+def get_histogram_figure(
+    bin_edges,
+    counts,
+    datalabel: str,
+    xlabel: str,
+    ylabel: str,
+    logy_scale=True,
+    figsize: tuple = (10, 7),
+) -> plt.Figure:
+    """Creates a Matplotlib figure based on precomputed bin edges and counts.
+
+    Parameters
+    ----------
+    bin_edges: np.array
+        Edges of the histogram bins.
+    counts: np.array
+        Number of occurrences in each bin.
+    datalabel: str
+        Labels for the figure legend.
+    xlabel: str
+        X-axis label.
+    ylabel: str
+        Y-axis label.
+    figsize: tuple
+        Size of the Matplotlib figure
+    """
+    sns.set()
+    fig, ax = plt.subplots(figsize=figsize)
+
+    ax.stairs(counts, bin_edges, label=datalabel, fill=True)
+
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.legend()
+    if logy_scale:
+        ax.set_yscale("log")
+    return fig

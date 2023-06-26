@@ -8,7 +8,7 @@ import zntrack
 from ase.calculators.singlepoint import PropertyNotImplementedError
 
 from ipsuite import base, models, utils
-from ipsuite.analysis.model.math import force_decomposition
+from ipsuite.analysis.model.math import decompose_stress_tensor, force_decomposition
 from ipsuite.analysis.model.plots import get_figure, get_hist
 from ipsuite.geometry import BarycenterMapping
 from ipsuite.utils.ase_sim import freeze_copy_atoms
@@ -30,12 +30,15 @@ class Prediction(base.ProcessAtoms):
     def run(self):
         self.atoms = []
         calc = self.model.get_calculator()
+
         for configuration in tqdm.tqdm(self.get_data(), ncols=70):
             configuration: ase.Atoms
             # Run calculation
             atoms = configuration.copy()
             atoms.calc = calc
             atoms.get_potential_energy()
+            if "stress" in calc.implemented_properties:
+                atoms.get_stress()
 
             self.atoms.append(freeze_copy_atoms(atoms))
 
@@ -53,16 +56,26 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
     energy_df_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "energy_df.csv")
     forces_df_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "forces_df.csv")
     stress_df_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "stress_df.csv")
+    stress_hydrostatic_df_file: pathlib.Path = zntrack.dvc.outs(
+        zntrack.nwd / "stress_hydrostatic_df.csv"
+    )
+    stress_deviatoric_df_file: pathlib.Path = zntrack.dvc.outs(
+        zntrack.nwd / "stress_deviatoric_df.csv"
+    )
 
     energy: dict = zntrack.zn.metrics()
     forces: dict = zntrack.zn.metrics()
     stress: dict = zntrack.zn.metrics()
+    hydro_stress: dict = zntrack.zn.metrics()
+    deviat_stress: dict = zntrack.zn.metrics()
 
     plots_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "plots")
 
     energy_df: pd.DataFrame
     forces_df: pd.DataFrame
     stress_df: pd.DataFrame
+    stress_hydro_df: pd.DataFrame
+    stress_deviat_df: pd.DataFrame
 
     def _post_load_(self):
         """Load metrics - if available."""
@@ -110,8 +123,17 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
             self.forces_df = pd.DataFrame({})
 
         try:
-            true_stress = np.reshape([x.get_stress() for x in true_data], -1)
-            pred_stress = np.reshape([x.get_stress() for x in pred_data], -1)
+            true_stress = [x.get_stress(voigt=False) for x in true_data]
+            pred_stress = [x.get_stress(voigt=False) for x in pred_data]
+            hydro_true, deviat_true = decompose_stress_tensor(true_stress)
+            hydro_pred, deviat_pred = decompose_stress_tensor(pred_stress)
+
+            true_stress = np.reshape(true_stress, -1)
+            pred_stress = np.reshape(pred_stress, -1)
+            hydro_true = np.reshape(hydro_true, -1)
+            deviat_true = np.reshape(deviat_true, -1)
+            hydro_pred = np.reshape(hydro_pred, -1)
+            deviat_pred = np.reshape(deviat_pred, -1)
 
             self.stress_df = pd.DataFrame(
                 {
@@ -119,8 +141,22 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
                     "prediction": pred_stress,
                 }
             )
+            self.stress_hydro_df = pd.DataFrame(
+                {
+                    "true": hydro_true,
+                    "prediction": hydro_pred,
+                }
+            )
+            self.stress_deviat_df = pd.DataFrame(
+                {
+                    "true": deviat_true,
+                    "prediction": deviat_pred,
+                }
+            )
         except PropertyNotImplementedError:
             self.stress_df = pd.DataFrame({})
+            self.stress_hydro_df = pd.DataFrame({})
+            self.stress_deviat_df = pd.DataFrame({})
 
     def get_metrics(self):
         """Update the metrics."""
@@ -139,8 +175,18 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
             self.stress = utils.metrics.get_full_metrics(
                 np.array(self.stress_df["true"]), np.array(self.stress_df["prediction"])
             )
+            self.hydro_stress = utils.metrics.get_full_metrics(
+                np.array(self.stress_hydro_df["true"]),
+                np.array(self.stress_hydro_df["prediction"]),
+            )
+            self.deviat_stress = utils.metrics.get_full_metrics(
+                np.array(self.stress_deviat_df["true"]),
+                np.array(self.stress_deviat_df["prediction"]),
+            )
         else:
             self.stress = {}
+            self.hydro_stress = {}
+            self.deviat_stress = {}
 
     def get_plots(self, save=False):
         """Create figures for all available data."""
@@ -179,8 +225,25 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
                 xlabel=r"$ab~initio$ stress",
                 ylabel=r"predicted stress",
             )
+
+            hydrostatic_stress_plot = get_figure(
+                self.stress_hydro_df["true"],
+                self.stress_hydro_df["prediction"],
+                datalabel=rf"Max: {self.hydro_stress['max']:.4f}",
+                xlabel=r"$ab~initio$ hydrostatic stress",
+                ylabel=r"predicted hydrostatic stress",
+            )
+            deviatoric_stress_plot = get_figure(
+                self.stress_deviat_df["true"],
+                self.stress_deviat_df["prediction"],
+                datalabel=rf"Max: {self.deviat_stress['max']:.4f}",
+                xlabel=r"$ab~initio$ deviatoric stress",
+                ylabel=r"predicted deviatoric stress",
+            )
             if save:
                 stress_plot.savefig(self.plots_dir / "stress.png")
+                hydrostatic_stress_plot.savefig(self.plots_dir / "hydrostatic_stress.png")
+                deviatoric_stress_plot.savefig(self.plots_dir / "deviatoric_stress.png")
 
     def run(self):
         self.nwd.mkdir(exist_ok=True, parents=True)
@@ -191,6 +254,8 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
         self.energy_df.to_csv(self.energy_df_file)
         self.forces_df.to_csv(self.forces_df_file)
         self.stress_df.to_csv(self.stress_df_file)
+        self.stress_hydro_df.to_csv(self.stress_hydrostatic_df_file)
+        self.stress_deviat_df.to_csv(self.stress_deviatoric_df_file)
 
 
 class ForceAngles(base.AnalyseProcessAtoms):
