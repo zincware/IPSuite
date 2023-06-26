@@ -67,7 +67,7 @@ class BoxOscillatingRampModifier(base.IPSNode):
     def modify(self, thermostat, step, total_steps):
         if self._initial_cell is None:
             self._initial_cell = thermostat.atoms.get_cell()
-            if isinstance(self.end_cell, float):
+            if isinstance(self.end_cell, (float, int)):
                 self.end_cell = np.array(
                     [[self.end_cell, 0, 0], [0, self.end_cell, 0], [0, 0, self.end_cell]]
                 )
