@@ -124,6 +124,9 @@ class Apax(MLModel):
         self.move_metrics()
         self.get_metrics_from_plots()
 
+        with pathlib.Path(self.train_log_file).open("a") as f:
+            f.write("Training completed\n")
+
     def get_calculator(self, **kwargs):
         """Get a apax ase calculator"""
         from apax.md import ASECalculator
