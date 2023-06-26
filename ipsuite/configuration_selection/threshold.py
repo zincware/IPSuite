@@ -29,12 +29,15 @@ class ThresholdSelection(ConfigurationSelection):
         For 'energy_uncertainty' this would typically be 'energy'.
     n_configurations: int, optional
         number of configurations to select.
+    min_distance: int, optional
+        minimum distance between selected configurations.
     """
 
     key = zntrack.zn.params("energy_uncertainty")
     reference = zntrack.zn.params("energy")
     threshold = zntrack.zn.params(None)
     n_configurations = zntrack.zn.params(None)
+    min_distance: int = zntrack.zn.params(1)
     img_selection = zntrack.dvc.outs(zntrack.nwd / "selection.png")
 
     def _post_init_(self):
@@ -61,20 +64,28 @@ class ThresholdSelection(ConfigurationSelection):
             if self.threshold < 0:
                 indices = np.where(values < self.threshold)[0]
                 if self.n_configurations is not None:
-                    indices = np.argsort(values)[indices][: self.n_configurations]
+                    indices = np.argsort(values)[indices]
             else:
                 indices = np.where(values > self.threshold)[0]
                 if self.n_configurations is not None:
-                    indices = np.argsort(values)[::-1][indices][: self.n_configurations]
+                    indices = np.argsort(values)[::-1][indices]
         else:
             if np.mean(values) > 0:
-                indices = np.argsort(values)[::-1][: self.n_configurations]
+                indices = np.argsort(values)[::-1]
             else:
-                indices = np.argsort(values)[: self.n_configurations]
+                indices = np.argsort(values)
 
-        self._get_plot(atoms_lst, indices)
+        selected = []
+        for val in indices:
+            # If the value is close to any of the already selected values, skip it.
+            if not any(np.abs(val - np.array(selected)) < self.min_distance):
+                selected.append(val)
+            if len(selected) == self.n_configurations:
+                break
 
-        return indices.tolist()
+        self._get_plot(atoms_lst, np.array(selected))
+
+        return selected
 
     def _get_plot(self, atoms_lst: typing.List[ase.Atoms], indices: typing.List[int]):
         values = np.array([atoms.calc.results[self.key] for atoms in atoms_lst])

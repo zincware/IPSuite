@@ -206,6 +206,7 @@ class GAP(MLModel):
     model_directory: Path = zntrack.dvc.outs(zntrack.nwd / "model")
     train_data_file: Path = zntrack.dvc.outs(zntrack.nwd / "train_atoms.extxyz")
     gap_input_script: Path = zntrack.dvc.outs(zntrack.nwd / "gap.input")
+    _train_idx_file: Path = zntrack.dvc.outs(zntrack.nwd / "train_atoms.extxyz.idx")
 
     #
     OPENBLAS_NUM_THREADS = zntrack.meta.Environment(None)

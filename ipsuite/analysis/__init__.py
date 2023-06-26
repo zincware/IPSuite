@@ -2,6 +2,7 @@ from ipsuite.analysis.bin_property import (
     DipoleHistogram,
     EnergyHistogram,
     ForcesHistogram,
+    StressHistogram,
 )
 from ipsuite.analysis.bond_stretch import BondStretchAnalyses
 from ipsuite.analysis.ensemble import ModelEnsembleAnalysis
@@ -16,7 +17,7 @@ from ipsuite.analysis.model import (
     NaNCheck,
     Prediction,
     PredictionMetrics,
-    RattleAtoms,
+    RattleAnalysis,
     TemperatureCheck,
     ThresholdCheck,
 )
@@ -33,7 +34,7 @@ __all__ = [
     "ModelEnsembleAnalysis",
     "PredictionMetrics",
     "ForceAngles",
-    "RattleAtoms",
+    "RattleAnalysis",
     "Prediction",
     "BoxScale",
     "BoxHeatUp",
@@ -48,4 +49,5 @@ __all__ = [
     "ForceDecomposition",
     "ThresholdCheck",
     "BondStretchAnalyses",
+    "StressHistogram",
 ]
