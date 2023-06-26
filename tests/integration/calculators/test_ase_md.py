@@ -48,9 +48,9 @@ def test_ase_md_box_ramp(proj_path, cu_box):
         friction=1,
     )
     rescale_box = ips.calculators.BoxOscillatingRampModifier(
-        end_cell= 10,
-        cell_amplitude= 2,
-        num_oscillations= 1,
+        end_cell=10,
+        cell_amplitude=2,
+        num_oscillations=1,
     )
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
@@ -77,16 +77,14 @@ def test_ase_md_box_ramp(proj_path, cu_box):
     assert (md.atoms[-1].cell[0, 0] - 10.0) < 1e-6
 
 
-
-
 def test_ase_npt(proj_path, cu_box):
     ase.io.write("cu_box.xyz", cu_box)
     thermostat = ips.calculators.NPTThermostat(
         time_step=1.0,
         temperature=300,
-        pressure= 1.01325 * units.bar,
+        pressure=1.01325 * units.bar,
         ttime=25 * units.fs,
-        pfactor=(75 * units.fs)**2,
+        pfactor=(75 * units.fs) ** 2,
         tetragonal_strain=True,
     )
     temperature_ramp = ips.calculators.TemperatureOscillatingRampModifier(
