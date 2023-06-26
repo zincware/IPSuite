@@ -29,7 +29,7 @@ def test_ase_md(proj_path, cu_box):
             dump_rate=33,
         )
 
-    project.run(environment={"OPENBLAS_NUM_THREADS": "1"})
+    project.run()
 
     md.load()
 
@@ -48,9 +48,9 @@ def test_ase_md_box_ramp(proj_path, cu_box):
         friction=1,
     )
     rescale_box = ips.calculators.BoxOscillatingRampModifier(
-        end_cell=10,
-        cell_amplitude=2,
-        num_oscillations=1,
+        end_cell=10.0,
+        cell_amplitude=2.0,
+        num_oscillations=1.0,
     )
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
@@ -66,7 +66,7 @@ def test_ase_md_box_ramp(proj_path, cu_box):
             dump_rate=33,
         )
 
-    project.run(environment={"OPENBLAS_NUM_THREADS": "1"})
+    project.run()
 
     md.load()
 
@@ -88,9 +88,9 @@ def test_ase_npt(proj_path, cu_box):
         tetragonal_strain=True,
     )
     temperature_ramp = ips.calculators.TemperatureOscillatingRampModifier(
-        end_temperature=100,
-        temperature_amplitude=20,
-        num_oscillations=2,
+        end_temperature=100.0,
+        temperature_amplitude=20.0,
+        num_oscillations=2.0,
     )
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
@@ -106,7 +106,7 @@ def test_ase_npt(proj_path, cu_box):
             dump_rate=33,
         )
 
-    project.run(environment={"OPENBLAS_NUM_THREADS": "1"})
+    project.run()
 
     md.load()
 

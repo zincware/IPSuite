@@ -55,7 +55,7 @@ class BoxOscillatingRampModifier(base.IPSNode):
     num_oscillations: float
         number of oscillations. No oscillations will occur if set to 0.
     interval: int, default 1
-        interval in which the temperature is changed.
+        interval in which the box size is changed.
     """
 
     end_cell: int = zntrack.zn.params()
@@ -67,7 +67,7 @@ class BoxOscillatingRampModifier(base.IPSNode):
     def modify(self, thermostat, step, total_steps):
         if self._initial_cell is None:
             self._initial_cell = thermostat.atoms.get_cell()
-            if isinstance(self.end_cell, int):
+            if isinstance(self.end_cell, float):
                 self.end_cell = np.array(
                     [[self.end_cell, 0, 0], [0, self.end_cell, 0], [0, 0, self.end_cell]]
                 )
@@ -184,7 +184,7 @@ class PressureRampModifier(base.IPSNode):
     end_pressure_au: float
         pressure to ramp to. Uses ASE units.
     interval: int, default 1
-        interval in which the temperature is changed.
+        interval in which the pressure is changed.
     """
 
     start_pressure_au: float = zntrack.zn.params(None)
