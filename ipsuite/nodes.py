@@ -80,8 +80,11 @@ class _Nodes:
     LangevinThermostat = "ipsuite.calculators.LangevinThermostat"
     NPTThermostat = "ipsuite.calculators.NPTThermostat"
     RescaleBoxModifier = "ipsuite.calculators.RescaleBoxModifier"
+    BoxOscillatingRampModifier = "ipsuite.calculators.BoxOscillatingRampModifier"
     TemperatureRampModifier = "ipsuite.calculators.TemperatureRampModifier"
-    TemperatureOscillatingRampModifier = "ipsuite.calculators.TemperatureOscillatingRampModifier"
+    TemperatureOscillatingRampModifier = (
+        "ipsuite.calculators.TemperatureOscillatingRampModifier"
+    )
     TemperatureRampModifier = "ipsuite.calculators.TemperatureRampModifier"
 
     # Geometry

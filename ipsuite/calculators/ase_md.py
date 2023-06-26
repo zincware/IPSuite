@@ -43,6 +43,55 @@ class RescaleBoxModifier(base.IPSNode):
         thermostat.atoms.set_cell(new_cell, scale_atoms=True)
 
 
+class BoxOscillatingRampModifier(base.IPSNode):
+    """Ramp the simulation cell to a specified end cell with some oscillations.
+
+    Attributes
+    ----------
+    end_cell: float, list[float]
+        cell to ramp to, cubic or tetragonal.
+    cell_amplitude: float
+        amplitude in oscillations of the diagonal cell elements
+    num_oscillations: float
+        number of oscillations. No oscillations will occur if set to 0.
+    interval: int, default 1
+        interval in which the temperature is changed.
+    """
+
+    end_cell: int = zntrack.zn.params()
+    cell_amplitude: typing.Union[float, list[float]] = zntrack.zn.params()
+    num_oscillations: float = zntrack.zn.params()
+    interval: int = zntrack.zn.params(1)
+    _initial_cell = None
+
+    def modify(self, thermostat, step, total_steps):
+        if self._initial_cell is None:
+            self._initial_cell = thermostat.atoms.get_cell()
+            if isinstance(self.end_cell, int):
+                self.end_cell = np.array(
+                    [[self.end_cell, 0, 0], [0, self.end_cell, 0], [0, 0, self.end_cell]]
+                )
+            elif isinstance(self.end_cell, list):
+                self.end_cell = np.array(
+                    [
+                        [self.end_cell[0], 0, 0],
+                        [0, self.end_cell[1], 0],
+                        [0, 0, self.end_cell[2]],
+                    ]
+                )
+
+        percentage = step / (total_steps - 1)
+        ramp = percentage * (self.end_cell - self._initial_cell)
+        oscillation = self.cell_amplitude * np.sin(
+            2 * np.pi * percentage * self.num_oscillations
+        )
+        oscillation = np.eye(3) * oscillation
+        new_cell = self._initial_cell + ramp + oscillation
+
+        if step % self.interval == 0:
+            thermostat.atoms.set_cell(new_cell, scale_atoms=True)
+
+
 class TemperatureRampModifier(base.IPSNode):
     """Ramp the temperature from start_temperature to temperature.
 
@@ -63,7 +112,12 @@ class TemperatureRampModifier(base.IPSNode):
     def modify(self, thermostat, step, total_steps):
         # we use the thermostat, so we can also modify e.g. temperature
         if self.start_temperature is None:
-            self.start_temperature = thermostat.temp / units.kB
+            # different thermostats call the temperature attribute differently
+            if hasattr(thermostat, "temp"):
+                start_temperature = thermostat.temp
+            elif hasattr(thermostat, "temperature"):
+                start_temperature = thermostat.temperature
+            self.start_temperature = start_temperature / units.kB
 
         percentage = step / (total_steps - 1)
         new_temperature = (
@@ -74,14 +128,18 @@ class TemperatureRampModifier(base.IPSNode):
 
 
 class TemperatureOscillatingRampModifier(base.IPSNode):
-    """Ramp the temperature from start_temperature to temperature.
+    """Ramp the temperature from start_temperature to temperature with some oscillations.
 
     Attributes
     ----------
     start_temperature: float, optional
         temperature to start from, if None, the temperature of the thermostat is used.
-    temperature: float
+    end_temperature: float
         temperature to ramp to.
+    temperature_amplitude: float
+        amplitude of temperature oscillations.
+    num_oscillations: float
+        number of oscillations. No oscillations will occur if set to 0.
     interval: int, default 1
         interval in which the temperature is changed.
     """
@@ -95,7 +153,12 @@ class TemperatureOscillatingRampModifier(base.IPSNode):
     def modify(self, thermostat, step, total_steps):
         # we use the thermostat, so we can also modify e.g. temperature
         if self.start_temperature is None:
-            self.start_temperature = thermostat.temperature / units.kB
+            # different thermostats call the temperature attribute differently
+            if hasattr(thermostat, "temp"):
+                start_temperature = thermostat.temp
+            elif hasattr(thermostat, "temperature"):
+                start_temperature = thermostat.temperature
+            self.start_temperature = start_temperature / units.kB
 
         ramp = step / total_steps * (self.end_temperature - self.start_temperature)
         oscillation = self.temperature_amplitude * np.sin(
@@ -111,13 +174,15 @@ class TemperatureOscillatingRampModifier(base.IPSNode):
 
 class PressureRampModifier(base.IPSNode):
     """Ramp the temperature from start_temperature to temperature.
+    Works only for the NPT thermostat (not NPTBerendsen).
 
     Attributes
     ----------
-    start_pressure: float, optional
-        temperature to start from, if None, the temperature of the thermostat is used.
-    end_pressure: float
-        temperature to ramp to.
+    start_pressure_au: float, optional
+        pressure to start from, if None, the pressure of the thermostat is used.
+        Uses ASE units.
+    end_pressure_au: float
+        pressure to ramp to. Uses ASE units.
     interval: int, default 1
         interval in which the temperature is changed.
     """
@@ -136,7 +201,6 @@ class PressureRampModifier(base.IPSNode):
 
         if step % self.interval == 0:
             thermostat.set_stress(new_pressure)
-            # thermostat.pressure = new_pressure* units.bar
 
 
 class LangevinThermostat(base.IPSNode):
@@ -171,7 +235,8 @@ class LangevinThermostat(base.IPSNode):
 
 
 class NPTThermostat(base.IPSNode):
-    """Initialize the langevin thermostat
+    """Initialize the ASE NPT barostat
+    (Nose Hoover temperature coupling + Parrinello Rahman pressure coupling).
 
     Attributes
     ----------
@@ -181,8 +246,18 @@ class NPTThermostat(base.IPSNode):
     temperature: float
         temperature in K to simulate at
 
-    friction: float
-        friction of the Langevin simulator
+    pressure: float
+        pressure in ASE units
+
+    ttime: float
+        characteristic temperature coupling time in ASE units
+
+    pfactor: float
+        characteristic pressure coupling time in ASE units
+
+    tetragonal_strain: bool
+        if True allows only the diagonal elements of the box to change,
+        i.e. box angles are constant
 
     """
 
