@@ -155,6 +155,8 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
             )
         except PropertyNotImplementedError:
             self.stress_df = pd.DataFrame({})
+            self.stress_hydro_df = pd.DataFrame({})
+            self.stress_deviat_df = pd.DataFrame({})
 
     def get_metrics(self):
         """Update the metrics."""
