@@ -87,7 +87,7 @@ class ApaxJaxMD(ProcessSingleAtom):
         ase.io.write(self.init_struc_dir.as_posix(), atoms)
 
         self.model._handle_parameter_file()
-        run_md(self.model.parameter, self.md_parameter, log_file="md.log")
+        run_md(self.model._parameter, self.md_parameter, log_file="md.log")
 
     @functools.cached_property
     def atoms(self) -> typing.List[ase.Atoms]:
