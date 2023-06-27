@@ -41,7 +41,7 @@ class MACE(MLModel):
     test_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "test-data.extxyz")
     model_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "model")
 
-    config: str = zntrack.dvc.deps("mace.yaml")
+    config: str = zntrack.dvc.params("mace.yaml")
     config_kwargs: dict = zntrack.zn.params(None)
     device: str = zntrack.meta.Text(None)
 
