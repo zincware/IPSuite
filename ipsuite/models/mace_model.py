@@ -42,7 +42,6 @@ class MACE(MLModel):
     model_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "model")
 
     config: str = zntrack.dvc.params("mace.yaml")
-    config_kwargs: dict = zntrack.zn.params(None)
     device: str = zntrack.meta.Text(None)
 
     training: pathlib.Path = zntrack.dvc.plots(
@@ -91,13 +90,6 @@ class MACE(MLModel):
         cmd += f"--device={self.device} "
 
         config = yaml.safe_load(pathlib.Path(self.config).read_text())
-        if self.config_kwargs:
-            log.warning(
-                f"Overwriting '{self.config}' with values from 'params.yaml':"
-                f" {self.config_kwargs}"
-            )
-            config.update(self.config_kwargs)
-
         for key, val in config.items():
             if val is True:
                 cmd += f"--{key} "
