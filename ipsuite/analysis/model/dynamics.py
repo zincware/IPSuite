@@ -177,7 +177,7 @@ class BoxScale(base.ProcessSingleAtom):
             ax.plot(self.energies["x"], self.energies["y"])
             ax.set_xlabel("Scale factor of the initial cell")
             ax.set_ylabel("predicted energy")
-        fig.savefig(self.plot)
+        fig.savefig(self.plot, bbox_inches="tight")
 
 
 class BoxHeatUp(base.ProcessSingleAtom):
