@@ -77,8 +77,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
                     )
 
             if any(stop):
-                for checker in self.checker_list:
-                    print(checker.status)
+                dyn.log()
                 break
 
         db.add(
