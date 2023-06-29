@@ -135,7 +135,7 @@ class ThresholdCheck(base.CheckBase):
         Number of steps to average over
     max_value: float, optional
         Maximum value of the property to check before the simulation is stopped
-    minimum_window_size: int, optional
+    minimum_window_size: int, default=1
         Minimum number of steps to average over before checking the standard deviation.
         Also minimum number of steps to run, before the simulation can be stopped.
     larger_only: bool, optional
@@ -147,7 +147,7 @@ class ThresholdCheck(base.CheckBase):
     max_std: float = zntrack.zn.params(None)
     window_size: int = zntrack.zn.params(500)
     max_value: float = zntrack.zn.params(None)
-    minimum_window_size: int = zntrack.zn.params(50)
+    minimum_window_size: int = zntrack.zn.params(1)
     larger_only: bool = zntrack.zn.params(False)
 
     def _post_init_(self):
