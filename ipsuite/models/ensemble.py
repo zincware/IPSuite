@@ -45,11 +45,12 @@ class EnsembleCalculator(Calculator):
             [x.get_forces() for x in results], axis=0
         )
 
-        if "stress" in results[0].calc.results.keys():
+        if "stress" in results[0].calc.implemented_properties:
             self.results["stress"] = np.mean([x.get_stress() for x in results], axis=0)
             self.results["forces_uncertainty"] = np.std(
                 [x.get_stress() for x in results], axis=0
             )
+
 
 class EnsembleModel(base.IPSNode):
     models: typing.List[MLModel] = zntrack.zn.deps()
