@@ -18,6 +18,7 @@ from numpy.random import default_rng
 from tqdm import trange
 
 from ipsuite import base, models, utils
+from ipsuite.analysis.ensemble import plot_with_uncertainty
 from ipsuite.analysis.model.plots import get_histogram_figure
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 from ipsuite.utils.md import get_energy_terms
@@ -119,10 +120,10 @@ class BoxScale(base.ProcessSingleAtom):
     plot = zntrack.dvc.outs(zntrack.nwd / "energy.png")
 
     energies: pd.DataFrame = zntrack.zn.plots(
-        # x="x",
-        # y="y",
-        # x_label="Scale factor of the initial cell",
-        # y_label="predicted energy",
+        x="x",
+        y="y",
+        x_label="Scale factor of the initial cell",
+        y_label="predicted energy",
     )
 
     def _post_init_(self):
@@ -159,10 +160,23 @@ class BoxScale(base.ProcessSingleAtom):
 
         self.energies = pd.DataFrame({"y": energies, "x": scale_space})
 
-        fig, ax = plt.subplots()
-        ax.plot(self.energies["x"], self.energies["y"])
-        ax.set_xlabel("Scale factor of the initial cell")
-        ax.set_ylabel("predicted energy")
+        if "energy_uncertainty" in self.atoms[0].calc.results:
+            fig, ax, _ = plot_with_uncertainty(
+                {
+                    "std": np.std(
+                        [a.calc.results["energy_uncertainty"] for a in self.atoms]
+                    ),
+                    "mean": self.energies["y"],
+                },
+                x=self.energies["x"],
+                ylabel="predicted energy",
+                xlabel="Scale factor of the initial cell",
+            )
+        else:
+            fig, ax = plt.subplots()
+            ax.plot(self.energies["x"], self.energies["y"])
+            ax.set_xlabel("Scale factor of the initial cell")
+            ax.set_ylabel("predicted energy")
         fig.savefig(self.plot)
 
 
