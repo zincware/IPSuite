@@ -1,5 +1,5 @@
-import numpy as np
 import ase
+import numpy as np
 
 import ipsuite as ips
 
@@ -75,6 +75,3 @@ def test_ensemble_model_stress(proj_path, cu_box):
     assert (len(analysis.stress_df["prediction"])) > 0
     assert (len(analysis.stress_hydro_df["prediction"])) > 0
     assert (len(analysis.stress_deviat_df["prediction"])) > 0
-
-
-
