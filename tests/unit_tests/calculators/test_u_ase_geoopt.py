@@ -7,7 +7,7 @@ from ipsuite import base
 
 
 class DebugCheck(base.CheckBase):
-    """A check that interupts the dynamics after a fixed amount of iterations.
+    """A check that interrupts the dynamics after a fixed amount of iterations.
     For testing purposes.
 
     Attributes
