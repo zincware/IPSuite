@@ -47,7 +47,7 @@ class EnsembleCalculator(Calculator):
 
         if "stress" in results[0].calc.implemented_properties:
             self.results["stress"] = np.mean([x.get_stress() for x in results], axis=0)
-            self.results["forces_uncertainty"] = np.std(
+            self.results["stress_uncertainty"] = np.std(
                 [x.get_stress() for x in results], axis=0
             )
 
