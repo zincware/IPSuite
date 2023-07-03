@@ -33,8 +33,6 @@ class DebugCheck(base.CheckBase):
 
     def get_desc(self) -> str:
         return str(self)
-    
-
 
 
 def test_ase_geoopt(proj_path, cu_box):
@@ -42,11 +40,10 @@ def test_ase_geoopt(proj_path, cu_box):
     cu_box.rattle(0.5)
     ase.io.write("cu_box.xyz", cu_box)
 
-
-    n_iterations= 5
+    n_iterations = 5
 
     check = DebugCheck(n_iterations=n_iterations)
-    
+
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
         model = ips.calculators.EMTSinglePoint(data=data.atoms)
@@ -54,7 +51,7 @@ def test_ase_geoopt(proj_path, cu_box):
             data=data.atoms,
             model=model,
             optimizer="FIRE",
-            checker_list = [check],
+            checker_list=[check],
             run_kwargs={"fmax": 0.05},
         )
 
