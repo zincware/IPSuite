@@ -13,6 +13,7 @@ class _Nodes:
     MACE = "ipsuite.models.MACE"
     Nequip = "ipsuite.models.Nequip"
     Apax = "ipsuite.models.Apax"
+    ApaxEnsemble = "ipsuite.models.ApaxEnsemble"
 
     # Configuration Selection
     IndexSelection = "ipsuite.configuration_selection.IndexSelection"

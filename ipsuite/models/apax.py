@@ -1,17 +1,22 @@
 import logging
 import pathlib
 import shutil
+import typing
+from uuid import uuid4
 
 import ase.io
 import pandas as pd
+from tqdm import tqdm
 import yaml
 import zntrack.utils
 from jax.config import config
 from zntrack import dvc, zn
 
+from ipsuite import base
 from ipsuite import utils
 from ipsuite.models.base import MLModel
 from ipsuite.static_data import STATIC_PATH
+from ipsuite.utils.ase_sim import freeze_copy_atoms
 from ipsuite.utils.helpers import check_duplicate_keys
 
 log = logging.getLogger(__name__)
@@ -114,3 +119,52 @@ class Apax(MLModel):
 
         self._handle_parameter_file()
         return ASECalculator(model_dir=self.model_directory)
+
+
+
+class ApaxEnsemble(base.IPSNode):
+    models: typing.List[Apax] = zntrack.zn.deps()
+
+    uuid = zntrack.zn.outs()  # to connect this Node to other Nodes it requires an output.
+
+    def run(self) -> None:
+        self.uuid = str(uuid4())
+
+    def get_calculator(self, **kwargs) -> ase.calculators.calculator.Calculator:
+        """Property to return a model specific ase calculator object.
+
+        Returns
+        -------
+        calc:
+            ase calculator object
+        """
+        from apax.md import ASECalculator
+        param_files = [m._parameter["data"]["model_path"] for m in self.models]
+
+        calc = ASECalculator(param_files[0])
+        return calc
+
+
+
+    def predict(self, atoms_list: typing.List[ase.Atoms]) -> typing.List[ase.Atoms]:
+        """Predict energy, forces and stresses.
+
+        based on what was used to train for given atoms objects.
+
+        Parameters
+        ----------
+        atoms_list: typing.List[ase.Atoms]
+            list of atoms objects to predict on
+
+        Returns
+        -------
+        typing.List[ase.Atoms]
+            Atoms with updated calculators
+        """
+        calc = self.get_calculator()
+        result = []
+        for atoms in tqdm(atoms_list, ncols=120):
+            atoms.calc = calc
+            atoms.get_potential_energy()
+            result.append(freeze_copy_atoms(atoms))
+        return result
