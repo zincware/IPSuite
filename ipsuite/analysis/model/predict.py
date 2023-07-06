@@ -89,8 +89,12 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
             self.forces_df = pd.DataFrame({})
         try:
             self.stress_df = pd.read_csv(self.stress_df_file)
+            self.stress_hydro_df = pd.read_csv(self.stress_hydrostatic_df_file)
+            self.stress_deviat_df = pd.read_csv(self.stress_deviatoric_df_file)
         except FileNotFoundError:
             self.stress_df = pd.DataFrame({})
+            self.stress_hydro_df = pd.DataFrame({})
+            self.stress_deviat_df = pd.DataFrame({})
 
     def get_dataframes(self):
         """Create a pandas dataframe from the given data."""

@@ -1,3 +1,4 @@
+import ase
 import numpy as np
 
 import ipsuite as ips
@@ -53,3 +54,24 @@ def test_ensemble_model(data_repo):
 
     uncertainties = [x.calc.results["energy_uncertainty"] for x in md.atoms]
     assert [md.atoms[np.argmax(uncertainties)]] == uncertainty_selection.atoms
+
+
+def test_ensemble_model_stress(proj_path, cu_box):
+    ase.io.write("cu_box.xyz", cu_box)
+
+    with ips.Project(automatic_node_names=True) as project:
+        data = ips.AddData(file="cu_box.xyz")
+        model1 = ips.calculators.EMTSinglePoint(data=data.atoms)
+        model2 = ips.calculators.EMTSinglePoint(data=data.atoms)
+        ensemble_model = ips.models.EnsembleModel(models=[model1, model2])
+
+        prediction = ips.analysis.Prediction(model=ensemble_model, data=model1)
+        analysis = ips.analysis.PredictionMetrics(data=prediction)
+
+    project.run(eager=False)
+
+    analysis.load()
+
+    assert (len(analysis.stress_df["prediction"])) > 0
+    assert (len(analysis.stress_hydro_df["prediction"])) > 0
+    assert (len(analysis.stress_deviat_df["prediction"])) > 0
