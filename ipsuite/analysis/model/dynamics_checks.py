@@ -147,7 +147,7 @@ class ThresholdCheck(base.CheckBase):
     max_std: float = zntrack.zn.params(None)
     window_size: int = zntrack.zn.params(500)
     max_value: float = zntrack.zn.params(None)
-    minimum_window_size: int = zntrack.zn.params(50)
+    minimum_window_size: int = zntrack.zn.params(1)
     larger_only: bool = zntrack.zn.params(False)
 
     def _post_init_(self):
@@ -178,7 +178,7 @@ class ThresholdCheck(base.CheckBase):
         if len(self.values) < self.minimum_window_size:
             return False
 
-        if self.max_value is not None and value > self.max_value:
+        if self.max_value is not None and np.max(value) > self.max_value:
             return True
 
         if self.max_std is not None and distance > self.max_std * std:
