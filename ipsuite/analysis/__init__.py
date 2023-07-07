@@ -2,6 +2,7 @@ from ipsuite.analysis.bin_property import (
     DipoleHistogram,
     EnergyHistogram,
     ForcesHistogram,
+    StressHistogram,
 )
 from ipsuite.analysis.bond_stretch import BondStretchAnalyses
 from ipsuite.analysis.ensemble import ModelEnsembleAnalysis
@@ -48,4 +49,5 @@ __all__ = [
     "ForceDecomposition",
     "ThresholdCheck",
     "BondStretchAnalyses",
+    "StressHistogram",
 ]
