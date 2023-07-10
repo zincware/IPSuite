@@ -141,7 +141,7 @@ class ApaxEnsemble(base.IPSNode):
         from apax.md import ASECalculator
         param_files = [m._parameter["data"]["model_path"] for m in self.models]
 
-        calc = ASECalculator(param_files[0])
+        calc = ASECalculator(param_files)
         return calc
 
 
