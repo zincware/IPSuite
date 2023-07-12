@@ -1,9 +1,11 @@
+import functools
 import logging
 import pathlib
 import typing
 from collections import deque
 
 import ase
+import h5py
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -379,7 +381,16 @@ class MDStability(base.ProcessAtoms):
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
-        return znh5md.ASEH5MD(self.traj_file).get_atoms_list()
+        def file_handle(filename):
+            file = self.state.fs.open(filename, "rb")
+            return h5py.File(file)
+
+        return znh5md.ASEH5MD(
+            self.traj_file,
+            format_handler=functools.partial(
+                znh5md.FormatHandler, file_handle=file_handle
+            ),
+        ).get_atoms_list()
 
     def get_plots(self, stable_steps: int) -> None:
         """Create figures for all available data."""
