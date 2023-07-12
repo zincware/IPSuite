@@ -28,7 +28,7 @@ class AddDataH5MD(base.IPSNode):
             return h5py.File(file)
 
         return znh5md.ASEH5MD(
-            self.traj_file,
+            self.file,
             format_handler=functools.partial(
                 znh5md.FormatHandler, file_handle=file_handle
             ),
