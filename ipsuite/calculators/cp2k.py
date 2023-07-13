@@ -7,11 +7,13 @@ import functools
 import pathlib
 import shutil
 import subprocess
+import typing
 from unittest.mock import patch
 
 import ase.calculators.cp2k
 import ase.io
 import cp2k_output_tools
+import h5py
 import pandas as pd
 import tqdm
 import yaml
@@ -181,9 +183,17 @@ class CP2KSinglePoint(base.ProcessAtoms):
             file.unlink()
 
     @property
-    def atoms(self):
-        """Return the atoms object."""
-        return znh5md.ASEH5MD(self.output_file).get_atoms_list()
+    def atoms(self) -> typing.List[ase.Atoms]:
+        def file_handle(filename):
+            file = self.state.fs.open(filename, "rb")
+            return h5py.File(file)
+
+        return znh5md.ASEH5MD(
+            self.output_file,
+            format_handler=functools.partial(
+                znh5md.FormatHandler, file_handle=file_handle
+            ),
+        ).get_atoms_list()
 
     def get_input_script(self):
         """Return the input script.
