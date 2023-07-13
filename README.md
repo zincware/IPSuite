@@ -4,6 +4,8 @@
 
 # IPS - The Inter Atomic Potential Suite
 
+![Logo](https://raw.githubusercontent.com/zincware/IPSuite/main/misc/IPS_logo.png)
+
 IPS provides you with tools to generate Machine Learned Interatomic Potentials.
 
 Install the package to get started or check out an interactive notebook
