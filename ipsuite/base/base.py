@@ -207,3 +207,7 @@ class CheckBase(IPSNode):
     def get_value(self) -> dict:
         """Returns the metric that is tracked for stopping."""
         ...
+
+    @abc.abstractmethod
+    def checker_id(self) -> str:
+        ...

@@ -28,6 +28,9 @@ class NaNCheck(base.CheckBase):
 
         return any([positions_is_none, epot_is_none, forces_is_none])
 
+    def checker_id(self):
+        return self.__class__.__name__
+
 
 class ConnectivityCheck(base.CheckBase):
     """Check to see whether the covalent connectivity of the system
@@ -52,6 +55,9 @@ class ConnectivityCheck(base.CheckBase):
         connectivity_change = np.sum(np.abs(self.first_cm - cm))
 
         return connectivity_change > 0
+
+    def checker_id(self):
+        return self.__class__.__name__
 
 
 class EnergySpikeCheck(base.CheckBase):
@@ -80,6 +86,9 @@ class EnergySpikeCheck(base.CheckBase):
         epot = atoms.get_potential_energy()
         # energy is negative, hence sign convention
         return epot < self.max_energy or epot > self.min_energy
+
+    def checker_id(self):
+        return self.__class__.__name__
 
 
 class TemperatureCheck(base.CheckBase):
