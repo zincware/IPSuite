@@ -18,7 +18,7 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from tqdm import trange
 
 from ipsuite import base
-from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
+from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy, get_desc
 
 log = logging.getLogger(__name__)
 
@@ -399,11 +399,8 @@ class ASEMD(base.ProcessSingleAtom):
         _, _ = get_energy(atoms)
         metrics_dict = {"energy": [], "temp": []}
         for checker in self.checker_list:
-            _ = checker.check(atoms)
-            metric = checker.get_metric()
-            if metric is not None:
-                for key in metric.keys():
-                    metrics_dict[key] = []
+            checker.initialize(atoms)
+            metrics_dict[checker.checker_id()] = []
 
         # Run simulation
         total_fs = int(self.steps * time_step * self.sampling_rate)
@@ -433,16 +430,10 @@ class ASEMD(base.ProcessSingleAtom):
                 for checker in self.checker_list:
                     stop.append(checker.check(atoms))
                     if stop[-1]:
-                        log.critical(
-                            f"\n {type(checker).__name__} returned false."
-                            "Simulation was stopped."
-                        )
-                    metric = checker.get_metric()
-                    if metric is not None:
-                        for key, val in metric.items():
-                            metrics_dict[key].append(val)
-                        desc.append(str(checker))
-
+                        log.critical(str(checker))
+                    metric = checker.get_value()
+                    metrics_dict[checker.checker_id()].append(metric)
+                    
                 if "stress" in atoms.calc.implemented_properties:
                     atoms.get_stress()
 
@@ -458,11 +449,9 @@ class ASEMD(base.ProcessSingleAtom):
                     )
                     atoms_cache = []
 
-                energy = metrics_dict["energy"][-1]
-                desc.append(f"E: {energy:.3f} eV")
-
                 if idx % (1 / time_step) == 0:
-                    pbar.set_description("\t".join(desc))
+                    desc = get_desc(temperature, energy)
+                    pbar.set_description(desc)
                     pbar.update(self.sampling_rate)
 
                 if any(stop):

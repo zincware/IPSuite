@@ -8,11 +8,12 @@ from ase.neighborlist import build_neighbor_list
 from ipsuite import base
 from ipsuite.utils.ase_sim import get_energy
 
-
 class NaNCheck(base.CheckBase):
     """Check Node to see whether positions, energies or forces become NaN
     during a simulation.
     """
+    def initialize(self, atoms: ase.Atoms) -> None:    
+        self.is_initialized = True
 
     def check(self, atoms: ase.Atoms) -> bool:
         positions = atoms.positions
@@ -90,28 +91,24 @@ class TemperatureCheck(base.CheckBase):
 
     max_temperature: float = zntrack.zn.params(10000.0)
 
+    def initialize(self, atoms: ase.Atoms) -> None:
+        self.is_initialized = True
+
     def check(self, atoms):
         self.temperature, _ = get_energy(atoms)
-        unstable = self.temperature > self.max_temperature
 
-        if unstable:
+        if self.temperature > self.max_temperature:
             self.status = (
                 f"Temperature Check failed: last {self.temperature} >"
                 f" {self.max_temperature}"
             )
+            return True
         else:
-            self.status = f"Temperature Check {self.temperature} < {self.max_temperature}"
-
-        return unstable
-
-    def get_metric(self):
-        return {"temperature": self.temperature}
+            self.status = f"Temperature Check: {self.temperature} < {self.max_temperature}"
+            return False
 
     def __str__(self):
         return self.status
-
-    def get_desc(self) -> str:
-        return str(self)
 
 
 class ThresholdCheck(base.CheckBase):
@@ -150,13 +147,13 @@ class ThresholdCheck(base.CheckBase):
     minimum_window_size: int = zntrack.zn.params(1)
     larger_only: bool = zntrack.zn.params(False)
 
+
     def _post_init_(self):
         if self.max_std is None and self.max_value is None:
             raise ValueError("Either max_std or max_value must be set")
 
     def _post_load_(self) -> None:
         self.values = collections.deque(maxlen=self.window_size)
-        self.status = self.__class__.__name__
 
     def get_value(self, atoms):
         """Get the value of the property to check.
@@ -188,10 +185,16 @@ class ThresholdCheck(base.CheckBase):
                 f" {np.std(self.values):.3f}' and max value '{self.max_value}'"
             )
             return True
-        return False
+        else:
+            self.status = (
+                f"StandardDeviationCheck for '{self.value}' passed with"
+                f" '{self.values[-1]:.3f}' for '{np.mean(self.values):.3f} +-"
+                f" {np.std(self.values):.3f}' and max value '{self.max_value}'"
+            )
+            return False
 
     def __str__(self) -> str:
         return self.status
 
-    def get_desc(self) -> str:
-        return str(self)
+    def checker_id(self):
+        return f"thresholed-{self.value}-{self.max_std}"
