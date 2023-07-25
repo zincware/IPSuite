@@ -1,6 +1,7 @@
 from ipsuite.analysis.bin_property import (
     DipoleHistogram,
     EnergyHistogram,
+    EnergyUncertaintyHistogram,
     ForcesHistogram,
     ForcesUncertaintyHistogram,
     StressHistogram,
@@ -52,4 +53,5 @@ __all__ = [
     "BondStretchAnalyses",
     "StressHistogram",
     "ForcesUncertaintyHistogram",
+    "EnergyUncertaintyHistogram",
 ]

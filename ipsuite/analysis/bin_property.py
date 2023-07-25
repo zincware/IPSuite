@@ -100,8 +100,27 @@ class ForcesUncertaintyHistogram(LabelHistogram):
         labels = np.concatenate(
             [x.calc.results["forces_uncertainty"] for x in self.data], axis=0
         )
-        # compute magnitude of vector labels. Histogram works element wise for N-D Arrays
-        # use max?
+        labels = np.linalg.norm(labels, ord=2, axis=1)
+        self.metrics = {
+            "mean": np.mean(labels),
+            "std": np.std(labels),
+            "max": np.max(labels),
+        }
+        return labels
+
+
+class EnergyUncertaintyHistogram(LabelHistogram):
+    """Creates a histogram of all force labels contained in a dataset."""
+
+    datalabel = "energy-uncertainty"
+    xlabel = r"$F$ / eV/Ang"
+
+    metrics: float = zntrack.zn.metrics()
+
+    def get_labels(self):
+        labels = np.concatenate(
+            [x.calc.results["energy_uncertainty"] for x in self.data], axis=0
+        )
         labels = np.linalg.norm(labels, ord=2, axis=1)
         self.metrics = {
             "mean": np.mean(labels),
