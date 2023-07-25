@@ -8,11 +8,13 @@ from ase.neighborlist import build_neighbor_list
 from ipsuite import base
 from ipsuite.utils.ase_sim import get_energy
 
+
 class NaNCheck(base.CheckBase):
     """Check Node to see whether positions, energies or forces become NaN
     during a simulation.
     """
-    def initialize(self, atoms: ase.Atoms) -> None:    
+
+    def initialize(self, atoms: ase.Atoms) -> None:
         self.is_initialized = True
 
     def check(self, atoms: ase.Atoms) -> bool:
@@ -104,7 +106,9 @@ class TemperatureCheck(base.CheckBase):
             )
             return True
         else:
-            self.status = f"Temperature Check: {self.temperature} < {self.max_temperature}"
+            self.status = (
+                f"Temperature Check: {self.temperature} < {self.max_temperature}"
+            )
             return False
 
     def __str__(self):
@@ -146,7 +150,6 @@ class ThresholdCheck(base.CheckBase):
     max_value: float = zntrack.zn.params(None)
     minimum_window_size: int = zntrack.zn.params(1)
     larger_only: bool = zntrack.zn.params(False)
-
 
     def _post_init_(self):
         if self.max_std is None and self.max_value is None:

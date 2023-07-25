@@ -18,7 +18,7 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from tqdm import trange
 
 from ipsuite import base
-from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy, get_desc
+from ipsuite.utils.ase_sim import freeze_copy_atoms, get_desc, get_energy
 
 log = logging.getLogger(__name__)
 
@@ -433,7 +433,7 @@ class ASEMD(base.ProcessSingleAtom):
                         log.critical(str(checker))
                     metric = checker.get_value()
                     metrics_dict[checker.checker_id()].append(metric)
-                    
+
                 if "stress" in atoms.calc.implemented_properties:
                     atoms.get_stress()
 
