@@ -48,6 +48,7 @@ class _Nodes:
     EnergyHistogram = "ipsuite.analysis.EnergyHistogram"
     ForcesHistogram = "ipsuite.analysis.ForcesHistogram"
     StressHistogram = "ipsuite.analysis.StressHistogram"
+    ForcesUncertaintyHistogram = "ipsuite.analysis.ForcesUncertaintyHistogram"
     ModelEnsembleAnalysis = "ipsuite.analysis.ModelEnsembleAnalysis"
     PredictionMetrics = "ipsuite.analysis.PredictionMetrics"
     ForceAngles = "ipsuite.analysis.ForceAngles"
