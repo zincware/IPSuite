@@ -118,10 +118,9 @@ class EnergyUncertaintyHistogram(LabelHistogram):
     metrics: float = zntrack.zn.metrics()
 
     def get_labels(self):
-        labels = np.concatenate(
-            [x.calc.results["energy_uncertainty"] for x in self.data], axis=0
+        labels = np.reshape(
+            [x.calc.results["energy_uncertainty"] for x in self.data], (-1)
         )
-        labels = np.linalg.norm(labels, ord=2, axis=1)
         self.metrics = {
             "mean": np.mean(labels),
             "std": np.std(labels),
