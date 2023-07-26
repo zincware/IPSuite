@@ -9,7 +9,16 @@ from ipsuite.configuration_selection import ConfigurationSelection
 
 
 class RandomSelection(ConfigurationSelection):
-    """Select atoms randomly."""
+    """Select atoms randomly.
+
+
+    Attributes
+    ----------
+    n_configurations : int
+        Number of configurations to select.
+    seed : int
+        Seed for random number generator.
+    """
 
     n_configurations = zntrack.zn.params()
     seed = zntrack.zn.params(1234)

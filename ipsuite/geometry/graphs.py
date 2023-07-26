@@ -16,7 +16,14 @@ def atoms_to_graph(atoms: ase.Atoms) -> nx.Graph:
 
 
 def identify_molecules(atoms: ase.Atoms) -> list[np.ndarray]:
-    """Identifies molecules in a structure based on the connected subgraphs."""
+    """Identifies molecules in a structure based on the connected subgraphs.
+
+    Returns
+    -------
+    list[np.ndarray]
+        The indices of the atoms in each molecule.
+    """
+    # TODO add some checks, e.g. same number of atoms
     G = atoms_to_graph(atoms)
     components = nx.connected_components(G)
     c_list = [np.array(list(c)) for c in components]

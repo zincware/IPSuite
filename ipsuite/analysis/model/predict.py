@@ -37,8 +37,8 @@ class Prediction(base.ProcessAtoms):
             atoms = configuration.copy()
             atoms.calc = calc
             atoms.get_potential_energy()
-            if "stress" in calc.implemented_properties:
-                atoms.get_stress()
+            # if "stress" in calc.implemented_properties:
+            #     atoms.get_stress()
 
             self.atoms.append(freeze_copy_atoms(atoms))
 
@@ -412,7 +412,7 @@ class ForceDecomposition(base.AnalyseProcessAtoms):
 
     def run(self):
         true_atoms, pred_atoms = self.get_data()
-        mapping = BarycenterMapping(data=None)
+        mapping = BarycenterMapping(data=None, frozen=True)
         # TODO make the force_decomposition return full forces
         # TODO check if you sum the forces they yield the full forces
         # TODO make mapping a 'zn.nodes' with Mapping(species="BF4")

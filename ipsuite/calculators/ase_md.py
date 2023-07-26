@@ -25,6 +25,7 @@ log = logging.getLogger(__name__)
 
 class RescaleBoxModifier(base.IPSNode):
     cell: int = zntrack.zn.params()
+    # TODO target density
     _initial_cell = None
 
     def modify(self, thermostat, step, total_steps):
@@ -443,8 +444,8 @@ class ASEMD(base.ProcessSingleAtom):
                             metrics_dict[key].append(val)
                         desc.append(str(checker))
 
-                if "stress" in atoms.calc.implemented_properties:
-                    atoms.get_stress()
+                # if "stress" in atoms.calc.implemented_properties:
+                #     atoms.get_stress()
 
                 atoms_cache.append(freeze_copy_atoms(atoms))
                 if len(atoms_cache) == self.dump_rate:
