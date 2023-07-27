@@ -108,8 +108,6 @@ class ForcesUncertaintyHistogram(LabelHistogram):
     datalabel = "forces-uncertainty"
     xlabel = r"$F$ / eV/Ang"
 
-    metrics: float = zntrack.zn.metrics()
-
     def get_labels(self):
         labels = np.concatenate(
             [x.calc.results["forces_uncertainty"] for x in self.data], axis=0
