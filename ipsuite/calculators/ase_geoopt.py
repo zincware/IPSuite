@@ -1,9 +1,11 @@
+import functools
 import logging
 import pathlib
 import typing
 
 import ase.io
 import ase.optimize
+import h5py
 import znh5md
 import zntrack
 
@@ -95,4 +97,13 @@ class ASEGeoOpt(base.ProcessSingleAtom):
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
-        return znh5md.ASEH5MD(self.traj_file).get_atoms_list()
+        def file_handle(filename):
+            file = self.state.fs.open(filename, "rb")
+            return h5py.File(file)
+
+        return znh5md.ASEH5MD(
+            self.traj_file,
+            format_handler=functools.partial(
+                znh5md.FormatHandler, file_handle=file_handle
+            ),
+        ).get_atoms_list()
