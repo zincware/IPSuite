@@ -1,5 +1,6 @@
 import abc
 import collections.abc
+import pathlib
 import typing
 
 import ase
@@ -12,7 +13,11 @@ from ipsuite import fields
 # TODO raise error if both data and data_file are given
 
 
-class ProcessAtoms(zntrack.Node):
+class IPSNode(zntrack.Node):
+    _module_ = "ipsuite.nodes"
+
+
+class ProcessAtoms(IPSNode):
     """Protocol for objects that process atoms.
 
     Attributes
@@ -47,12 +52,17 @@ class ProcessAtoms(zntrack.Node):
         if self.data is not None:
             return self.data
         elif self.data_file is not None:
-            return list(ase.io.iread(self.data_file))
+            try:
+                with self.state.fs.open(pathlib.Path(self.data_file).as_posix()) as f:
+                    return list(ase.io.iread(f))
+            except FileNotFoundError:
+                # File can not be opened with DVCFileSystem, try normal open
+                return list(ase.io.iread(self.data_file))
         else:
             raise ValueError("No data given.")
 
 
-class ProcessSingleAtom(zntrack.Node):
+class ProcessSingleAtom(IPSNode):
     """Protocol for objects that process a single atom.
 
     Attributes
@@ -97,13 +107,18 @@ class ProcessSingleAtom(zntrack.Node):
             else:
                 atoms = self.data.copy()
         elif self.data_file is not None:
-            atoms = list(ase.io.iread(self.data_file))[self.data_id]
+            try:
+                with self.state.fs.open(pathlib.Path(self.data_file).as_posix()) as f:
+                    atoms = list(ase.io.iread(f))[self.data_id]
+            except FileNotFoundError:
+                # File can not be opened with DVCFileSystem, try normal open
+                atoms = list(ase.io.iread(self.data_file))[self.data_id]
         else:
             raise ValueError("No data given.")
         return atoms
 
 
-class AnalyseAtoms(zntrack.Node):
+class AnalyseAtoms(IPSNode):
     """Protocol for objects that analyse atoms.
 
     Attributes
@@ -115,7 +130,7 @@ class AnalyseAtoms(zntrack.Node):
     data: list[ase.Atoms] = zntrack.zn.deps()
 
 
-class AnalyseProcessAtoms(zntrack.Node):
+class AnalyseProcessAtoms(IPSNode):
     """Analyse the output of a ProcessAtoms Node."""
 
     data: ProcessAtoms = zntrack.zn.deps()
@@ -169,7 +184,7 @@ class Mapping(ProcessAtoms):
         raise NotImplementedError
 
 
-class CheckBase(zntrack.Node):
+class CheckBase(IPSNode):
     """Base class for check nodes.
     These are callbacks that can be used to preemptively terminate
     a molecular dynamics simulation if a vertain condition is met.

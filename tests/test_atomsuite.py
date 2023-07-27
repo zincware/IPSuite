@@ -1,7 +1,13 @@
 """Test 'IPSuite' version."""
-from ipsuite import __version__
+import ipsuite as ips
 
 
 def test_version():
     """Test 'IPSuite' version."""
-    assert __version__ == "0.1.0a2"
+    assert ips.__version__ == "0.1.0a3"
+
+
+def test_node_imports():
+    """Test that all nodes are imported correctly."""
+    for node in ips.nodes.__all__:
+        assert issubclass(getattr(ips.nodes, node), ips.base.IPSNode)

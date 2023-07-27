@@ -136,7 +136,8 @@ class ThresholdCheck(base.CheckBase):
     max_value: float, optional
         Maximum value of the property to check before the simulation is stopped
     minimum_window_size: int, optional
-        Minimum number of steps to average over before checking the standard deviation
+        Minimum number of steps to average over before checking the standard deviation.
+        Also minimum number of steps to run, before the simulation can be stopped.
     larger_only: bool, optional
         Only check the standard deviation of points that are larger than the mean.
         E.g. useful for uncertainties, where a lower uncertainty is not a problem.
@@ -146,7 +147,7 @@ class ThresholdCheck(base.CheckBase):
     max_std: float = zntrack.zn.params(None)
     window_size: int = zntrack.zn.params(500)
     max_value: float = zntrack.zn.params(None)
-    minimum_window_size: int = zntrack.zn.params(50)
+    minimum_window_size: int = zntrack.zn.params(1)
     larger_only: bool = zntrack.zn.params(False)
 
     def _post_init_(self):
@@ -174,12 +175,11 @@ class ThresholdCheck(base.CheckBase):
         if self.larger_only:
             distance = np.abs(distance)
 
-        if self.max_value is not None and value > self.max_value:
-            # max value trigger is independent of the window size.
-            return True
-
         if len(self.values) < self.minimum_window_size:
             return False
+
+        if self.max_value is not None and np.max(value) > self.max_value:
+            return True
 
         if self.max_std is not None and distance > self.max_std * std:
             self.status = (

@@ -7,12 +7,13 @@ import zntrack
 from ase.calculators.calculator import Calculator, all_changes
 from tqdm import tqdm
 
+from ipsuite import base
 from ipsuite.models.base import MLModel
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
 class EnsembleCalculator(Calculator):
-    implemented_properties = ["energy", "forces"]
+    implemented_properties = ["energy", "forces", "stress"]
 
     def __init__(self, calculators: typing.List[Calculator], **kwargs):
         Calculator.__init__(self, **kwargs)
@@ -44,8 +45,14 @@ class EnsembleCalculator(Calculator):
             [x.get_forces() for x in results], axis=0
         )
 
+        if "stress" in results[0].calc.implemented_properties:
+            self.results["stress"] = np.mean([x.get_stress() for x in results], axis=0)
+            self.results["stress_uncertainty"] = np.std(
+                [x.get_stress() for x in results], axis=0
+            )
 
-class EnsembleModel(zntrack.Node):
+
+class EnsembleModel(base.IPSNode):
     models: typing.List[MLModel] = zntrack.zn.deps()
 
     uuid = zntrack.zn.outs()  # to connect this Node to other Nodes it requires an output.

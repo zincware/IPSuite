@@ -11,6 +11,7 @@ from zntrack import dvc, zn
 
 from ipsuite import utils
 from ipsuite.models.base import MLModel
+from ipsuite.static_data import STATIC_PATH
 from ipsuite.utils.helpers import check_duplicate_keys
 
 log = logging.getLogger(__name__)
@@ -21,10 +22,8 @@ class Apax(MLModel):
 
     Attributes
     ----------
-    parameter : dict
-        dict of the model parameter
-    parameter_file: str
-        path to the model parameter file
+    config: str
+        path to the apax config file
     validation_data: ase.Atoms
         atoms object with the validation data set
     model_directory: pathlib.Path
@@ -37,8 +36,7 @@ class Apax(MLModel):
         path to the valdidation data
     """
 
-    parameter: dict = zn.params(None)
-    parameter_file: str = dvc.params(None)
+    config: str = dvc.params("apax.yaml")
     validation_data = zn.deps()
 
     model_directory: pathlib.Path = dvc.outs(zntrack.nwd / "apax_model")
@@ -51,39 +49,24 @@ class Apax(MLModel):
 
     metrics_epoch = dvc.plots(
         zntrack.nwd / "log.csv",
-        # x="epoch",
-        # x_label="epochs",
-        # y="val_loss",
-        # y_label="validation loss",
+        template=STATIC_PATH / "y_log.json",
+        x="epoch",
+        x_label="epochs",
+        y="val_loss",
+        y_label="validation loss",
     )
     metrics = zn.metrics()
 
+    _parameter: dict = None
+
     def _post_init_(self):
-        if not self.state.loaded:
-            dict_supplied = self.parameter is None
-            file_supplied = self.parameter_file is None
-
-            if dict_supplied and file_supplied:
-                raise TypeError("Please specify either an input dict or file")
-            elif not dict_supplied and not file_supplied:
-                raise TypeError(
-                    "Can not train apax model without a parameter dict or file"
-                )
-            else:
-                log.info(
-                    "Please keep track of the parameter file with git, just like the"
-                    " params.yaml"
-                )
-
         self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
         self.validation_data = utils.helpers.get_deps_if_node(
             self.validation_data, "atoms"
         )
 
     def _handle_parameter_file(self):
-        if self.parameter_file:
-            parameter_file_content = pathlib.Path(self.parameter_file).read_text()
-            self.parameter = yaml.safe_load(parameter_file_content)
+        self._parameter = yaml.safe_load(pathlib.Path(self.config).read_text())
 
         custom_parameters = {
             "model_path": self.model_directory.as_posix(),
@@ -92,14 +75,14 @@ class Apax(MLModel):
             "val_data_path": self.validation_data_file.as_posix(),
         }
 
-        check_duplicate_keys(custom_parameters, self.parameter["data"], log)
-        self.parameter["data"].update(custom_parameters)
+        check_duplicate_keys(custom_parameters, self._parameter["data"], log)
+        self._parameter["data"].update(custom_parameters)
 
     def train_model(self):
         """Train the model using `apax.train.run`"""
         from apax.train.run import run as apax_run
 
-        apax_run(self.parameter, log_file=self.train_log_file)
+        apax_run(self._parameter, log_file=self.train_log_file)
 
     def move_metrics(self):
         """Move the metrics to the correct directories for DVC"""
@@ -122,7 +105,10 @@ class Apax(MLModel):
         self.move_metrics()
         self.get_metrics_from_plots()
 
-    def get_calculator(self):
+        with pathlib.Path(self.train_log_file).open("a") as f:
+            f.write("Training completed\n")
+
+    def get_calculator(self, **kwargs):
         """Get a apax ase calculator"""
         from apax.md import ASECalculator
 

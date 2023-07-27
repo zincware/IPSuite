@@ -56,3 +56,19 @@ def force_decomposition(atom, mapping):
     atom_vib_forces = full_forces - atom_trans_forces - atom_rot_forces
 
     return atom_trans_forces, atom_rot_forces, atom_vib_forces
+
+
+def decompose_stress_tensor(stresses):
+    hydrostatic_stresses = []
+    deviatoric_stresses = []
+
+    for stress in stresses:
+        hydrostatic = np.mean(np.diag(stress))
+        deviatoric = stress - (np.eye(3) * hydrostatic)
+
+        hydrostatic_stresses.append(hydrostatic)
+        deviatoric_stresses.append(deviatoric)
+
+    hydrostatic_stresses = np.array(hydrostatic_stresses)
+    deviatoric_stresses = np.array(deviatoric_stresses)
+    return hydrostatic_stresses, deviatoric_stresses

@@ -31,7 +31,7 @@ def test_model_training(proj_path, traj_file):
         )
 
         model = Apax(
-            parameter_file=model_minimal,
+            config=model_minimal,
             data=train_selection.atoms,
             validation_data=val_selection.atoms,
         )

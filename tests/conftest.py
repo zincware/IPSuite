@@ -4,6 +4,7 @@ References
 ----------
 https://docs.pytest.org/en/6.2.x/fixture.html#scope-sharing-fixtures-across-classes-modules-packages-or-session
 """
+import logging
 import os
 import pathlib
 import random
@@ -17,9 +18,13 @@ import dvc.cli
 import git
 import numpy as np
 import pytest
+import zntrack
 from ase import Atoms
+from ase.lattice.cubic import FaceCenteredCubic
 
 import ipsuite as ips
+
+zntrack.config.log_level = logging.DEBUG
 
 
 @pytest.fixture
@@ -48,6 +53,18 @@ def atoms_list() -> typing.List[ase.Atoms]:
         )
 
     return atoms
+
+
+@pytest.fixture
+def cu_box() -> typing.List[ase.Atoms]:
+    return [
+        FaceCenteredCubic(
+            directions=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            symbol="Cu",
+            size=(2, 2, 2),
+            pbc=True,
+        )
+    ]
 
 
 @pytest.fixture()

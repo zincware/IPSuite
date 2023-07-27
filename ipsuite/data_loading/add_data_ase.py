@@ -7,7 +7,7 @@ import ase.io
 import tqdm
 import zntrack
 
-from ipsuite import fields
+from ipsuite import base, fields
 
 log = logging.getLogger(__name__)
 
@@ -40,7 +40,7 @@ def load_data(
     return atoms
 
 
-class AddData(zntrack.Node):
+class AddData(base.IPSNode):
     """Add data using ASE.
 
     Attributes

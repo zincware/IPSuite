@@ -1,9 +1,11 @@
+import functools
 import logging
 import pathlib
 import typing
 from collections import deque
 
 import ase
+import h5py
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -18,14 +20,15 @@ from numpy.random import default_rng
 from tqdm import trange
 
 from ipsuite import base, models, utils
-from ipsuite.analysis.bin_property import get_histogram_figure
+from ipsuite.analysis.ensemble import plot_with_uncertainty
+from ipsuite.analysis.model.plots import get_histogram_figure
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 from ipsuite.utils.md import get_energy_terms
 
 log = logging.getLogger(__name__)
 
 
-class RattleAtoms(base.ProcessSingleAtom):
+class RattleAnalysis(base.ProcessSingleAtom):
     """Move particles with a given stdev from a starting configuration and predict.
 
     Attributes
@@ -119,10 +122,10 @@ class BoxScale(base.ProcessSingleAtom):
     plot = zntrack.dvc.outs(zntrack.nwd / "energy.png")
 
     energies: pd.DataFrame = zntrack.zn.plots(
-        # x="x",
-        # y="y",
-        # x_label="Scale factor of the initial cell",
-        # y_label="predicted energy",
+        x="x",
+        y="y",
+        x_label="Scale factor of the initial cell",
+        y_label="predicted energy",
     )
 
     def _post_init_(self):
@@ -159,11 +162,24 @@ class BoxScale(base.ProcessSingleAtom):
 
         self.energies = pd.DataFrame({"y": energies, "x": scale_space})
 
-        fig, ax = plt.subplots()
-        ax.plot(self.energies["x"], self.energies["y"])
-        ax.set_xlabel("Scale factor of the initial cell")
-        ax.set_ylabel("predicted energy")
-        fig.savefig(self.plot)
+        if "energy_uncertainty" in self.atoms[0].calc.results:
+            fig, ax, _ = plot_with_uncertainty(
+                {
+                    "std": np.std(
+                        [a.calc.results["energy_uncertainty"] for a in self.atoms]
+                    ),
+                    "mean": self.energies["y"],
+                },
+                x=self.energies["x"],
+                ylabel="predicted energy",
+                xlabel="Scale factor of the initial cell",
+            )
+        else:
+            fig, ax = plt.subplots()
+            ax.plot(self.energies["x"], self.energies["y"])
+            ax.set_xlabel("Scale factor of the initial cell")
+            ax.set_ylabel("predicted energy")
+        fig.savefig(self.plot, bbox_inches="tight")
 
 
 class BoxHeatUp(base.ProcessSingleAtom):
@@ -365,7 +381,16 @@ class MDStability(base.ProcessAtoms):
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
-        return znh5md.ASEH5MD(self.traj_file).get_atoms_list()
+        def file_handle(filename):
+            file = self.state.fs.open(filename, "rb")
+            return h5py.File(file)
+
+        return znh5md.ASEH5MD(
+            self.traj_file,
+            format_handler=functools.partial(
+                znh5md.FormatHandler, file_handle=file_handle
+            ),
+        ).get_atoms_list()
 
     def get_plots(self, stable_steps: int) -> None:
         """Create figures for all available data."""

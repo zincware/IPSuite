@@ -4,10 +4,20 @@ from ase import Atoms
 
 def coarse_grain_to_barycenter(molecules):
     coms = np.zeros(shape=(len(molecules), 3))
+
+    # TODO: use rdkit instead to identify identical molecules
+
+    identifier = {}
+    atomic_numbers = []
+
     for ii, mol in enumerate(molecules):
         com = np.mean(mol.positions, axis=0)
         coms[ii] = com
-    atomic_numbers = f"H{len(coms)}"
+        try:
+            atomic_numbers.append(identifier[mol.get_chemical_formula()])
+        except KeyError:
+            identifier[mol.get_chemical_formula()] = len(identifier) + 1
+            atomic_numbers.append(identifier[mol.get_chemical_formula()])
 
     cg_positions = np.stack(coms, axis=0)
     cg_atoms = Atoms(atomic_numbers, positions=cg_positions, cell=molecules[0].cell)
