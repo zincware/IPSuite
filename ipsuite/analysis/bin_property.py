@@ -29,6 +29,8 @@ class LabelHistogram(base.AnalyseAtoms):
     ylabel: str = "Occurrences"
     logy_scale: bool = True
 
+    metrics: float = zntrack.zn.metrics()
+
     def _post_init_(self):
         """Load metrics - if available."""
         self.data = get_deps_if_node(self.data, "atoms")
@@ -39,6 +41,14 @@ class LabelHistogram(base.AnalyseAtoms):
     def get_hist(self):
         """Create a pandas dataframe from the given data."""
         labels = self.get_labels()
+
+        self.metrics = {
+            "mean": np.mean(labels),
+            "std": np.std(labels),
+            "max": np.max(labels),
+            "min": np.min(labels),
+        }
+
         if self.bins is None:
             self.bins = int(np.ceil(len(labels) / 100))
         counts, bin_edges = np.histogram(labels, self.bins)
@@ -101,11 +111,6 @@ class ForcesUncertaintyHistogram(LabelHistogram):
             [x.calc.results["forces_uncertainty"] for x in self.data], axis=0
         )
         labels = np.linalg.norm(labels, ord=2, axis=1)
-        self.metrics = {
-            "mean": np.mean(labels),
-            "std": np.std(labels),
-            "max": np.max(labels),
-        }
         return labels
 
 
@@ -115,18 +120,8 @@ class EnergyUncertaintyHistogram(LabelHistogram):
     datalabel = "energy-uncertainty"
     xlabel = r"$F$ / eV/Ang"
 
-    metrics: float = zntrack.zn.metrics()
-
     def get_labels(self):
-        labels = np.reshape(
-            [x.calc.results["energy_uncertainty"] for x in self.data], (-1)
-        )
-        self.metrics = {
-            "mean": np.mean(labels),
-            "std": np.std(labels),
-            "max": np.max(labels),
-        }
-        return labels
+        return np.reshape([x.calc.results["energy_uncertainty"] for x in self.data], (-1))
 
 
 class DipoleHistogram(LabelHistogram):
