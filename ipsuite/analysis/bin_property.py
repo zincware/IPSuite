@@ -22,6 +22,8 @@ class LabelHistogram(base.AnalyseAtoms):
     """
 
     bins: int = zntrack.zn.params(None)
+    x_lim: tuple = zntrack.zn.params(None)
+    y_lim: tuple = zntrack.zn.params(None)
     plots_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "plots")
     labels_df: pd.DataFrame = zntrack.zn.plots()
     datalabel: str = None
@@ -64,6 +66,8 @@ class LabelHistogram(base.AnalyseAtoms):
             datalabel=self.datalabel,
             xlabel=self.xlabel,
             ylabel=self.ylabel,
+            x_lim=self.x_lim,
+            y_lim=self.y_lim,
             logy_scale=self.logy_scale,
         )
         label_hist.savefig(self.plots_dir / "hist.png")
