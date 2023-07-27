@@ -118,7 +118,6 @@ class ConfigurationComparison(base.IPSNode):
 
     Attributes
     ----------
-        hash used to use this Node as zn.Nodes()
     reference: typing.Union[utils.helpers.UNION_ATOMS_OR_ATOMS_LST,
      utils.types.SupportsAtoms]
         reference configurations to compare analyte to
