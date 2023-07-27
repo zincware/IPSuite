@@ -6,14 +6,13 @@ from uuid import uuid4
 
 import ase.io
 import pandas as pd
-from tqdm import tqdm
 import yaml
 import zntrack.utils
 from jax.config import config
+from tqdm import tqdm
 from zntrack import dvc, zn
 
-from ipsuite import base
-from ipsuite import utils
+from ipsuite import base, utils
 from ipsuite.models.base import MLModel
 from ipsuite.static_data import STATIC_PATH
 from ipsuite.utils.ase_sim import freeze_copy_atoms
@@ -121,7 +120,6 @@ class Apax(MLModel):
         return ASECalculator(model_dir=self.model_directory)
 
 
-
 class ApaxEnsemble(base.IPSNode):
     models: typing.List[Apax] = zntrack.zn.deps()
 
@@ -139,12 +137,11 @@ class ApaxEnsemble(base.IPSNode):
             ase calculator object
         """
         from apax.md import ASECalculator
+
         param_files = [m._parameter["data"]["model_path"] for m in self.models]
 
         calc = ASECalculator(param_files)
         return calc
-
-
 
     def predict(self, atoms_list: typing.List[ase.Atoms]) -> typing.List[ase.Atoms]:
         """Predict energy, forces and stresses.
