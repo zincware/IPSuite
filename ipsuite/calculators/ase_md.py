@@ -400,8 +400,8 @@ class ASEMD(base.ProcessSingleAtom):
         metrics_dict = {"energy": [], "temp": []}
         for checker in self.checker_list:
             checker.initialize(atoms)
-            if checker.checker_id() is not None:
-                metrics_dict[checker.checker_id()] = []
+            if checker.get_quantity() is not None:
+                metrics_dict[checker.get_quantity()] = []
 
         # Run simulation
         total_fs = int(self.steps * time_step * self.sampling_rate)
@@ -434,7 +434,7 @@ class ASEMD(base.ProcessSingleAtom):
                         log.critical(str(checker))
                     metric = checker.get_value()
                     if metric is not None:
-                        metrics_dict[checker.checker_id()].append(metric)
+                        metrics_dict[checker.get_quantity()].append(metric)
 
                 if "stress" in atoms.calc.implemented_properties:
                     atoms.get_stress()

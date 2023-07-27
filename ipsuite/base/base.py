@@ -209,5 +209,5 @@ class CheckBase(IPSNode):
         ...
 
     @abc.abstractmethod
-    def checker_id(self) -> str:
+    def get_quantity(self) -> str:
         ...
