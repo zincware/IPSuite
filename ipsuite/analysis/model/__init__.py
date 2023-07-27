@@ -2,12 +2,14 @@ from ipsuite.analysis.model.dynamics import (
     BoxHeatUp,
     BoxScale,
     MDStability,
-    RattleAtoms,
+    RattleAnalysis,
 )
 from ipsuite.analysis.model.dynamics_checks import (
     ConnectivityCheck,
     EnergySpikeCheck,
     NaNCheck,
+    TemperatureCheck,
+    ThresholdCheck,
 )
 from ipsuite.analysis.model.predict import (
     ForceAngles,
@@ -21,11 +23,13 @@ __all__ = [
     "ForceAngles",
     "PredictionMetrics",
     "ForceDecomposition",
-    "RattleAtoms",
+    "RattleAnalysis",
     "BoxHeatUp",
     "BoxScale",
     "EnergySpikeCheck",
     "ConnectivityCheck",
     "NaNCheck",
     "MDStability",
+    "TemperatureCheck",
+    "ThresholdCheck",
 ]

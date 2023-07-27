@@ -7,12 +7,13 @@ import zntrack
 from ase.calculators.calculator import Calculator, all_changes
 from tqdm import tqdm
 
+from ipsuite import base
 from ipsuite.models.base import MLModel
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
 class EnsembleCalculator(Calculator):
-    implemented_properties = ["energy", "forces"]
+    implemented_properties = ["energy", "forces", "stress"]
 
     def __init__(self, calculators: typing.List[Calculator], **kwargs):
         Calculator.__init__(self, **kwargs)
@@ -44,8 +45,14 @@ class EnsembleCalculator(Calculator):
             [x.get_forces() for x in results], axis=0
         )
 
+        if "stress" in results[0].calc.implemented_properties:
+            self.results["stress"] = np.mean([x.get_stress() for x in results], axis=0)
+            self.results["stress_uncertainty"] = np.std(
+                [x.get_stress() for x in results], axis=0
+            )
 
-class EnsembleModel(zntrack.Node):
+
+class EnsembleModel(base.IPSNode):
     models: typing.List[MLModel] = zntrack.zn.deps()
 
     uuid = zntrack.zn.outs()  # to connect this Node to other Nodes it requires an output.
@@ -53,8 +60,7 @@ class EnsembleModel(zntrack.Node):
     def run(self) -> None:
         self.uuid = str(uuid4())
 
-    @property
-    def calc(self) -> ase.calculators.calculator.Calculator:
+    def get_calculator(self, **kwargs) -> ase.calculators.calculator.Calculator:
         """Property to return a model specific ase calculator object.
 
         Returns
@@ -62,7 +68,9 @@ class EnsembleModel(zntrack.Node):
         calc:
             ase calculator object
         """
-        return EnsembleCalculator(calculators=[x.calc for x in self.models])
+        return EnsembleCalculator(
+            calculators=[x.get_calculator(**kwargs) for x in self.models]
+        )
 
     def predict(self, atoms_list: typing.List[ase.Atoms]) -> typing.List[ase.Atoms]:
         """Predict energy, forces and stresses.
@@ -79,7 +87,7 @@ class EnsembleModel(zntrack.Node):
         typing.List[ase.Atoms]
             Atoms with updated calculators
         """
-        calc = self.calc
+        calc = self.get_calculator()
         result = []
         for atoms in tqdm(atoms_list, ncols=120):
             atoms.calc = calc

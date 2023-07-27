@@ -37,7 +37,7 @@ def _write_xyz_input_files(
 class Nequip(MLModel):
     """The Nequip and allegro model."""
 
-    parameter: str = zntrack.dvc.params()
+    config: str = zntrack.dvc.params()
     validation_data = zntrack.zn.deps()
 
     train_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "train.extxyz")
@@ -70,12 +70,12 @@ class Nequip(MLModel):
     def _post_init_(self):
         """Post init hook."""
         if not self.state.loaded:
-            if self.parameter is None:
+            if self.config is None:
                 raise ValueError("Can not train nequip model without a parameter file")
             else:
                 log.info(
                     "Please keep track of the parameter file with git, just like the"
-                    f" params.yaml. Use 'git add {self.parameter}'."
+                    f" params.yaml. Use 'git add {self.config}'."
                 )
 
         self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
@@ -85,7 +85,7 @@ class Nequip(MLModel):
 
     def _handle_parameter_file(self, n_train: int, n_val: int, chemical_symbols: list):
         """Update and rewrite the nequip parameter file."""
-        parameter = pathlib.Path(self.parameter).read_text()
+        parameter = pathlib.Path(self.config).read_text()
         parameter = yaml.safe_load(parameter)
 
         custom_parameters = {
@@ -165,8 +165,7 @@ class Nequip(MLModel):
         self.get_metrics_from_plots()
         self.deploy_model()
 
-    @property
-    def calc(self):
+    def get_calculator(self, **kwargs):
         """Get a nequip ase calculator."""
         from nequip.ase.nequip_calculator import NequIPCalculator
 

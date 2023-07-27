@@ -1,6 +1,5 @@
 """MACE model module."""
 
-import functools
 import json
 import logging
 import pathlib
@@ -42,9 +41,8 @@ class MACE(MLModel):
     test_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "test-data.extxyz")
     model_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "model")
 
-    config: str = zntrack.dvc.deps("mace.yaml")
-    config_kwargs: dict = zntrack.zn.params(None)
-    device: str = zntrack.meta.Text("cuda" if torch.cuda.is_available() else "cpu")
+    config: str = zntrack.dvc.params("mace.yaml")
+    device: str = zntrack.meta.Text(None)
 
     training: pathlib.Path = zntrack.dvc.plots(
         zntrack.nwd / "training.csv",
@@ -56,6 +54,10 @@ class MACE(MLModel):
     def _post_init_(self):
         self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
         self.test_data = utils.helpers.get_deps_if_node(self.test_data, "atoms")
+
+    def _post_load_(self) -> None:
+        if self.device is None:
+            self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
     @classmethod
     def generate_config_file(self, file: str = "mace.yaml"):
@@ -88,13 +90,6 @@ class MACE(MLModel):
         cmd += f"--device={self.device} "
 
         config = yaml.safe_load(pathlib.Path(self.config).read_text())
-        if self.config_kwargs:
-            log.warning(
-                f"Overwriting '{self.config}' with values from 'params.yaml':"
-                f" {self.config_kwargs}"
-            )
-            config.update(self.config_kwargs)
-
         for key, val in config.items():
             if val is True:
                 cmd += f"--{key} "
@@ -122,9 +117,9 @@ class MACE(MLModel):
 
                 pd.DataFrame(data).set_index("epoch").to_csv(self.training)
 
-    @functools.cached_property
-    def calc(self):
+    def get_calculator(self, device=None, **kwargs):
         """Return the ASE calculator."""
+        device = device or self.device
         return MACECalculator(
             model_path=self.model_dir / "MACE_model.model", device=self.device
         )

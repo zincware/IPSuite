@@ -23,10 +23,9 @@ def test_model_training(proj_path, traj_file):
         )
 
         model = ipsuite.models.Nequip(
-            parameter="allegro_minimal.yaml",
+            config="allegro_minimal.yaml",
             data=train_selection,
             validation_data=validation_selection,
-            device="cpu",
         )
 
     project.run()
@@ -36,7 +35,7 @@ def test_model_training(proj_path, traj_file):
     model.load()
 
     atoms = data_1.atoms[0]
-    atoms.calc = model.calc
+    atoms.calc = model.get_calculator()
 
     assert isinstance(atoms.get_potential_energy(), float)
     assert atoms.get_potential_energy() != 0.0

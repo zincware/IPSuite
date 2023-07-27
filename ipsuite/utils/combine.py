@@ -165,7 +165,7 @@ def get_ids_per_key(
     """
     if not isinstance(data, dict):
         if silent_ignore:
-            return ids
+            return np.array(ids).tolist()
         else:
             raise TypeError(f"data must be a dictionary and not {type(data)}")
 
@@ -178,7 +178,7 @@ def get_ids_per_key(
         condition = ids - start
         condition = np.logical_and(condition < len(val), condition >= 0)
 
-        ids_per_key[key] = (ids[condition] - start).tolist()
+        ids_per_key[key] = np.array(ids[condition] - start).tolist()
         start += len(val)
 
     return ids_per_key

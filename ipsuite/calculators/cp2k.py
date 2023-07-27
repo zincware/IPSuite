@@ -7,10 +7,13 @@ import functools
 import pathlib
 import shutil
 import subprocess
+import typing
 from unittest.mock import patch
 
+import ase.calculators.cp2k
 import ase.io
 import cp2k_output_tools
+import h5py
 import pandas as pd
 import tqdm
 import yaml
@@ -168,7 +171,7 @@ class CP2KSinglePoint(base.ProcessAtoms):
         db = znh5md.io.DataWriter(self.output_file)
         db.initialize_database_groups()
 
-        calc = self.calc
+        calc = self.get_calculator()
 
         for atoms in tqdm.tqdm(self.get_data()):
             atoms.calc = calc
@@ -180,9 +183,17 @@ class CP2KSinglePoint(base.ProcessAtoms):
             file.unlink()
 
     @property
-    def atoms(self):
-        """Return the atoms object."""
-        return znh5md.ASEH5MD(self.output_file).get_atoms_list()
+    def atoms(self) -> typing.List[ase.Atoms]:
+        def file_handle(filename):
+            file = self.state.fs.open(filename, "rb")
+            return h5py.File(file)
+
+        return znh5md.ASEH5MD(
+            self.output_file,
+            format_handler=functools.partial(
+                znh5md.FormatHandler, file_handle=file_handle
+            ),
+        ).get_atoms_list()
 
     def get_input_script(self):
         """Return the input script.
@@ -210,15 +221,17 @@ class CP2KSinglePoint(base.ProcessAtoms):
 
         return "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
 
-    @property
-    def calc(self):
-        """Return the calculator object."""
-
-        # patch.start will patch the object permanently.
+    def get_calculator(self, directory: str = None):
+        if directory is None:
+            directory = self.cp2k_directory
+        else:
+            restart_wfn = self.cp2k_directory / "cp2k-RESTART.wfn"
+            if restart_wfn.exists():
+                shutil.copy(restart_wfn, directory / "cp2k-RESTART.wfn")
 
         patch(
             "ase.calculators.cp2k.Popen",
-            wraps=functools.partial(subprocess.Popen, cwd=self.cp2k_directory),
+            wraps=functools.partial(subprocess.Popen, cwd=directory),
         ).start()
 
         return ase.calculators.cp2k.CP2K(

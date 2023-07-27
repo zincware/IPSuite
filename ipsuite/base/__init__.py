@@ -5,6 +5,7 @@ from ipsuite.base.base import (
     AnalyseAtoms,
     AnalyseProcessAtoms,
     CheckBase,
+    IPSNode,
     Mapping,
     ProcessAtoms,
     ProcessSingleAtom,
@@ -18,4 +19,5 @@ __all__ = [
     "protocol",
     "Mapping",
     "CheckBase",
+    "IPSNode",
 ]
