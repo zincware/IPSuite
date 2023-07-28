@@ -27,7 +27,7 @@ class OrcaSinglePoint(base.ProcessAtoms):
     @property
     def atoms(self):
         return znh5md.ASEH5MD(self.output_file).get_atoms_list()
-    
+
     def get_calculator(self, directory: str = None):
         if directory is None:
             directory = self.orca_directory
@@ -37,6 +37,6 @@ class OrcaSinglePoint(base.ProcessAtoms):
             orcasimpleinput=self.orcasimpleinput,
             orcablocks=self.orcablocks,
             directory=directory,
-            command=f'{self.ASE_ORCA_COMMAND} PREFIX.inp > PREFIX.out',
+            command=f"{self.ASE_ORCA_COMMAND} PREFIX.inp > PREFIX.out",
         )
         return calc

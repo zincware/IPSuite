@@ -33,5 +33,5 @@ __all__ = [
     "PressureRampModifier",
     "TemperatureOscillatingRampModifier",
     "NPTThermostat",
-    "OrcaSinglePoint"
+    "OrcaSinglePoint",
 ]
