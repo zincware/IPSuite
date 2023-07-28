@@ -72,6 +72,7 @@ class _Nodes:
     ASEGeoOpt = "ipsuite.calculators.ASEGeoOpt"
     ASEMD = "ipsuite.calculators.ASEMD"
     FixedSphereASEMD = "ipsuite.calculators.FixedSphereASEMD"
+    GPAWSinglepoint = "ipsuite.calculators.GPAWSinglepoint"
     xTBSinglePoint = "ipsuite.calculators.xTBSinglePoint"
     LJSinglePoint = "ipsuite.calculators.LJSinglePoint"
     EMTSinglePoint = "ipsuite.calculators.EMTSinglePoint"
