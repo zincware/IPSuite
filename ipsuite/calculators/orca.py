@@ -36,7 +36,7 @@ class OrcaSinglePoint(base.ProcessAtoms):
             label="orcacalc",
             orcasimpleinput=self.orcasimpleinput,
             orcablocks=self.orcablocks,
-            directory=self.orca_directory,
+            directory=directory,
             command=f'{self.ASE_ORCA_COMMAND} PREFIX.inp > PREFIX.out',
         )
         return calc
