@@ -36,6 +36,9 @@ def test_ensemble_model(data_repo):
             sampling_rate=1,
         )
 
+        energy_uncertainty_hist = ips.analysis.EnergyUncertaintyHistogram(data=md.atoms)
+        forces_uncertainty_hist = ips.analysis.ForcesUncertaintyHistogram(data=md.atoms)
+
         uncertainty_selection = ips.configuration_selection.ThresholdSelection(
             data=md, n_configurations=1, threshold=0.0001
         )
