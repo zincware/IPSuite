@@ -22,12 +22,16 @@ class LabelHistogram(base.AnalyseAtoms):
     """
 
     bins: int = zntrack.zn.params(None)
+    x_lim: tuple = zntrack.zn.params(None)
+    y_lim: tuple = zntrack.zn.params(None)
     plots_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "plots")
     labels_df: pd.DataFrame = zntrack.zn.plots()
     datalabel: str = None
     xlabel: str = None
     ylabel: str = "Occurrences"
     logy_scale: bool = True
+
+    metrics: float = zntrack.zn.metrics()
 
     def _post_init_(self):
         """Load metrics - if available."""
@@ -39,6 +43,14 @@ class LabelHistogram(base.AnalyseAtoms):
     def get_hist(self):
         """Create a pandas dataframe from the given data."""
         labels = self.get_labels()
+
+        self.metrics = {
+            "mean": np.mean(labels),
+            "std": np.std(labels),
+            "max": np.max(labels),
+            "min": np.min(labels),
+        }
+
         if self.bins is None:
             self.bins = int(np.ceil(len(labels) / 100))
         counts, bin_edges = np.histogram(labels, self.bins)
@@ -54,6 +66,8 @@ class LabelHistogram(base.AnalyseAtoms):
             datalabel=self.datalabel,
             xlabel=self.xlabel,
             ylabel=self.ylabel,
+            x_lim=self.x_lim,
+            y_lim=self.y_lim,
             logy_scale=self.logy_scale,
         )
         label_hist.savefig(self.plots_dir / "hist.png")
@@ -86,6 +100,30 @@ class ForcesHistogram(LabelHistogram):
         # compute magnitude of vector labels. Histogram works element wise for N-D Arrays
         labels = np.linalg.norm(labels, ord=2, axis=1)
         return labels
+
+
+class ForcesUncertaintyHistogram(LabelHistogram):
+    """Creates a histogram of all force labels contained in a dataset."""
+
+    datalabel = "forces-uncertainty"
+    xlabel = r"$F$ / eV/Ang"
+
+    def get_labels(self):
+        labels = np.concatenate(
+            [x.calc.results["forces_uncertainty"] for x in self.data], axis=0
+        )
+        labels = np.linalg.norm(labels, ord=2, axis=1)
+        return labels
+
+
+class EnergyUncertaintyHistogram(LabelHistogram):
+    """Creates a histogram of all force labels contained in a dataset."""
+
+    datalabel = "energy-uncertainty"
+    xlabel = r"$F$ / eV/Ang"
+
+    def get_labels(self):
+        return np.reshape([x.calc.results["energy_uncertainty"] for x in self.data], (-1))
 
 
 class DipoleHistogram(LabelHistogram):
