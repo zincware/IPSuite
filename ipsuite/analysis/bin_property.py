@@ -1,52 +1,13 @@
 import pathlib
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import seaborn as sns
 import zntrack
 
 from ipsuite import base
+from ipsuite.analysis.model.math import decompose_stress_tensor
+from ipsuite.analysis.model.plots import get_histogram_figure
 from ipsuite.utils.helpers import get_deps_if_node
-
-
-def get_histogram_figure(
-    bin_edges,
-    counts,
-    datalabel: str,
-    xlabel: str,
-    ylabel: str,
-    logy_scale=True,
-    figsize: tuple = (10, 7),
-) -> plt.Figure:
-    """Creates a Matplotlib figure based on precomputed bin edges and counts.
-
-    Parameters
-    ----------
-    bin_edges: np.array
-        Edges of the histogram bins.
-    counts: np.array
-        Number of occurrences in each bin.
-    datalabel: str
-        Labels for the figure legend.
-    xlabel: str
-        X-axis label.
-    ylabel: str
-        Y-axis label.
-    figsize: tuple
-        Size of the Matplotlib figure
-    """
-    sns.set()
-    fig, ax = plt.subplots(figsize=figsize)
-
-    ax.stairs(counts, bin_edges, label=datalabel, fill=True)
-
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
-    ax.legend()
-    if logy_scale:
-        ax.set_yscale("log")
-    return fig
 
 
 class LabelHistogram(base.AnalyseAtoms):
@@ -138,3 +99,79 @@ class DipoleHistogram(LabelHistogram):
         # compute magnitude of vector labels. Histogram works element wise for N-D Arrays
         labels = np.linalg.norm(labels, ord=2, axis=1)
         return labels
+
+
+class StressHistogram(base.AnalyseAtoms):
+    """Creates histograms for the hydrostatic and
+    deviatoric components of the stress tensor.
+
+    Parameters
+    ----------
+    data: list
+        List of Atoms objects.
+    bins: int
+        Number of bins in the histogram.
+    """
+
+    bins: int = zntrack.zn.params(None)
+    plots_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "plots")
+    labels_df: pd.DataFrame = zntrack.zn.plots()
+    ylabel: str = "Occurrences"
+    logy_scale: bool = True
+
+    def _post_init_(self):
+        """Load metrics - if available."""
+        self.data = get_deps_if_node(self.data, "atoms")
+
+    def get_labels(self):
+        labels = np.array([x.get_stress(voigt=False) for x in self.data])
+        return labels
+
+    def get_hist(self):
+        """Create a pandas dataframe from the given data."""
+        labels = self.get_labels()
+        hydrostatic_stresses, deviatoric_stresses = decompose_stress_tensor(labels)
+
+        if self.bins is None:
+            self.bins = int(np.ceil(len(labels) / 100))
+        hydro_counts, hydro_bin_edges = np.histogram(hydrostatic_stresses, self.bins)
+        devia_counts, devia_bin_edges = np.histogram(deviatoric_stresses, self.bins)
+        counts = (hydro_counts, devia_counts)
+        bin_edges = (hydro_bin_edges, devia_bin_edges)
+        return counts, bin_edges
+
+    def get_plots(self, counts, bin_edges, hydrostatic=True):
+        """Create figures for all available data."""
+        if hydrostatic:
+            xlabel = r"$\pi$ / eV / Ang$^3$"
+            datalabel = "hydrostatic stress"
+            fname = "hydrostatic_hist.png"
+        else:
+            xlabel = r"$\sigma_{ij}$ / eV / Ang$^3$"
+            datalabel = "deviatoric stress components"
+            fname = "deviatoric_hist.png"
+
+        label_hist = get_histogram_figure(
+            bin_edges,
+            counts,
+            datalabel=datalabel,
+            xlabel=xlabel,
+            ylabel=self.ylabel,
+            logy_scale=self.logy_scale,
+        )
+        label_hist.savefig(self.plots_dir / fname)
+
+    def run(self):
+        counts, bin_edges = self.get_hist()
+        self.plots_dir.mkdir()
+        self.get_plots(counts[0], bin_edges[0], hydrostatic=True)
+        self.get_plots(counts[1], bin_edges[1], hydrostatic=False)
+
+        self.labels_df = pd.DataFrame(
+            {
+                "hydro_bin_edges": bin_edges[0][1:],
+                "hydro_counts": counts[0],
+                "deviatoric_bin_edges": bin_edges[1][1:],
+                "deviatoric_counts": counts[1],
+            }
+        )

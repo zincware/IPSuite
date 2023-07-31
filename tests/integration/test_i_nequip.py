@@ -23,10 +23,9 @@ def test_model_training(proj_path, traj_file):
         )
 
         model = ipsuite.models.Nequip(
-            parameter="allegro_minimal.yaml",
+            config="allegro_minimal.yaml",
             data=train_selection,
             validation_data=validation_selection,
-            device="cpu",
         )
 
     project.run()

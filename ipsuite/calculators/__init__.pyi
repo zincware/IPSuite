@@ -2,9 +2,13 @@ from .apax_jax_md import ApaxJaxMD
 from .ase_geoopt import ASEGeoOpt
 from .ase_md import (
     ASEMD,
+    BoxOscillatingRampModifier,
     FixedSphereASEMD,
     LangevinThermostat,
+    NPTThermostat,
+    PressureRampModifier,
     RescaleBoxModifier,
+    TemperatureOscillatingRampModifier,
     TemperatureRampModifier,
 )
 from .ase_standard import EMTSinglePoint, LJSinglePoint
@@ -22,6 +26,10 @@ __all__ = [
     "LangevinThermostat",
     "ApaxJaxMD",
     "RescaleBoxModifier",
+    "BoxOscillatingRampModifier",
     "EMTSinglePoint",
     "TemperatureRampModifier",
+    "PressureRampModifier",
+    "TemperatureOscillatingRampModifier",
+    "NPTThermostat",
 ]

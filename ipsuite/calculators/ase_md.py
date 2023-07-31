@@ -1,3 +1,4 @@
+import functools
 import logging
 import pathlib
 import typing
@@ -5,12 +6,14 @@ import typing
 import ase
 import ase.constraints
 import ase.geometry
+import h5py
 import numpy as np
 import pandas as pd
 import znh5md
 import zntrack
 from ase import units
 from ase.md.langevin import Langevin
+from ase.md.npt import NPT
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from tqdm import trange
 
@@ -42,16 +45,164 @@ class RescaleBoxModifier(base.IPSNode):
         thermostat.atoms.set_cell(new_cell, scale_atoms=True)
 
 
+class BoxOscillatingRampModifier(base.IPSNode):
+    """Ramp the simulation cell to a specified end cell with some oscillations.
+
+    Attributes
+    ----------
+    end_cell: float, list[float]
+        cell to ramp to, cubic or tetragonal.
+    cell_amplitude: float
+        amplitude in oscillations of the diagonal cell elements
+    num_oscillations: float
+        number of oscillations. No oscillations will occur if set to 0.
+    interval: int, default 1
+        interval in which the box size is changed.
+    """
+
+    end_cell: int = zntrack.zn.params()
+    cell_amplitude: typing.Union[float, list[float]] = zntrack.zn.params()
+    num_oscillations: float = zntrack.zn.params()
+    interval: int = zntrack.zn.params(1)
+    _initial_cell = None
+
+    def modify(self, thermostat, step, total_steps):
+        if self._initial_cell is None:
+            self._initial_cell = thermostat.atoms.get_cell()
+            if isinstance(self.end_cell, (float, int)):
+                self.end_cell = np.array(
+                    [[self.end_cell, 0, 0], [0, self.end_cell, 0], [0, 0, self.end_cell]]
+                )
+            elif isinstance(self.end_cell, list):
+                self.end_cell = np.array(
+                    [
+                        [self.end_cell[0], 0, 0],
+                        [0, self.end_cell[1], 0],
+                        [0, 0, self.end_cell[2]],
+                    ]
+                )
+
+        percentage = step / (total_steps - 1)
+        ramp = percentage * (self.end_cell - self._initial_cell)
+        oscillation = self.cell_amplitude * np.sin(
+            2 * np.pi * percentage * self.num_oscillations
+        )
+        oscillation = np.eye(3) * oscillation
+        new_cell = self._initial_cell + ramp + oscillation
+
+        if step % self.interval == 0:
+            thermostat.atoms.set_cell(new_cell, scale_atoms=True)
+
+
 class TemperatureRampModifier(base.IPSNode):
+    """Ramp the temperature from start_temperature to temperature.
+
+    Attributes
+    ----------
+    start_temperature: float, optional
+        temperature to start from, if None, the temperature of the thermostat is used.
+    temperature: float
+        temperature to ramp to.
+    interval: int, default 1
+        interval in which the temperature is changed.
+    """
+
+    start_temperature: float = zntrack.zn.params(None)
     temperature: float = zntrack.zn.params()
+    interval: int = zntrack.zn.params(1)
 
     def modify(self, thermostat, step, total_steps):
         # we use the thermostat, so we can also modify e.g. temperature
+        if self.start_temperature is None:
+            # different thermostats call the temperature attribute differently
+            if hasattr(thermostat, "temp"):
+                start_temperature = thermostat.temp
+            elif hasattr(thermostat, "temperature"):
+                start_temperature = thermostat.temperature
+            self.start_temperature = start_temperature / units.kB
+
         percentage = step / (total_steps - 1)
         new_temperature = (
             1 - percentage
-        ) * thermostat.temp + percentage * self.temperature
-        thermostat.set_temperature(temperature_K=new_temperature)
+        ) * self.start_temperature + percentage * self.temperature
+        if step % self.interval == 0:
+            thermostat.set_temperature(temperature_K=new_temperature)
+
+
+class TemperatureOscillatingRampModifier(base.IPSNode):
+    """Ramp the temperature from start_temperature to temperature with some oscillations.
+
+    Attributes
+    ----------
+    start_temperature: float, optional
+        temperature to start from, if None, the temperature of the thermostat is used.
+    end_temperature: float
+        temperature to ramp to.
+    temperature_amplitude: float
+        amplitude of temperature oscillations.
+    num_oscillations: float
+        number of oscillations. No oscillations will occur if set to 0.
+    interval: int, default 1
+        interval in which the temperature is changed.
+    """
+
+    start_temperature: float = zntrack.zn.params(None)
+    end_temperature: float = zntrack.zn.params()
+    temperature_amplitude: float = zntrack.zn.params()
+    num_oscillations: float = zntrack.zn.params()
+    interval: int = zntrack.zn.params(1)
+
+    def modify(self, thermostat, step, total_steps):
+        # we use the thermostat, so we can also modify e.g. temperature
+        if self.start_temperature is None:
+            # different thermostats call the temperature attribute differently
+            if hasattr(thermostat, "temp"):
+                start_temperature = thermostat.temp
+            elif hasattr(thermostat, "temperature"):
+                start_temperature = thermostat.temperature
+            self.start_temperature = start_temperature / units.kB
+
+        ramp = step / total_steps * (self.end_temperature - self.start_temperature)
+        oscillation = self.temperature_amplitude * np.sin(
+            2 * np.pi * step / total_steps * self.num_oscillations
+        )
+        new_temperature = self.start_temperature + ramp + oscillation
+
+        new_temperature = max(0, new_temperature)  # prevent negative temperature
+
+        if step % self.interval == 0:
+            thermostat.set_temperature(temperature_K=new_temperature)
+
+
+class PressureRampModifier(base.IPSNode):
+    """Ramp the temperature from start_temperature to temperature.
+    Works only for the NPT thermostat (not NPTBerendsen).
+
+    Attributes
+    ----------
+    start_pressure_au: float, optional
+        pressure to start from, if None, the pressure of the thermostat is used.
+        Uses ASE units.
+    end_pressure_au: float
+        pressure to ramp to. Uses ASE units.
+    interval: int, default 1
+        interval in which the pressure is changed.
+    """
+
+    start_pressure_au: float = zntrack.zn.params(None)
+    end_pressure_au: float = zntrack.zn.params()
+    interval: int = zntrack.zn.params(1)
+
+    def modify(self, thermostat, step, total_steps):
+        if self.start_pressure_au is None:
+            self.start_pressure_au = thermostat.externalstress
+
+        frac = step / total_steps
+        new_pressure = (-self.start_pressure_au[0]) ** (1 - frac)
+        new_pressure *= self.end_pressure_au ** (frac)
+
+        if step % self.interval == 0:
+            thermostat.set_stress(new_pressure)
 
 
 class LangevinThermostat(base.IPSNode):
@@ -81,6 +232,64 @@ class LangevinThermostat(base.IPSNode):
             timestep=self.time_step,
             temperature_K=self.temperature,
             friction=self.friction,
+        )
+        return thermostat
+
+
+class NPTThermostat(base.IPSNode):
+    """Initialize the ASE NPT barostat
+    (Nose Hoover temperature coupling + Parrinello Rahman pressure coupling).
+
+    Attributes
+    ----------
+    time_step: float
+        time step of simulation
+
+    temperature: float
+        temperature in K to simulate at
+
+    pressure: float
+        pressure in ASE units
+
+    ttime: float
+        characteristic temperature coupling time in ASE units
+
+    pfactor: float
+        characteristic pressure coupling time in ASE units
+
+    tetragonal_strain: bool
+        if True allows only the diagonal elements of the box to change,
+        i.e. box angles are constant
+
+    """
+
+    time_step: float = zntrack.zn.params()
+    temperature: float = zntrack.zn.params()
+    pressure: float = zntrack.zn.params()
+    ttime: float = zntrack.zn.params()
+    pfactor: float = zntrack.zn.params()
+    tetragonal_strain: bool = zntrack.zn.params(True)
+
+    def get_thermostat(self, atoms):
+        if self.tetragonal_strain:
+            mask = np.array(
+                [
+                    [True, False, False],
+                    [False, True, False],
+                    [False, False, True],
+                ]
+            )
+        else:
+            mask = None
+        self.time_step *= units.fs
+        thermostat = NPT(
+            atoms,
+            self.time_step,
+            temperature_K=self.temperature,
+            externalstress=self.pressure,
+            ttime=self.ttime,
+            pfactor=self.pfactor,
+            mask=mask,
         )
         return thermostat
 
@@ -150,7 +359,16 @@ class ASEMD(base.ProcessSingleAtom):
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
-        return znh5md.ASEH5MD(self.traj_file).get_atoms_list()
+        def file_handle(filename):
+            file = self.state.fs.open(filename, "rb")
+            return h5py.File(file)
+
+        return znh5md.ASEH5MD(
+            self.traj_file,
+            format_handler=functools.partial(
+                znh5md.FormatHandler, file_handle=file_handle
+            ),
+        ).get_atoms_list()
 
     def run(self):  # noqa: C901
         """Run the simulation."""
@@ -179,7 +397,7 @@ class ASEMD(base.ProcessSingleAtom):
 
         # initialize Atoms calculator and metrics_dict
         _, _ = get_energy(atoms)
-        metrics_dict = {"energy": []}
+        metrics_dict = {"energy": [], "temp": []}
         for checker in self.checker_list:
             _ = checker.check(atoms)
             metric = checker.get_metric()
@@ -208,8 +426,9 @@ class ASEMD(base.ProcessSingleAtom):
                 for modifier in self.modifier:
                     modifier.modify(thermostat, step=idx, total_steps=self.steps)
                 thermostat.run(self.sampling_rate)
-                _, energy = get_energy(atoms)
+                temperature, energy = get_energy(atoms)
                 metrics_dict["energy"].append(energy)
+                metrics_dict["temp"].append(temperature)
 
                 for checker in self.checker_list:
                     stop.append(checker.check(atoms))
@@ -223,6 +442,9 @@ class ASEMD(base.ProcessSingleAtom):
                         for key, val in metric.items():
                             metrics_dict[key].append(val)
                         desc.append(str(checker))
+
+                if "stress" in atoms.calc.implemented_properties:
+                    atoms.get_stress()
 
                 atoms_cache.append(freeze_copy_atoms(atoms))
                 if len(atoms_cache) == self.dump_rate:
@@ -238,6 +460,7 @@ class ASEMD(base.ProcessSingleAtom):
 
                 energy = metrics_dict["energy"][-1]
                 desc.append(f"E: {energy:.3f} eV")
+
                 if idx % (1 / time_step) == 0:
                     pbar.set_description("\t".join(desc))
                     pbar.update(self.sampling_rate)
