@@ -43,6 +43,7 @@ apax = { git = "https://github.com/apax-hub/apax.git", rev = "dev", optional = t
 rdkit = "^2022.9.5"
 lazy-loader = "^0.2"
 znflow = "^0.1.11"
+torchani = {version = "^2.2.3", optional = true}
 
 [tool.poetry.group.allegro.dependencies]
 mir-allegro = { git = "https://github.com/mir-group/allegro.git" }
@@ -73,6 +74,7 @@ comparison = ["h5py", "tensorflow", "llvmlite", "numba", "dscribe"]
 gap = ["quippy-ase", "xmltodict"]
 nequip = ["nequip"]
 apax = ["apax"]
+torchani = ["torchani"]
 
 [build-system]
 requires = ["poetry-core"]
