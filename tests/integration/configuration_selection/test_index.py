@@ -11,9 +11,6 @@ import ipsuite as ips
 def test_direct_selection(proj_w_data, eager, data_style):
     proj, data = proj_w_data
 
-    if eager:
-        for node in data:
-            node.load()
     with proj:
         if data_style == "lst":
             _data = data
@@ -37,6 +34,10 @@ def test_direct_selection(proj_w_data, eager, data_style):
             exclude_configurations=selection.selected_configurations,
             name="selection2",
         )
+
+    if eager:
+        for node in data:
+            node.load()
 
     proj.run(eager=eager)
     if not eager:

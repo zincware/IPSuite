@@ -4,7 +4,9 @@ import pathlib
 import typing
 
 import ase.io
+import h5py
 import yaml
+import znh5md
 import zntrack.utils
 from zntrack import dvc, zn
 
@@ -92,5 +94,13 @@ class ApaxJaxMD(ProcessSingleAtom):
     @functools.cached_property
     def atoms(self) -> typing.List[ase.Atoms]:
         # filename should be changeable
-        with self.state.fs.open((self.sim_dir / "md.traj").as_posix()) as f:
-            return list(ase.io.iread(f))
+        def file_handle(filename):
+            file = self.state.fs.open(filename, "rb")
+            return h5py.File(file)
+
+        return znh5md.ASEH5MD(
+            self.sim_dir / "md.h5",
+            format_handler=functools.partial(
+                znh5md.FormatHandler, file_handle=file_handle
+            ),
+        ).get_atoms_list()
