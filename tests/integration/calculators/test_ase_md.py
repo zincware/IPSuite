@@ -1,6 +1,6 @@
 import ase.io
 from ase import units
-
+import numpy as np
 import ipsuite as ips
 
 
@@ -113,3 +113,41 @@ def test_ase_npt(proj_path, cu_box):
     assert len(md.atoms) == 30
     assert md.atoms[0].cell[0, 0] == 7.22
     assert abs(md.atoms[1].cell[0, 0] - 7.22) > 1e-6
+
+
+def test_ase_md_fixed_sphere(proj_path, cu_box):
+    ase.io.write("cu_box.xyz", cu_box)
+    thermostat = ips.calculators.LangevinThermostat(
+        time_step=1,
+        temperature=1,
+        friction=1,
+    )
+    
+    constraint = ips.calculators.FixedSphereConstraint(
+        atom_id=0,
+        radius=2.6,
+    )
+
+    with ips.Project() as project:
+        data = ips.AddData(file="cu_box.xyz")
+        model = ips.calculators.EMTSinglePoint(data=data.atoms)
+        md = ips.calculators.ASEMD(
+            data=data.atoms,
+            model=model,
+            thermostat=thermostat,
+            init_temperature=1.0,
+            steps=30,
+            sampling_rate=1,
+            dump_rate=33,
+            constraint_list=[constraint]
+        )
+
+    project.run()
+
+    md.load()
+
+    assert np.sum(md.atoms[0][0].position - md.atoms[-1][0].position) < 1e-6
+    # neighbor atoms should not move
+    assert np.sum(md.atoms[0][1].position - md.atoms[-1][1].position) < 1e-6
+    # atoms outside the sphere should move
+    assert abs(np.sum(md.atoms[0][4].position - md.atoms[-1][4].position)) > 1e-6
