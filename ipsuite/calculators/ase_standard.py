@@ -54,7 +54,7 @@ class EMTCalculator(EMT):
     def calculate(self, atoms=None, properties=None, system_changes=all_changes):
         if properties is None:
             properties = ["energy"]
-        if "stress" not in properties and atoms.cell.rank == 3:
+        elif "stress" not in properties and atoms.cell.rank == 3:
             properties.append("stress")
         super().calculate(
             atoms=atoms, properties=properties, system_changes=system_changes
