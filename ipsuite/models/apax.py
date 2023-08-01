@@ -4,6 +4,8 @@ import shutil
 import typing
 from uuid import uuid4
 
+from apax.md import ASECalculator
+from apax.train.run import run as apax_run
 import ase.io
 import pandas as pd
 import yaml
@@ -84,8 +86,6 @@ class Apax(MLModel):
 
     def train_model(self):
         """Train the model using `apax.train.run`"""
-        from apax.train.run import run as apax_run
-
         apax_run(self._parameter, log_file=self.train_log_file)
 
     def move_metrics(self):
@@ -114,7 +114,6 @@ class Apax(MLModel):
 
     def get_calculator(self, **kwargs):
         """Get a apax ase calculator"""
-        from apax.md import ASECalculator
 
         self._handle_parameter_file()
         return ASECalculator(model_dir=self.model_directory)
@@ -123,10 +122,8 @@ class Apax(MLModel):
 class ApaxEnsemble(base.IPSNode):
     models: typing.List[Apax] = zntrack.zn.deps()
 
-    uuid = zntrack.zn.outs()  # to connect this Node to other Nodes it requires an output.
-
     def run(self) -> None:
-        self.uuid = str(uuid4())
+        pass
 
     def get_calculator(self, **kwargs) -> ase.calculators.calculator.Calculator:
         """Property to return a model specific ase calculator object.
@@ -143,25 +140,3 @@ class ApaxEnsemble(base.IPSNode):
         calc = ASECalculator(param_files)
         return calc
 
-    def predict(self, atoms_list: typing.List[ase.Atoms]) -> typing.List[ase.Atoms]:
-        """Predict energy, forces and stresses.
-
-        based on what was used to train for given atoms objects.
-
-        Parameters
-        ----------
-        atoms_list: typing.List[ase.Atoms]
-            list of atoms objects to predict on
-
-        Returns
-        -------
-        typing.List[ase.Atoms]
-            Atoms with updated calculators
-        """
-        calc = self.get_calculator()
-        result = []
-        for atoms in tqdm(atoms_list, ncols=120):
-            atoms.calc = calc
-            atoms.get_potential_energy()
-            result.append(freeze_copy_atoms(atoms))
-        return result
