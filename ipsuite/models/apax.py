@@ -67,6 +67,10 @@ class Apax(MLModel):
         self.validation_data = utils.helpers.get_deps_if_node(
             self.validation_data, "atoms"
         )
+        self._handle_parameter_file()
+
+    def _post_load_(self) -> None:
+        self._handle_parameter_file()
 
     def _handle_parameter_file(self):
         self._parameter = yaml.safe_load(pathlib.Path(self.config).read_text())
@@ -100,7 +104,6 @@ class Apax(MLModel):
 
         ase.io.write(self.train_data_file, self.data)
         ase.io.write(self.validation_data_file, self.validation_data)
-        self._handle_parameter_file()
 
         self.train_model()
         self.move_metrics()
@@ -112,7 +115,6 @@ class Apax(MLModel):
     def get_calculator(self, **kwargs):
         """Get a apax ase calculator"""
 
-        self._handle_parameter_file()
         return ASECalculator(model_dir=self.model_directory)
 
 
