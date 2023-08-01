@@ -13,12 +13,11 @@ from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
 class EnsembleCalculator(Calculator):
-
     def __init__(self, calculators: typing.List[Calculator], **kwargs):
         Calculator.__init__(self, **kwargs)
         self.calculators = calculators
         self.implemented_properties = self.calculators[0].implemented_properties
-    
+
     def calculate(
         self,
         atoms=None,

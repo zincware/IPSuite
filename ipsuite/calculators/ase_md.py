@@ -18,7 +18,7 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from tqdm import trange
 
 from ipsuite import base
-from ipsuite.utils.ase_sim import freeze_copy_atoms, get_desc, get_energy
+from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
 
 log = logging.getLogger(__name__)
 
@@ -441,8 +441,8 @@ class ASEMD(base.ProcessSingleAtom):
             self.steps = int(sampling_iterations * self.sampling_rate)
             log.warning(
                 "The sampling_rate is not a devisor of steps.",
-                f"steps were adjusted to {self.steps}"
-                )
+                f"steps were adjusted to {self.steps}",
+            )
         sampling_iterations = int(sampling_iterations)
         total_fs = self.steps * time_step
 
@@ -489,7 +489,7 @@ class ASEMD(base.ProcessSingleAtom):
                     )
                     atoms_cache = []
 
-                time = (idx+1) * self.sampling_rate * time_step
+                time = (idx + 1) * self.sampling_rate * time_step
                 desc = get_desc(temperature, energy, time, total_fs)
                 pbar.set_description(desc)
                 pbar.update(self.sampling_rate)
@@ -513,6 +513,10 @@ class ASEMD(base.ProcessSingleAtom):
         self.metrics_dict.index.name = "step"
         self.steps_before_stopping = -1
 
+
 def get_desc(temperature: float, total_energy: float, time: float, total_time: float):
     """TQDM description."""
-    return f"Temp: {temperature:.3f} K \t Energy {total_energy:.3f} eV \t Time {time:.1f}/{total_time:.1f} fs"
+    return (
+        f"Temp: {temperature:.3f} K \t Energy {total_energy:.3f} eV \t Time"
+        f" {time:.1f}/{total_time:.1f} fs"
+    )

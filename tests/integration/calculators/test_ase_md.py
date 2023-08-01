@@ -1,6 +1,7 @@
 import ase.io
-from ase import units
 import numpy as np
+from ase import units
+
 import ipsuite as ips
 
 
@@ -122,7 +123,7 @@ def test_ase_md_fixed_sphere(proj_path, cu_box):
         temperature=1,
         friction=1,
     )
-    
+
     constraint = ips.calculators.FixedSphereConstraint(
         atom_id=0,
         radius=2.6,
@@ -139,7 +140,7 @@ def test_ase_md_fixed_sphere(proj_path, cu_box):
             steps=30,
             sampling_rate=1,
             dump_rate=33,
-            constraint_list=[constraint]
+            constraint_list=[constraint],
         )
 
     project.run()
