@@ -107,10 +107,10 @@ def test_apax_ensemble(proj_path, traj_file):
         prediction = ips.analysis.Prediction(data=raw_data, model=ensemble_model)
         prediction_metrics = ips.analysis.PredictionMetrics(data=prediction)
 
-    project.run(eager=True)
+    project.run()
 
-    # uncertainty_selection.load()
-    # md.load()
+    uncertainty_selection.load()
+    md.load()
 
     uncertainties = [x.calc.results["energy_uncertainty"] for x in md.atoms]
     assert [md.atoms[np.argmax(uncertainties)]] == uncertainty_selection.atoms
