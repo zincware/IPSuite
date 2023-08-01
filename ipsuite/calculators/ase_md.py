@@ -294,6 +294,37 @@ class NPTThermostat(base.IPSNode):
         return thermostat
 
 
+class FixedSphereConstraint(base.IPSNode):
+    """Attributes
+    ----------
+    atom_id: int
+        The id to use as the center of the sphere to fix.
+        If None, the closed atom to the center will be picked.
+    radius: float
+    """
+
+    atom_id = zntrack.zn.params(None)
+    # selected_atom_id = zntrack.zn.outs()
+    radius = zntrack.zn.params()
+
+    def get_constraint(self, atoms):
+        # atoms = self.get_atoms()
+        r_ij, d_ij = ase.geometry.get_distances(atoms.get_positions())
+        if self.atom_id is not None:
+            self.selected_atom_id = self.atom_id
+        else:
+            _, dist = ase.geometry.get_distances(
+                atoms.get_positions(), np.diag(atoms.get_cell() / 2)
+            )
+            self.selected_atom_id = np.argmin(dist)
+
+        if isinstance(self.selected_atom_id, np.generic):
+            self.selected_atom_id = self.selected_atom_id.item()
+
+        indices = np.nonzero(d_ij[self.selected_atom_id] < self.radius)[0]
+        return ase.constraints.FixAtoms(indices=indices)
+
+
 class ASEMD(base.ProcessSingleAtom):
     """Class to run a MD simulation with ASE.
 
@@ -317,7 +348,7 @@ class ASEMD(base.ProcessSingleAtom):
     steps: int
         number of steps to simulate
     sampling_rate: int
-        number of sample runs
+        number of samples runs
     metrics_dict:
         saved total energy and all metrics from the check nodes
     repeat: float
@@ -332,6 +363,7 @@ class ASEMD(base.ProcessSingleAtom):
     model = zntrack.zn.deps()
     model_outs = zntrack.dvc.outs(zntrack.nwd / "model/")
     checker_list: list = zntrack.zn.nodes(None)
+    constraint_list: list = zntrack.zn.nodes(None)
     modifier: list = zntrack.zn.nodes(None)
     thermostat = zntrack.zn.nodes()
 
@@ -349,9 +381,6 @@ class ASEMD(base.ProcessSingleAtom):
     velocity_cache = zntrack.zn.outs()
 
     traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.h5")
-
-    def get_constraint(self):
-        return []
 
     def get_atoms(self) -> ase.Atoms:
         atoms: ase.Atoms = self.get_data()
@@ -376,6 +405,8 @@ class ASEMD(base.ProcessSingleAtom):
             self.checker_list = []
         if self.modifier is None:
             self.modifier = []
+        if self.constraint_list is None:
+            self.constraint_list = []
 
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
@@ -404,9 +435,19 @@ class ASEMD(base.ProcessSingleAtom):
                 metrics_dict[checker.get_quantity()] = []
 
         # Run simulation
-        total_fs = int(self.steps * time_step * self.sampling_rate)
+        sampling_iterations = self.steps / self.sampling_rate
+        if sampling_iterations % 1 != 0:
+            sampling_iterations = np.round(sampling_iterations)
+            self.steps = int(sampling_iterations * self.sampling_rate)
+            log.warning(
+                "The sampling_rate is not a devisor of steps.",
+                f"steps were adjusted to {self.steps}"
+                )
+        sampling_iterations = int(sampling_iterations)
+        total_fs = self.steps * time_step
 
-        atoms.set_constraint(self.get_constraint())
+        for constraint in self.constraint_list:
+            atoms.set_constraint(constraint.get_constraint(atoms))
 
         atoms_cache = []
 
@@ -414,11 +455,11 @@ class ASEMD(base.ProcessSingleAtom):
         db.initialize_database_groups()
 
         with trange(
-            total_fs,
+            self.steps,
             leave=True,
             ncols=120,
         ) as pbar:
-            for idx in range(self.steps):
+            for idx in range(sampling_iterations):
                 desc = []
                 stop = []
                 for modifier in self.modifier:
@@ -436,9 +477,6 @@ class ASEMD(base.ProcessSingleAtom):
                     if metric is not None:
                         metrics_dict[checker.get_quantity()].append(metric)
 
-                if "stress" in atoms.calc.implemented_properties:
-                    atoms.get_stress()
-
                 atoms_cache.append(freeze_copy_atoms(atoms))
                 if len(atoms_cache) == self.dump_rate:
                     db.add(
@@ -451,10 +489,10 @@ class ASEMD(base.ProcessSingleAtom):
                     )
                     atoms_cache = []
 
-                if idx % (1 / time_step) == 0:
-                    desc = get_desc(temperature, energy)
-                    pbar.set_description(desc)
-                    pbar.update(self.sampling_rate)
+                time = (idx+1) * self.sampling_rate * time_step
+                desc = get_desc(temperature, energy, time, total_fs)
+                pbar.set_description(desc)
+                pbar.update(self.sampling_rate)
 
                 if any(stop):
                     self.steps_before_stopping = len(metrics_dict["energy"])
@@ -475,33 +513,6 @@ class ASEMD(base.ProcessSingleAtom):
         self.metrics_dict.index.name = "step"
         self.steps_before_stopping = -1
 
-
-class FixedSphereASEMD(ASEMD):
-    """Attributes
-    ----------
-    atom_id: int
-        The id to use as the center of the sphere to fix.
-        If None, the closed atom to the center will be picked.
-    radius: float
-    """
-
-    atom_id = zntrack.zn.params(None)
-    selected_atom_id = zntrack.zn.outs()
-    radius = zntrack.zn.params()
-
-    def get_constraint(self):
-        atoms = self.get_atoms()
-        r_ij, d_ij = ase.geometry.get_distances(atoms.get_positions())
-        if self.atom_id is not None:
-            self.selected_atom_id = self.atom_id
-        else:
-            _, dist = ase.geometry.get_distances(
-                atoms.get_positions(), np.diag(atoms.get_cell() / 2)
-            )
-            self.selected_atom_id = np.argmin(dist)
-
-        if isinstance(self.selected_atom_id, np.generic):
-            self.selected_atom_id = self.selected_atom_id.item()
-
-        indices = np.nonzero(d_ij[self.selected_atom_id] < self.radius)[0]
-        return ase.constraints.FixAtoms(indices=indices)
+def get_desc(temperature: float, total_energy: float, time: float, total_time: float):
+    """TQDM description."""
+    return f"Temp: {temperature:.3f} K \t Energy {total_energy:.3f} eV \t Time {time:.1f}/{total_time:.1f} fs"

@@ -65,13 +65,13 @@ class _Nodes:
     ForceDecomposition = "ipsuite.analysis.ForceDecomposition"
     ThresholdCheck = "ipsuite.analysis.ThresholdCheck"
     TemperatureCheck = "ipsuite.analysis.TemperatureCheck"
+    FixedSphereConstraint = "ipsuite.calculators.FixedSphereConstraint"
 
     # calculators
     CP2KSinglePoint = "ipsuite.calculators.CP2KSinglePoint"
     CP2KYaml = "ipsuite.calculators.CP2KYaml"
     ASEGeoOpt = "ipsuite.calculators.ASEGeoOpt"
     ASEMD = "ipsuite.calculators.ASEMD"
-    FixedSphereASEMD = "ipsuite.calculators.FixedSphereASEMD"
     xTBSinglePoint = "ipsuite.calculators.xTBSinglePoint"
     LJSinglePoint = "ipsuite.calculators.LJSinglePoint"
     EMTSinglePoint = "ipsuite.calculators.EMTSinglePoint"

@@ -3,7 +3,7 @@ from .ase_geoopt import ASEGeoOpt
 from .ase_md import (
     ASEMD,
     BoxOscillatingRampModifier,
-    FixedSphereASEMD,
+    FixedSphereConstraint,
     LangevinThermostat,
     NPTThermostat,
     PressureRampModifier,
@@ -20,7 +20,7 @@ __all__ = [
     "CP2KYaml",
     "ASEGeoOpt",
     "ASEMD",
-    "FixedSphereASEMD",
+    "FixedSphereConstraint",
     "xTBSinglePoint",
     "LJSinglePoint",
     "LangevinThermostat",
