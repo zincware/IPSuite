@@ -1,8 +1,9 @@
 import tqdm
 from ase.calculators.emt import EMT
 from ase.calculators.lj import LennardJones
-
+import numpy as np
 from ipsuite import base
+from ase.calculators.calculator import all_changes
 
 
 class LJSinglePoint(base.ProcessAtoms):
@@ -46,4 +47,10 @@ class EMTSinglePoint(base.ProcessAtoms):
 
     def get_calculator(self, **kwargs):
         """Get an EMT ase calculator."""
-        return EMT()
+        return EMTCalculator()
+
+class EMTCalculator(EMT):
+  def calculate(self, atoms=None, properties=['energy'], system_changes=all_changes):
+    if atoms.cell.rank == 3 and "stress" not in properties:
+        properties.append("stress")
+    super().calculate(atoms=atoms, properties=properties, system_changes=system_changes)
