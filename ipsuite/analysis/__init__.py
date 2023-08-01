@@ -1,7 +1,9 @@
 from ipsuite.analysis.bin_property import (
     DipoleHistogram,
     EnergyHistogram,
+    EnergyUncertaintyHistogram,
     ForcesHistogram,
+    ForcesUncertaintyHistogram,
     StressHistogram,
 )
 from ipsuite.analysis.bond_stretch import BondStretchAnalyses
@@ -50,4 +52,6 @@ __all__ = [
     "ThresholdCheck",
     "BondStretchAnalyses",
     "StressHistogram",
+    "ForcesUncertaintyHistogram",
+    "EnergyUncertaintyHistogram",
 ]

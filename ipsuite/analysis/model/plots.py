@@ -103,6 +103,8 @@ def get_histogram_figure(
     datalabel: str,
     xlabel: str,
     ylabel: str,
+    x_lim: typing.Tuple[float, float] = None,
+    y_lim: typing.Tuple[float, float] = None,
     logy_scale=True,
     figsize: tuple = (10, 7),
 ) -> plt.Figure:
@@ -120,6 +122,10 @@ def get_histogram_figure(
         X-axis label.
     ylabel: str
         Y-axis label.
+    x_lim: tuple
+        X-axis limits.
+    y_lim: tuple
+        Y-axis limits.
     figsize: tuple
         Size of the Matplotlib figure
     """
@@ -133,4 +139,8 @@ def get_histogram_figure(
     ax.legend()
     if logy_scale:
         ax.set_yscale("log")
+    if x_lim is not None:
+        ax.set_xlim(x_lim)
+    if y_lim is not None:
+        ax.set_ylim(y_lim)
     return fig
