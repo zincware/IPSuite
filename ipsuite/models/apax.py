@@ -132,7 +132,7 @@ class ApaxEnsemble(base.IPSNode):
         calc:
             ase calculator object
         """
-        
+
         param_files = [m._parameter["data"]["model_path"] for m in self.models]
 
         calc = ASECalculator(param_files)
