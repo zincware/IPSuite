@@ -2,7 +2,6 @@ import logging
 import pathlib
 import shutil
 import typing
-from uuid import uuid4
 
 import ase.io
 import pandas as pd
@@ -11,13 +10,11 @@ import zntrack.utils
 from apax.md import ASECalculator
 from apax.train.run import run as apax_run
 from jax.config import config
-from tqdm import tqdm
 from zntrack import dvc, zn
 
 from ipsuite import base, utils
 from ipsuite.models.base import MLModel
 from ipsuite.static_data import STATIC_PATH
-from ipsuite.utils.ase_sim import freeze_copy_atoms
 from ipsuite.utils.helpers import check_duplicate_keys
 
 log = logging.getLogger(__name__)
