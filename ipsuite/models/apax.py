@@ -4,12 +4,12 @@ import shutil
 import typing
 from uuid import uuid4
 
-from apax.md import ASECalculator
-from apax.train.run import run as apax_run
 import ase.io
 import pandas as pd
 import yaml
 import zntrack.utils
+from apax.md import ASECalculator
+from apax.train.run import run as apax_run
 from jax.config import config
 from tqdm import tqdm
 from zntrack import dvc, zn
@@ -139,4 +139,3 @@ class ApaxEnsemble(base.IPSNode):
 
         calc = ASECalculator(param_files)
         return calc
-
