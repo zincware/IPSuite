@@ -412,6 +412,7 @@ class ASEMD(base.ProcessSingleAtom):
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
         atoms = self.get_atoms()
         atoms.calc = self.model.get_calculator(directory=self.model_outs)
+
         if (self.init_velocity is None) and (self.init_temperature is None):
             self.init_temperature = self.thermostat.temperature
 
@@ -427,8 +428,8 @@ class ASEMD(base.ProcessSingleAtom):
         thermostat = self.thermostat.get_thermostat(atoms=atoms)
 
         # initialize Atoms calculator and metrics_dict
-        _, _ = get_energy(atoms)
-        metrics_dict = {"energy": [], "temp": []}
+        # _, _ = get_energy(atoms)
+        metrics_dict = {"energy": [], "temperature": []}
         for checker in self.checker_list:
             checker.initialize(atoms)
             if checker.get_quantity() is not None:
@@ -440,8 +441,8 @@ class ASEMD(base.ProcessSingleAtom):
             sampling_iterations = np.round(sampling_iterations)
             self.steps = int(sampling_iterations * self.sampling_rate)
             log.warning(
-                "The sampling_rate is not a devisor of steps.",
-                f"steps were adjusted to {self.steps}",
+                "The sampling_rate is not a devisor of steps."
+                f"steps were adjusted to {self.steps}"
             )
         sampling_iterations = int(sampling_iterations)
         total_fs = self.steps * time_step
@@ -462,18 +463,22 @@ class ASEMD(base.ProcessSingleAtom):
             for idx in range(sampling_iterations):
                 desc = []
                 stop = []
+
                 for modifier in self.modifier:
                     modifier.modify(thermostat, step=idx, total_steps=self.steps)
+
+                # run MD for sampling_rate steps
                 thermostat.run(self.sampling_rate)
+
                 temperature, energy = get_energy(atoms)
                 metrics_dict["energy"].append(energy)
-                metrics_dict["temp"].append(temperature)
+                metrics_dict["temperature"].append(temperature)
 
                 for checker in self.checker_list:
                     stop.append(checker.check(atoms))
                     if stop[-1]:
                         log.critical(str(checker))
-                    metric = checker.get_value()
+                    metric = checker.get_value(atoms)
                     if metric is not None:
                         metrics_dict[checker.get_quantity()].append(metric)
 
@@ -517,6 +522,6 @@ class ASEMD(base.ProcessSingleAtom):
 def get_desc(temperature: float, total_energy: float, time: float, total_time: float):
     """TQDM description."""
     return (
-        f"Temp: {temperature:.3f} K \t Energy {total_energy:.3f} eV \t Time"
+        f"Temp.: {temperature:.3f} K \t Energy {total_energy:.3f} eV \t Time"
         f" {time:.1f}/{total_time:.1f} fs"
     )
