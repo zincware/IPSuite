@@ -513,7 +513,7 @@ class ASEMD(base.ProcessSingleAtom):
             )
         )
 
-        self.velocities_cache =  atoms.get_velocities()
+        self.velocities_cache = atoms.get_velocities()
         self.metrics_dict = pd.DataFrame(metrics_dict)
 
         self.metrics_dict.index.name = "step"
