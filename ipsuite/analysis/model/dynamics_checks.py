@@ -63,7 +63,7 @@ class ConnectivityCheck(base.CheckBase):
         if connectivity_change > 0:
             self.status = (
                 "Connectivity check failed: last iteration"
-                "covalent connectivity of the system changedß"
+                "covalent connectivity of the system changed"
             )
             return True
         else:
@@ -201,7 +201,7 @@ class ThresholdCheck(base.CheckBase):
         """Get the value of the property to check.
         Extracted into method so it can be subclassed.
         """
-        return atoms.calc.results[self.value]
+        return np.max(atoms.calc.results[self.value])
 
     def get_quantity(self):
         if self.max_value is None:
@@ -210,7 +210,8 @@ class ThresholdCheck(base.CheckBase):
             return f"{self.value}-threshold-max-{self.max_value}"
 
     def check(self, atoms) -> bool:
-        value = self.get_value(atoms)
+        # self.status = "None"
+        value = atoms.calc.results[self.value]
         self.values.append(value)
         mean = np.mean(self.values)
         std = np.std(self.values)
@@ -223,20 +224,28 @@ class ThresholdCheck(base.CheckBase):
             return False
 
         if self.max_value is not None and np.max(value) > self.max_value:
+            self.status = (
+                f"StandardDeviationCheck for {self.value} triggered by"
+                f" '{np.max(self.values[-1]):.3f}' > max_value {self.max_value}"
+            )
             return True
-
-        if self.max_std is not None and distance > self.max_std * std:
+        
+        elif self.max_std is not None and distance > self.max_std * std:
             self.status = (
                 f"StandardDeviationCheck for '{self.value}' triggered by"
-                f" '{self.values[-1]:.3f}' for '{np.mean(self.values):.3f} +-"
-                f" {np.std(self.values):.3f}' and max value '{self.max_value}'"
+                # dependent on self.value self.values can be an ndarray 
+                # then this status gives an error message np.max(self.values) 
+                # should be the best option here. but I'm not sure if it 
+                # is what you intended.
+                f" '{np.max(self.values[-1]):.3f}' for '{mean:.3f} +-"
+                f" {std:.3f}' and max value '{self.max_value}'"
             )
             return True
         else:
             self.status = (
                 f"StandardDeviationCheck for '{self.value}' passed with"
-                f" '{self.values[-1]:.3f}' for '{np.mean(self.values):.3f} +-"
-                f" {np.std(self.values):.3f}' and max value '{self.max_value}'"
+                f" '{np.max(self.values[-1]):.3f}' for '{mean:.3f} +-"
+                f" {std:.3f}' and max value '{self.max_value}'"
             )
             return False
 
