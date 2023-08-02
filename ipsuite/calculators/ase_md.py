@@ -304,11 +304,10 @@ class FixedSphereConstraint(base.IPSNode):
     """
 
     atom_id = zntrack.zn.params(None)
-    # selected_atom_id = zntrack.zn.outs()
+    selected_atom_id = zntrack.zn.outs()
     radius = zntrack.zn.params()
 
     def get_constraint(self, atoms):
-        # atoms = self.get_atoms()
         r_ij, d_ij = ase.geometry.get_distances(atoms.get_positions())
         if self.atom_id is not None:
             self.selected_atom_id = self.atom_id
@@ -339,6 +338,8 @@ class ASEMD(base.ProcessSingleAtom):
     checker_list: list[CheckNodes]
         checker, which tracks various metrics and stops the
         simulation after a threshold is exceeded.
+    constraint_list: list[ConstraintNodes]
+        constraints the atoms within the md simulation
     thermostat: ase dynamics
         dynamics method used for simulation
     init_temperature: float
@@ -346,11 +347,12 @@ class ASEMD(base.ProcessSingleAtom):
     init_velocity: np.array()
         starting velocities to continue a simulation
     steps: int
-        number of steps to simulate
+        total number of steps of the simulation
     sampling_rate: int
-        number of samples runs
+        number defines after how many md steps a structure
+        is loaded to the cache
     metrics_dict:
-        saved total energy and all metrics from the check nodes
+        saved total energy and metrics from the check nodes
     repeat: float
         number of repeats
     traj_file: Path
@@ -361,6 +363,8 @@ class ASEMD(base.ProcessSingleAtom):
     """
 
     model = zntrack.zn.deps()
+    init_velocities = zntrack.zn.deps(None)
+
     model_outs = zntrack.dvc.outs(zntrack.nwd / "model/")
     checker_list: list = zntrack.zn.nodes(None)
     constraint_list: list = zntrack.zn.nodes(None)
@@ -369,16 +373,14 @@ class ASEMD(base.ProcessSingleAtom):
 
     steps: int = zntrack.zn.params()
     init_temperature: float = zntrack.zn.params(None)
-    init_velocity = zntrack.zn.params(None)
     sampling_rate = zntrack.zn.params(1)
     repeat = zntrack.zn.params((1, 1, 1))
     dump_rate = zntrack.zn.params(1000)
 
     metrics_dict = zntrack.zn.plots()
+    velocities_cache = zntrack.zn.outs()
 
     steps_before_stopping = zntrack.zn.metrics()
-
-    velocity_cache = zntrack.zn.outs()
 
     traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.h5")
 
@@ -413,7 +415,7 @@ class ASEMD(base.ProcessSingleAtom):
         atoms = self.get_atoms()
         atoms.calc = self.model.get_calculator(directory=self.model_outs)
 
-        if (self.init_velocity is None) and (self.init_temperature is None):
+        if (self.init_velocities is None) and (self.init_temperature is None):
             self.init_temperature = self.thermostat.temperature
 
         if self.init_temperature is not None:
@@ -421,14 +423,13 @@ class ASEMD(base.ProcessSingleAtom):
             MaxwellBoltzmannDistribution(atoms, temperature_K=self.init_temperature)
         else:
             # Continue with last md step
-            atoms.set_velocities(self.init_velocity)
+            atoms.set_velocities(self.init_velocities)
 
         # initialize thermostat
         time_step = self.thermostat.time_step
         thermostat = self.thermostat.get_thermostat(atoms=atoms)
 
         # initialize Atoms calculator and metrics_dict
-        # _, _ = get_energy(atoms)
         metrics_dict = {"energy": [], "temperature": []}
         for checker in self.checker_list:
             checker.initialize(atoms)
@@ -512,7 +513,7 @@ class ASEMD(base.ProcessSingleAtom):
             )
         )
 
-        self.velocity_cache = atoms.get_velocities()
+        self.velocities_cache =  atoms.get_velocities()
         self.metrics_dict = pd.DataFrame(metrics_dict)
 
         self.metrics_dict.index.name = "step"
