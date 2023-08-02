@@ -17,7 +17,7 @@ class LJSinglePoint(base.ProcessAtoms):
 
         calculator = self.get_calculator()
 
-        for atom in tqdm.tqdm(self.atoms):
+        for atom in tqdm.tqdm(self.atoms, ncols=70):
             atom.calc = calculator
             atom.get_potential_energy()
             atom.get_stress()
@@ -40,7 +40,7 @@ class EMTSinglePoint(base.ProcessAtoms):
 
         calculator = self.get_calculator()
 
-        for atom in tqdm.tqdm(self.atoms):
+        for atom in tqdm.tqdm(self.atoms, ncols=70):
             atom.calc = calculator
             atom.get_potential_energy()
 

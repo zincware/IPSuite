@@ -152,14 +152,24 @@ class Mapping(ProcessAtoms):
     ----------
     molecules: list[ase.Atoms]
         A flat list of all molecules in the system.
+
+    Parameters
+    ----------
+    frozen: bool
+        If True, the neighbor list is only constructed for the first configuration.
+        The indices of the molecules will be frozen for all configurations.
     """
 
     molecules: list[ase.Atoms] = zntrack.zn.outs()
+    frozen: bool = zntrack.zn.params(False)
+
+    # TODO, should we allow to transfer the frozen mapping to another node?
+    #  mapping = Mapping(frozen=True, reference=mapping)
 
     def run(self):
         self.atoms = []
         self.molecules = []
-        for atoms in tqdm.tqdm(self.get_data()):
+        for atoms in tqdm.tqdm(self.get_data(), ncols=70):
             cg_atoms, molecules = self.forward_mapping(atoms)
             self.atoms.append(cg_atoms)
             self.molecules.extend(molecules)

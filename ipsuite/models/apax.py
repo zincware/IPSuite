@@ -1,15 +1,18 @@
 import logging
 import pathlib
 import shutil
+import typing
 
 import ase.io
 import pandas as pd
 import yaml
 import zntrack.utils
+from apax.md import ASECalculator
+from apax.train.run import run as apax_run
 from jax.config import config
 from zntrack import dvc, zn
 
-from ipsuite import utils
+from ipsuite import base, utils
 from ipsuite.models.base import MLModel
 from ipsuite.static_data import STATIC_PATH
 from ipsuite.utils.helpers import check_duplicate_keys
@@ -64,6 +67,10 @@ class Apax(MLModel):
         self.validation_data = utils.helpers.get_deps_if_node(
             self.validation_data, "atoms"
         )
+        self._handle_parameter_file()
+
+    def _post_load_(self) -> None:
+        self._handle_parameter_file()
 
     def _handle_parameter_file(self):
         self._parameter = yaml.safe_load(pathlib.Path(self.config).read_text())
@@ -80,8 +87,6 @@ class Apax(MLModel):
 
     def train_model(self):
         """Train the model using `apax.train.run`"""
-        from apax.train.run import run as apax_run
-
         apax_run(self._parameter, log_file=self.train_log_file)
 
     def move_metrics(self):
@@ -99,7 +104,6 @@ class Apax(MLModel):
 
         ase.io.write(self.train_data_file, self.data)
         ase.io.write(self.validation_data_file, self.validation_data)
-        self._handle_parameter_file()
 
         self.train_model()
         self.move_metrics()
@@ -110,7 +114,26 @@ class Apax(MLModel):
 
     def get_calculator(self, **kwargs):
         """Get a apax ase calculator"""
-        from apax.md import ASECalculator
 
-        self._handle_parameter_file()
         return ASECalculator(model_dir=self.model_directory)
+
+
+class ApaxEnsemble(base.IPSNode):
+    models: typing.List[Apax] = zntrack.zn.deps()
+
+    def run(self) -> None:
+        pass
+
+    def get_calculator(self, **kwargs) -> ase.calculators.calculator.Calculator:
+        """Property to return a model specific ase calculator object.
+
+        Returns
+        -------
+        calc:
+            ase calculator object
+        """
+
+        param_files = [m._parameter["data"]["model_path"] for m in self.models]
+
+        calc = ASECalculator(param_files)
+        return calc
