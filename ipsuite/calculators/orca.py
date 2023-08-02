@@ -19,7 +19,7 @@ class OrcaSinglePoint(base.ProcessAtoms):
         db.initialize_database_groups()
 
         calc = self.get_calculator()
-        for atoms in tqdm.tqdm(self.get_data()):
+        for atoms in tqdm.tqdm(self.get_data(), ncols=70):
             atoms.calc = calc
             atoms.get_potential_energy()
             db.add(znh5md.io.AtomsReader([atoms]))

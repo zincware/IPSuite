@@ -169,7 +169,7 @@ class Mapping(ProcessAtoms):
     def run(self):
         self.atoms = []
         self.molecules = []
-        for atoms in tqdm.tqdm(self.get_data()):
+        for atoms in tqdm.tqdm(self.get_data(), ncols=70):
             cg_atoms, molecules = self.forward_mapping(atoms)
             self.atoms.append(cg_atoms)
             self.molecules.extend(molecules)

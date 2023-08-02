@@ -421,7 +421,7 @@ class ForceDecomposition(base.AnalyseProcessAtoms):
         self.true_forces = {"all": [], "trans": [], "rot": [], "vib": []}
         self.pred_forces = {"all": [], "trans": [], "rot": [], "vib": []}
 
-        for atom in tqdm.tqdm(true_atoms):
+        for atom in tqdm.tqdm(true_atoms, ncols=70):
             atom_trans_forces, atom_rot_forces, atom_vib_forces = force_decomposition(
                 atom, mapping
             )
@@ -435,7 +435,7 @@ class ForceDecomposition(base.AnalyseProcessAtoms):
         self.true_forces["rot"] = np.concatenate(self.true_forces["rot"])
         self.true_forces["vib"] = np.concatenate(self.true_forces["vib"])
 
-        for atom in tqdm.tqdm(pred_atoms):
+        for atom in tqdm.tqdm(pred_atoms, ncols=70):
             atom_trans_forces, atom_rot_forces, atom_vib_forces = force_decomposition(
                 atom, mapping
             )
