@@ -25,7 +25,7 @@ class xTBSinglePoint(base.ProcessAtoms):
 
         calculator = self.get_calculator()
 
-        for atom in tqdm.tqdm(self.get_data()):
+        for atom in tqdm.tqdm(self.get_data(), ncols=70):
             atom.calc = calculator
             atom.get_potential_energy()
             self.atoms.append(freeze_copy_atoms(atom))
