@@ -60,7 +60,7 @@ def unwrap_system(atoms: ase.Atoms, components: list[np.ndarray]) -> list[ase.At
         if atoms.calc is not None:
             mol.calc = SinglePointCalculator(mol, forces=atoms.get_forces()[component])
         edges = edges_from_atoms(mol)
-        closest_atom = closest_atom_to_center(atoms)
+        closest_atom = closest_atom_to_center(mol)
         unwrap(mol, edges, idx=closest_atom)
         molecules.append(mol)
 

@@ -13,6 +13,7 @@ class _Nodes:
     MACE = "ipsuite.models.MACE"
     Nequip = "ipsuite.models.Nequip"
     Apax = "ipsuite.models.Apax"
+    ApaxEnsemble = "ipsuite.models.ApaxEnsemble"
 
     # Configuration Selection
     IndexSelection = "ipsuite.configuration_selection.IndexSelection"
@@ -48,6 +49,8 @@ class _Nodes:
     EnergyHistogram = "ipsuite.analysis.EnergyHistogram"
     ForcesHistogram = "ipsuite.analysis.ForcesHistogram"
     StressHistogram = "ipsuite.analysis.StressHistogram"
+    ForcesUncertaintyHistogram = "ipsuite.analysis.ForcesUncertaintyHistogram"
+    EnergyUncertaintyHistogram = "ipsuite.analysis.EnergyUncertaintyHistogram"
     ModelEnsembleAnalysis = "ipsuite.analysis.ModelEnsembleAnalysis"
     PredictionMetrics = "ipsuite.analysis.PredictionMetrics"
     ForceAngles = "ipsuite.analysis.ForceAngles"
@@ -75,6 +78,7 @@ class _Nodes:
     xTBSinglePoint = "ipsuite.calculators.xTBSinglePoint"
     LJSinglePoint = "ipsuite.calculators.LJSinglePoint"
     EMTSinglePoint = "ipsuite.calculators.EMTSinglePoint"
+    OrcaSinglePoint = "ipsuite.calculators.OrcaSinglePoint"
     ApaxJaxMD = "ipsuite.calculators.ApaxJaxMD"
 
     LangevinThermostat = "ipsuite.calculators.LangevinThermostat"

@@ -50,8 +50,9 @@ class BoxOscillatingRampModifier(base.IPSNode):
 
     Attributes
     ----------
-    end_cell: float, list[float]
-        cell to ramp to, cubic or tetragonal.
+    end_cell: float, list[float], optional
+        cell to ramp to, cubic or tetragonal. If None, the cell will oscillate
+        around the initial cell.
     cell_amplitude: float
         amplitude in oscillations of the diagonal cell elements
     num_oscillations: float
@@ -60,13 +61,15 @@ class BoxOscillatingRampModifier(base.IPSNode):
         interval in which the box size is changed.
     """
 
-    end_cell: int = zntrack.zn.params()
+    end_cell: int = zntrack.zn.params(None)
     cell_amplitude: typing.Union[float, list[float]] = zntrack.zn.params()
     num_oscillations: float = zntrack.zn.params()
     interval: int = zntrack.zn.params(1)
     _initial_cell = None
 
     def modify(self, thermostat, step, total_steps):
+        if self.end_cell is None:
+            self.end_cell = thermostat.atoms.get_cell()
         if self._initial_cell is None:
             self._initial_cell = thermostat.atoms.get_cell()
             if isinstance(self.end_cell, (float, int)):
