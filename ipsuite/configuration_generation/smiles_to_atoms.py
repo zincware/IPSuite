@@ -42,3 +42,35 @@ class SmilesToAtoms(base.IPSNode):
 
     def view(self) -> view:
         return view(self.atoms[0], viewer="x3d")
+
+
+class SmilesToConformers(base.IPSNode):
+    atoms = fields.Atoms()
+
+    smiles: str = zntrack.zn.params()
+    numConfs: int = zntrack.zn.params()
+    seed: int = zntrack.zn.params(42)
+    maxAttempts: int = zntrack.zn.params(1000)
+    cell: float = zntrack.zn.params(100)
+
+    def run(self):
+        mol = Chem.MolFromSmiles(self.smiles)
+        mol = Chem.AddHs(mol)
+        AllChem.EmbedMultipleConfs(
+            mol,
+            numConfs=self.numConfs,
+            randomSeed=self.seed,
+            maxAttempts=self.maxAttempts,
+        )
+        self.atoms = []
+        for conf in mol.GetConformers():
+            atoms = ase.Atoms(
+                positions=conf.GetPositions(),
+                numbers=[atom.GetAtomicNum() for atom in mol.GetAtoms()],
+            )
+            atoms.positions -= atoms.get_center_of_mass()
+
+            atoms.set_cell([self.cell, self.cell, self.cell])
+            atoms.center()
+
+            self.atoms.append(atoms)
