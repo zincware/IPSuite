@@ -35,9 +35,6 @@ class NaNCheck(base.CheckBase):
             self.status = "No NaN occurred"
             return False
 
-    def __str__(self):
-        return self.status
-
 
 class ConnectivityCheck(base.CheckBase):
     """Check to see whether the covalent connectivity of the system
@@ -69,9 +66,6 @@ class ConnectivityCheck(base.CheckBase):
         else:
             self.status = "covalent connectivity of the system is intact"
             return False
-
-    def __str__(self):
-        return self.status
 
 
 class EnergySpikeCheck(base.CheckBase):
@@ -116,9 +110,6 @@ class EnergySpikeCheck(base.CheckBase):
             self.status = "No energy spike occurred"
             return False
 
-    def __str__(self):
-        return self.status
-
 
 class TemperatureCheck(base.CheckBase):
     """Calculate and check teperature during a MD simulation
@@ -149,9 +140,6 @@ class TemperatureCheck(base.CheckBase):
                 f"T_max {self.max_temperature} K"
             )
             return False
-
-    def __str__(self):
-        return self.status
 
 
 class ThresholdCheck(base.CheckBase):
@@ -248,6 +236,3 @@ class ThresholdCheck(base.CheckBase):
                 f" {std:.3f}' and max value '{self.max_value}'"
             )
             return False
-
-    def __str__(self) -> str:
-        return self.status
