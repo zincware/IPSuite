@@ -198,7 +198,6 @@ class ThresholdCheck(base.CheckBase):
             return f"{self.value}-threshold-max-{self.max_value}"
 
     def check(self, atoms) -> bool:
-        # self.status = "None"
         value = atoms.calc.results[self.value]
         self.values.append(value)
         mean = np.mean(self.values)
@@ -218,13 +217,9 @@ class ThresholdCheck(base.CheckBase):
             )
             return True
 
-        elif self.max_std is not None and distance > self.max_std * std:
+        elif self.max_std is not None and np.max(distance) > self.max_std * std:
             self.status = (
                 f"StandardDeviationCheck for '{self.value}' triggered by"
-                # dependent on self.value self.values can be an ndarray
-                # then this status gives an error message np.max(self.values)
-                # should be the best option here. but I'm not sure if it
-                # is what you intended.
                 f" '{np.max(self.values[-1]):.3f}' for '{mean:.3f} +-"
                 f" {std:.3f}' and max value '{self.max_value}'"
             )
