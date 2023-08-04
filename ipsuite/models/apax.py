@@ -2,6 +2,7 @@ import logging
 import pathlib
 import shutil
 import typing
+from typing import Optional
 
 import ase.io
 import pandas as pd
@@ -41,6 +42,8 @@ class Apax(MLModel):
 
     config: str = dvc.params("apax.yaml")
     validation_data = zn.deps()
+    model: Optional[MLModel] = zntrack.zn.deps(None)
+
 
     model_directory: pathlib.Path = dvc.outs(zntrack.nwd / "apax_model")
     train_log_file: pathlib.Path = dvc.outs(zntrack.nwd / "train.log")
@@ -72,18 +75,30 @@ class Apax(MLModel):
     def _post_load_(self) -> None:
         self._handle_parameter_file()
 
-    def _handle_parameter_file(self):
+    def _handle_parameter_file(self):                                            
+
         self._parameter = yaml.safe_load(pathlib.Path(self.config).read_text())
 
         custom_parameters = {
-            "model_path": self.model_directory.as_posix(),
-            "model_name": "",
-            "train_data_path": self.train_data_file.as_posix(),
-            "val_data_path": self.validation_data_file.as_posix(),
-        }
+                "model_path": self.model_directory.as_posix(),
+                "model_name": "",
+                "train_data_path": self.train_data_file.as_posix(),
+                "val_data_path": self.validation_data_file.as_posix(),
+            }
+
+        if self.model is not None:
+
+            param_files = self.model._parameter["data"]["model_path"] 
+            base_path = {
+                "base_model_checkpoint": param_files + "/best"
+            }
+
+            self._parameter["checkpoints"].update(base_path) 
+
 
         check_duplicate_keys(custom_parameters, self._parameter["data"], log)
         self._parameter["data"].update(custom_parameters)
+
 
     def train_model(self):
         """Train the model using `apax.train.run`"""
@@ -98,8 +113,9 @@ class Apax(MLModel):
         metrics_df = pd.read_csv(self.metrics_epoch)
         self.metrics = metrics_df.iloc[-1].to_dict()
 
-    def run(self):
+    def run(self):                                                                    
         """Primary method to run which executes all steps of the model training"""
+
         config.update("jax_enable_x64", self.jax_enable_x64)
 
         ase.io.write(self.train_data_file, self.data)
@@ -112,11 +128,14 @@ class Apax(MLModel):
         with pathlib.Path(self.train_log_file).open("a") as f:
             f.write("Training completed\n")
 
+
     def get_calculator(self, **kwargs):
-        """Get a apax ase calculator"""
+        """Get an apax ase calculator"""
 
         return ASECalculator(model_dir=self.model_directory)
+    
 
+    
 
 class ApaxEnsemble(base.IPSNode):
     models: typing.List[Apax] = zntrack.zn.deps()
