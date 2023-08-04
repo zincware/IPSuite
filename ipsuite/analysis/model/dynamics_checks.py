@@ -14,6 +14,9 @@ class NaNCheck(base.CheckBase):
     during a simulation.
     """
 
+    def initialize(self, atoms: ase.Atoms) -> None:
+        self.is_initialized = True
+
     def check(self, atoms: ase.Atoms) -> bool:
         positions = atoms.positions
         epot = atoms.get_potential_energy()
@@ -23,7 +26,14 @@ class NaNCheck(base.CheckBase):
         epot_is_none = epot is None
         forces_is_none = np.any(forces is None)
 
-        return any([positions_is_none, epot_is_none, forces_is_none])
+        if any([positions_is_none, epot_is_none, forces_is_none]):
+            self.status = (
+                "NaN check failed: last iterationpositions energy or forces = NaN"
+            )
+            return True
+        else:
+            self.status = "No NaN occurred"
+            return False
 
 
 class ConnectivityCheck(base.CheckBase):
@@ -47,8 +57,15 @@ class ConnectivityCheck(base.CheckBase):
         cm = self.nl.get_connectivity_matrix(sparse=False)
 
         connectivity_change = np.sum(np.abs(self.first_cm - cm))
-
-        return connectivity_change > 0
+        if connectivity_change > 0:
+            self.status = (
+                "Connectivity check failed: last iteration"
+                "covalent connectivity of the system changed"
+            )
+            return True
+        else:
+            self.status = "covalent connectivity of the system is intact"
+            return False
 
 
 class EnergySpikeCheck(base.CheckBase):
@@ -76,7 +93,22 @@ class EnergySpikeCheck(base.CheckBase):
     def check(self, atoms: ase.Atoms) -> bool:
         epot = atoms.get_potential_energy()
         # energy is negative, hence sign convention
-        return epot < self.max_energy or epot > self.min_energy
+        if epot < self.max_energy:
+            self.status = (
+                "Energy spike check failed: last iteration"
+                f"E {epot} > E_max {self.max_energy}"
+            )
+            return True
+
+        elif epot > self.min_energy:
+            self.status = (
+                "Energy spike check failed: last iteration"
+                f"E {epot} < E_min {self.min_energy}"
+            )
+            return True
+        else:
+            self.status = "No energy spike occurred"
+            return False
 
 
 class TemperatureCheck(base.CheckBase):
@@ -90,28 +122,24 @@ class TemperatureCheck(base.CheckBase):
 
     max_temperature: float = zntrack.zn.params(10000.0)
 
+    def initialize(self, atoms: ase.Atoms) -> None:
+        self.is_initialized = True
+
     def check(self, atoms):
         self.temperature, _ = get_energy(atoms)
-        unstable = self.temperature > self.max_temperature
 
-        if unstable:
+        if self.temperature > self.max_temperature:
             self.status = (
-                f"Temperature Check failed: last {self.temperature} >"
-                f" {self.max_temperature}"
+                "Temperature Check failed last iteration"
+                f"T {self.temperature} K > T_max {self.max_temperature} K"
             )
+            return True
         else:
-            self.status = f"Temperature Check {self.temperature} < {self.max_temperature}"
-
-        return unstable
-
-    def get_metric(self):
-        return {"temperature": self.temperature}
-
-    def __str__(self):
-        return self.status
-
-    def get_desc(self) -> str:
-        return str(self)
+            self.status = (
+                f"Temperature Check: T {self.temperature} K <"
+                f"T_max {self.max_temperature} K"
+            )
+            return False
 
 
 class ThresholdCheck(base.CheckBase):
@@ -156,17 +184,21 @@ class ThresholdCheck(base.CheckBase):
 
     def _post_load_(self) -> None:
         self.values = collections.deque(maxlen=self.window_size)
-        self.status = self.__class__.__name__
 
     def get_value(self, atoms):
         """Get the value of the property to check.
-
         Extracted into method so it can be subclassed.
         """
-        return atoms.calc.results[self.value]
+        return np.max(atoms.calc.results[self.value])
+
+    def get_quantity(self):
+        if self.max_value is None:
+            return f"{self.value}-threshold-std-{self.max_std}"
+        else:
+            return f"{self.value}-threshold-max-{self.max_value}"
 
     def check(self, atoms) -> bool:
-        value = self.get_value(atoms)
+        value = atoms.calc.results[self.value]
         self.values.append(value)
         mean = np.mean(self.values)
         std = np.std(self.values)
@@ -179,19 +211,23 @@ class ThresholdCheck(base.CheckBase):
             return False
 
         if self.max_value is not None and np.max(value) > self.max_value:
-            return True
-
-        if self.max_std is not None and distance > self.max_std * std:
             self.status = (
-                f"StandardDeviationCheck for '{self.value}' triggered by"
-                f" '{self.values[-1]:.3f}' for '{np.mean(self.values):.3f} +-"
-                f" {np.std(self.values):.3f}' and max value '{self.max_value}'"
+                f"StandardDeviationCheck for {self.value} triggered by"
+                f" '{np.max(self.values[-1]):.3f}' > max_value {self.max_value}"
             )
             return True
-        return False
 
-    def __str__(self) -> str:
-        return self.status
-
-    def get_desc(self) -> str:
-        return str(self)
+        elif self.max_std is not None and np.max(distance) > self.max_std * std:
+            self.status = (
+                f"StandardDeviationCheck for '{self.value}' triggered by"
+                f" '{np.max(self.values[-1]):.3f}' for '{mean:.3f} +-"
+                f" {std:.3f}' and max value '{self.max_value}'"
+            )
+            return True
+        else:
+            self.status = (
+                f"StandardDeviationCheck for '{self.value}' passed with"
+                f" '{np.max(self.values[-1]):.3f}' for '{mean:.3f} +-"
+                f" {std:.3f}' and max value '{self.max_value}'"
+            )
+            return False

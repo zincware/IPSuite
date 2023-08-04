@@ -28,12 +28,6 @@ class DebugCheck(base.CheckBase):
         self.counter += 1
         return False
 
-    def __str__(self):
-        return self.status
-
-    def get_desc(self) -> str:
-        return str(self)
-
 
 def test_ase_geoopt(proj_path, cu_box):
     cu_box = cu_box[0]
