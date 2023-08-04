@@ -303,16 +303,32 @@ class FixedSphereConstraint(base.IPSNode):
     atom_id: int
         The id to use as the center of the sphere to fix.
         If None, the closed atom to the center will be picked.
+    atom_type: str, optional
+        The type of the atom to fix. E.g. if
+        atom_type = H, atom_id = 1, the first
+        hydrogen atom will be fixed. If None,
+        the first atom will be fixed, no matter the type.
     radius: float
     """
 
     atom_id = zntrack.zn.params(None)
+    atom_type = zntrack.zn.params(None)
     selected_atom_id = zntrack.zn.outs()
     radius = zntrack.zn.params()
 
+    def _post_init_(self):
+        if self.atom_type is not None and self.atom_id is None:
+            raise ValueError("If atom_type is given, atom_id must be given as well.")
+
     def get_constraint(self, atoms):
         r_ij, d_ij = ase.geometry.get_distances(atoms.get_positions())
-        if self.atom_id is not None:
+
+        if self.atom_type is not None:
+            self.selected_atom_id = np.where(
+                np.array(atoms.get_chemical_symbols()) == self.atom_type
+            )[0][self.atom_id]
+
+        elif self.atom_id is not None:
             self.selected_atom_id = self.atom_id
         else:
             _, dist = ase.geometry.get_distances(
