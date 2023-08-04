@@ -70,7 +70,8 @@ class SmilesToConformers(base.IPSNode):
             )
             atoms.positions -= atoms.get_center_of_mass()
 
-            atoms.set_cell([self.cell, self.cell, self.cell])
-            atoms.center()
+            if self.cell is not None:
+                atoms.set_cell([self.cell, self.cell, self.cell])
+                atoms.center()
 
             self.atoms.append(atoms)
