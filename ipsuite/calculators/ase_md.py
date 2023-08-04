@@ -324,8 +324,6 @@ class FixedSphereConstraint(base.IPSNode):
         r_ij, d_ij = ase.geometry.get_distances(atoms.get_positions())
 
         if self.atom_type is not None:
-            if self.atom_id is None:
-                raise ValueError("If atom_type is given, atom_id must be given as well.")
             self.selected_atom_id = np.where(
                 np.array(atoms.get_chemical_symbols()) == self.atom_type
             )[0][self.atom_id]
