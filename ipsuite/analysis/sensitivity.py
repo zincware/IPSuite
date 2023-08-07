@@ -104,7 +104,7 @@ class IsConstraintMD(typing.Protocol):
     radius: float
 
 
-class AnalyseSingleForceSensitivity(zntrack.Node):
+class AnalyseSingleForceSensitivity(base.IPSNode):
     data: list[list[ase.Atoms]] = zntrack.zn.deps()
     sim_list: list = zntrack.zn.deps()  # list["ASEMD"]
 
