@@ -4,6 +4,7 @@ import ase.geometry
 import ase.io
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import scipy
 import zntrack
 
@@ -103,46 +104,57 @@ class IsConstraintMD(typing.Protocol):
     radius: float
 
 
-class AnalyseSingleForceSensitivity(base.IPSNode):
-    """Attributes
-    ----------
-    sim_list : list[]
-    """
+class AnalyseSingleForceSensitivity(zntrack.Node):
+    data: list[list[ase.Atoms]] = zntrack.zn.deps()
+    sim_list: list = zntrack.zn.deps()  # list["ASEMD"]
 
-    sim_list: typing.List[IsConstraintMD] = zntrack.zn.deps()
-    atoms_list = zntrack.zn.deps()
-    plots = zntrack.dvc.outs(zntrack.nwd / "plots")
+    alpha: float = zntrack.zn.params(
+        0.05
+    )  # Desired significance level (e.g., 95% confidence interval)
+
+    sensitivity: pd.DataFrame = zntrack.zn.plots()
+    sensitivity_plot: str = zntrack.dvc.outs(zntrack.nwd / "sensitivity.png")
+
+    def t_confidence_interval(self, data):
+        """Returns the confidence interval for the given data and significance level."""
+        df = len(data) - 1
+
+        sample_variance = np.var(data, ddof=1)
+        # lower_chi2 = stats.chi2.ppf(alpha / 2, df)
+        upper_chi2 = scipy.stats.chi2.ppf(1 - self.alpha / 2, df)
+
+        lower_bound = np.sqrt((df * sample_variance) / upper_chi2)
+        # upper_bound = np.sqrt((df * sample_variance) / lower_chi2)
+
+        return np.std(data) - lower_bound
+
+    def get_values(self, data, item):
+        forces = np.array([x.get_forces() for x in data])
+        val = np.linalg.norm(forces[:, item], axis=1)
+        return np.std(val, ddof=1), self.t_confidence_interval(val)
 
     def run(self):
-        self.plots.mkdir(parents=True, exist_ok=True)
-        if len(self.sim_list) != len(self.atoms_list):
-            raise ValueError("The size of simulations and atoms list must be equal.")
+        values = []
 
-        force_std = []
-        for configurations in self.atoms_list:
-            forces = [atoms.get_forces() for atoms in configurations.results]
-            forces = np.stack(forces)[:, self.sim_list[0].selected_atom_id]
+        self.data = [x.atoms if isinstance(x, zntrack.Node) else x for x in self.data]
 
-            force_std.append(
-                [
-                    _compute_std_leave_one_out(forces[..., 0]),
-                    _compute_std_leave_one_out(forces[..., 1]),
-                    _compute_std_leave_one_out(forces[..., 2]),
-                    _compute_std_leave_one_out(np.linalg.norm(forces, axis=-1)),
-                ]
-            )
+        for atoms, sim in zip(self.data, self.sim_list):
+            radius = sim.constraint_list[0].radius
+            atom_id = sim.constraint_list[0].get_selected_atom_id(atoms[0])
 
-        force_std = np.array(force_std)
-        # shape (n, 4, 2)
+            value = self.get_values(atoms, atom_id)
+            values.append({"radius": radius, "std": value[0], "ci": value[1]})
 
-        for idx, label in enumerate(["x", "y", "z", "norm"]):
-            fig, ax = plt.subplots()
-            ax.errorbar(
-                [x.radius for x in self.sim_list],
-                force_std[:, idx, 0],
-                yerr=force_std[:, idx, 1],
-                capsize=5,
-            )
-            ax.set_ylabel(rf"Standard deviation $\sigma$ of force $f_\mathrm{{{label}}}$")
-            ax.set_xlabel(r"Distance $r ~ / ~ \AA$")
-            fig.savefig(self.plots / f"std_force_vs_radius_{label}.png")
+        self.sensitivity = pd.DataFrame(values).set_index("radius").sort_index()
+
+        fig, ax = plt.subplots()
+        ax.errorbar(
+            x=self.sensitivity.index,
+            y=self.sensitivity["std"],
+            yerr=self.sensitivity["ci"],
+            capsize=5,
+        )
+        ax.set_ylabel(r"Standard deviation $\sigma$ of force $f$")
+        ax.set_xlabel(r"Distance $r ~ / ~ \AA$")
+        ax.set_yscale("log")
+        fig.savefig(self.sensitivity_plot, bbox_inches="tight")

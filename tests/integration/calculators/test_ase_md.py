@@ -152,3 +152,60 @@ def test_ase_md_fixed_sphere(proj_path, cu_box):
     assert np.sum(md.atoms[0][1].position - md.atoms[-1][1].position) < 1e-6
     # atoms outside the sphere should move
     assert abs(np.sum(md.atoms[0][4].position - md.atoms[-1][4].position)) > 1e-6
+
+
+def test_locality_test(proj_path, cu_box):
+    """Test that the 'AnalyseSingleForceSensitivity' runs.
+
+    Notes: the forces on the frozen atom are zero with EMT.
+        This should be replaced by some other force field eventually.
+        For now this is just a test that the code runs.
+    """
+    ase.io.write("cu_box.xyz", cu_box)
+    thermostat = ips.calculators.LangevinThermostat(
+        time_step=1,
+        temperature=100,
+        friction=1,
+    )
+
+    constraints = [
+        ips.calculators.FixedSphereConstraint(
+            atom_id=0,
+            radius=1.0,
+        ),
+        ips.calculators.FixedSphereConstraint(
+            atom_id=0,
+            radius=3.0,
+        ),
+    ]
+
+    with ips.Project(automatic_node_names=True) as project:
+        data = ips.AddData(file="cu_box.xyz")
+        model = ips.calculators.EMTSinglePoint(data=data.atoms)
+        md1 = ips.calculators.ASEMD(
+            data=data.atoms,
+            model=model,
+            thermostat=thermostat,
+            init_temperature=1.0,
+            steps=30,
+            sampling_rate=1,
+            dump_rate=33,
+            constraint_list=[constraints[0]],
+        )
+        md2 = ips.calculators.ASEMD(
+            data=data.atoms,
+            model=model,
+            thermostat=thermostat,
+            init_temperature=1.0,
+            steps=30,
+            sampling_rate=1,
+            dump_rate=33,
+            constraint_list=[constraints[1]],
+        )
+
+        ips.analysis.AnalyseSingleForceSensitivity(
+            data=[md1, md2],
+            sim_list=[md1, md2],
+        )
+
+    project.run()
