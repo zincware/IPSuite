@@ -163,7 +163,7 @@ class BondStretchAnalyses(ProcessAtoms):
                     alpha=0.2,
                     label=(
                         f"max uncertainty {chem_symbols[i]}="
-                        f" {max_uncertainty:.2f} meV/atom"
+                        f" {max_uncertainty:.2f} eV/atom"
                     ),
                 )
             axs[0].set_xlabel(r"bond length $r_{i, j}$ / $\AA$")
