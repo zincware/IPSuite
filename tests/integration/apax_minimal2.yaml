@@ -1,5 +1,5 @@
 n_epochs: 5
-seed: 666
+seed: 667
 
 data:
   batch_size: 1

@@ -32,7 +32,7 @@ def load_data(
 
     atoms = []
     for config, atom in enumerate(
-        tqdm.tqdm(ase.io.iread(file.as_posix()), desc="Reading File")
+        tqdm.tqdm(ase.io.iread(file.as_posix()), desc="Reading File", ncols=70)
     ):
         if lines_to_read is not None and config >= lines_to_read:
             break

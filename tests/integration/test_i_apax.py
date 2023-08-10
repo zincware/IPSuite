@@ -58,3 +58,59 @@ def test_model_training(proj_path, traj_file):
         assert isinstance(val, float)
     for val in analysis.forces.values():
         assert isinstance(val, float)
+
+
+def test_apax_ensemble(proj_path, traj_file):
+    shutil.copy(TEST_PATH / "apax_minimal.yaml", proj_path / "apax_minimal.yaml")
+    shutil.copy(TEST_PATH / "apax_minimal2.yaml", proj_path / "apax_minimal2.yaml")
+
+    thermostat = ips.calculators.LangevinThermostat(
+        time_step=1.0, temperature=100.0, friction=0.01
+    )
+
+    with ips.Project(automatic_node_names=True) as project:
+        raw_data = ips.AddData(file=traj_file, name="raw_data")
+        train_selection = UniformEnergeticSelection(
+            data=raw_data.atoms, n_configurations=10, name="data"
+        )
+
+        val_selection = UniformEnergeticSelection(
+            data=train_selection.excluded_atoms, n_configurations=8, name="val_data"
+        )
+
+        model1 = Apax(
+            config="apax_minimal.yaml",
+            data=train_selection.atoms,
+            validation_data=val_selection.atoms,
+        )
+
+        model2 = Apax(
+            config="apax_minimal2.yaml",
+            data=train_selection.atoms,
+            validation_data=val_selection.atoms,
+        )
+
+        ensemble_model = ips.models.ApaxEnsemble([model1, model2])
+
+        md = ips.calculators.ASEMD(
+            data=raw_data.atoms,
+            model=ensemble_model,
+            thermostat=thermostat,
+            steps=20,
+            sampling_rate=1,
+        )
+
+        uncertainty_selection = ips.configuration_selection.ThresholdSelection(
+            data=md, n_configurations=1, threshold=0.0001
+        )
+
+        prediction = ips.analysis.Prediction(data=raw_data, model=ensemble_model)
+        prediction_metrics = ips.analysis.PredictionMetrics(data=prediction)
+
+    project.run()
+
+    uncertainty_selection.load()
+    md.load()
+
+    uncertainties = [x.calc.results["energy_uncertainty"] for x in md.atoms]
+    assert [md.atoms[np.argmax(uncertainties)]] == uncertainty_selection.atoms

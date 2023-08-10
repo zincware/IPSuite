@@ -80,7 +80,7 @@ class KernelSelection(ConfigurationSelection):
 
         self.kernel_results = []
         # TODO do not use the atoms in atoms_list but store the ids directly
-        for _ in tqdm.trange(self.n_configurations):
+        for _ in tqdm.trange(self.n_configurations, ncols=70):
             self.kernel.reference = self.initial_configurations + selected_atoms
             self.kernel.run()
 

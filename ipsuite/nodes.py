@@ -13,6 +13,7 @@ class _Nodes:
     MACE = "ipsuite.models.MACE"
     Nequip = "ipsuite.models.Nequip"
     Apax = "ipsuite.models.Apax"
+    ApaxEnsemble = "ipsuite.models.ApaxEnsemble"
 
     # Configuration Selection
     IndexSelection = "ipsuite.configuration_selection.IndexSelection"
@@ -33,6 +34,7 @@ class _Nodes:
     # Configuration Generation
     Packmol = "ipsuite.configuration_generation.Packmol"
     SmilesToAtoms = "ipsuite.configuration_generation.SmilesToAtoms"
+    SmilesToConformers = "ipsuite.configuration_generation.SmilesToConformers"
 
     # Data
     AddData = "ipsuite.data_loading.AddData"
@@ -48,6 +50,8 @@ class _Nodes:
     EnergyHistogram = "ipsuite.analysis.EnergyHistogram"
     ForcesHistogram = "ipsuite.analysis.ForcesHistogram"
     StressHistogram = "ipsuite.analysis.StressHistogram"
+    ForcesUncertaintyHistogram = "ipsuite.analysis.ForcesUncertaintyHistogram"
+    EnergyUncertaintyHistogram = "ipsuite.analysis.EnergyUncertaintyHistogram"
     ModelEnsembleAnalysis = "ipsuite.analysis.ModelEnsembleAnalysis"
     PredictionMetrics = "ipsuite.analysis.PredictionMetrics"
     ForceAngles = "ipsuite.analysis.ForceAngles"
@@ -65,16 +69,17 @@ class _Nodes:
     ForceDecomposition = "ipsuite.analysis.ForceDecomposition"
     ThresholdCheck = "ipsuite.analysis.ThresholdCheck"
     TemperatureCheck = "ipsuite.analysis.TemperatureCheck"
+    FixedSphereConstraint = "ipsuite.calculators.FixedSphereConstraint"
 
     # calculators
     CP2KSinglePoint = "ipsuite.calculators.CP2KSinglePoint"
     CP2KYaml = "ipsuite.calculators.CP2KYaml"
     ASEGeoOpt = "ipsuite.calculators.ASEGeoOpt"
     ASEMD = "ipsuite.calculators.ASEMD"
-    FixedSphereASEMD = "ipsuite.calculators.FixedSphereASEMD"
     xTBSinglePoint = "ipsuite.calculators.xTBSinglePoint"
     LJSinglePoint = "ipsuite.calculators.LJSinglePoint"
     EMTSinglePoint = "ipsuite.calculators.EMTSinglePoint"
+    OrcaSinglePoint = "ipsuite.calculators.OrcaSinglePoint"
     ApaxJaxMD = "ipsuite.calculators.ApaxJaxMD"
 
     LangevinThermostat = "ipsuite.calculators.LangevinThermostat"
