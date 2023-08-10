@@ -108,8 +108,11 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
         )
 
         try:
-            true_forces = np.reshape([x.get_forces() for x in true_data], (-1, 3))
-            pred_forces = np.reshape([x.get_forces() for x in pred_data], (-1, 3))
+            true_forces = [np.reshape(x.get_forces(), (-1, 3)) for x in true_data]
+            true_forces = np.concatenate(true_forces, axis=0)
+
+            pred_forces = [np.reshape(x.get_forces(), (-1, 3)) for x in pred_data]
+            pred_forces = np.concatenate(pred_forces, axis=0)
 
             self.forces_df = pd.DataFrame(
                 {
