@@ -379,6 +379,7 @@ class ASEMD(base.ProcessSingleAtom):
     sampling_rate = zntrack.zn.params(1)
     repeat = zntrack.zn.params((1, 1, 1))
     dump_rate = zntrack.zn.params(1000)
+    pop_last = zntrack.zn.params(False)
 
     metrics_dict = zntrack.zn.plots()
     velocities_cache = zntrack.zn.outs()
@@ -446,7 +447,7 @@ class ASEMD(base.ProcessSingleAtom):
             self.steps = int(sampling_iterations * self.sampling_rate)
             log.warning(
                 "The sampling_rate is not a devisor of steps."
-                f"steps were adjusted to {self.steps}"
+                f"Steps were adjusted to {self.steps}"
             )
         sampling_iterations = int(sampling_iterations)
         total_fs = self.steps * time_step
@@ -458,69 +459,80 @@ class ASEMD(base.ProcessSingleAtom):
 
         db = znh5md.io.DataWriter(self.traj_file)
         db.initialize_database_groups()
+        self.steps_before_stopping = -1
 
         with trange(
             self.steps,
             leave=True,
             ncols=120,
         ) as pbar:
-            for idx in range(sampling_iterations):
+            for idx_outer in range(sampling_iterations):
                 desc = []
                 stop = []
 
-                for modifier in self.modifier:
-                    modifier.modify(thermostat, step=idx, total_steps=self.steps)
-
                 # run MD for sampling_rate steps
-                thermostat.run(self.sampling_rate)
-
-                temperature, energy = get_energy(atoms)
-                metrics_dict["energy"].append(energy)
-                metrics_dict["temperature"].append(temperature)
-
-                for checker in self.checker_list:
-                    stop.append(checker.check(atoms))
-                    if stop[-1]:
-                        log.critical(str(checker))
-                    metric = checker.get_value(atoms)
-                    if metric is not None:
-                        metrics_dict[checker.get_quantity()].append(metric)
-
-                atoms_cache.append(freeze_copy_atoms(atoms))
-                if len(atoms_cache) == self.dump_rate:
-                    db.add(
-                        znh5md.io.AtomsReader(
-                            atoms_cache,
-                            frames_per_chunk=self.dump_rate,
-                            step=1,
-                            time=self.sampling_rate,
+                for idx_inner in range(self.sampling_rate):
+                    for modifier in self.modifier:
+                        modifier.modify(
+                            thermostat,
+                            step=idx_outer * self.sampling_rate + idx_inner,
+                            total_steps=self.steps,
                         )
-                    )
-                    atoms_cache = []
 
-                time = (idx + 1) * self.sampling_rate * time_step
-                desc = get_desc(temperature, energy, time, total_fs)
-                pbar.set_description(desc)
-                pbar.update(self.sampling_rate)
+                    thermostat.run(1)
+
+                    for checker in self.checker_list:
+                        stop.append(checker.check(atoms))
+                        if stop[-1]:
+                            log.critical(str(checker))
+
+                    if any(stop):
+                        break
 
                 if any(stop):
-                    self.steps_before_stopping = len(metrics_dict["energy"])
+                    self.steps_before_stopping = (
+                        idx_outer * self.sampling_rate + idx_inner
+                    )
                     break
+                else:
+                    metrics_dict = update_metrics_dict(
+                        atoms, metrics_dict, self.checker_list
+                    )
+                    atoms_cache.append(freeze_copy_atoms(atoms))
+                    if len(atoms_cache) == self.dump_rate:
+                        db.add(
+                            znh5md.io.AtomsReader(
+                                atoms_cache,
+                                frames_per_chunk=self.dump_rate,
+                                step=1,
+                                time=idx_inner,
+                            )
+                        )
+                        atoms_cache = []
+
+                    time = (idx_outer + 1) * self.sampling_rate * time_step
+                    temperature = metrics_dict["temperature"][-1]
+                    energy = metrics_dict["energy"][-1]
+                    desc = get_desc(temperature, energy, time, total_fs)
+                    pbar.set_description(desc)
+                    pbar.update(self.sampling_rate)
+
+        if not self.pop_last and self.steps_before_stopping != -1:
+            metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checker_list)
+            atoms_cache.append(freeze_copy_atoms(atoms))
 
         db.add(
             znh5md.io.AtomsReader(
                 atoms_cache,
                 frames_per_chunk=self.dump_rate,
                 step=1,
-                time=self.sampling_rate,
+                time=idx_inner,
             )
         )
-
         self.velocities_cache = atoms.get_velocities()
         self.metrics_dict = pd.DataFrame(metrics_dict)
 
         self.metrics_dict.index.name = "step"
-        self.steps_before_stopping = -1
 
 
 def get_desc(temperature: float, total_energy: float, time: float, total_time: float):
@@ -529,3 +541,15 @@ def get_desc(temperature: float, total_energy: float, time: float, total_time: f
         f"Temp.: {temperature:.3f} K \t Energy {total_energy:.3f} eV \t Time"
         f" {time:.1f}/{total_time:.1f} fs"
     )
+
+
+def update_metrics_dict(atoms, metrics_dict, checker_list):
+    temperature, energy = get_energy(atoms)
+    metrics_dict["energy"].append(energy)
+    metrics_dict["temperature"].append(temperature)
+    for checker in checker_list:
+        metric = checker.get_value(atoms)
+        if metric is not None:
+            metrics_dict[checker.get_quantity()].append(metric)
+
+    return metrics_dict
