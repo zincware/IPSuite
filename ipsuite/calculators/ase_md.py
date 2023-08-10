@@ -382,7 +382,6 @@ class ASEMD(base.ProcessSingleAtom):
     """
 
     model = zntrack.zn.deps()
-    init_velocities = zntrack.zn.deps(None)
 
     model_outs = zntrack.dvc.outs(zntrack.nwd / "model/")
     checker_list: list = zntrack.zn.nodes(None)
@@ -391,14 +390,13 @@ class ASEMD(base.ProcessSingleAtom):
     thermostat = zntrack.zn.nodes()
 
     steps: int = zntrack.zn.params()
-    init_temperature: float = zntrack.zn.params(None)
     sampling_rate = zntrack.zn.params(1)
     repeat = zntrack.zn.params((1, 1, 1))
     dump_rate = zntrack.zn.params(1000)
     pop_last = zntrack.zn.params(False)
+    use_momenta = zntrack.zn.params(False)
 
     metrics_dict = zntrack.zn.plots()
-    velocities_cache = zntrack.zn.outs()
 
     steps_before_stopping = zntrack.zn.metrics()
 
@@ -435,15 +433,9 @@ class ASEMD(base.ProcessSingleAtom):
         atoms = self.get_atoms()
         atoms.calc = self.model.get_calculator(directory=self.model_outs)
 
-        if (self.init_velocities is None) and (self.init_temperature is None):
-            self.init_temperature = self.thermostat.temperature
-
-        if self.init_temperature is not None:
-            # Initialize velocities
-            MaxwellBoltzmannDistribution(atoms, temperature_K=self.init_temperature)
-        else:
-            # Continue with last md step
-            atoms.set_velocities(self.init_velocities)
+        if not self.use_momenta:
+            init_temperature = self.thermostat.temperature
+            MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
 
         # initialize thermostat
         time_step = self.thermostat.time_step
@@ -521,7 +513,7 @@ class ASEMD(base.ProcessSingleAtom):
                                 atoms_cache,
                                 frames_per_chunk=self.dump_rate,
                                 step=1,
-                                time=idx_inner,
+                                time=self.sampling_rate,
                             )
                         )
                         atoms_cache = []
@@ -542,10 +534,9 @@ class ASEMD(base.ProcessSingleAtom):
                 atoms_cache,
                 frames_per_chunk=self.dump_rate,
                 step=1,
-                time=idx_inner,
+                time=self.sampling_rate,
             )
         )
-        self.velocities_cache = atoms.get_velocities()
         self.metrics_dict = pd.DataFrame(metrics_dict)
 
         self.metrics_dict.index.name = "step"
