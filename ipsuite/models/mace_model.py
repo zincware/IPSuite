@@ -121,18 +121,10 @@ class MACE(MLModel):
         """Return the ASE calculator."""
         import unittest.mock
 
-        # import torch.serialization
-
         with unittest.mock.patch(
             "torch.serialization._open_file_like", self.state.fs.open
         ):
             return MACECalculator(
-                model_path=self.model_dir / "MACE_model.model",
+                model_path=self.model_dir / "MACE_model_swa.model",
                 device=device or self.device,
             )
-
-        # with tempfile.TemporaryDirectory() as tmpdir:
-        #     target_file = pathlib.Path(tmpdir) / "MACE_model.model"
-        #     self.state.fs.get_file(self.model_dir / "MACE_model.model", target_file)
-
-        #     return MACECalculator(model_path=target_file, device=device or self.device)
