@@ -167,12 +167,17 @@ class Nequip(MLModel):
 
     def get_calculator(self, **kwargs):
         """Get a nequip ase calculator."""
+        import unittest.mock
+
         from nequip.ase.nequip_calculator import NequIPCalculator
 
-        return NequIPCalculator.from_deployed_model(
-            model_path=self.deployed_model.as_posix(),
-            device=self.device,
-        )
+        with unittest.mock.patch(
+            "torch.serialization._open_file_like", self.state.fs.open
+        ):
+            return NequIPCalculator.from_deployed_model(
+                model_path=self.deployed_model.as_posix(),
+                device=self.device,
+            )
 
     @property
     def lammps_pair_style(self) -> str:
