@@ -70,6 +70,7 @@ def get_full_metrics(true: np.ndarray, prediction: np.ndarray) -> dict:
     """Calculate metrics for a given true and predicted value."""
     return {
         "rmse": root_mean_squared_error(true, prediction),
+        "mse": mean_squared_error(true, prediction),
         "mae": mean_absolute_error(true, prediction),
         "max": maximum_error(true, prediction),
         "lp4": calculate_l_p_norm(true, prediction, p=4),
