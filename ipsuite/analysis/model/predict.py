@@ -49,6 +49,7 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
     Units are given in:
     - energy: meV/atom
     - forces: meV/Å
+    - stress: eV/Å^3
     """
 
     energy_df_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "energy_df.csv")
