@@ -102,17 +102,23 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
 
         self.energy_df = pd.DataFrame(
             {
-                "true": [x.get_potential_energy() for x in true_data],
-                "prediction": [x.get_potential_energy() for x in pred_data],
+                "true": (
+                    np.array([x.get_potential_energy() / len(x) for x in true_data])
+                    * 1000
+                ),
+                "prediction": (
+                    np.array([x.get_potential_energy() / len(x) for x in pred_data])
+                    * 1000
+                ),
             }
         )
 
         try:
             true_forces = [np.reshape(x.get_forces(), (-1, 3)) for x in true_data]
-            true_forces = np.concatenate(true_forces, axis=0)
+            true_forces = np.concatenate(true_forces, axis=0) * 1000
 
             pred_forces = [np.reshape(x.get_forces(), (-1, 3)) for x in pred_data]
-            pred_forces = np.concatenate(pred_forces, axis=0)
+            pred_forces = np.concatenate(pred_forces, axis=0) * 1000
 
             self.forces_df = pd.DataFrame(
                 {
@@ -202,9 +208,9 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
         energy_plot = get_figure(
             self.energy_df["true"],
             self.energy_df["prediction"],
-            datalabel=f"MAE: {self.energy['mae']:.4f} eV/atom",
-            xlabel=r"$ab~initio$ energy $E$ / eV",
-            ylabel=r"predicted energy $E$ / eV",
+            datalabel=f"MAE: {self.energy['mae']:.2f} meV/atom",
+            xlabel=r"$ab~initio$ energy $E$ / meV/atom",
+            ylabel=r"predicted energy $E$ / meV/atom",
         )
         if save:
             energy_plot.savefig(self.plots_dir / "energy.png")
@@ -213,12 +219,13 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
             forces_plot = get_figure(
                 self.forces_df["true"],
                 self.forces_df["prediction"],
-                datalabel=rf"MAE: {self.forces['mae']:.4f} eV$ / (\AA \cdot $atom)",
+                datalabel=rf"MAE: {self.forces['mae']:.2f} meV$ / \AA$",
                 xlabel=(
-                    r"$ab~initio$ magnitude of force per atom $|F|$ / eV$ \cdot \AA^{-1}$"
+                    r"$ab~initio$ magnitude of force per atom $|F|$ / meV$ \cdot"
+                    r" \AA^{-1}$"
                 ),
                 ylabel=(
-                    r"predicted magnitude of force per atom $|F|$ / eV$ \cdot \AA^{-1}$"
+                    r"predicted magnitude of force per atom $|F|$ / meV$ \cdot \AA^{-1}$"
                 ),
             )
             if save:
