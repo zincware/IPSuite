@@ -216,8 +216,12 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
 
         if not self.forces_df.empty:
             forces_plot = get_figure(
-                self.forces_df["true"],
-                self.forces_df["prediction"],
+                self.forces_df["true_x"]
+                + self.forces_df["true_y"]
+                + self.forces_df["true_z"],
+                self.forces_df["prediction_x"]
+                + self.forces_df["prediction_y"]
+                + self.forces_df["prediction_z"],
                 datalabel=rf"MAE: {self.forces['mae']:.2f} meV$ / \AA$",
                 xlabel=(
                     r"$ab~initio$ magnitude of force per atom $|F|$ / meV$ \cdot"
