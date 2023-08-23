@@ -44,13 +44,11 @@ class Prediction(base.ProcessAtoms):
 
 
 class PredictionMetrics(base.AnalyseProcessAtoms):
-    """Analyse the Models Prediction.
+    """Analyse the Models Prediction on standard metrics.
 
-    This Node computes
-    - MAE
-    - RMSE
-    - L4 Error
-    - Maximum Error
+    Units are given in:
+    - energy: meV/atom
+    - forces: meV/Å
     """
 
     energy_df_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "energy_df.csv")
