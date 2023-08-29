@@ -219,8 +219,12 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
 
         if not self.forces_df.empty:
             forces_plot = get_figure(
-                self.forces_df["true"],
-                self.forces_df["prediction"],
+                self.forces_df["true_x"]
+                + self.forces_df["true_y"]
+                + self.forces_df["true_z"],
+                self.forces_df["prediction_x"]
+                + self.forces_df["prediction_y"]
+                + self.forces_df["prediction_z"],
                 datalabel=rf"MAE: {self.forces['mae']:.2f} meV$ / \AA$",
                 xlabel=(
                     r"$ab~initio$ magnitude of force per atom $|F|$ / meV$ \cdot"
@@ -333,29 +337,29 @@ class ForceDecomposition(base.AnalyseProcessAtoms):
 
     def get_plots(self):
         fig = get_figure(
-            np.linalg.norm(self.true_forces["trans"], axis=-1),
-            np.linalg.norm(self.pred_forces["trans"], axis=-1),
-            datalabel="",
-            xlabel=r"$ab~initio$ forces / eV$ \cdot \AA^{-1}$",
-            ylabel=r"predicted forces / eV$ \cdot \AA^{-1}$",
+            np.reshape(self.true_forces["trans"], -1),
+            np.reshape(self.pred_forces["trans"], -1),
+            datalabel=rf"Trans. MAE: {self.trans_forces['mae']:.2f} meV$ / \AA$",
+            xlabel=r"$ab~initio$ forces / meV$ \cdot \AA^{-1}$",
+            ylabel=r"predicted forces / meV$ \cdot \AA^{-1}$",
         )
         fig.savefig(self.trans_force_plt)
 
         fig = get_figure(
-            np.linalg.norm(self.true_forces["rot"], axis=-1),
-            np.linalg.norm(self.pred_forces["rot"], axis=-1),
-            datalabel="",
-            xlabel=r"$ab~initio$ forces / eV$ \cdot \AA^{-1}$",
-            ylabel=r"predicted forces / eV$ \cdot \AA^{-1}$",
+            np.reshape(self.true_forces["rot"], -1),
+            np.reshape(self.pred_forces["rot"], -1),
+            datalabel=rf"Rot. MAE: {self.rot_forces['mae']:.2f} meV$ / \AA$",
+            xlabel=r"$ab~initio$ forces / meV$ \cdot \AA^{-1}$",
+            ylabel=r"predicted forces / meV$ \cdot \AA^{-1}$",
         )
         fig.savefig(self.rot_force_plt)
 
         fig = get_figure(
-            np.linalg.norm(self.true_forces["vib"], axis=-1),
-            np.linalg.norm(self.pred_forces["vib"], axis=-1),
-            datalabel="",
-            xlabel=r"$ab~initio$ forces / eV$ \cdot \AA^{-1}$",
-            ylabel=r"predicted forces / eV$ \cdot \AA^{-1}$",
+            np.reshape(self.true_forces["vib"], -1),
+            np.reshape(self.pred_forces["vib"], -1),
+            datalabel=rf"Vib. MAE: {self.vib_forces['mae']:.2f} meV$ / \AA$",
+            xlabel=r"$ab~initio$ forces / meV$ \cdot \AA^{-1}$",
+            ylabel=r"predicted forces / meV$ \cdot \AA^{-1}$",
         )
         fig.savefig(self.vib_force_plt)
 
@@ -442,10 +446,10 @@ class ForceDecomposition(base.AnalyseProcessAtoms):
             self.true_forces["rot"].append(atom_rot_forces)
             self.true_forces["vib"].append(atom_vib_forces)
 
-        self.true_forces["all"] = np.concatenate(self.true_forces["all"])
-        self.true_forces["trans"] = np.concatenate(self.true_forces["trans"])
-        self.true_forces["rot"] = np.concatenate(self.true_forces["rot"])
-        self.true_forces["vib"] = np.concatenate(self.true_forces["vib"])
+        self.true_forces["all"] = np.concatenate(self.true_forces["all"]) * 1000
+        self.true_forces["trans"] = np.concatenate(self.true_forces["trans"]) * 1000
+        self.true_forces["rot"] = np.concatenate(self.true_forces["rot"]) * 1000
+        self.true_forces["vib"] = np.concatenate(self.true_forces["vib"]) * 1000
 
         for atom in tqdm.tqdm(pred_atoms, ncols=70):
             atom_trans_forces, atom_rot_forces, atom_vib_forces = force_decomposition(
@@ -456,10 +460,10 @@ class ForceDecomposition(base.AnalyseProcessAtoms):
             self.pred_forces["rot"].append(atom_rot_forces)
             self.pred_forces["vib"].append(atom_vib_forces)
 
-        self.pred_forces["all"] = np.concatenate(self.pred_forces["all"])
-        self.pred_forces["trans"] = np.concatenate(self.pred_forces["trans"])
-        self.pred_forces["rot"] = np.concatenate(self.pred_forces["rot"])
-        self.pred_forces["vib"] = np.concatenate(self.pred_forces["vib"])
+        self.pred_forces["all"] = np.concatenate(self.pred_forces["all"]) * 1000
+        self.pred_forces["trans"] = np.concatenate(self.pred_forces["trans"]) * 1000
+        self.pred_forces["rot"] = np.concatenate(self.pred_forces["rot"]) * 1000
+        self.pred_forces["vib"] = np.concatenate(self.pred_forces["vib"]) * 1000
 
         self.get_metrics()
         self.get_plots()
