@@ -3,10 +3,10 @@ import logging
 import ase
 import numpy as np
 import zntrack
-
-from ipsuite import base
 from ase.cell import Cell
 from numpy.random import default_rng
+
+from ipsuite import base
 
 log = logging.getLogger(__name__)
 
@@ -29,8 +29,8 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
         cell = atoms.cell
         cellpar = cell.cellpar()
         cell = np.array(cell)
-        
-        z_max = max(atoms.get_positions()[:,2])
+
+        z_max = max(atoms.get_positions()[:, 2])
 
         if not isinstance(self.n_conf_per_dist, list):
             self.n_conf_per_dist = [self.n_conf_per_dist, self.n_conf_per_dist]
@@ -38,11 +38,11 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
             self.cell_fraction = [self.cell_fraction, self.cell_fraction]
         atoms_list = []
         for z_dist in self.z_dist_list:
-            if cellpar[2] < z_max+z_dist+10:
-                cellpar[2] = z_max+z_dist+10
+            if cellpar[2] < z_max + z_dist + 10:
+                cellpar[2] = z_max + z_dist + 10
                 new_cell = Cell.fromcellpar(cellpar)
                 atoms.set_cell(new_cell)
-                log.warning('vacuum was extended')
+                log.warning("vacuum was extended")
 
             if not self.random:
                 a_scaling = np.linspace(0, 1, self.n_conf_per_dist[0])
@@ -65,14 +65,20 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
                 for b in scaled_b_vecs:
                     if self.rattel:
                         new_atoms = atoms.copy()
-                        displacement = rng.uniform(-self.max_shift, self.max_shift, size=new_atoms.positions.shape)
+                        displacement = rng.uniform(
+                            -self.max_shift,
+                            self.max_shift,
+                            size=new_atoms.positions.shape,
+                        )
                         new_atoms.positions += displacement
                         atoms_list.append(new_atoms)
                     else:
                         atoms_list.append(atoms.copy())
 
-                    cart_pos = a+b
-                    extention = ase.Atoms(self.symbol, [[cart_pos[0], cart_pos[1], z_max+z_dist]])
-                    atoms_list[-1].extend(extention)
-                
+                    cart_pos = a + b
+                    extension = ase.Atoms(
+                        self.symbol, [[cart_pos[0], cart_pos[1], z_max + z_dist]]
+                    )
+                    atoms_list[-1].extend(extension)
+
         self.atoms = atoms_list
