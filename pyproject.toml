@@ -39,7 +39,7 @@ xmltodict = "^0.13.0"
 
 
 nequip = { version = "^0.5.6", optional = true }
-apax = { git = "https://github.com/apax-hub/apax.git", rev = "before_pydenticV2", optional = true}
+apax = { git = "https://github.com/apax-hub/apax.git", rev = "dev", optional = true}
 rdkit = "^2023"
 lazy-loader = "^0.2"
 znflow = "^0.1.11"
