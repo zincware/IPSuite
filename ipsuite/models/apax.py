@@ -2,6 +2,7 @@ import logging
 import pathlib
 import shutil
 import typing
+from typing import Optional
 
 import ase.io
 import pandas as pd
@@ -41,6 +42,7 @@ class Apax(MLModel):
 
     config: str = dvc.params("apax.yaml")
     validation_data = zn.deps()
+    model: Optional[MLModel] = zntrack.zn.deps(None)
 
     model_directory: pathlib.Path = dvc.outs(zntrack.nwd / "apax_model")
     train_log_file: pathlib.Path = dvc.outs(zntrack.nwd / "train.log")
@@ -82,6 +84,12 @@ class Apax(MLModel):
             "val_data_path": self.validation_data_file.as_posix(),
         }
 
+        if self.model is not None:
+            param_files = self.model._parameter["data"]["model_path"]
+            base_path = {"base_model_checkpoint": param_files + "/best"}
+
+            self._parameter["checkpoints"].update(base_path)
+
         check_duplicate_keys(custom_parameters, self._parameter["data"], log)
         self._parameter["data"].update(custom_parameters)
 
@@ -100,6 +108,7 @@ class Apax(MLModel):
 
     def run(self):
         """Primary method to run which executes all steps of the model training"""
+
         config.update("jax_enable_x64", self.jax_enable_x64)
 
         ase.io.write(self.train_data_file, self.data)
@@ -113,7 +122,7 @@ class Apax(MLModel):
             f.write("Training completed\n")
 
     def get_calculator(self, **kwargs):
-        """Get a apax ase calculator"""
+        """Get an apax ase calculator"""
 
         return ASECalculator(model_dir=self.model_directory)
 
