@@ -8,6 +8,7 @@ import pandas as pd
 import yaml
 import zntrack.utils
 from apax.md import ASECalculator
+from apax.md.transformations import available_transformations
 from apax.train.run import run as apax_run
 from jax.config import config
 from zntrack import dvc, zn
@@ -119,7 +120,19 @@ class Apax(MLModel):
 
 
 class ApaxEnsemble(base.IPSNode):
+    """Parallel apax model ensemble in ASE.
+
+    Attributes
+    ----------
+    models: list
+        List of `ApaxModel` nodes to ensemble.
+    transformations: dict
+        Key-parameter dict with function transformations applied
+        to the model function within the ASE calculator.
+        See the apax documentation for available methods.
+    """
     models: typing.List[Apax] = zntrack.zn.deps()
+    transformations: typing.Dict[str, dict] = zntrack.zn.params(None)
 
     def run(self) -> None:
         pass
@@ -134,6 +147,11 @@ class ApaxEnsemble(base.IPSNode):
         """
 
         param_files = [m._parameter["data"]["directory"] for m in self.models]
+
+        transformations = []
+        if self.transformations:
+            for transform, params in self.transformations.items():
+                transformations.append(available_transformations[transform](**params))
 
         calc = ASECalculator(param_files)
         return calc
