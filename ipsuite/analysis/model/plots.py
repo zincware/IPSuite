@@ -54,7 +54,7 @@ def get_figure(
     ----------
     true: the true values
     prediction: the predicted values
-    datalabel: str, the label for the prediction, e.g. 'MAE: 0.123 meV'
+    datalabel: str, the label for the prediction, e.g. 'MAE: 0.123 eV'
     xlabel: str, the xlabel
     ylabel: str, the xlabel
     figsize: tuple, size of the figure

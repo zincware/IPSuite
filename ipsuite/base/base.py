@@ -200,6 +200,8 @@ class CheckBase(IPSNode):
     a molecular dynamics simulation if a vertain condition is met.
     """
 
+    status: str = None
+
     def initialize(self, atoms: ase.Atoms) -> None:
         """Stores some reference property to compare the current property
         against and see whether the simulation should be stopped.
@@ -214,6 +216,13 @@ class CheckBase(IPSNode):
         ...
 
     @abc.abstractmethod
-    def get_metric(self) -> dict:
+    def get_value(self, atoms: ase.Atoms):
         """Returns the metric that is tracked for stopping."""
         ...
+
+    @abc.abstractmethod
+    def get_quantity(self) -> str:
+        ...
+
+    def __str__(self):
+        return self.status

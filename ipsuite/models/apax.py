@@ -78,8 +78,8 @@ class Apax(MLModel):
         self._parameter = yaml.safe_load(pathlib.Path(self.config).read_text())
 
         custom_parameters = {
-            "model_path": self.model_directory.as_posix(),
-            "model_name": "",
+            "directory": self.model_directory.as_posix(),
+            "experiment": "",
             "train_data_path": self.train_data_file.as_posix(),
             "val_data_path": self.validation_data_file.as_posix(),
         }
@@ -142,7 +142,7 @@ class ApaxEnsemble(base.IPSNode):
             ase calculator object
         """
 
-        param_files = [m._parameter["data"]["model_path"] for m in self.models]
+        param_files = [m._parameter["data"]["directory"] for m in self.models]
 
         calc = ASECalculator(param_files)
         return calc
