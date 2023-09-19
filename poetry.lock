@@ -7121,21 +7121,25 @@ version = "0.6.3"
 description = "Create, Run and Benchmark DVC Pipelines in Python"
 optional = false
 python-versions = ">=3.8,<4.0.0"
-files = [
-    {file = "zntrack-0.6.3-py3-none-any.whl", hash = "sha256:5ef6816b51978006425f20681e1ca61581548ea1a24dfb7d0a177eb85636b80a"},
-    {file = "zntrack-0.6.3.tar.gz", hash = "sha256:8ba54f8bf7f4f92e947efe11454ca453378b15616c3542b4355690af1a1a5fb2"},
-]
+files = []
+develop = false
 
 [package.dependencies]
-dot4dict = ">=0.1.1,<0.2.0"
-dvc = ">=3.2.2,<4.0.0"
-pandas = ">=2,<3"
-pyyaml = ">=6.0,<7.0"
-tqdm = ">=4.64.0,<5.0.0"
-typer = ">=0.7.0,<0.8.0"
-znflow = ">=0.1.13,<0.2.0"
-zninit = ">=0.1.9,<0.2.0"
-znjson = ">=0.2.2,<0.3.0"
+dot4dict = "^0.1.1"
+dvc = "^3.2.2"
+pandas = "^2"
+pyyaml = "^6.0"
+tqdm = "^4.64.0"
+typer = "^0.7.0"
+znflow = "^0.1.13"
+zninit = "^0.1.9"
+znjson = "^0.2.2"
+
+[package.source]
+type = "git"
+url = "https://github.com/zincware/ZnTrack.git"
+reference = "583-combine-zndeps-and-znnodes"
+resolved_reference = "34bdfd12909277b85f1c9fe56e031dad4eb54929"
 
 [extras]
 apax = ["apax"]
@@ -7146,4 +7150,4 @@ nequip = ["nequip"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "ccc1d0c77e62aa80c14b44c450ff0754f45a551b65c8af624d012ccd9edee1ca"
+content-hash = "8dfcb41c1f634b2216f71073ac3cbc721145546bcb51ff6bd676969721839066"

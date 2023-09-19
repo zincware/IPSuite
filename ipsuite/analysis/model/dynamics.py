@@ -47,7 +47,7 @@ class RattleAnalysis(base.ProcessSingleAtom):
         The atom to pick from self.atoms as a starting point
     """
 
-    model: models.MLModel = zntrack.zn.deps()
+    model: models.MLModel = zntrack.deps()
     model_outs = zntrack.dvc.outs(zntrack.nwd / "model/")
 
     logspace: bool = zntrack.zn.params(True)
@@ -111,9 +111,9 @@ class BoxScale(base.ProcessSingleAtom):
         The size of the generated space of stdev points
     """
 
-    model: models.MLModel = zntrack.zn.deps()
+    model: models.MLModel = zntrack.deps()
     model_outs = zntrack.dvc.outs(zntrack.nwd / "model")
-    mapping: base.Mapping = zntrack.zn.nodes(None)
+    mapping: base.Mapping = zntrack.deps(None)
 
     stop: float = zntrack.zn.params(2.0)
     num: int = zntrack.zn.params(100)
@@ -209,7 +209,7 @@ class BoxHeatUp(base.ProcessSingleAtom):
 
     flux_data = zntrack.zn.plots()
 
-    model = zntrack.zn.deps()
+    model = zntrack.deps()
     model_outs = zntrack.dvc.outs(zntrack.nwd / "model")
 
     plots = zntrack.dvc.outs(zntrack.nwd / "temperature.png")
@@ -365,10 +365,10 @@ class MDStability(base.ProcessAtoms):
     seed: seed for the MaxwellBoltzmann distribution
     """
 
-    model = zntrack.zn.deps()
+    model = zntrack.deps()
     model_outs = zntrack.dvc.outs(zntrack.nwd / "model_outs")
     max_steps: int = zntrack.zn.params()
-    checks: list[zntrack.Node] = zntrack.zn.nodes()
+    checks: list[zntrack.Node] = zntrack.deps()
     time_step: float = zntrack.zn.params(0.5)
     initial_temperature: float = zntrack.zn.params(300)
     save_last_n: int = zntrack.zn.params(1)

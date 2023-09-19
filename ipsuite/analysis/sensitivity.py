@@ -39,7 +39,7 @@ def nonuniform_imshow(ax, x, y, z, aspect=1, cmap=plt.cm.rainbow):
 class MoveSingleParticle(base.IPSNode):
     """Move a single particle in a given direction."""
 
-    atoms_list = zntrack.zn.deps()
+    atoms_list = zntrack.deps()
     atoms_list_id = zntrack.zn.params(0)  # the atoms object in the atoms list
     atom_id = zntrack.zn.params(0)  # the atom id to move
     scale = zntrack.zn.params(0.5)  # the standard deviation of the normal distribution
@@ -66,7 +66,7 @@ class MoveSingleParticle(base.IPSNode):
 
 
 class AnalyseGlobalForceSensitivity(base.IPSNode):
-    atoms_list = zntrack.zn.deps()
+    atoms_list = zntrack.deps()
     plots = zntrack.dvc.outs(zntrack.nwd / "plots")
 
     def run(self):
@@ -105,8 +105,8 @@ class IsConstraintMD(typing.Protocol):
 
 
 class AnalyseSingleForceSensitivity(base.IPSNode):
-    data: list[list[ase.Atoms]] = zntrack.zn.deps()
-    sim_list: list = zntrack.zn.deps()  # list["ASEMD"]
+    data: list[list[ase.Atoms]] = zntrack.deps()
+    sim_list: list = zntrack.deps()  # list["ASEMD"]
 
     alpha: float = zntrack.zn.params(
         0.05
