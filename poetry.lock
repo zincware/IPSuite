@@ -7164,7 +7164,7 @@ znjson = "^0.2.2"
 type = "git"
 url = "https://github.com/zincware/ZnTrack.git"
 reference = "583-combine-zndeps-and-znnodes"
-resolved_reference = "27a86edf42ef1eee1630a59aff24c5031f3ce2c2"
+resolved_reference = "55ee11c1ab756e50f9b3d0936dcdf47e1b3e5daf"
 
 [extras]
 apax = ["apax"]
