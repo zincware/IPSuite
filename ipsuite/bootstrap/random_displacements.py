@@ -8,6 +8,7 @@ from scipy.spatial.transform import Rotation
 
 import ipsuite as ips
 from ipsuite import base
+from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 log = logging.getLogger(__name__)
 
@@ -26,12 +27,17 @@ class Bootstrap(base.ProcessSingleAtom):
         Whether or not to include the original configuration in `self.atoms`.
     seed: int
         Random seed.
+    model: IPSNode
+        Any IPSNode that provides a `get_calculator` method to
+        label the bootstrapped configurations.
     """
 
     n_configurations: int = zntrack.zn.params()
     maximum: float = zntrack.zn.params()
     include_original: bool = zntrack.zn.params(True)
     seed: int = zntrack.zn.params(0)
+    model: base.IPSNode = zntrack.deps(None)
+    model_outs = zntrack.dvc.outs(zntrack.nwd / "model_outs")
 
     def run(self) -> None:
         atoms = self.get_data()
@@ -42,6 +48,15 @@ class Bootstrap(base.ProcessSingleAtom):
         )
 
         self.atoms = atoms_list
+
+        self.model_outs.mkdir(parents=True, exist_ok=True)
+        (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
+        if self.model is not None:
+            calculator = self.model.get_calculator(directory=self.model_outs)
+            for atoms in self.atoms:
+                atoms.calc = calculator
+                atoms.get_potential_energy()
+            self.atoms = freeze_copy_atoms(self.atoms)
 
     def bootstrap_configs(sefl, atoms: ase.Atoms, rng):
         raise NotImplementedError
