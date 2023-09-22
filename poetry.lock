@@ -2211,20 +2211,20 @@ smmap = ">=3.0.1,<6"
 
 [[package]]
 name = "gitpython"
-version = "3.1.36"
+version = "3.1.37"
 description = "GitPython is a Python library used to interact with Git repositories"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "GitPython-3.1.36-py3-none-any.whl", hash = "sha256:8d22b5cfefd17c79914226982bb7851d6ade47545b1735a9d010a2a4c26d8388"},
-    {file = "GitPython-3.1.36.tar.gz", hash = "sha256:4bb0c2a6995e85064140d31a33289aa5dce80133a23d36fcd372d716c54d3ebf"},
+    {file = "GitPython-3.1.37-py3-none-any.whl", hash = "sha256:5f4c4187de49616d710a77e98ddf17b4782060a1788df441846bddefbb89ab33"},
+    {file = "GitPython-3.1.37.tar.gz", hash = "sha256:f9b9ddc0761c125d5780eab2d64be4873fc6817c2899cbcb34b02344bdc7bc54"},
 ]
 
 [package.dependencies]
 gitdb = ">=4.0.1,<5"
 
 [package.extras]
-test = ["black", "coverage[toml]", "ddt (>=1.1.1,!=1.4.3)", "mypy", "pre-commit", "pytest", "pytest-cov", "pytest-sugar", "virtualenv"]
+test = ["black", "coverage[toml]", "ddt (>=1.1.1,!=1.4.3)", "mypy", "pre-commit", "pytest", "pytest-cov", "pytest-sugar"]
 
 [[package]]
 name = "google-auth"
@@ -5859,13 +5859,13 @@ testing-integration = ["build[virtualenv] (>=1.0.3)", "filelock (>=3.4.0)", "jar
 
 [[package]]
 name = "setuptools-scm"
-version = "8.0.2"
+version = "8.0.3"
 description = "the blessed package to manage your versions by scm tags"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "setuptools-scm-8.0.2.tar.gz", hash = "sha256:e45c8c87719b753b6d47cf09907d1239540c7e150cd44f06f658b602f402b005"},
-    {file = "setuptools_scm-8.0.2-py3-none-any.whl", hash = "sha256:b737bb0f195ae024759188e7080fe15fe6d9353e1b3f6e40b41e4d298f76c147"},
+    {file = "setuptools-scm-8.0.3.tar.gz", hash = "sha256:0169fd70197efda2f8c4d0b2a7a3d614431b488116f37b79d031e9e7ec884d8c"},
+    {file = "setuptools_scm-8.0.3-py3-none-any.whl", hash = "sha256:813822234453438a13c78d05c8af29918fbc06f88efb33d38f065340bbb48c39"},
 ]
 
 [package.dependencies]
@@ -7142,29 +7142,26 @@ files = [
 
 [[package]]
 name = "zntrack"
-version = "0.6.3"
+version = "0.7.0"
 description = "Create, Run and Benchmark DVC Pipelines in Python"
 optional = false
 python-versions = ">=3.8,<4.0.0"
-files = []
-develop = false
+files = [
+    {file = "zntrack-0.7.0-py3-none-any.whl", hash = "sha256:2e2c95f734c8202bf7eef13f4f8e9e7e611a8c760d9b12fee0e2ce9b6b123e04"},
+    {file = "zntrack-0.7.0.tar.gz", hash = "sha256:038bdbff9cc257279f37204fd8f8b9f44a664e00b8ac6a3b375f625e99c438b0"},
+]
 
 [package.dependencies]
-dot4dict = "^0.1.1"
-dvc = "^3.2.2"
-pandas = "^2"
-pyyaml = "^6.0"
-tqdm = "^4.64.0"
-typer = "^0.7.0"
-znflow = "^0.1.14"
-zninit = "^0.1.11"
-znjson = "^0.2.2"
-
-[package.source]
-type = "git"
-url = "https://github.com/zincware/ZnTrack.git"
-reference = "583-combine-zndeps-and-znnodes"
-resolved_reference = "6b4fa955bc7779838ad6e37cea09f35f22ecd2f2"
+dot4dict = ">=0.1.1,<0.2.0"
+dvc = ">=3.2.2,<4.0.0"
+pandas = ">=2,<3"
+pyyaml = ">=6.0,<7.0"
+tqdm = ">=4.64.0,<5.0.0"
+typer = ">=0.7.0,<0.8.0"
+typing-extensions = ">=4.8.0,<5.0.0"
+znflow = ">=0.1.14,<0.2.0"
+zninit = ">=0.1.11,<0.2.0"
+znjson = ">=0.2.2,<0.3.0"
 
 [extras]
 apax = ["apax"]
@@ -7175,4 +7172,4 @@ nequip = ["nequip"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "8dfcb41c1f634b2216f71073ac3cbc721145546bcb51ff6bd676969721839066"
+content-hash = "e8d8315bfd9144393595a8776df8e7854f489abaad06fa418d2c1e5f55f93470"

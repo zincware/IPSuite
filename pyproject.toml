@@ -42,7 +42,7 @@ apax = { git = "https://github.com/apax-hub/apax.git", rev = "dev", optional = t
 rdkit = "^2023"
 lazy-loader = "^0.2"
 znflow = "^0.1.11"
-zntrack = {git = "https://github.com/zincware/ZnTrack.git", rev = "583-combine-zndeps-and-znnodes"}
+zntrack = "^0.7.0"
 
 [tool.poetry.group.allegro.dependencies]
 mir-allegro = { git = "https://github.com/mir-group/allegro.git" }
