@@ -35,7 +35,7 @@ class Packmol(base.IPSNode):
 
     """
 
-    data: list[list[ase.Atoms]] = zntrack.zn.deps()
+    data: list[list[ase.Atoms]] = zntrack.deps()
     data_ids: list[int] = zntrack.zn.params(None)
     count: list = zntrack.zn.params()
     tolerance: float = zntrack.zn.params(2.0)

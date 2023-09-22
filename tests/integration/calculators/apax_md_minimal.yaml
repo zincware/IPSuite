@@ -1,6 +1,8 @@
-temperature: 1
-duration: 3 #fs
-n_inner: 1 # compiled innner steps
-dt: 0.5 # fs
-dr_threshold: 0.5 # Neighborlist skin
+ensemble:
+  name: nvt
+  dt: 0.5 # fs time step
+  temperature: 1 # K
+
+duration: 3 # fs
+n_inner: 1 # compiled inner loop steps
 sampling_rate: 1

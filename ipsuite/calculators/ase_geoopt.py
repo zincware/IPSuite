@@ -24,10 +24,10 @@ class ASEGeoOpt(base.ProcessSingleAtom):
         A node that implements 'get_calculator'.
     """
 
-    model = zntrack.zn.deps()
+    model = zntrack.deps()
     model_outs = zntrack.dvc.outs(zntrack.nwd / "model_outs")
     optimizer: str = zntrack.zn.params("FIRE")
-    checker_list: list = zntrack.zn.nodes(None)
+    checker_list: list = zntrack.deps(None)
 
     repeat: list = zntrack.zn.params([1, 1, 1])
     run_kwargs: dict = zntrack.zn.params({"fmax": 0.05})

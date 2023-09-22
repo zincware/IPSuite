@@ -35,10 +35,8 @@ class KernelSelection(ConfigurationSelection):
     """
 
     n_configurations: int = zntrack.zn.params()
-    kernel: "ipsuite.configuration_comparison.ConfigurationComparison" = (
-        zntrack.zn.nodes()
-    )
-    initial_configurations: typing.List[ase.Atoms] = zntrack.zn.deps()
+    kernel: "ipsuite.configuration_comparison.ConfigurationComparison" = zntrack.deps()
+    initial_configurations: typing.List[ase.Atoms] = zntrack.deps()
     points_per_cycle: int = zntrack.zn.params(1)
     kernel_results: typing.List[typing.List[float]] = zntrack.zn.outs()
     seed = zntrack.zn.params(1234)

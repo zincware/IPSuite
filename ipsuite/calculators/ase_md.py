@@ -381,14 +381,14 @@ class ASEMD(base.ProcessSingleAtom):
         write them to the trajectory file every 'dump_rate' steps.
     """
 
-    model = zntrack.zn.deps()
-    init_velocities = zntrack.zn.deps(None)
+    model = zntrack.deps()
+    init_velocities = zntrack.deps(None)
 
     model_outs = zntrack.dvc.outs(zntrack.nwd / "model/")
-    checker_list: list = zntrack.zn.nodes(None)
-    constraint_list: list = zntrack.zn.nodes(None)
-    modifier: list = zntrack.zn.nodes(None)
-    thermostat = zntrack.zn.nodes()
+    checker_list: list = zntrack.deps(None)
+    constraint_list: list = zntrack.deps(None)
+    modifier: list = zntrack.deps(None)
+    thermostat = zntrack.deps()
 
     steps: int = zntrack.zn.params()
     init_temperature: float = zntrack.zn.params(None)

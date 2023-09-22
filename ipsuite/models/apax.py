@@ -41,8 +41,8 @@ class Apax(MLModel):
     """
 
     config: str = dvc.params("apax.yaml")
-    validation_data = zn.deps()
-    model: Optional[MLModel] = zntrack.zn.deps(None)
+    validation_data = zntrack.deps()
+    model: Optional[MLModel] = zntrack.deps(None)
 
     model_directory: pathlib.Path = dvc.outs(zntrack.nwd / "apax_model")
     train_log_file: pathlib.Path = dvc.outs(zntrack.nwd / "train.log")
@@ -128,7 +128,7 @@ class Apax(MLModel):
 
 
 class ApaxEnsemble(base.IPSNode):
-    models: typing.List[Apax] = zntrack.zn.deps()
+    models: typing.List[Apax] = zntrack.deps()
 
     def run(self) -> None:
         pass

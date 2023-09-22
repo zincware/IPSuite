@@ -32,7 +32,7 @@ class BondStretchAnalyses(ProcessAtoms):
         size of the plot
     """
 
-    ase_calculator = zntrack.zn.deps()
+    ase_calculator = zntrack.deps()
 
     idxs = zntrack.zn.params()
     r_min = zntrack.zn.params()
