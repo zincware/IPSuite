@@ -38,11 +38,11 @@ lazy-loader = "^0.2"
 znflow = "^0.1.11"
 zntrack = "^0.7.0"
 
-[tool.poetry.group.allegro.dependencies]
+# [tool.poetry.group.allegro.dependencies]
 mir-allegro = { git = "https://github.com/mir-group/allegro.git", optional = true}
 
 
-[tool.poetry.group.mace.dependencies]
+# [tool.poetry.group.mace.dependencies]
 mace = { git = "https://github.com/ACEsuit/mace.git", optional = true}
 
 
