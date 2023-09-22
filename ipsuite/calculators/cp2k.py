@@ -161,7 +161,7 @@ class CP2KSinglePoint(base.ProcessAtoms):
     cp2k_files = zntrack.dvc.deps(None)
 
     wfn_restart_file: str = zntrack.dvc.deps(None)
-    wfn_restart_node = zntrack.zn.deps(None)
+    wfn_restart_node = zntrack.deps(None)
     output_file = zntrack.dvc.outs(zntrack.nwd / "atoms.h5")
     cp2k_directory = zntrack.dvc.outs(zntrack.nwd / "cp2k")
 

@@ -33,7 +33,7 @@ class ApaxJaxMD(ProcessSingleAtom):
         path to the MD simulation parameter file
     """
 
-    model: Apax = zn.deps()
+    model: Apax = zntrack.deps()
     repeat = zn.params(None)
 
     md_parameter: dict = zn.params(None)

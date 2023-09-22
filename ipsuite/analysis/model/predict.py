@@ -25,7 +25,7 @@ class Prediction(base.ProcessAtoms):
     predictions: list[Atoms] the atoms that have the predicted properties from model
     """
 
-    model: models.MLModel = zntrack.zn.deps()
+    model: models.MLModel = zntrack.deps()
 
     def run(self):
         self.atoms = []

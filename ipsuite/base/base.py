@@ -34,7 +34,7 @@ class ProcessAtoms(IPSNode):
         It does not have to be 'field.Atoms' but can also be e.g. a 'property'.
     """
 
-    data: list[ase.Atoms] = zntrack.zn.deps()
+    data: list[ase.Atoms] = zntrack.deps()
     data_file: str = zntrack.dvc.deps(None)
     atoms: list[ase.Atoms] = fields.Atoms()
 
@@ -87,7 +87,7 @@ class ProcessSingleAtom(IPSNode):
         starting from a single atoms object.
     """
 
-    data: typing.Union[ase.Atoms, typing.List[ase.Atoms]] = zntrack.zn.deps()
+    data: typing.Union[ase.Atoms, typing.List[ase.Atoms]] = zntrack.deps()
     data_file: str = zntrack.dvc.deps(None)
     data_id: typing.Optional[int] = zntrack.zn.params(0)
 
@@ -127,13 +127,13 @@ class AnalyseAtoms(IPSNode):
         The atoms data to analyse. This must be an input to the Node
     """
 
-    data: list[ase.Atoms] = zntrack.zn.deps()
+    data: list[ase.Atoms] = zntrack.deps()
 
 
 class AnalyseProcessAtoms(IPSNode):
     """Analyse the output of a ProcessAtoms Node."""
 
-    data: ProcessAtoms = zntrack.zn.deps()
+    data: ProcessAtoms = zntrack.deps()
 
     def get_data(self) -> typing.Tuple[list[ase.Atoms], list[ase.Atoms]]:
         self.data.update_data()  # otherwise, data might not be available
