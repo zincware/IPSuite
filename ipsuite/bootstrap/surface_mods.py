@@ -6,7 +6,8 @@ import zntrack
 from ase.cell import Cell
 from numpy.random import default_rng
 
-from ipsuite import base
+import ipsuite as ips
+from ipsuite import base, models
 
 log = logging.getLogger(__name__)
 
@@ -82,3 +83,16 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
                     atoms_list[-1].extend(extension)
 
         self.atoms = atoms_list
+
+# class SurfaceRasterMetrics(base.ProcessAtoms):
+#     # von prediction metricz inheriten and get plot überschreiben?
+#     model: models.MLModel = zntrack.deps()
+#     seed: int = zntrack.zn.params(0)
+    
+#     def run(self):
+#         atoms_list = self.get_data()
+
+#         prediction = ips.analysis.Prediction(model=self.model, data=atoms_list)
+#         pred_energies = prediction.atoms.get_potential_energies()
+
+#         print(pred_energies)
