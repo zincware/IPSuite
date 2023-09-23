@@ -167,15 +167,8 @@ class CP2KSinglePoint(base.ProcessAtoms):
     output_file = zntrack.dvc.outs(zntrack.nwd / "atoms.h5")
     cp2k_directory = zntrack.dvc.outs(zntrack.nwd / "cp2k")
 
-    def run(self):
-        """ZnTrack run method.
-
-        Raises
-        ------
-        RuntimeError
-            If the cp2k_shell is not set.
-        """
-
+    def _update_shell(self):
+        """Update the shell command to run cp2k."""
         if self.cp2k_shell is None:
             # Load from environment variable IPSUITE_CP2K_SHELL
             try:
@@ -186,6 +179,17 @@ class CP2KSinglePoint(base.ProcessAtoms):
                     "Please set the environment variable 'IPSUITE_CP2K_SHELL' or use the"
                     " 'cp2k_shell' parameter."
                 ) from err
+
+    def run(self):
+        """ZnTrack run method.
+
+        Raises
+        ------
+        RuntimeError
+            If the cp2k_shell is not set.
+        """
+
+        self._update_shell()
 
         db = znh5md.io.DataWriter(self.output_file)
         db.initialize_database_groups()
@@ -241,6 +245,8 @@ class CP2KSinglePoint(base.ProcessAtoms):
         return "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
 
     def get_calculator(self, directory: str = None):
+        self._update_shell()
+
         if directory is None:
             directory = self.cp2k_directory
         else:
