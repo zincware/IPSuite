@@ -2,6 +2,7 @@ import logging
 
 import ase
 import numpy as np
+import tqdm
 import zntrack
 from numpy.random import default_rng
 from scipy.spatial.transform import Rotation
@@ -53,7 +54,7 @@ class Bootstrap(base.ProcessSingleAtom):
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
         if self.model is not None:
             calculator = self.model.get_calculator(directory=self.model_outs)
-            for atoms in self.atoms:
+            for atoms in tqdm.tqdm(self.atoms, ncols=120, desc="Applying model"):
                 atoms.calc = calculator
                 atoms.get_potential_energy()
             self.atoms = freeze_copy_atoms(self.atoms)
