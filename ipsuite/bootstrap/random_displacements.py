@@ -48,16 +48,17 @@ class Bootstrap(base.ProcessSingleAtom):
             rng,
         )
 
-        self.atoms = atoms_list
-
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
         if self.model is not None:
             calculator = self.model.get_calculator(directory=self.model_outs)
-            for atoms in tqdm.tqdm(self.atoms, ncols=120, desc="Applying model"):
+            self.atoms = []
+            for atoms in tqdm.tqdm(atoms_list, ncols=120, desc="Applying model"):
                 atoms.calc = calculator
                 atoms.get_potential_energy()
-            self.atoms = freeze_copy_atoms(self.atoms)
+                self.atoms.append(freeze_copy_atoms(atoms))
+        else:
+            self.atoms = atoms_list
 
     def bootstrap_configs(sefl, atoms: ase.Atoms, rng):
         raise NotImplementedError

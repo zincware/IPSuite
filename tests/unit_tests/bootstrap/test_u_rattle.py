@@ -121,4 +121,8 @@ def test_rotate_molecules_with_calc(proj_path, traj_file):
 
     rattle.load()
 
-    assert rattle.atoms[0].get_potential_energy() != 0.0
+    # assert all entries in the atoms[x] list have a different potential energy
+
+    energies = [atoms.get_potential_energy() for atoms in rattle.atoms]
+    assert len(set(energies)) == len(energies)  # all different
+    assert energies[0] != 0.0
