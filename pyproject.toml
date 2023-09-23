@@ -14,7 +14,6 @@ python = ">=3.10,<3.11"
 libclang = "^15"
 
 znh5md = "^0.1.6a0"
-zntrack = "^0.6.3a1"
 
 ase = "^3.22.1"
 
@@ -43,6 +42,7 @@ apax = { git = "https://github.com/apax-hub/apax.git", rev = "md_neighbor_fix", 
 rdkit = "^2023"
 lazy-loader = "^0.2"
 znflow = "^0.1.11"
+zntrack = "^0.7.0"
 
 [tool.poetry.group.allegro.dependencies]
 mir-allegro = { git = "https://github.com/mir-group/allegro.git" }
