@@ -45,7 +45,8 @@ class _Nodes:
     TranslateMolecules = "ipsuite.bootstrap.TranslateMolecules"
     RotateMolecules = "ipsuite.bootstrap.RotateMolecules"
     SurfaceRasterScan = "ipsuite.bootstrap.SurfaceRasterScan"
-
+    SurfaceRasterMetrics = "ipsuite.bootstrap.SurfaceRasterMetrics"
+    
     # Analysis
     DipoleHistogram = "ipsuite.analysis.DipoleHistogram"
     EnergyHistogram = "ipsuite.analysis.EnergyHistogram"

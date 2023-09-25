@@ -7,20 +7,23 @@ from ase.cell import Cell
 from numpy.random import default_rng
 
 import ipsuite as ips
-from ipsuite import base, models
+from ipsuite import base, models, analysis
+import matplotlib.pyplot as plt
+from matplotlib import cm
+import numpy as np
 
 log = logging.getLogger(__name__)
 
 
 class SurfaceRasterScan(base.ProcessSingleAtom):
-    symbol: int = zntrack.zn.params()
-    z_dist_list: list[int] = zntrack.zn.params()
-    n_conf_per_dist: list[int] = zntrack.zn.params([5, 5])
-    cell_fraction: list[float] = zntrack.zn.params([1, 1])
-    random: bool = zntrack.zn.params(False)
-    rattel: bool = zntrack.zn.params(False)
-    max_shift: float = zntrack.zn.params(None)
-    seed: bool = zntrack.zn.params(1)
+    symbol: int = zntrack.params()
+    z_dist_list: list[int] = zntrack.params()
+    n_conf_per_dist: list[int] = zntrack.params([5, 5])
+    cell_fraction: list[float] = zntrack.params([1, 1])
+    random: bool = zntrack.params(False)
+    rattel: bool = zntrack.params(False)
+    max_shift: float = zntrack.params(None)
+    seed: bool = zntrack.params(1)
 
     def run(self) -> None:
         rng = default_rng(self.seed)
@@ -60,7 +63,7 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
             scaled_b_vecs = b_scaling[:, np.newaxis] * b_vec
 
             if self.rattel and self.max_shift is None:
-                raise ValueError("max_shit must be set.")
+                raise ValueError("max_shift must be set.")
 
             for a in scaled_a_vecs:
                 for b in scaled_b_vecs:
@@ -84,15 +87,87 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
 
         self.atoms = atoms_list
 
-# class SurfaceRasterMetrics(base.ProcessAtoms):
-#     # von prediction metricz inheriten and get plot überschreiben?
-#     model: models.MLModel = zntrack.deps()
-#     seed: int = zntrack.zn.params(0)
-    
-#     def run(self):
-#         atoms_list = self.get_data()
+class SurfaceRasterMetrics(analysis.PredictionMetrics):
+    scan_node: SurfaceRasterScan = zntrack.deps()
+    seed: int = zntrack.params(0)
 
-#         prediction = ips.analysis.Prediction(model=self.model, data=atoms_list)
-#         pred_energies = prediction.atoms.get_potential_energies()
+    def get_plots(self, save=False):
+        self.plots_dir.mkdir(exist_ok=True)
 
-#         print(pred_energies)
+        pos = []
+        for atoms in self.data.atoms:
+            pos.append(atoms.positions[-1])
+        pos = np.array(pos)
+        
+        shape = self.scan_node.n_conf_per_dist
+        n_distances = len(self.scan_node.z_dist_list)
+        shape.append(n_distances)
+
+        x_pos = np.reshape(pos[:,0], shape)
+        for j in range(x_pos.shape[1]):
+            x_pos[j, :] = x_pos[j, 0]
+
+        # has to be removed
+        x_pos_cache = x_pos
+        x_pos = x_pos[3:]
+        x_pos = np.insert(x_pos, 4, x_pos_cache[0, :], axis=0)
+        x_pos = np.insert(x_pos, 6, x_pos_cache[1, :], axis=0)
+        x_pos = np.insert(x_pos, 8, x_pos_cache[2, :], axis=0)
+        ###################
+
+        y_pos = np.reshape(pos[:,1], shape)
+        t_E = np.reshape(self.energy_df["true"], shape)
+        p_E = np.reshape(self.energy_df["prediction"], shape)
+
+        for distance in self.scan_node.z_dist_list:
+            plot_heat(x_pos, y_pos, t_E, "E_abinitio", distance, plots_dir=self.plots_dir)
+            plot_heat(x_pos, y_pos, p_E, "E_predicted", distance, plots_dir=self.plots_dir)
+            plot_heat_both(x_pos, y_pos, [t_E, p_E], "E_predicted", distance, plots_dir=self.plots_dir)
+
+
+
+def plot_heat(x, y, z, name, hight, plots_dir):
+    fig, ax = plt.subplots(layout='constrained')
+    cm = ax.pcolormesh(x, y, z, )
+    # cs = ax.contour(x, y, z, )
+    ax.axis('scaled')
+    ax.set_title(f'{name} for additive at {hight} ang dist to surface')
+    ax.set_xlabel('x-pos additiv [ang]')
+    ax.set_ylabel('y-pos additiv [ang]')
+    cbar = fig.colorbar(cm)
+    cbar.ax.set_ylabel(f'{name}')
+    fig.savefig(plots_dir / f'{name}-{hight}-heat.png')
+
+
+def plot_heat_both(x, y, z, name, hight, plots_dir):
+    fig, axes = plt.subplots(1, 2, sharey=True, sharex=True, figsize=(8, 3.5))
+    for i, ax in enumerate(axes.flat):
+        cm = ax.pcolormesh(x, y, z[i])
+        ax.axis('scaled')
+        ax.set_xlabel('x-pos additiv [ang]')
+        ax.set_ylabel('y-pos additiv [ang]')
+    axes[0].set_title(f"true-{name}")
+    axes[1].set_title(f"predicted-{name}")
+
+    fig.subplots_adjust(right=0.8)
+    cbar_ax = fig.add_axes([0.85, 0.015, 0.03, 0.87])
+    fig.colorbar(cm, cax=cbar_ax)
+
+    if name == 'energy':
+        cbar_ax.set_ylabel('Energy [meV/atom]')
+    if name == 'force':
+        cbar_ax.set_ylabel('Magnetude of force per atom [meV/ang]')
+
+    fig.suptitle(f'Additive {hight} ang over the surface')
+    fig.savefig(plots_dir / f'{name}-{hight}-heat.png')
+
+
+def get_pos_and_metrics(node, atom_num):
+    pos = []
+    energy = []
+    forces = []
+    for atoms in node.atoms:
+        pos.append(atoms.positions[atom_num])
+        energy.append(atoms.get_potential_energy())
+        forces.append(atoms.get_forces()[atom_num, :])
+    return np.array(pos), np.array(energy), np.array(forces)
