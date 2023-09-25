@@ -1,16 +1,13 @@
 import logging
 
 import ase
+import matplotlib.pyplot as plt
 import numpy as np
 import zntrack
 from ase.cell import Cell
 from numpy.random import default_rng
 
-import ipsuite as ips
-from ipsuite import base, models, analysis
-import matplotlib.pyplot as plt
-from matplotlib import cm
-import numpy as np
+from ipsuite import analysis, base
 
 log = logging.getLogger(__name__)
 
@@ -87,6 +84,7 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
 
         self.atoms = atoms_list
 
+
 class SurfaceRasterMetrics(analysis.PredictionMetrics):
     scan_node: SurfaceRasterScan = zntrack.deps()
     seed: int = zntrack.params(0)
@@ -98,12 +96,12 @@ class SurfaceRasterMetrics(analysis.PredictionMetrics):
         for atoms in self.data.atoms:
             pos.append(atoms.positions[-1])
         pos = np.array(pos)
-        
+
         shape = self.scan_node.n_conf_per_dist
         n_distances = len(self.scan_node.z_dist_list)
         shape.append(n_distances)
 
-        x_pos = np.reshape(pos[:,0], shape)
+        x_pos = np.reshape(pos[:, 0], shape)
         for j in range(x_pos.shape[1]):
             x_pos[j, :] = x_pos[j, 0]
 
@@ -115,37 +113,45 @@ class SurfaceRasterMetrics(analysis.PredictionMetrics):
         x_pos = np.insert(x_pos, 8, x_pos_cache[2, :], axis=0)
         ###################
 
-        y_pos = np.reshape(pos[:,1], shape)
+        y_pos = np.reshape(pos[:, 1], shape)
         t_E = np.reshape(self.energy_df["true"], shape)
         p_E = np.reshape(self.energy_df["prediction"], shape)
 
         for distance in self.scan_node.z_dist_list:
             plot_heat(x_pos, y_pos, t_E, "E_abinitio", distance, plots_dir=self.plots_dir)
-            plot_heat(x_pos, y_pos, p_E, "E_predicted", distance, plots_dir=self.plots_dir)
-            plot_heat_both(x_pos, y_pos, [t_E, p_E], "E_predicted", distance, plots_dir=self.plots_dir)
+            plot_heat(
+                x_pos, y_pos, p_E, "E_predicted", distance, plots_dir=self.plots_dir
+            )
+            plot_heat_both(
+                x_pos,
+                y_pos,
+                [t_E, p_E],
+                "E_predicted",
+                distance,
+                plots_dir=self.plots_dir,
+            )
 
 
-
-def plot_heat(x, y, z, name, hight, plots_dir):
-    fig, ax = plt.subplots(layout='constrained')
-    cm = ax.pcolormesh(x, y, z, )
-    # cs = ax.contour(x, y, z, )
-    ax.axis('scaled')
-    ax.set_title(f'{name} for additive at {hight} ang dist to surface')
-    ax.set_xlabel('x-pos additiv [ang]')
-    ax.set_ylabel('y-pos additiv [ang]')
+def plot_heat(x, y, z, name, height, plots_dir):
+    fig, ax = plt.subplots(layout="constrained")
+    cm = ax.pcolormesh(x, y, z)
+    
+    ax.axis("scaled")
+    ax.set_title(f"{name} for additive at {height} ang dist to surface")
+    ax.set_xlabel("x-pos additiv [ang]")
+    ax.set_ylabel("y-pos additiv [ang]")
     cbar = fig.colorbar(cm)
-    cbar.ax.set_ylabel(f'{name}')
-    fig.savefig(plots_dir / f'{name}-{hight}-heat.png')
+    cbar.ax.set_ylabel(f"{name}")
+    fig.savefig(plots_dir / f"{name}-{height}-heat.png")
 
 
-def plot_heat_both(x, y, z, name, hight, plots_dir):
+def plot_heat_both(x, y, z, name, height, plots_dir):
     fig, axes = plt.subplots(1, 2, sharey=True, sharex=True, figsize=(8, 3.5))
     for i, ax in enumerate(axes.flat):
         cm = ax.pcolormesh(x, y, z[i])
-        ax.axis('scaled')
-        ax.set_xlabel('x-pos additiv [ang]')
-        ax.set_ylabel('y-pos additiv [ang]')
+        ax.axis("scaled")
+        ax.set_xlabel("x-pos additiv [ang]")
+        ax.set_ylabel("y-pos additiv [ang]")
     axes[0].set_title(f"true-{name}")
     axes[1].set_title(f"predicted-{name}")
 
@@ -153,13 +159,13 @@ def plot_heat_both(x, y, z, name, hight, plots_dir):
     cbar_ax = fig.add_axes([0.85, 0.015, 0.03, 0.87])
     fig.colorbar(cm, cax=cbar_ax)
 
-    if name == 'energy':
-        cbar_ax.set_ylabel('Energy [meV/atom]')
-    if name == 'force':
-        cbar_ax.set_ylabel('Magnetude of force per atom [meV/ang]')
+    if name == "energy":
+        cbar_ax.set_ylabel("Energy [meV/atom]")
+    if name == "force":
+        cbar_ax.set_ylabel("Magnetude of force per atom [meV/ang]")
 
-    fig.suptitle(f'Additive {hight} ang over the surface')
-    fig.savefig(plots_dir / f'{name}-{hight}-heat.png')
+    fig.suptitle(f"Additive {height} ang over the surface")
+    fig.savefig(plots_dir / f"{name}-{height}-heat.png")
 
 
 def get_pos_and_metrics(node, atom_num):

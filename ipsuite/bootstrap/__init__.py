@@ -3,6 +3,12 @@ from ipsuite.bootstrap.random_displacements import (
     RotateMolecules,
     TranslateMolecules,
 )
-from ipsuite.bootstrap.surface_mods import SurfaceRasterScan, SurfaceRasterMetrics
+from ipsuite.bootstrap.surface_mods import SurfaceRasterMetrics, SurfaceRasterScan
 
-__all__ = ["RattleAtoms", "RotateMolecules", "TranslateMolecules", "SurfaceRasterScan", "SurfaceRasterMetrics"]
+__all__ = [
+    "RattleAtoms",
+    "RotateMolecules",
+    "TranslateMolecules",
+    "SurfaceRasterScan",
+    "SurfaceRasterMetrics",
+]
