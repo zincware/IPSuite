@@ -18,8 +18,7 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
     n_conf_per_dist: list[int] = zntrack.params([5, 5])
     cell_fraction: list[float] = zntrack.params([1, 1])
     random: bool = zntrack.params(False)
-    rattel: bool = zntrack.params(False)
-    max_shift: float = zntrack.params(None)
+    max_rattel_shift: float = zntrack.params(None)
     seed: bool = zntrack.params(1)
 
     def run(self) -> None:
@@ -59,16 +58,13 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
             b_vec = cell[1, :2] * self.cell_fraction[1]
             scaled_b_vecs = b_scaling[:, np.newaxis] * b_vec
 
-            if self.rattel and self.max_shift is None:
-                raise ValueError("max_shift must be set.")
-
             for a in scaled_a_vecs:
                 for b in scaled_b_vecs:
-                    if self.rattel:
+                    if self.max_rattel_shift is not None:
                         new_atoms = atoms.copy()
                         displacement = rng.uniform(
-                            -self.max_shift,
-                            self.max_shift,
+                            -self.max_rattel_shift,
+                            self.max_rattel_shift,
                             size=new_atoms.positions.shape,
                         )
                         new_atoms.positions += displacement
@@ -97,45 +93,61 @@ class SurfaceRasterMetrics(analysis.PredictionMetrics):
             pos.append(atoms.positions[-1])
         pos = np.array(pos)
 
-        shape = self.scan_node.n_conf_per_dist
-        n_distances = len(self.scan_node.z_dist_list)
-        shape.append(n_distances)
+        shape = [len(self.scan_node.z_dist_list)]
+        shape.append(self.scan_node.n_conf_per_dist[0])
+        shape.append(self.scan_node.n_conf_per_dist[1])
 
         x_pos = np.reshape(pos[:, 0], shape)
+        x_pos = x_pos[0]
         for j in range(x_pos.shape[1]):
             x_pos[j, :] = x_pos[j, 0]
 
-        # has to be removed
-        x_pos_cache = x_pos
-        x_pos = x_pos[3:]
-        x_pos = np.insert(x_pos, 4, x_pos_cache[0, :], axis=0)
-        x_pos = np.insert(x_pos, 6, x_pos_cache[1, :], axis=0)
-        x_pos = np.insert(x_pos, 8, x_pos_cache[2, :], axis=0)
-        ###################
-
         y_pos = np.reshape(pos[:, 1], shape)
+        y_pos = y_pos[0]
+
         t_E = np.reshape(self.energy_df["true"], shape)
         p_E = np.reshape(self.energy_df["prediction"], shape)
 
-        for distance in self.scan_node.z_dist_list:
-            plot_heat(x_pos, y_pos, t_E, "E_abinitio", distance, plots_dir=self.plots_dir)
-            plot_heat(
-                x_pos, y_pos, p_E, "E_predicted", distance, plots_dir=self.plots_dir
+        shape.append(3)
+        true_data, pred_data = self.get_data()
+
+        t_F = []
+        for data in true_data:
+            t_F.append(data.get_forces())
+        t_F = np.asarray(t_F)
+        t_F = t_F[:, -1, :]
+        t_F = np.reshape(t_F, shape)
+
+        p_F = []
+        for data in pred_data:
+            p_F.append(data.get_forces())
+        p_F = np.asarray(p_F)
+        p_F = p_F[:, -1, :]
+        p_F = np.reshape(p_F, shape)
+        print(p_F.shape)
+
+        for i, distance in enumerate(self.scan_node.z_dist_list):
+            plot_heat_both(
+                x_pos,
+                y_pos,
+                [t_E[i, :], p_E[i, :]],
+                "energy",
+                distance,
+                plots_dir=self.plots_dir,
             )
             plot_heat_both(
                 x_pos,
                 y_pos,
-                [t_E, p_E],
-                "E_predicted",
+                [t_F[i, :, :, 2], p_F[i, :, :, 2]],
+                "force",
                 distance,
                 plots_dir=self.plots_dir,
             )
 
-
 def plot_heat(x, y, z, name, height, plots_dir):
     fig, ax = plt.subplots(layout="constrained")
     cm = ax.pcolormesh(x, y, z)
-    
+
     ax.axis("scaled")
     ax.set_title(f"{name} for additive at {height} ang dist to surface")
     ax.set_xlabel("x-pos additiv [ang]")
