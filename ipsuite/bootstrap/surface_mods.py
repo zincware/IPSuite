@@ -86,8 +86,10 @@ class SurfaceRasterMetrics(analysis.PredictionMetrics):
     seed: int = zntrack.params(0)
 
     def get_plots(self, save=False):
+        super().get_plots(save=True)
         self.plots_dir.mkdir(exist_ok=True)
 
+        # get positions
         pos = []
         for atoms in self.data.atoms:
             pos.append(atoms.positions[-1])
@@ -105,65 +107,48 @@ class SurfaceRasterMetrics(analysis.PredictionMetrics):
         y_pos = np.reshape(pos[:, 1], shape)
         y_pos = y_pos[0]
 
-        t_E = np.reshape(self.energy_df["true"], shape)
-        p_E = np.reshape(self.energy_df["prediction"], shape)
+        # get energy
+        true_energies = np.reshape(self.energy_df["true"], shape)
+        pred_energies = np.reshape(self.energy_df["prediction"], shape)
 
+        # get forces
         shape.append(3)
-        true_data, pred_data = self.get_data()
+        true_data_list, pred_data_list = self.get_data()
 
-        t_F = []
-        for data in true_data:
-            t_F.append(data.get_forces())
-        t_F = np.asarray(t_F)
-        t_F = t_F[:, -1, :]
-        t_F = np.reshape(t_F, shape)
+        forces = []
+        for true_data, pred_data in zip(true_data_list, pred_data_list):
+            forces.append([true_data.get_forces(), pred_data.get_forces()])
 
-        p_F = []
-        for data in pred_data:
-            p_F.append(data.get_forces())
-        p_F = np.asarray(p_F)
-        p_F = p_F[:, -1, :]
-        p_F = np.reshape(p_F, shape)
-        print(p_F.shape)
+        forces = np.array(forces)[:, :, -1, :] * 1000
+        true_forces = np.reshape(forces[:, 0, :], shape)
+        pred_forces = np.reshape(forces[:, 1, :], shape)
 
         for i, distance in enumerate(self.scan_node.z_dist_list):
-            plot_heat_both(
+            plot_ture_vs_pred(
                 x_pos,
                 y_pos,
-                [t_E[i, :], p_E[i, :]],
-                "energy",
+                [true_energies[i, :], pred_energies[i, :]],
+                "energies",
                 distance,
                 plots_dir=self.plots_dir,
             )
-            plot_heat_both(
+            plot_ture_vs_pred(
                 x_pos,
                 y_pos,
-                [t_F[i, :, :, 2], p_F[i, :, :, 2]],
-                "force",
+                [true_forces[i, :, :, 2], pred_forces[i, :, :, 2]],
+                "forces",
                 distance,
                 plots_dir=self.plots_dir,
             )
 
-def plot_heat(x, y, z, name, height, plots_dir):
-    fig, ax = plt.subplots(layout="constrained")
-    cm = ax.pcolormesh(x, y, z)
 
-    ax.axis("scaled")
-    ax.set_title(f"{name} for additive at {height} ang dist to surface")
-    ax.set_xlabel("x-pos additiv [ang]")
-    ax.set_ylabel("y-pos additiv [ang]")
-    cbar = fig.colorbar(cm)
-    cbar.ax.set_ylabel(f"{name}")
-    fig.savefig(plots_dir / f"{name}-{height}-heat.png")
-
-
-def plot_heat_both(x, y, z, name, height, plots_dir):
+def plot_ture_vs_pred(x, y, z, name, height, plots_dir):
     fig, axes = plt.subplots(1, 2, sharey=True, sharex=True, figsize=(8, 3.5))
     for i, ax in enumerate(axes.flat):
         cm = ax.pcolormesh(x, y, z[i])
         ax.axis("scaled")
-        ax.set_xlabel("x-pos additiv [ang]")
-        ax.set_ylabel("y-pos additiv [ang]")
+        ax.set_xlabel(r"x position additiv $\AA$")
+        ax.set_ylabel(r"y-position additiv $\AA$")
     axes[0].set_title(f"true-{name}")
     axes[1].set_title(f"predicted-{name}")
 
@@ -171,21 +156,10 @@ def plot_heat_both(x, y, z, name, height, plots_dir):
     cbar_ax = fig.add_axes([0.85, 0.015, 0.03, 0.87])
     fig.colorbar(cm, cax=cbar_ax)
 
-    if name == "energy":
-        cbar_ax.set_ylabel("Energy [meV/atom]")
-    if name == "force":
-        cbar_ax.set_ylabel("Magnetude of force per atom [meV/ang]")
+    if name == "energies":
+        cbar_ax.set_ylabel(r"Energy $E$ / meV/atom")
+    if name == "forces":
+        cbar_ax.set_ylabel(r"Magnetude of force per atom $|F|$ meV$ \cdot \AA^{-1}$")
 
-    fig.suptitle(f"Additive {height} ang over the surface")
+    fig.suptitle(rf"Additive {height} $\AA$ over the surface")
     fig.savefig(plots_dir / f"{name}-{height}-heat.png")
-
-
-def get_pos_and_metrics(node, atom_num):
-    pos = []
-    energy = []
-    forces = []
-    for atoms in node.atoms:
-        pos.append(atoms.positions[atom_num])
-        energy.append(atoms.get_potential_energy())
-        forces.append(atoms.get_forces()[atom_num, :])
-    return np.array(pos), np.array(energy), np.array(forces)
