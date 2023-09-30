@@ -143,7 +143,7 @@ class SurfaceRasterMetrics(analysis.PredictionMetrics):
 
 
 def plot_ture_vs_pred(x, y, z, name, height, plots_dir):
-    fig, axes = plt.subplots(1, 2, sharey=True, sharex=True, figsize=(8, 3.5))
+    fig, axes = plt.subplots(1, 2, sharey=True, sharex=True, figsize=(8, 4))
     for i, ax in enumerate(axes.flat):
         cm = ax.pcolormesh(x, y, z[i])
         ax.axis("scaled")
