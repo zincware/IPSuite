@@ -343,6 +343,20 @@ class FixedSphereConstraint(base.IPSNode):
         return ase.constraints.FixAtoms(indices=indices)
 
 
+class FixedLayerConstraint(base.IPSNode):
+    upper_limit = zntrack.params()
+    lower_limit = zntrack.params()
+
+    def get_constraint(self, atoms):
+        z_coordinates = atoms.positions[:, 2]
+
+        self.indices = np.where(
+            (self.lower_limit <= z_coordinates) & (z_coordinates <= self.upper_limit)
+        )[0]
+
+        return ase.constraints.FixAtoms(indices=self.indices)
+
+
 class ASEMD(base.ProcessSingleAtom):
     """Class to run a MD simulation with ASE.
 
