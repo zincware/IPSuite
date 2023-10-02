@@ -13,7 +13,7 @@ log = logging.getLogger(__name__)
 
 
 class SurfaceRasterScan(base.ProcessSingleAtom):
-    """ This class generates periodic structures by creating a vacuum slab in the
+    """This class generates periodic structures by creating a vacuum slab in the
     z-direction and adding additives at various positions. It is useful for generating
     input structures for surface training simulations or in combination with the
     SurfaceRasterMetrics class to analyze how well surface interactions are captured
@@ -106,7 +106,7 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
 
 
 class SurfaceRasterMetrics(analysis.PredictionMetrics):
-    """ This class analyzes the surface interaction of an additive with a surface.
+    """This class analyzes the surface interaction of an additive with a surface.
     It is used to evaluate how well the surface structure is learned during training.
     Note that the bulk atoms should not be rattled in the SurfaceRasterScan node.
 
@@ -114,7 +114,7 @@ class SurfaceRasterMetrics(analysis.PredictionMetrics):
     ----------
     scan_node: SurfaceRasterScan()
        The node used for generating the structures
- 
+
     """
 
     scan_node: SurfaceRasterScan = zntrack.deps()
