@@ -13,13 +13,46 @@ log = logging.getLogger(__name__)
 
 
 class SurfaceRasterScan(base.ProcessSingleAtom):
-    symbol: int = zntrack.params()
-    z_dist_list: list[int] = zntrack.params()
+    """ This class gets a periodic structure, generates
+        a vacuum slap in z direction and adds a additive
+        at varios positions. This can be used to generate
+        input structures for surface trainings or in
+        combination with the SurfaceRasterMetrics() class
+        to analyse how well surface interaction are 
+        captured in the training.
+
+    Attributes
+    ----------
+    symbol: str
+        ASE symbol of the additive
+    z_dist_list: list[float]
+        list of all distances between additive
+        and surface that should be rasted
+    n_conf_per_dist: list[int]
+        number of structures that should be generated
+        in x and y direction. creates a [n_x, n_y]
+        grid.
+    cell_fraction: list[float]
+        defines the cell fraction in x and y
+        direction that should be covered with
+        the additive x,y positions (grid).
+    random: bool
+        defines weather the additive should be placed
+        on grid points or random over the surface.
+    max_rattel_shift: float
+        defines the max shift in one direction
+        the bulk atoms will be ratteld. None for
+        no rattel.
+    seed: int
+        seed for randomly distributing the additive.
+    """
+    symbol: str = zntrack.params()
+    z_dist_list: list[float] = zntrack.params()
     n_conf_per_dist: list[int] = zntrack.params([5, 5])
     cell_fraction: list[float] = zntrack.params([1, 1])
     random: bool = zntrack.params(False)
     max_rattel_shift: float = zntrack.params(None)
-    seed: bool = zntrack.params(1)
+    seed: int = zntrack.params(1)
 
     def run(self) -> None:
         rng = default_rng(self.seed)
@@ -82,8 +115,20 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
 
 
 class SurfaceRasterMetrics(analysis.PredictionMetrics):
+    """ This class analyses the the surface interaction
+        of an additive with a surface. This can be used 
+        to check how well surface structure is learned.
+        The bulk atoms should not be ratteld in the 
+        SurfaceRasterScan node.
+
+    Attributes
+    ----------
+    scan_node: SurfaceRasterScan()
+        Node that was used for generating the structures
+ 
+    """
+    
     scan_node: SurfaceRasterScan = zntrack.deps()
-    seed: int = zntrack.params(0)
 
     def get_plots(self, save=False):
         super().get_plots(save=True)
