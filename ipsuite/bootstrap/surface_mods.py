@@ -36,6 +36,7 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
     seed: int
         Seed for randomly distributing the additive.
     """
+
     symbol: str = zntrack.params()
     z_dist_list: list[float] = zntrack.params()
     n_conf_per_dist: list[int] = zntrack.params([5, 5])
@@ -115,7 +116,7 @@ class SurfaceRasterMetrics(analysis.PredictionMetrics):
        The node used for generating the structures
  
     """
-    
+
     scan_node: SurfaceRasterScan = zntrack.deps()
 
     def get_plots(self, save=False):
