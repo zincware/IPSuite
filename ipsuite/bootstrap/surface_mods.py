@@ -13,12 +13,12 @@ log = logging.getLogger(__name__)
 
 
 class SurfaceRasterScan(base.ProcessSingleAtom):
-    """ This class gets a periodic structure, generates
+    """This class gets a periodic structure, generates
         a vacuum slap in z direction and adds a additive
         at varios positions. This can be used to generate
         input structures for surface trainings or in
         combination with the SurfaceRasterMetrics() class
-        to analyse how well surface interaction are 
+        to analyse how well surface interaction are
         captured in the training.
 
     Attributes
@@ -46,6 +46,7 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
     seed: int
         seed for randomly distributing the additive.
     """
+
     symbol: str = zntrack.params()
     z_dist_list: list[float] = zntrack.params()
     n_conf_per_dist: list[int] = zntrack.params([5, 5])
@@ -115,19 +116,19 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
 
 
 class SurfaceRasterMetrics(analysis.PredictionMetrics):
-    """ This class analyses the the surface interaction
-        of an additive with a surface. This can be used 
+    """This class analyses the the surface interaction
+        of an additive with a surface. This can be used
         to check how well surface structure is learned.
-        The bulk atoms should not be ratteld in the 
+        The bulk atoms should not be ratteld in the
         SurfaceRasterScan node.
 
     Attributes
     ----------
     scan_node: SurfaceRasterScan()
         Node that was used for generating the structures
- 
+
     """
-    
+
     scan_node: SurfaceRasterScan = zntrack.deps()
 
     def get_plots(self, save=False):
