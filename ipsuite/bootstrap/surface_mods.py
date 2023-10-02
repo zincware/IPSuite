@@ -13,38 +13,28 @@ log = logging.getLogger(__name__)
 
 
 class SurfaceRasterScan(base.ProcessSingleAtom):
-    """ This class gets a periodic structure, generates
-        a vacuum slap in z direction and adds a additive
-        at varios positions. This can be used to generate
-        input structures for surface trainings or in
-        combination with the SurfaceRasterMetrics() class
-        to analyse how well surface interaction are 
-        captured in the training.
+    """ This class generates periodic structures by creating a vacuum slab in the
+    z-direction and adding additives at various positions. It is useful for generating
+    input structures for surface training simulations or in combination with the
+    SurfaceRasterMetrics class to analyze how well surface interactions are captured
+    in the training.
 
     Attributes
     ----------
     symbol: str
-        ASE symbol of the additive
+        ASE symbol representing the additives.
     z_dist_list: list[float]
-        list of all distances between additive
-        and surface that should be rasted
+         A list of z-distances at which additives will be added.
     n_conf_per_dist: list[int]
-        number of structures that should be generated
-        in x and y direction. creates a [n_x, n_y]
-        grid.
+        The number of configurations to generate per z-distance.
     cell_fraction: list[float]
-        defines the cell fraction in x and y
-        direction that should be covered with
-        the additive x,y positions (grid).
+        Fractional scaling of the unit cell in x and y directions.
     random: bool
-        defines weather the additive should be placed
-        on grid points or random over the surface.
+       If True, additives are placed randomly within the specified cell_fraction.
     max_rattel_shift: float
-        defines the max shift in one direction
-        the bulk atoms will be ratteld. None for
-        no rattel.
+        Maximum random displacement for each atom.
     seed: int
-        seed for randomly distributing the additive.
+        Seed for randomly distributing the additive.
     """
     symbol: str = zntrack.params()
     z_dist_list: list[float] = zntrack.params()
@@ -115,16 +105,14 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
 
 
 class SurfaceRasterMetrics(analysis.PredictionMetrics):
-    """ This class analyses the the surface interaction
-        of an additive with a surface. This can be used 
-        to check how well surface structure is learned.
-        The bulk atoms should not be ratteld in the 
-        SurfaceRasterScan node.
+    """ This class analyzes the surface interaction of an additive with a surface.
+    It is used to evaluate how well the surface structure is learned during training.
+    Note that the bulk atoms should not be rattled in the SurfaceRasterScan node.
 
     Attributes
     ----------
     scan_node: SurfaceRasterScan()
-        Node that was used for generating the structures
+       The node used for generating the structures
  
     """
     
