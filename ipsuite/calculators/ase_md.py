@@ -344,6 +344,16 @@ class FixedSphereConstraint(base.IPSNode):
 
 
 class FixedLayerConstraint(base.IPSNode):
+    """Class to fix a layer of atoms within a MD
+        simulation
+    
+    Attributes
+    ----------
+    upper_limit: float
+        all atoms with a lower z pos will be fixed.
+    lower_limit: float
+        all atoms with a higher z pos will be fixed.
+    """
     upper_limit = zntrack.params()
     lower_limit = zntrack.params()
 
