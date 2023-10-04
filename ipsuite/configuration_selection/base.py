@@ -6,7 +6,7 @@ import ase
 import znflow
 import zntrack
 
-from ipsuite import base
+from ipsuite import base, fields
 from ipsuite.utils import combine
 
 log = logging.getLogger(__name__)
@@ -130,3 +130,38 @@ class ConfigurationSelection(base.ProcessAtoms):
             else:
                 raise ValueError(f"Data must be a list or dict, not {type(data)}")
             return results
+
+
+
+class BatchConfigurationSelection(ConfigurationSelection):
+    """Base node for BatchConfigurationSelection.
+
+    Attributes
+    ----------
+    data: list[ase.Atoms]
+        The atoms data to process. This must be an input to the Node
+    atoms: list[ase.Atoms]
+        The processed atoms data. This is an output of the Node.
+        It does not have to be 'field.Atoms' but can also be e.g. a 'property'.
+    """
+
+    train_data: list[ase.Atoms] = zntrack.deps()
+
+    def _post_init_(self):
+        if self.train_data is not None and not isinstance(self.train_data, dict):
+            try:
+                self.train_data = znflow.combine(
+                    self.train_data, attribute="atoms", return_dict_attr="name"
+                )
+            except TypeError:
+                self.train_data = znflow.combine(self.train_data, attribute="atoms")
+
+        if self.pool_data is not None and not isinstance(self.pool_data, dict):
+            try:
+                self.pool_data = znflow.combine(
+                    self.pool_data, attribute="atoms", return_dict_attr="name"
+                )
+            except TypeError:
+                self.pool_data = znflow.combine(self.pool_data, attribute="atoms")
+
+    
