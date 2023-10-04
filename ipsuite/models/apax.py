@@ -5,6 +5,8 @@ import typing
 from typing import Optional
 
 import ase.io
+from matplotlib import pyplot as plt
+import numpy as np
 import pandas as pd
 import yaml
 import zntrack.utils
@@ -16,6 +18,8 @@ from jax.config import config
 from zntrack import dvc, zn
 
 from ipsuite import base, utils
+from ipsuite.analysis.ensemble import plot_with_uncertainty
+from ipsuite.configuration_selection.base import BatchConfigurationSelection
 from ipsuite.models.base import MLModel
 from ipsuite.static_data import STATIC_PATH
 from ipsuite.utils.helpers import check_duplicate_keys
@@ -171,7 +175,7 @@ class ApaxEnsemble(base.IPSNode):
         return calc
 
 
-class BatchKernelSelection(ConfigurationSelection):
+class BatchKernelSelection(BatchConfigurationSelection):
     """Interface to the batch active learning methods implemented in apax.
     Check the apax documentation for a list and explanation of implemented properties.
     
@@ -186,30 +190,47 @@ class BatchKernelSelection(ConfigurationSelection):
     selection_batch_size: int
         Number of samples to be selected.
     processing_batch_size: int
-        Number of samples to be processed in parallel. Does not affect the result, just the speed of computing features.
+        Number of samples to be processed in parallel. Does not affect the result,
+        just the speed of computing features.
     """
 
-    models: typing.List[Apax] = zntrack.zn.deps()
-    train_atoms: list[ase.Atoms] = zntrack.zn.deps()
+    models: typing.List[Apax] = zntrack.deps()
     base_feature_map: dict = zntrack.zn.params({"name": "ll_grad","layer_name": "dense_2"})
     selection_method: str = zntrack.zn.params("max_dist")
     selection_batch_size: str = zntrack.zn.params(10)
     processing_batch_size: str = zntrack.meta.Text(64)
+    img_selection = zntrack.dvc.outs(zntrack.nwd / "selection.png")
 
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         param_files = [m._parameter["data"]["directory"] for m in self.models]
 
-        idxs = kernel_selection(
+        selected = kernel_selection(
             param_files,
-            self.train_atoms,
+            self.train_data,
             atoms_lst,
             self.base_feature_map,
             self.selection_method,
             selection_batch_size=self.selection_batch_size,
             processing_batch_size=self.processing_batch_size,
         )
+        self._get_plot(atoms_lst, selected)
 
+        return list(selected)
+    
+    def _get_plot(self, atoms_lst: typing.List[ase.Atoms], indices: typing.List[int]):
+        try:
+            values = np.array([atoms.calc.results["energy"] for atoms in atoms_lst])
+            reference = np.array(
+                [atoms.calc.results["energy_uncertainty"] for atoms in atoms_lst]
+            )
+            fig, ax, _ = plot_with_uncertainty(
+                {"std": values, "mean": reference},
+                ylabel="energy",
+                xlabel="configuration",
+            )
+            ax.plot(indices, reference[indices], "x", color="red")
 
-        # TODO plot
+        except ValueError:
+            fig, _ = plt.subplots()
 
-        return list(idxs)
+        fig.savefig(self.img_selection, bbox_inches="tight")
