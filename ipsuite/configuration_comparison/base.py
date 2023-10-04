@@ -137,8 +137,8 @@ class ConfigurationComparison(base.IPSNode):
         choose if kernel should be compiled with jit or not.
     """
 
-    reference: base.protocol.HasOrIsAtoms = zntrack.zn.deps()
-    analyte: base.protocol.HasOrIsAtoms = zntrack.zn.deps()
+    reference: base.protocol.HasOrIsAtoms = zntrack.deps()
+    analyte: base.protocol.HasOrIsAtoms = zntrack.deps()
     similarities = zntrack.zn.plots()
     soap: typing.Union[dict, SOAPParameter] = zntrack.zn.params(SOAPParameter())
     result: typing.List[float] = zntrack.zn.outs()

@@ -44,8 +44,8 @@ class Apax(MLModel):
     """
 
     config: str = dvc.params("apax.yaml")
-    validation_data = zn.deps()
-    model: Optional[MLModel] = zntrack.zn.deps(None)
+    validation_data = zntrack.deps()
+    model: Optional[MLModel] = zntrack.deps(None)
 
     model_directory: pathlib.Path = dvc.outs(zntrack.nwd / "apax_model")
     train_log_file: pathlib.Path = dvc.outs(zntrack.nwd / "train.log")
@@ -144,7 +144,7 @@ class ApaxEnsemble(base.IPSNode):
         to the model function within the ASE calculator.
         See the apax documentation for available methods.
     """
-    models: typing.List[Apax] = zntrack.zn.deps()
+    models: typing.List[Apax] = zntrack.deps()
     nl_skin: float = zntrack.zn.params(0.5)
     transformations: typing.Dict[str, dict] = zntrack.zn.params(None)
 

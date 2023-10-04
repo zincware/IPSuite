@@ -28,8 +28,8 @@ class ConfigurationSelection(base.ProcessAtoms):
 
     exclude_configurations: typing.Union[
         typing.Dict[str, typing.List[int]], base.protocol.HasSelectedConfigurations
-    ] = zntrack.zn.deps(None)
-    exclude: typing.Union[zntrack.Node, typing.List[zntrack.Node]] = zntrack.zn.deps(None)
+    ] = zntrack.deps(None)
+    exclude: typing.Union[zntrack.Node, typing.List[zntrack.Node]] = zntrack.deps(None)
     selected_configurations: typing.Dict[str, typing.List[int]] = zntrack.zn.outs()
 
     _name_ = "ConfigurationSelection"

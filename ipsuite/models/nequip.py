@@ -38,7 +38,7 @@ class Nequip(MLModel):
     """The Nequip and allegro model."""
 
     config: str = zntrack.dvc.params()
-    validation_data = zntrack.zn.deps()
+    validation_data = zntrack.deps()
 
     train_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "train.extxyz")
     validation_data_file: pathlib.Path = zntrack.dvc.outs(

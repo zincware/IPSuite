@@ -52,7 +52,7 @@ class EnsembleCalculator(Calculator):
 
 
 class EnsembleModel(base.IPSNode):
-    models: typing.List[MLModel] = zntrack.zn.deps()
+    models: typing.List[MLModel] = zntrack.deps()
 
     uuid = zntrack.zn.outs()  # to connect this Node to other Nodes it requires an output.
 

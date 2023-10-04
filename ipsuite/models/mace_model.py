@@ -37,7 +37,7 @@ class MACE(MLModel):
 
     train_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "train-data.extxyz")
 
-    test_data = zntrack.zn.deps()
+    test_data = zntrack.deps()
     test_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "test-data.extxyz")
     model_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "model")
 
