@@ -9,8 +9,9 @@ import pandas as pd
 import yaml
 import zntrack.utils
 from apax.md import ASECalculator
-from apax.md.transformations import available_transformations
+from apax.md.function_transformations import available_transformations
 from apax.train.run import run as apax_run
+from apax.bal import kernel_selection
 from jax.config import config
 from zntrack import dvc, zn
 
@@ -18,6 +19,7 @@ from ipsuite import base, utils
 from ipsuite.models.base import MLModel
 from ipsuite.static_data import STATIC_PATH
 from ipsuite.utils.helpers import check_duplicate_keys
+from ipsuite.configuration_selection import ConfigurationSelection
 
 log = logging.getLogger(__name__)
 
@@ -135,12 +137,15 @@ class ApaxEnsemble(base.IPSNode):
     ----------
     models: list
         List of `ApaxModel` nodes to ensemble.
+    nl_skin: float
+        Neighborlist skin.
     transformations: dict
         Key-parameter dict with function transformations applied
         to the model function within the ASE calculator.
         See the apax documentation for available methods.
     """
     models: typing.List[Apax] = zntrack.zn.deps()
+    nl_skin: float = zntrack.zn.params(0.5)
     transformations: typing.Dict[str, dict] = zntrack.zn.params(None)
 
     def run(self) -> None:
@@ -162,5 +167,49 @@ class ApaxEnsemble(base.IPSNode):
             for transform, params in self.transformations.items():
                 transformations.append(available_transformations[transform](**params))
 
-        calc = ASECalculator(param_files)
+        calc = ASECalculator(param_files, dr=self.nl_skin, transformations=transformations)
         return calc
+
+
+class BatchKernelSelection(ConfigurationSelection):
+    """Interface to the batch active learning methods implemented in apax.
+    Check the apax documentation for a list and explanation of implemented properties.
+    
+    Attributes
+    ----------
+    models: Union[Apax, List[Apax]]
+        One or mode Apax models to construct a feature map from.
+    base_feature_map: dict
+        Name and parameters for the feature map transformation.
+    selection_method: str
+        Name of the selection method to be used.
+    selection_batch_size: int
+        Number of samples to be selected.
+    processing_batch_size: int
+        Number of samples to be processed in parallel. Does not affect the result, just the speed of computing features.
+    """
+
+    models: typing.List[Apax] = zntrack.zn.deps()
+    train_atoms: list[ase.Atoms] = zntrack.zn.deps()
+    base_feature_map: dict = zntrack.zn.params({"name": "ll_grad","layer_name": "dense_2"})
+    selection_method: str = zntrack.zn.params("max_dist")
+    selection_batch_size: str = zntrack.zn.params(10)
+    processing_batch_size: str = zntrack.meta.Text(64)
+
+    def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
+        param_files = [m._parameter["data"]["directory"] for m in self.models]
+
+        idxs = kernel_selection(
+            param_files,
+            self.train_atoms,
+            atoms_lst,
+            self.base_feature_map,
+            self.selection_method,
+            selection_batch_size=self.selection_batch_size,
+            processing_batch_size=self.processing_batch_size,
+        )
+
+
+        # TODO plot
+
+        return list(idxs)
