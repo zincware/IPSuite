@@ -83,7 +83,7 @@ def _update_cmd(cp2k_cmd):
 class CP2KYaml(base.ProcessSingleAtom):
     """Node for running CP2K Single point calculations."""
 
-    cp2k_bin: str = zntrack.meta.Text("cp2k.psmp")
+    cp2k_bin: str = zntrack.meta.Text(None)
     cp2k_params = zntrack.dvc.params("cp2k.yaml")
     wfn_restart: str = zntrack.dvc.deps(None)
 
@@ -111,8 +111,10 @@ class CP2KYaml(base.ProcessSingleAtom):
         _update_paths(cp2k_input_dict)
 
         cp2k_input_script = "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
-        with self.operating_directory():
-            self._run_cp2k(atoms, cp2k_input_script)
+        # with self.operating_directory():
+        #     self._run_cp2k(atoms, cp2k_input_script)
+
+        self._run_cp2k(atoms, cp2k_input_script)
 
     def _run_cp2k(self, atoms, cp2k_input_script):
         ase.io.write(self.cp2k_directory / "atoms.xyz", atoms)
