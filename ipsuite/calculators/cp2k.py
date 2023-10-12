@@ -65,6 +65,21 @@ def _update_paths(cp2k_input_dict) -> dict:
         )
 
 
+def _update_cmd(cp2k_cmd):
+    """Update the shell command to run cp2k."""
+    if cp2k_cmd is None:
+        # Load from environment variable IPSUITE_CP2K_SHELL
+        try:
+            cp2k_cmd = os.environ["IPSUITE_CP2K_SHELL"]
+            print(f"Using IPSUITE_CP2K_SHELL={cp2k_cmd}")
+        except KeyError as err:
+            raise RuntimeError(
+                "Please set the environment variable 'IPSUITE_CP2K_SHELL' or use the"
+                " 'cp2k_shell' parameter."
+            ) from err
+    return cp2k_cmd
+
+
 class CP2KYaml(base.ProcessSingleAtom):
     """Node for running CP2K Single point calculations."""
 
@@ -76,6 +91,7 @@ class CP2KYaml(base.ProcessSingleAtom):
 
     def run(self):
         """ZnTrack run method."""
+        self.cp2k_bin = _update_cmd(self.cp2k_bin)
         self.cp2k_directory.mkdir(exist_ok=True)
         with pathlib.Path(self.cp2k_params).open("r") as file:
             cp2k_input_dict = yaml.safe_load(file)
@@ -167,19 +183,6 @@ class CP2KSinglePoint(base.ProcessAtoms):
     output_file = zntrack.dvc.outs(zntrack.nwd / "atoms.h5")
     cp2k_directory = zntrack.dvc.outs(zntrack.nwd / "cp2k")
 
-    def _update_shell(self):
-        """Update the shell command to run cp2k."""
-        if self.cp2k_shell is None:
-            # Load from environment variable IPSUITE_CP2K_SHELL
-            try:
-                self.cp2k_shell = os.environ["IPSUITE_CP2K_SHELL"]
-                print(f"Using IPSUITE_CP2K_SHELL={self.cp2k_shell}")
-            except KeyError as err:
-                raise RuntimeError(
-                    "Please set the environment variable 'IPSUITE_CP2K_SHELL' or use the"
-                    " 'cp2k_shell' parameter."
-                ) from err
-
     def run(self):
         """ZnTrack run method.
 
@@ -189,7 +192,7 @@ class CP2KSinglePoint(base.ProcessAtoms):
             If the cp2k_shell is not set.
         """
 
-        self._update_shell()
+        self.cp2k_shell = _update_cmd(self.cp2k_shell)
 
         db = znh5md.io.DataWriter(self.output_file)
         db.initialize_database_groups()
@@ -245,7 +248,7 @@ class CP2KSinglePoint(base.ProcessAtoms):
         return "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
 
     def get_calculator(self, directory: str = None):
-        self._update_shell()
+        self.cp2k_shell = _update_cmd(self.cp2k_shell)
 
         if directory is None:
             directory = self.cp2k_directory
