@@ -40,7 +40,10 @@ class Prediction(base.ProcessAtoms):
             if "stress" in calc.implemented_properties:
                 try:
                     atoms.get_stress()
-                except PropertyNotImplementedError:  # required for nequip
+                except (
+                    PropertyNotImplementedError,
+                    ValueError,
+                ):  # required for nequip, GAP
                     pass
 
             self.atoms.append(freeze_copy_atoms(atoms))
