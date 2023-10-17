@@ -50,6 +50,8 @@ def atoms_list() -> typing.List[ase.Atoms]:
             atoms=atom,
             energy=idx / 21,
             forces=np.random.randn(2, 3),
+            energy_uncertainty=idx + 1,
+            forces_uncertainty=abs(np.random.randn(2, 3)) + idx,
         )
 
     return atoms
