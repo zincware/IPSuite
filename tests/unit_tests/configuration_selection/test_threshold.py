@@ -7,10 +7,10 @@ from ipsuite.configuration_selection import ThresholdSelection
 @pytest.mark.parametrize(
     "key, reference, dim_reduction, reduction_axis",
     [
-        ("energy_uncertainty", "energy", "None", (1, 2)),
+        ("energy_uncertainty", "energy", None, (1, 2)),
         ("forces_uncertainty", "forces", "max", (1, 2)),
         ("forces_uncertainty", "forces", "mean", (1, 2)),
-        ("forces_uncertainty", "forces", "None", (1, 2)),
+        ("forces_uncertainty", "forces", None, (1, 2)),
     ],
 )
 def test_get_selected_atoms(atoms_list, key, reference, dim_reduction, reduction_axis):
@@ -25,7 +25,7 @@ def test_get_selected_atoms(atoms_list, key, reference, dim_reduction, reduction
         min_distance=5,
     )
 
-    if "forces_uncertainty" in key and "None" in dim_reduction:
+    if "forces_uncertainty" in key and dim_reduction is None:
         with pytest.raises(ValueError):
             selected_atoms = threshold.select_atoms(atoms_list, safe_fig=False)
     else:

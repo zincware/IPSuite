@@ -10,6 +10,29 @@ from ipsuite.analysis.ensemble import plot_with_uncertainty
 from ipsuite.configuration_selection import ConfigurationSelection
 
 
+def mean_reduction(values, axis):
+    return np.mean(values, axis=axis)
+
+
+def max_reduction(values, axis):
+    return np.max(values, axis=axis)
+
+
+def check_dimension(values):
+    if values.ndim > 1:
+        raise ValueError(
+            f"Value dimension is {values.ndim} != 1. "
+            "Reduce the dimension by defining dim_reduction, "
+            "use mean or max to get (n_structures,) shape."
+        )
+
+
+REDUCTIONS = {
+    "mean": mean_reduction,
+    "max": max_reduction,
+}
+
+
 class ThresholdSelection(ConfigurationSelection):
     """Select atoms based on a given threshold.
 
@@ -34,6 +57,8 @@ class ThresholdSelection(ConfigurationSelection):
     dim_reduction: str, optional
         Reduces the dimensionality of the chosen uncertainty along the specified axis
         by calculating either the maximum or mean value.
+
+        Choose from ["max", "min"]
     reduction_axis: tuple(int), optional
         Specifies the axis along which the reduction occurs.
     """
@@ -43,10 +68,9 @@ class ThresholdSelection(ConfigurationSelection):
     threshold = zntrack.params(None)
     n_configurations = zntrack.params(None)
     min_distance: int = zntrack.params(1)
-    dim_reduction: str = zntrack.params("None")
+    dim_reduction: str = zntrack.params(None)
     reduction_axis = zntrack.params((1, 2))
     img_selection = zntrack.outs_path(zntrack.nwd / "selection.png")
-    save_fig = zntrack.params(True)
 
     def _post_init_(self):
         if self.threshold is None and self.n_configurations is None:
@@ -69,16 +93,15 @@ class ThresholdSelection(ConfigurationSelection):
         typing.List[int]:
             list containing the taken indices
         """
-        reduction_dict = {
-            "mean": mean_reduction,
-            "max": max_reduction,
-            "None": check_dim,
-        }
+
         self.reduction_axis = tuple(self.reduction_axis)
         values = np.array([atoms.calc.results[self.key] for atoms in atoms_lst])
 
-        reduction_fn = reduction_dict[self.dim_reduction]
-        values = reduction_fn(values, self.reduction_axis)
+        if self.dim_reduction is not None:
+            reduction_fn = REDUCTIONS[self.dim_reduction]
+            values = reduction_fn(values, self.reduction_axis)
+
+        check_dimension(values)
 
         if self.threshold is not None:
             if self.threshold < 0:
@@ -95,6 +118,14 @@ class ThresholdSelection(ConfigurationSelection):
             else:
                 indices = np.argsort(values)
 
+        selection = self.get_selection(indices)
+
+        if safe_fig:
+            self._get_plot(values, atoms_lst, np.array(selection))
+
+        return selection
+
+    def get_selection(self, indices):
         selected = []
         for val in indices:
             # If the value is close to any of the already selected values, skip it.
@@ -102,9 +133,6 @@ class ThresholdSelection(ConfigurationSelection):
                 selected.append(val)
             if len(selected) == self.n_configurations:
                 break
-
-        if safe_fig:
-            self._get_plot(values, atoms_lst, np.array(selected))
 
         return selected
 
@@ -135,21 +163,3 @@ class ThresholdSelection(ConfigurationSelection):
             ax.set_xlabel("configuration")
 
         fig.savefig(self.img_selection, bbox_inches="tight")
-
-
-def mean_reduction(values, axis):
-    return np.mean(values, axis=axis)
-
-
-def max_reduction(values, axis):
-    return np.max(values, axis=axis)
-
-
-def check_dim(values, axis):
-    if values.ndim > 1:
-        raise ValueError(
-            f"Value dimension is {values.ndim} != 1. "
-            "Reduce the dimension by defining dim_reduction, "
-            "use mean or max to get (n_structures,) shape."
-        )
-    return values
