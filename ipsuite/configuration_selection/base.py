@@ -98,6 +98,8 @@ class ConfigurationSelection(base.ProcessAtoms):
                     if idx in self.selected_configurations:
                         results.append(atoms)
             elif isinstance(data, dict):
+                # This only triggers, if the file was changed manually.
+                assert data.keys() == self.selected_configurations.keys()
                 for key, atoms_lst in data.items():
                     if key in self.selected_configurations:
                         for idx, atoms in enumerate(atoms_lst):
@@ -120,6 +122,8 @@ class ConfigurationSelection(base.ProcessAtoms):
             elif isinstance(data, dict) and isinstance(
                 self.selected_configurations, dict
             ):
+                # This only triggers, if the file was changed manually.
+                assert data.keys() == self.selected_configurations.keys()
                 for key, atoms_lst in data.items():
                     if key not in self.selected_configurations:
                         results.extend(atoms_lst)
