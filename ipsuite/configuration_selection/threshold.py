@@ -79,7 +79,7 @@ class ThresholdSelection(ConfigurationSelection):
         return super()._post_init_()
 
     def select_atoms(
-        self, atoms_lst: typing.List[ase.Atoms], safe_fig: bool = True
+        self, atoms_lst: typing.List[ase.Atoms], save_fig: bool = True
     ) -> typing.List[int]:
         """Take every nth (step) object of a given atoms list.
 
@@ -120,7 +120,7 @@ class ThresholdSelection(ConfigurationSelection):
 
         selection = self.get_selection(indices)
 
-        if safe_fig:
+        if save_fig:
             self._get_plot(values, atoms_lst, np.array(selection))
 
         return selection
