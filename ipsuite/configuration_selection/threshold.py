@@ -58,7 +58,7 @@ class ThresholdSelection(ConfigurationSelection):
         Reduces the dimensionality of the chosen uncertainty along the specified axis
         by calculating either the maximum or mean value.
 
-        Choose from ["max", "min"]
+        Choose from ["max", "mean"]
     reduction_axis: tuple(int), optional
         Specifies the axis along which the reduction occurs.
     """
