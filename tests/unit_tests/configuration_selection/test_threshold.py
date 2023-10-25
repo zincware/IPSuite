@@ -27,9 +27,9 @@ def test_get_selected_atoms(atoms_list, key, reference, dim_reduction, reduction
 
     if "forces_uncertainty" in key and dim_reduction is None:
         with pytest.raises(ValueError):
-            selected_atoms = threshold.select_atoms(atoms_list, safe_fig=False)
+            selected_atoms = threshold.select_atoms(atoms_list, save_fig=False)
     else:
-        selected_atoms = threshold.select_atoms(atoms_list, safe_fig=False)
+        selected_atoms = threshold.select_atoms(atoms_list, save_fig=False)
         test_selection = np.linspace(20, 0, 5, dtype=int).tolist()
         assert len(set(selected_atoms)) == 5
         assert isinstance(selected_atoms, list)
