@@ -163,5 +163,3 @@ class BatchConfigurationSelection(ConfigurationSelection):
                 )
             except TypeError:
                 self.pool_data = znflow.combine(self.pool_data, attribute="atoms")
-
-    
