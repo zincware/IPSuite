@@ -132,7 +132,6 @@ class ConfigurationSelection(base.ProcessAtoms):
             return results
 
 
-
 class BatchConfigurationSelection(ConfigurationSelection):
     """Base node for BatchConfigurationSelection.
 

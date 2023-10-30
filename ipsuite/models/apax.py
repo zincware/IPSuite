@@ -5,25 +5,25 @@ import typing
 from typing import Optional
 
 import ase.io
-from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 import yaml
 import zntrack.utils
+from apax.bal import kernel_selection
 from apax.md import ASECalculator
 from apax.md.function_transformations import available_transformations
 from apax.train.run import run as apax_run
-from apax.bal import kernel_selection
 from jax.config import config
+from matplotlib import pyplot as plt
 from zntrack import dvc, zn
 
 from ipsuite import base, utils
 from ipsuite.analysis.ensemble import plot_with_uncertainty
+from ipsuite.configuration_selection import ConfigurationSelection
 from ipsuite.configuration_selection.base import BatchConfigurationSelection
 from ipsuite.models.base import MLModel
 from ipsuite.static_data import STATIC_PATH
 from ipsuite.utils.helpers import check_duplicate_keys
-from ipsuite.configuration_selection import ConfigurationSelection
 
 log = logging.getLogger(__name__)
 
@@ -148,6 +148,7 @@ class ApaxEnsemble(base.IPSNode):
         to the model function within the ASE calculator.
         See the apax documentation for available methods.
     """
+
     models: typing.List[Apax] = zntrack.deps()
     nl_skin: float = zntrack.zn.params(0.5)
     transformations: typing.Dict[str, dict] = zntrack.zn.params(None)
@@ -171,14 +172,16 @@ class ApaxEnsemble(base.IPSNode):
             for transform, params in self.transformations.items():
                 transformations.append(available_transformations[transform](**params))
 
-        calc = ASECalculator(param_files, dr=self.nl_skin, transformations=transformations)
+        calc = ASECalculator(
+            param_files, dr=self.nl_skin, transformations=transformations
+        )
         return calc
 
 
 class BatchKernelSelection(BatchConfigurationSelection):
     """Interface to the batch active learning methods implemented in apax.
     Check the apax documentation for a list and explanation of implemented properties.
-    
+
     Attributes
     ----------
     models: Union[Apax, List[Apax]]
@@ -195,7 +198,9 @@ class BatchKernelSelection(BatchConfigurationSelection):
     """
 
     models: typing.List[Apax] = zntrack.deps()
-    base_feature_map: dict = zntrack.zn.params({"name": "ll_grad","layer_name": "dense_2"})
+    base_feature_map: dict = zntrack.zn.params(
+        {"name": "ll_grad", "layer_name": "dense_2"}
+    )
     selection_method: str = zntrack.zn.params("max_dist")
     selection_batch_size: str = zntrack.zn.params(10)
     processing_batch_size: str = zntrack.meta.Text(64)
@@ -216,7 +221,7 @@ class BatchKernelSelection(BatchConfigurationSelection):
         self._get_plot(atoms_lst, selected)
 
         return list(selected)
-    
+
     def _get_plot(self, atoms_lst: typing.List[ase.Atoms], indices: typing.List[int]):
         try:
             values = np.array([atoms.calc.results["energy"] for atoms in atoms_lst])
