@@ -1,4 +1,5 @@
 """The Nequip and allegro model module."""
+
 import logging
 import pathlib
 import shutil

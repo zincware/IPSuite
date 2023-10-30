@@ -1,4 +1,5 @@
 """Use a Kernel and some initial configuration to select further configurations."""
+
 from __future__ import annotations
 
 import typing

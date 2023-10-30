@@ -1,4 +1,5 @@
 """Base Node for ConfigurationSelection."""
+
 import logging
 import typing
 

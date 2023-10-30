@@ -221,8 +221,7 @@ class CheckBase(IPSNode):
         ...
 
     @abc.abstractmethod
-    def get_quantity(self) -> str:
-        ...
+    def get_quantity(self) -> str: ...
 
     def __str__(self):
         return self.status

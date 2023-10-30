@@ -1,4 +1,5 @@
 """Collection of protocols and complex type hints for type hinting."""
+
 import typing
 
 import ase

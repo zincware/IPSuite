@@ -1,4 +1,5 @@
 """Test 'IPSuite' version."""
+
 import ipsuite as ips
 
 

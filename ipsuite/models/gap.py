@@ -3,6 +3,7 @@
 GAP module to perform training using the Gaussian process
 regression from Gabor Csanyi.
 """
+
 import dataclasses
 import importlib.resources as pkg_resources
 import logging

@@ -2,6 +2,7 @@
 
 This interface is less restrictive than CP2K Single Point.
 """
+
 import contextlib
 import functools
 import logging
