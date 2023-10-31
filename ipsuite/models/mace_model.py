@@ -121,10 +121,15 @@ class MACE(MLModel):
         """Return the ASE calculator."""
         import unittest.mock
 
+        with self.state.fs.open(self.config) as f:
+            config = yaml.safe_load(f)
+            default_dtype = config.get("default_dtype", "float64")
+
         with unittest.mock.patch(
             "torch.serialization._open_file_like", self.state.fs.open
         ):
             return MACECalculator(
                 model_path=self.model_dir / "MACE_model_swa.model",
                 device=device or self.device,
+                default_dtype=default_dtype,
             )
