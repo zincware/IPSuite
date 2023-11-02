@@ -128,7 +128,10 @@ class KernelSelection(ConfigurationSelection):
         selected_ids = [
             idx for idx, atom in enumerate(atoms_lst) if atom in selected_atoms
         ]
-        if len(selected_ids) != self.n_configurations and self.threshold is None:
+        if (
+            len(selected_ids) != self.n_configurations
+            and self.initial_configurations is None
+        ):
             raise ValueError(
                 f"Unable to select {self.n_configurations}. Could only select"
                 f" {len(selected_ids)}"
