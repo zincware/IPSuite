@@ -203,9 +203,9 @@ class ConfigurationComparison(base.IPSNode):
         _soap = SOAP(
             species=species,
             periodic=False,  # any(self.analyte[0].pbc),
-            rcut=self.soap.r_cut,
-            nmax=self.soap.n_max,
-            lmax=self.soap.l_max,
+            r_cut=self.soap.r_cut,
+            n_max=self.soap.n_max,
+            l_max=self.soap.l_max,
             sigma=self.soap.sigma,
             rbf=self.soap.rbf,
             weighting=self.soap.weighting,
