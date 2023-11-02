@@ -34,12 +34,12 @@ class KernelSelection(ConfigurationSelection):
         seed selection in case of random picking initial configuration
     """
 
-    n_configurations: int = zntrack.zn.params()
+    n_configurations: int = zntrack.params()
     kernel: "ipsuite.configuration_comparison.ConfigurationComparison" = zntrack.deps()
-    initial_configurations: typing.List[ase.Atoms] = zntrack.deps()
-    points_per_cycle: int = zntrack.zn.params(1)
-    kernel_results: typing.List[typing.List[float]] = zntrack.zn.outs()
-    seed = zntrack.zn.params(1234)
+    initial_configurations: typing.List[ase.Atoms] = zntrack.deps(None)
+    points_per_cycle: int = zntrack.params(1)
+    kernel_results: typing.List[typing.List[float]] = zntrack.outs()
+    seed = zntrack.params(1234)
 
     # TODO what if the correlation time restricts the number of atoms to
     #  be less than n_configurations?
@@ -67,7 +67,10 @@ class KernelSelection(ConfigurationSelection):
         """
         if self.initial_configurations is None:
             np.random.seed(self.seed)
-            self.initial_configurations = [atoms_lst[np.random.randint(len(atoms_lst))]]
+            initial_configurations = [atoms_lst[np.random.randint(len(atoms_lst))]]
+            self.n_configurations -= 1
+        else:
+            self.initial_configurations = initial_configurations
         selected_atoms = []
         # we don't change the analyte, so we don't want to recompute the
         # SOAP vector every time.
@@ -79,7 +82,7 @@ class KernelSelection(ConfigurationSelection):
         self.kernel_results = []
         # TODO do not use the atoms in atoms_list but store the ids directly
         for _ in tqdm.trange(self.n_configurations, ncols=70):
-            self.kernel.reference = self.initial_configurations + selected_atoms
+            self.kernel.reference = initial_configurations + selected_atoms
             self.kernel.run()
 
             minimum_indices = np.argsort(self.kernel.result)[: self.points_per_cycle]
@@ -91,6 +94,10 @@ class KernelSelection(ConfigurationSelection):
             self.kernel_results.append(self.kernel.result)
 
         self.kernel.unlink_database()
+
+        if self.initial_configurations is None:
+            # include the randomly selected configuration
+            selected_atoms += initial_configurations
 
         selected_ids = [
             idx for idx, atom in enumerate(atoms_lst) if atom in selected_atoms
