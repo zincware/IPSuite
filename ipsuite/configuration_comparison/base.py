@@ -314,9 +314,11 @@ class ConfigurationComparison(base.IPSNode):
                 ) as pbar:
                     for max_index, _atoms in enumerate(self.analyte):
                         if max_index <= self.memory:
-                            reference_soap = representation_file["soap"][:max_index]
+                            reference_soap = representation_file["soap_reference"][
+                                :max_index
+                            ]
                         else:
-                            reference_soap = representation_file["soap"][
+                            reference_soap = representation_file["soap_reference"][
                                 max_index - self.memory : max_index
                             ]
                         analyte_soap = representation_file["soap_analyte"][max_index]
