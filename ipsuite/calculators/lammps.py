@@ -1,3 +1,4 @@
+import importlib.resources as pkg_resources
 import pathlib
 import subprocess
 
@@ -7,7 +8,7 @@ import yaml
 import zntrack
 from jinja2 import Environment, FileSystemLoader
 
-from ipsuite import base
+from ipsuite import base, static_data
 
 
 class LammpsSimulator(base.ProcessSingleAtom):
@@ -151,3 +152,23 @@ class LammpsSimulator(base.ProcessSingleAtom):
             stderr=subprocess.PIPE,
             text=True,
         )
+
+    @classmethod
+    def get_template(
+        self, filename: str = "lmp.jinja2", name="lammps_npt.jinja2"
+    ) -> None:
+        """Get the template file.
+
+        Parameters
+        ----------
+        filename: str, optional
+            The name where to write the template to.
+        name: str, optional
+            The name of the template, by default "lammps_npt.jinja2"
+
+        Returns
+        -------
+        """
+        content = pkg_resources.read_text(static_data, name)
+        with pathlib.Path.open(filename, "w") as file:
+            file.write(content)
