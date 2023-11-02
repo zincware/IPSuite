@@ -1,6 +1,7 @@
 """Use a Kernel and some initial configuration to select further configurations."""
 from __future__ import annotations
 
+import logging
 import typing
 
 import ase
@@ -13,6 +14,9 @@ from ipsuite.configuration_selection.base import ConfigurationSelection
 
 if typing.TYPE_CHECKING:
     import ipsuite
+
+
+log = logging.getLogger(__name__)
 
 
 class KernelSelection(ConfigurationSelection):
@@ -32,6 +36,10 @@ class KernelSelection(ConfigurationSelection):
         configuration is larger giving potentially better results.
     seed: int
         seed selection in case of random picking initial configuration
+    threshold: float
+        threshold to stop the selection. The maximum number of configurations
+        is still n_configurations. If the threshold is reached before, the
+        selection stops. Typical values can be 0.995
     """
 
     n_configurations: int = zntrack.params()
@@ -40,6 +48,7 @@ class KernelSelection(ConfigurationSelection):
     points_per_cycle: int = zntrack.params(1)
     kernel_results: typing.List[typing.List[float]] = zntrack.outs()
     seed = zntrack.params(1234)
+    threshold: float = zntrack.params(None)
 
     # TODO what if the correlation time restricts the number of atoms to
     #  be less than n_configurations?
@@ -70,7 +79,7 @@ class KernelSelection(ConfigurationSelection):
             initial_configurations = [atoms_lst[np.random.randint(len(atoms_lst))]]
             self.n_configurations -= 1
         else:
-            self.initial_configurations = initial_configurations
+            initial_configurations = self.initial_configurations
         selected_atoms = []
         # we don't change the analyte, so we don't want to recompute the
         # SOAP vector every time.
@@ -80,20 +89,37 @@ class KernelSelection(ConfigurationSelection):
         self.kernel.disable_tqdm = True
 
         self.kernel_results = []
+        hist_results = []
+
         # TODO do not use the atoms in atoms_list but store the ids directly
-        for _ in tqdm.trange(self.n_configurations, ncols=70):
-            self.kernel.reference = initial_configurations + selected_atoms
-            self.kernel.run()
+        try:
+            for idx in tqdm.trange(self.n_configurations, ncols=70):
+                self.kernel.reference = initial_configurations + selected_atoms
+                self.kernel.run()
 
-            minimum_indices = np.argsort(self.kernel.result)[: self.points_per_cycle]
-            selected_atoms += [self.kernel.analyte[x.item()] for x in minimum_indices]
-            # There is currently no check in place to ensure that an atom is only
-            # selected once. This should inherently be ensured by the way the
-            # MMK selects configurations.
-            self.kernel.load_analyte = True
-            self.kernel_results.append(self.kernel.result)
-
-        self.kernel.unlink_database()
+                minimum_indices = np.argsort(self.kernel.result)[: self.points_per_cycle]
+                selected_atoms += [self.kernel.analyte[x.item()] for x in minimum_indices]
+                # There is currently no check in place to ensure that an atom is only
+                # selected once. This should inherently be ensured by the way the
+                # MMK selects configurations.
+                self.kernel.load_analyte = True
+                self.kernel_results.append(self.kernel.result)
+                if self.threshold is not None:
+                    hist, bins = np.histogram(
+                        self.kernel.result, bins=np.linspace(0, 1, 10000), density=True
+                    )
+                    bins = bins[:-1]
+                    hist[bins > self.threshold] = 0
+                    hist_results.append(np.trapz(hist, bins))
+                    if hist_results[-1] == 0:
+                        log.warning(
+                            f"Threshold {self.threshold} reached before"
+                            f" {self.n_configurations} configurations were selected -"
+                            f" stopping after selecting {idx + 1} configurations."
+                        )
+                        break
+        finally:
+            self.kernel.unlink_database()
 
         if self.initial_configurations is None:
             # include the randomly selected configuration
@@ -102,7 +128,7 @@ class KernelSelection(ConfigurationSelection):
         selected_ids = [
             idx for idx, atom in enumerate(atoms_lst) if atom in selected_atoms
         ]
-        if len(selected_ids) != self.n_configurations:
+        if len(selected_ids) != self.n_configurations and self.threshold is None:
             raise ValueError(
                 f"Unable to select {self.n_configurations}. Could only select"
                 f" {len(selected_ids)}"

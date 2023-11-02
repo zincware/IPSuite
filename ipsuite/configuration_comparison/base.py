@@ -141,7 +141,7 @@ class ConfigurationComparison(base.IPSNode):
 
     reference: base.protocol.HasOrIsAtoms = zntrack.deps()
     analyte: base.protocol.HasOrIsAtoms = zntrack.deps()
-    memory: int = zntrack.params(100)
+    memory: int = zntrack.params(1000)
     similarities = zntrack.zn.plots()
     soap: typing.Union[dict, SOAPParameter] = zntrack.zn.params(SOAPParameter())
     result: typing.List[float] = zntrack.zn.outs()
@@ -293,12 +293,13 @@ class ConfigurationComparison(base.IPSNode):
                     for max_index, _atoms in enumerate(self.analyte):
                         if max_index == 0:
                             continue
-                        if max_index <= self.memory:
-                            reference_soap = representation_file["soap"][:max_index]
-                        else:
-                            reference_soap = representation_file["soap"][
-                                max_index - self.memory : max_index
-                            ]
+                        reference_soap = representation_file["soap"][:max_index]
+                        # if max_index <= self.memory:
+                        #     reference_soap = representation_file["soap"][:max_index]
+                        # else:
+                        #     reference_soap = representation_file["soap"][
+                        #         max_index - self.memory : max_index
+                        #     ]
                         analyte_soap = representation_file["soap"][max_index]
                         comparison = self.compare(reference_soap, analyte_soap)
                         self.result.append(float(comparison.numpy()))
@@ -313,14 +314,15 @@ class ConfigurationComparison(base.IPSNode):
                     disable=self.disable_tqdm,
                 ) as pbar:
                     for max_index, _atoms in enumerate(self.analyte):
-                        if max_index <= self.memory:
-                            reference_soap = representation_file["soap_reference"][
-                                :max_index
-                            ]
-                        else:
-                            reference_soap = representation_file["soap_reference"][
-                                max_index - self.memory : max_index
-                            ]
+                        reference_soap = representation_file["soap_reference"]
+                        # if max_index <= self.memory:
+                        #     reference_soap = representation_file["soap_reference"][
+                        #         :max_index
+                        #     ]
+                        # else:
+                        #     reference_soap = representation_file["soap_reference"][
+                        #         max_index - self.memory : max_index
+                        #     ]
                         analyte_soap = representation_file["soap_analyte"][max_index]
                         comparison = self.compare(reference_soap, analyte_soap)
                         self.result.append(float(comparison.numpy()))
