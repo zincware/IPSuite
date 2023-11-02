@@ -170,5 +170,5 @@ class LammpsSimulator(base.ProcessSingleAtom):
         -------
         """
         content = pkg_resources.read_text(static_data, name)
-        with pathlib.Path.open(filename, "w") as file:
+        with pathlib.Path(filename).open("w") as file:
             file.write(content)
