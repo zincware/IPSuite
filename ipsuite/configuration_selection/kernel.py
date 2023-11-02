@@ -124,18 +124,18 @@ class KernelSelection(ConfigurationSelection):
         if self.initial_configurations is None:
             # include the randomly selected configuration
             selected_atoms += initial_configurations
+            self.n_configurations += 1
 
         selected_ids = [
             idx for idx, atom in enumerate(atoms_lst) if atom in selected_atoms
         ]
-        if (
-            len(selected_ids) != self.n_configurations
-            and self.initial_configurations is None
-        ):
-            raise ValueError(
-                f"Unable to select {self.n_configurations}. Could only select"
-                f" {len(selected_ids)}"
-            )
+        if self.threshold is None:
+            if len(selected_ids) != self.n_configurations:
+                print(f"{self.initial_configurations = }")
+                raise ValueError(
+                    f"Unable to select {self.n_configurations}. Could only select"
+                    f" {len(selected_ids)}"
+                )
 
         return selected_ids
 
