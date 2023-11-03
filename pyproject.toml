@@ -22,7 +22,7 @@ cp2k-output-tools = "^0.5.0"
 #[tool.poetry.group.comparison.dependencies]
 h5py = { version = "^3.8.0", optional = true }
 tensorflow = { version = "^2.11.0", optional = true }
-dscribe = { version = "^1.2.2", optional = true }
+dscribe = { version = "^2.1.0", optional = true }
 
 #[tool.poetry.group.GAP.dependencies]
 quippy-ase = { version = "^0.9.12", optional = true }
