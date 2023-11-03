@@ -38,7 +38,6 @@ class ThresholdSelection(ConfigurationSelection):
     threshold = zntrack.zn.params(None)
     n_configurations = zntrack.zn.params(None)
     min_distance: int = zntrack.zn.params(1)
-    img_selection = zntrack.dvc.outs(zntrack.nwd / "selection.png")
 
     def _post_init_(self):
         if self.threshold is None and self.n_configurations is None:
@@ -83,11 +82,11 @@ class ThresholdSelection(ConfigurationSelection):
             if len(selected) == self.n_configurations:
                 break
 
-        self._get_plot(atoms_lst, np.array(selected))
-
         return selected
 
     def _get_plot(self, atoms_lst: typing.List[ase.Atoms], indices: typing.List[int]):
+        indices = np.array(indices)
+
         values = np.array([atoms.calc.results[self.key] for atoms in atoms_lst])
         if self.reference is not None:
             reference = np.array(
