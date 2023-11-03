@@ -71,6 +71,6 @@ dump_modify     myDump1 append yes
 log             {{ log_file }} append
 
 # Define the output and run.
-thermo          {{ thermo_intervall }}
+thermo          {{ thermo_interval }}
 thermo_style    custom step time temp density press
 run             {{ steps }}

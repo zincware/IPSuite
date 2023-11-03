@@ -57,15 +57,6 @@ class LammpsSimulator(base.ProcessSingleAtom):
     lmp_params: str = zntrack.params_path()
     lmp_template: str = zntrack.deps_path()
 
-    def _post_init_(self):
-        # Check if atoms were provided:
-        if self.atoms is None and self.atoms_file is None:
-            raise TypeError("Both atoms and atoms_file mustn't be None")
-        if self.atoms is not None and self.atoms_file is not None:
-            raise TypeError(
-                "Atoms and atoms_file are mutually exclusive. Please only provide one"
-            )
-
     def get_atoms(self):
         # look where to get the input_trajectory (either ase.Atoms or file)
 
@@ -105,7 +96,7 @@ class LammpsSimulator(base.ProcessSingleAtom):
 
     def create_input_script(self):
         # Get parameter from yaml:
-        with pathlib.Path.open(self.lmp_params, "r") as stream:
+        with pathlib.Path(self.lmp_params).open("r") as stream:
             params = yaml.safe_load(stream)
 
         # Resolve paths for input files
@@ -130,7 +121,7 @@ class LammpsSimulator(base.ProcessSingleAtom):
 
         # Render Template
         self.lmp_input_script = template.render(input_dict)
-        with pathlib.Path.open(f"{self.lmp_directory}/input.script", "w") as file:
+        with pathlib.Path(f"{self.lmp_directory}/input.script").open("w") as file:
             file.write(self.lmp_input_script)  # write input script to output directory
 
     def run(self):
@@ -172,3 +163,24 @@ class LammpsSimulator(base.ProcessSingleAtom):
         content = pkg_resources.read_text(static_data, name)
         with pathlib.Path(filename).open("w") as file:
             file.write(content)
+
+        if name == "lammps_npt.jinja2":
+            params = {
+                "temperature": 300,
+                "pressure": 1.0,
+                "barostat_factor": 500,
+                "steps": 1000,
+                "timestep": 0.001,
+                "dump_interval": 100,
+                "thermo_interval": 100,
+            }
+        else:
+            raise NotImplementedError("Only lammps_npt.jinja2 is implemented")
+
+        with pathlib.Path(filename).with_suffix(".yaml").open("w") as file:
+            yaml.dump({"sim_parameters": params}, file)
+
+    @property
+    def atoms(self) -> list[ase.Atoms]:
+        with self.state.fs.open(self.dump_file, mode="r") as file:
+            return list(ase.io.iread(file, format="lammps-dump-text"))
