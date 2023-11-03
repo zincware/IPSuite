@@ -13,6 +13,7 @@ from .ase_md import (
 )
 from .ase_standard import EMTSinglePoint, LJSinglePoint
 from .cp2k import CP2KSinglePoint, CP2KYaml
+from .lammps import LammpsSimulator
 from .orca import OrcaSinglePoint
 from .xtb import xTBSinglePoint
 
@@ -34,4 +35,5 @@ __all__ = [
     "TemperatureOscillatingRampModifier",
     "NPTThermostat",
     "OrcaSinglePoint",
+    "LammpsSimulator",
 ]

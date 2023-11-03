@@ -120,9 +120,6 @@ class ThresholdSelection(ConfigurationSelection):
 
         selection = self.get_selection(indices)
 
-        if save_fig:
-            self._get_plot(values, atoms_lst, np.array(selection))
-
         return selection
 
     def get_selection(self, indices):
@@ -136,12 +133,10 @@ class ThresholdSelection(ConfigurationSelection):
 
         return selected
 
-    def _get_plot(
-        self,
-        values: np.ndarray,
-        atoms_lst: typing.List[ase.Atoms],
-        indices: typing.List[int],
-    ):
+    def _get_plot(self, atoms_lst: typing.List[ase.Atoms], indices: typing.List[int]):
+        indices = np.array(indices)
+
+        values = np.array([atoms.calc.results[self.key] for atoms in atoms_lst])
         if self.reference is not None:
             reference = np.array(
                 [atoms.calc.results[self.reference] for atoms in atoms_lst]
