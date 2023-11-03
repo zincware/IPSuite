@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ipsuite"
-version = "0.1.0a4"
+version = "0.1.1"
 description = "A suite of tools for machine learned interatomic potentials."
 authors = ["zincwarecode <zincwarecode@gmail.com>"]
 keywords = ["data-version-control", "machine-learning", "reproducibility", "interatomic potentials"]
@@ -114,4 +114,4 @@ line-length = 90
 target-version = "py310"
 
 [tool.codespell]
-skip = "poetry.lock"
+skip = "poetry.lock,ipsuite/static_data/*"
