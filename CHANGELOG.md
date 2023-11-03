@@ -8,3 +8,5 @@
   `ConfigurationSelection` Node
 - add `memory = zntrack.params(1000)` to `ConfigurationComparison`
 - add `threshold: float = zntrack.params(None)` to `KernelSelection`
+- add `reduction_axis = zntrack.params` and
+  `dim_reduction: str = zntrack.params` to `ThresholdSelection`
