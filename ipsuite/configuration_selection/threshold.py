@@ -70,7 +70,6 @@ class ThresholdSelection(ConfigurationSelection):
     min_distance: int = zntrack.params(1)
     dim_reduction: str = zntrack.params(None)
     reduction_axis = zntrack.params((1, 2))
-    img_selection = zntrack.outs_path(zntrack.nwd / "selection.png")
 
     def _post_init_(self):
         if self.threshold is None and self.n_configurations is None:
