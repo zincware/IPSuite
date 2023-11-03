@@ -10,6 +10,29 @@ from ipsuite.analysis.ensemble import plot_with_uncertainty
 from ipsuite.configuration_selection import ConfigurationSelection
 
 
+def mean_reduction(values, axis):
+    return np.mean(values, axis=axis)
+
+
+def max_reduction(values, axis):
+    return np.max(values, axis=axis)
+
+
+def check_dimension(values):
+    if values.ndim > 1:
+        raise ValueError(
+            f"Value dimension is {values.ndim} != 1. "
+            "Reduce the dimension by defining dim_reduction, "
+            "use mean or max to get (n_structures,) shape."
+        )
+
+
+REDUCTIONS = {
+    "mean": mean_reduction,
+    "max": max_reduction,
+}
+
+
 class ThresholdSelection(ConfigurationSelection):
     """Select atoms based on a given threshold.
 
@@ -19,7 +42,7 @@ class ThresholdSelection(ConfigurationSelection):
     Attributes
     ----------
     key: str
-        the key in 'calc.results' to select from
+        The key in 'calc.results' to select from
     threshold: float, optional
         All values above (or below if negative) this threshold will be selected.
         If n_configurations is given, 'self.threshold' will be prioritized,
@@ -28,16 +51,25 @@ class ThresholdSelection(ConfigurationSelection):
         For visualizing the selection a reference value can be given.
         For 'energy_uncertainty' this would typically be 'energy'.
     n_configurations: int, optional
-        number of configurations to select.
+        Number of configurations to select.
     min_distance: int, optional
-        minimum distance between selected configurations.
+        Minimum distance between selected configurations.
+    dim_reduction: str, optional
+        Reduces the dimensionality of the chosen uncertainty along the specified axis
+        by calculating either the maximum or mean value.
+
+        Choose from ["max", "mean"]
+    reduction_axis: tuple(int), optional
+        Specifies the axis along which the reduction occurs.
     """
 
-    key = zntrack.zn.params("energy_uncertainty")
-    reference = zntrack.zn.params("energy")
-    threshold = zntrack.zn.params(None)
-    n_configurations = zntrack.zn.params(None)
-    min_distance: int = zntrack.zn.params(1)
+    key = zntrack.params("energy_uncertainty")
+    reference = zntrack.params("energy")
+    threshold = zntrack.params(None)
+    n_configurations = zntrack.params(None)
+    min_distance: int = zntrack.params(1)
+    dim_reduction: str = zntrack.params(None)
+    reduction_axis = zntrack.params((1, 2))
 
     def _post_init_(self):
         if self.threshold is None and self.n_configurations is None:
@@ -45,7 +77,9 @@ class ThresholdSelection(ConfigurationSelection):
 
         return super()._post_init_()
 
-    def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
+    def select_atoms(
+        self, atoms_lst: typing.List[ase.Atoms], save_fig: bool = True
+    ) -> typing.List[int]:
         """Take every nth (step) object of a given atoms list.
 
         Parameters
@@ -58,7 +92,16 @@ class ThresholdSelection(ConfigurationSelection):
         typing.List[int]:
             list containing the taken indices
         """
+
+        self.reduction_axis = tuple(self.reduction_axis)
         values = np.array([atoms.calc.results[self.key] for atoms in atoms_lst])
+
+        if self.dim_reduction is not None:
+            reduction_fn = REDUCTIONS[self.dim_reduction]
+            values = reduction_fn(values, self.reduction_axis)
+
+        check_dimension(values)
+
         if self.threshold is not None:
             if self.threshold < 0:
                 indices = np.where(values < self.threshold)[0]
@@ -74,6 +117,11 @@ class ThresholdSelection(ConfigurationSelection):
             else:
                 indices = np.argsort(values)
 
+        selection = self.get_selection(indices)
+
+        return selection
+
+    def get_selection(self, indices):
         selected = []
         for val in indices:
             # If the value is close to any of the already selected values, skip it.
@@ -92,6 +140,9 @@ class ThresholdSelection(ConfigurationSelection):
             reference = np.array(
                 [atoms.calc.results[self.reference] for atoms in atoms_lst]
             )
+            if reference.ndim > 1:
+                reference = np.max(reference, axis=self.reduction_axis)
+
             fig, ax, _ = plot_with_uncertainty(
                 {"std": values, "mean": reference},
                 ylabel=self.key,
