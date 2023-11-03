@@ -420,6 +420,7 @@ class ASEMD(base.ProcessSingleAtom):
     dump_rate = zntrack.zn.params(1000)
     pop_last = zntrack.zn.params(False)
     use_momenta = zntrack.zn.params(False)
+    seed: int = zntrack.params(42)
 
     metrics_dict = zntrack.zn.plots()
 
@@ -446,6 +447,8 @@ class ASEMD(base.ProcessSingleAtom):
 
     def run(self):  # noqa: C901
         """Run the simulation."""
+        np.random.seed(self.seed)
+
         if self.checker_list is None:
             self.checker_list = []
         if self.modifier is None:
