@@ -3,7 +3,6 @@
 [![zincware](https://img.shields.io/badge/Powered%20by-zincware-darkcyan)](https://github.com/zincware)
 [![DOI](https://zenodo.org/badge/608256065.svg)](https://zenodo.org/doi/10.5281/zenodo.10034314)
 
-
 # IPS - The Inter Atomic Potential Suite
 
 ![Logo](https://raw.githubusercontent.com/zincware/IPSuite/main/misc/IPS_logo.png)
