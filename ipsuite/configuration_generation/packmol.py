@@ -1,4 +1,5 @@
 """Use packmole to create a periodic box"""
+
 import logging
 import pathlib
 import subprocess

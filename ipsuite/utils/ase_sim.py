@@ -1,4 +1,5 @@
 """Utils that help running simulations with ASE."""
+
 import functools
 import typing
 

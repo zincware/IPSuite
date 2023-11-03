@@ -1,4 +1,5 @@
 """Module for selecting atoms uniformly in energy space."""
+
 import logging
 import typing
 

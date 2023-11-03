@@ -1,4 +1,5 @@
 """ipsuite data loading with ASE."""
+
 import logging
 import pathlib
 import typing

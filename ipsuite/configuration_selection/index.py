@@ -1,4 +1,5 @@
 """Select configurations by item, e.g. slice or list of indices."""
+
 import typing
 
 import ase

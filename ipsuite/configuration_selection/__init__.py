@@ -1,4 +1,5 @@
 """Configuration Selection Nodes."""
+
 from ipsuite.configuration_selection.base import ConfigurationSelection
 from ipsuite.configuration_selection.index import IndexSelection
 from ipsuite.configuration_selection.kernel import KernelSelection

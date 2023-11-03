@@ -114,4 +114,5 @@ line-length = 90
 target-version = "py310"
 
 [tool.codespell]
+ignore-words-list = "dscribe"
 skip = "poetry.lock,ipsuite/static_data/*"

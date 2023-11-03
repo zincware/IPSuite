@@ -1,4 +1,5 @@
 """Selecting atoms with a given step between them."""
+
 import typing
 
 import ase
