@@ -4,6 +4,8 @@ import logging
 import typing
 
 import ase
+import matplotlib.pyplot as plt
+import numpy as np
 import znflow
 import zntrack
 
@@ -32,6 +34,8 @@ class ConfigurationSelection(base.ProcessAtoms):
     ] = zntrack.deps(None)
     exclude: typing.Union[zntrack.Node, typing.List[zntrack.Node]] = zntrack.deps(None)
     selected_configurations: typing.Dict[str, typing.List[int]] = zntrack.zn.outs()
+
+    img_selection = zntrack.outs_path(zntrack.nwd / "selection.png")
 
     _name_ = "ConfigurationSelection"
 
@@ -73,6 +77,8 @@ class ConfigurationSelection(base.ProcessAtoms):
             selected_configurations, per_key=True
         )
 
+        self._get_plot(data, selected_configurations)
+
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         """Run the selection method.
 
@@ -99,6 +105,8 @@ class ConfigurationSelection(base.ProcessAtoms):
                     if idx in self.selected_configurations:
                         results.append(atoms)
             elif isinstance(data, dict):
+                # This only triggers, if the file was changed manually.
+                assert data.keys() == self.selected_configurations.keys()
                 for key, atoms_lst in data.items():
                     if key in self.selected_configurations:
                         for idx, atoms in enumerate(atoms_lst):
@@ -121,6 +129,8 @@ class ConfigurationSelection(base.ProcessAtoms):
             elif isinstance(data, dict) and isinstance(
                 self.selected_configurations, dict
             ):
+                # This only triggers, if the file was changed manually.
+                assert data.keys() == self.selected_configurations.keys()
                 for key, atoms_lst in data.items():
                     if key not in self.selected_configurations:
                         results.extend(atoms_lst)
@@ -131,3 +141,20 @@ class ConfigurationSelection(base.ProcessAtoms):
             else:
                 raise ValueError(f"Data must be a list or dict, not {type(data)}")
             return results
+
+    def _get_plot(self, atoms_lst: typing.List[ase.Atoms], indices: typing.List[int]):
+        """Plot the selected configurations."""
+        # if energies are available, plot them, otherwise just plot indices over time
+        fig, ax = plt.subplots()
+
+        try:
+            line_data = np.array([atoms.get_potential_energy() for atoms in atoms_lst])
+            ax.set_ylabel("Energy")
+        except Exception:
+            line_data = np.arange(len(atoms_lst))
+            ax.set_ylabel("Configuration")
+
+        ax.plot(line_data)
+        ax.scatter(indices, line_data[indices], c="r")
+        ax.set_xlabel("Configuration")
+        fig.savefig(self.img_selection, bbox_inches="tight")

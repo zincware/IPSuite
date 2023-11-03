@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ipsuite"
-version = "0.1.0a4"
+version = "0.1.2"
 description = "A suite of tools for machine learned interatomic potentials."
 authors = ["zincwarecode <zincwarecode@gmail.com>"]
 keywords = ["data-version-control", "machine-learning", "reproducibility", "interatomic potentials"]
@@ -22,7 +22,7 @@ cp2k-output-tools = "^0.5.0"
 #[tool.poetry.group.comparison.dependencies]
 h5py = { version = "^3.8.0", optional = true }
 tensorflow = { version = "^2.11.0", optional = true }
-dscribe = { version = "^1.2.2", optional = true }
+dscribe = { version = "^2.1.0", optional = true }
 
 #[tool.poetry.group.GAP.dependencies]
 quippy-ase = { version = "^0.9.12", optional = true }
@@ -114,5 +114,5 @@ line-length = 90
 target-version = "py310"
 
 [tool.codespell]
-skip = "poetry.lock"
 ignore-words-list = "dscribe"
+skip = "poetry.lock,ipsuite/static_data/*"
