@@ -115,3 +115,4 @@ target-version = "py310"
 
 [tool.codespell]
 skip = "poetry.lock"
+ignore-words-list = "dscribe"
