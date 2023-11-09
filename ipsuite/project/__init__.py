@@ -1,4 +1,5 @@
 """The IPSuite project module."""
+
 import logging
 
 from zntrack import Project

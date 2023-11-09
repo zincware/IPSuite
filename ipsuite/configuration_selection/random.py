@@ -1,4 +1,5 @@
 """Module for selecting Atoms randomly."""
+
 import typing
 
 import ase

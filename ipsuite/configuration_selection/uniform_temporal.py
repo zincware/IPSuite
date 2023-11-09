@@ -1,4 +1,5 @@
 """Module for selecting atoms uniform in time."""
+
 import typing
 
 import ase

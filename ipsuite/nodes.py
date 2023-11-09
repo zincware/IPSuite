@@ -84,6 +84,7 @@ class _Nodes:
     EMTSinglePoint = "ipsuite.calculators.EMTSinglePoint"
     OrcaSinglePoint = "ipsuite.calculators.OrcaSinglePoint"
     ApaxJaxMD = "ipsuite.calculators.ApaxJaxMD"
+    LammpsSimulator = "ipsuite.calculators.LammpsSimulator"
 
     LangevinThermostat = "ipsuite.calculators.LangevinThermostat"
     NPTThermostat = "ipsuite.calculators.NPTThermostat"

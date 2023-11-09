@@ -1,0 +1,76 @@
+#############################
+### Configure system type ###
+#############################
+
+units           metal
+boundary        p p p
+atom_style      charge
+
+################################
+### Define system parameters ###
+################################
+
+region          myRegion block 0.0 32.65 0.0 32.65 0.0 32.65
+create_box      2 myRegion
+
+##############################################################
+### Read input file and assign types and elementary groups ###
+##############################################################
+
+# We start from a xyz file
+
+read_dump       {{ input_trajectory }} 0 x y z box no add yes format xyz
+
+
+{% for number in atomic_type -%}
+    set atom {{ loop.index }} type {{ number }}
+{% endfor %}
+
+{% for mass in atomic_masses -%}
+    mass {{ loop.index }} {{ mass }}
+{% endfor %}
+
+set     atom 1*500 charge 1
+set     atom 501*1000 charge -1
+
+{% for symbol in atomic_symbols -%}
+    group {{ symbol }} type {{ loop.index }}
+{% endfor %}
+
+velocity       all create {{ temperature }} 132465
+
+########################################
+### Define forcefield for simulation ###
+########################################
+
+kspace_style pppm 1.0e-4
+
+# order: A, rho, sigma, C, D
+pair_style born/coul/long 10.0
+pair_style born/coul/long 10.0 8.
+pair_coeff 1 1 0.26370336 0.31699740062 2.340 1.048573120 0.49932058
+pair_coeff 1 2 0.21096269 0.31699740062 2.755 6.990487130 8.67580800
+pair_coeff 2 2 0.15822202 0.31699740062 3.170 72.40147522 145.42710039
+
+# ***************************************** #
+# *********** Run NPT Simulation ********** #
+# ***************************************** #
+
+timestep    {{ timestep }}
+fix         myBarostat all npt temp {{ temperature }} {{ temperature }} $(50*dt) iso {{ pressure }} {{ pressure }} $({{ barostat_factor }}*dt)
+
+# Compute the pressure.
+compute         myTemp all temp
+
+# Set the dump file to dump every {{ dump_interval }} time steps.
+dump            myDump1 all custom {{ dump_interval }} {{ dump_file }} id type element x y z
+dump_modify     myDump1 element Na Cl
+dump_modify     myDump1 sort id
+dump_modify     myDump1 append yes
+
+log             {{ log_file }} append
+
+# Define the output and run.
+thermo          {{ thermo_interval }}
+thermo_style    custom step time temp density press
+run             {{ steps }}

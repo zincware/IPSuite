@@ -2,6 +2,7 @@
 
 This interface is less restrictive than CP2K Single Point.
 """
+
 import contextlib
 import functools
 import logging
@@ -22,7 +23,15 @@ import yaml
 import znh5md
 import zntrack
 from ase.calculators.singlepoint import SinglePointCalculator
-from cp2k_input_tools.generator import CP2KInputGenerator
+
+try:
+    from cp2k_input_tools.generator import CP2KInputGenerator
+except ImportError as err:
+    raise ImportError(
+        "Please install the newest development version of cp2k-input-tools: 'pip install"
+        " git+https://github.com/cp2k/cp2k-input-tools.git'"
+    ) from err
+
 
 from ipsuite import base
 
