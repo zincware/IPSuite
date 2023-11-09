@@ -10,7 +10,7 @@ from ipsuite.models import Apax
 TEST_PATH = pathlib.Path(__file__).parent.resolve()
 
 
-def test_model_training(proj_path, traj_file):
+def test_apax_jaxmd(proj_path, traj_file):
     minmal_path = pathlib.Path(os.path.dirname(TEST_PATH))
 
     model_minimal = shutil.copy(
