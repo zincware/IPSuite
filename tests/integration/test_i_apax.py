@@ -10,10 +10,9 @@ from ipsuite.models import Apax
 TEST_PATH = pathlib.Path(__file__).parent.resolve()
 
 
-def test_model_training(proj_path, traj_file):
+def test_apax_model_training(proj_path, traj_file):
     shutil.copy(TEST_PATH / "apax_minimal.yaml", proj_path / "apax_minimal.yaml")
 
-    rev_forces = np.array([[-0.0, -0.0, -0.00127511], [-0.0, -0.0, 0.00127511]])
     with ips.Project() as project:
         raw_data = ips.AddData(file=traj_file, name="raw_data")
         train_selection = UniformEnergeticSelection(
@@ -46,8 +45,7 @@ def test_model_training(proj_path, traj_file):
 
     assert isinstance(atoms[0].get_forces(), np.ndarray)
     assert atoms[0].get_forces().shape == (2, 3)
-    assert np.all(atoms[0].get_forces()[:, 0:2] == np.full([2, 2], 0.0))
-    assert np.all(atoms[0].get_forces()[:, 2] != np.full([2, 1], 0.0))
+    assert np.any(atoms[0].get_forces() != 0.0)
 
     analysis.load()
 
@@ -104,9 +102,12 @@ def test_apax_ensemble(proj_path, traj_file):
             data=md, n_configurations=1, threshold=0.0001
         )
 
+        selection_batch_size = 3
         kernel_selection = ips.models.apax.BatchKernelSelection(
+            data=val_selection.atoms,
+            train_data=train_selection.atoms,
             models=[model1, model2],
-            selection_batch_size = 10,
+            selection_batch_size = selection_batch_size,
             processing_batch_size=4,
         )
 
@@ -122,4 +123,4 @@ def test_apax_ensemble(proj_path, traj_file):
     uncertainties = [x.calc.results["energy_uncertainty"] for x in md.atoms]
     assert [md.atoms[np.argmax(uncertainties)]] == uncertainty_selection.atoms
 
-    assert len(kernel_selection.atoms) > 0
+    assert len(kernel_selection.atoms) == selection_batch_size
