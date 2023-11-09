@@ -196,11 +196,11 @@ class BatchKernelSelection(BatchConfigurationSelection):
     """
 
     models: typing.List[Apax] = zntrack.deps()
-    base_feature_map: dict = zntrack.zn.params({"name": "ll_grad","layer_name": "dense_2"}) # TODO use params
-    selection_method: str = zntrack.zn.params("max_dist")
-    selection_batch_size: str = zntrack.zn.params(10)
+    base_feature_map: dict = zntrack.params({"name": "ll_grad","layer_name": "dense_2"}) # TODO use params
+    selection_method: str = zntrack.params("max_dist")
+    selection_batch_size: str = zntrack.params(10)
     processing_batch_size: str = zntrack.meta.Text(64)
-    img_selection = zntrack.dvc.outs(zntrack.nwd / "selection.png")
+    img_selection = zntrack.outs_path(zntrack.nwd / "selection.png")
 
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         if isinstance(self.models, list):
