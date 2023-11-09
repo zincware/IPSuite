@@ -156,10 +156,10 @@ class BatchConfigurationSelection(ConfigurationSelection):
             except TypeError:
                 self.train_data = znflow.combine(self.train_data, attribute="atoms")
 
-        if self.pool_data is not None and not isinstance(self.pool_data, dict):
+        if self.data is not None and not isinstance(self.data, dict):
             try:
-                self.pool_data = znflow.combine(
-                    self.pool_data, attribute="atoms", return_dict_attr="name"
+                self.data = znflow.combine(
+                    self.data, attribute="atoms", return_dict_attr="name"
                 )
             except TypeError:
-                self.pool_data = znflow.combine(self.pool_data, attribute="atoms")
+                self.data = znflow.combine(self.data, attribute="atoms")
