@@ -6,7 +6,7 @@ import ase
 import znflow
 import zntrack
 
-from ipsuite import base, fields
+from ipsuite import base
 from ipsuite.utils import combine
 
 log = logging.getLogger(__name__)

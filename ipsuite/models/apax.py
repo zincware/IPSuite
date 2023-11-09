@@ -5,16 +5,16 @@ import typing
 from typing import Optional
 
 import ase.io
-from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 import yaml
 import zntrack.utils
+from apax.bal import kernel_selection
 from apax.md import ASECalculator
 from apax.md.function_transformations import available_transformations
 from apax.train.run import run as apax_run
-from apax.bal import kernel_selection
 from jax.config import config
+from matplotlib import pyplot as plt
 from zntrack import dvc, zn
 
 from ipsuite import base, utils
@@ -24,7 +24,6 @@ from ipsuite.models.base import MLModel
 from ipsuite.static_data import STATIC_PATH
 from ipsuite.utils.combine import get_flat_data_from_dict
 from ipsuite.utils.helpers import check_duplicate_keys
-from ipsuite.configuration_selection import ConfigurationSelection
 
 log = logging.getLogger(__name__)
 
@@ -172,7 +171,11 @@ class ApaxEnsemble(base.IPSNode):
             for transform, params in self.transformations.items():
                 transformations.append(available_transformations[transform](**params))
 
-        calc = ASECalculator(param_files, dr=self.nl_skin, transformations=transformations)
+        calc = ASECalculator(
+            param_files,
+            dr=self.nl_skin,
+            transformations=transformations,
+        )
         return calc
 
 
@@ -191,12 +194,12 @@ class BatchKernelSelection(BatchConfigurationSelection):
     selection_batch_size: int
         Number of samples to be selected.
     processing_batch_size: int
-        Number of samples to be processed in parallel. Does not affect the result,
-        just the speed of computing features.
+        Number of samples to be processed in parallel.
+        Does not affect the result, just the speed of computing features.
     """
 
     models: typing.List[Apax] = zntrack.deps()
-    base_feature_map: dict = zntrack.params({"name": "ll_grad","layer_name": "dense_2"}) # TODO use params
+    base_feature_map: dict = zntrack.params({"name": "ll_grad","layer_name": "dense_2"})
     selection_method: str = zntrack.params("max_dist")
     selection_batch_size: str = zntrack.params(10)
     processing_batch_size: str = zntrack.meta.Text(64)
