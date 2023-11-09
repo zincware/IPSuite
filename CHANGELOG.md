@@ -10,4 +10,5 @@
 - add `threshold: float = zntrack.params(None)` to `KernelSelection`
 - add `reduction_axis = zntrack.params` and
   `dim_reduction: str = zntrack.params` to `ThresholdSelection`
-- add `seed: int = params()` to `ASEMD`
+- add `seed: int = params()` to `ASEMD` and `wrap: bool` to wrap the coordinates
+  during the simulation
