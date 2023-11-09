@@ -22,6 +22,7 @@ from ipsuite.analysis.ensemble import plot_with_uncertainty
 from ipsuite.configuration_selection.base import BatchConfigurationSelection
 from ipsuite.models.base import MLModel
 from ipsuite.static_data import STATIC_PATH
+from ipsuite.utils.combine import get_flat_data_from_dict
 from ipsuite.utils.helpers import check_duplicate_keys
 from ipsuite.configuration_selection import ConfigurationSelection
 
@@ -195,14 +196,20 @@ class BatchKernelSelection(BatchConfigurationSelection):
     """
 
     models: typing.List[Apax] = zntrack.deps()
-    base_feature_map: dict = zntrack.zn.params({"name": "ll_grad","layer_name": "dense_2"})
+    base_feature_map: dict = zntrack.zn.params({"name": "ll_grad","layer_name": "dense_2"}) # TODO use params
     selection_method: str = zntrack.zn.params("max_dist")
     selection_batch_size: str = zntrack.zn.params(10)
     processing_batch_size: str = zntrack.meta.Text(64)
     img_selection = zntrack.dvc.outs(zntrack.nwd / "selection.png")
 
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
-        param_files = [m._parameter["data"]["directory"] for m in self.models]
+        if isinstance(self.models, list):
+            param_files = [m._parameter["data"]["directory"] for m in self.models]
+        else:
+            param_files = self.models._parameter["data"]["directory"]
+
+        if isinstance(self.train_data, dict):
+            self.train_data = get_flat_data_from_dict(self.train_data)
 
         selected = kernel_selection(
             param_files,
@@ -218,19 +225,23 @@ class BatchKernelSelection(BatchConfigurationSelection):
         return list(selected)
     
     def _get_plot(self, atoms_lst: typing.List[ase.Atoms], indices: typing.List[int]):
-        try:
-            values = np.array([atoms.calc.results["energy"] for atoms in atoms_lst])
-            reference = np.array(
+        energies = np.array([atoms.calc.results["energy"] for atoms in atoms_lst])
+
+        if "energy_uncertainty" in atoms_lst[0].calc.results.keys():
+            uncertainty = np.array(
                 [atoms.calc.results["energy_uncertainty"] for atoms in atoms_lst]
             )
             fig, ax, _ = plot_with_uncertainty(
-                {"std": values, "mean": reference},
+                {"mean": energies, "std": uncertainty},
                 ylabel="energy",
                 xlabel="configuration",
             )
-            ax.plot(indices, reference[indices], "x", color="red")
+        else:
+            fig, ax = plt.subplots()
+            ax.plot(energies, label="energy")
+            ax.set_ylabel("energy")
+            ax.set_xlabel("configuration")
 
-        except ValueError:
-            fig, _ = plt.subplots()
+        ax.plot(indices, energies[indices], "x", color="red")
 
         fig.savefig(self.img_selection, bbox_inches="tight")
