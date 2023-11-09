@@ -160,7 +160,6 @@ class ConfigurationSelection(base.ProcessAtoms):
         fig.savefig(self.img_selection, bbox_inches="tight")
 
 
-
 class BatchConfigurationSelection(ConfigurationSelection):
     """Base node for BatchConfigurationSelection.
 

@@ -19,6 +19,7 @@ from zntrack import dvc, zn
 
 from ipsuite import base, utils
 from ipsuite.analysis.ensemble import plot_with_uncertainty
+from ipsuite.configuration_selection import ConfigurationSelection
 from ipsuite.configuration_selection.base import BatchConfigurationSelection
 from ipsuite.models.base import MLModel
 from ipsuite.static_data import STATIC_PATH
@@ -148,6 +149,7 @@ class ApaxEnsemble(base.IPSNode):
         to the model function within the ASE calculator.
         See the apax documentation for available methods.
     """
+
     models: typing.List[Apax] = zntrack.deps()
     nl_skin: float = zntrack.zn.params(0.5)
     transformations: typing.Dict[str, dict] = zntrack.zn.params(None)
@@ -182,7 +184,7 @@ class ApaxEnsemble(base.IPSNode):
 class BatchKernelSelection(BatchConfigurationSelection):
     """Interface to the batch active learning methods implemented in apax.
     Check the apax documentation for a list and explanation of implemented properties.
-    
+
     Attributes
     ----------
     models: Union[Apax, List[Apax]]
@@ -226,7 +228,7 @@ class BatchKernelSelection(BatchConfigurationSelection):
         self._get_plot(atoms_lst, selected)
 
         return list(selected)
-    
+
     def _get_plot(self, atoms_lst: typing.List[ase.Atoms], indices: typing.List[int]):
         energies = np.array([atoms.calc.results["energy"] for atoms in atoms_lst])
 
