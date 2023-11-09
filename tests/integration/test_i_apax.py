@@ -104,13 +104,22 @@ def test_apax_ensemble(proj_path, traj_file):
             data=md, n_configurations=1, threshold=0.0001
         )
 
+        kernel_selection = ips.models.apax.BatchKernelSelection(
+            models=[model1, model2],
+            selection_batch_size = 10,
+            processing_batch_size=4,
+        )
+
         prediction = ips.analysis.Prediction(data=raw_data, model=ensemble_model)
         prediction_metrics = ips.analysis.PredictionMetrics(data=prediction)
 
     project.run()
 
     uncertainty_selection.load()
+    kernel_selection.load()
     md.load()
 
     uncertainties = [x.calc.results["energy_uncertainty"] for x in md.atoms]
     assert [md.atoms[np.argmax(uncertainties)]] == uncertainty_selection.atoms
+
+    assert len(kernel_selection.atoms) > 0
