@@ -107,7 +107,7 @@ def test_apax_ensemble(proj_path, traj_file):
             data=val_selection.atoms,
             train_data=train_selection.atoms,
             models=[model1, model2],
-            selection_batch_size = selection_batch_size,
+            selection_batch_size=selection_batch_size,
             processing_batch_size=4,
         )
 

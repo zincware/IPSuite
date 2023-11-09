@@ -201,7 +201,7 @@ class BatchKernelSelection(BatchConfigurationSelection):
     """
 
     models: typing.List[Apax] = zntrack.deps()
-    base_feature_map: dict = zntrack.params({"name": "ll_grad","layer_name": "dense_2"})
+    base_feature_map: dict = zntrack.params({"name": "ll_grad", "layer_name": "dense_2"})
     selection_method: str = zntrack.params("max_dist")
     selection_batch_size: str = zntrack.params(10)
     processing_batch_size: str = zntrack.meta.Text(64)
