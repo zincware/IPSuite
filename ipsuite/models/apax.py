@@ -19,7 +19,6 @@ from zntrack import dvc, zn
 
 from ipsuite import base, utils
 from ipsuite.analysis.ensemble import plot_with_uncertainty
-from ipsuite.configuration_selection import ConfigurationSelection
 from ipsuite.configuration_selection.base import BatchConfigurationSelection
 from ipsuite.models.base import MLModel
 from ipsuite.static_data import STATIC_PATH
