@@ -150,8 +150,8 @@ class ApaxEnsemble(base.IPSNode):
     """
 
     models: typing.List[Apax] = zntrack.deps()
-    nl_skin: float = zntrack.zn.params(0.5)
-    transformations: typing.Dict[str, dict] = zntrack.zn.params(None)
+    nl_skin: float = zntrack.params(0.5)
+    transformations: typing.Dict[str, dict] = zntrack.params(None)
 
     def run(self) -> None:
         pass
