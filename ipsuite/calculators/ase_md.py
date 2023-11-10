@@ -404,6 +404,8 @@ class ASEMD(base.ProcessSingleAtom):
     dump_rate: int, default=1000
         Keep a cache of the last 'dump_rate' atoms and
         write them to the trajectory file every 'dump_rate' steps.
+    wrap: bool
+        Keep the atoms in the cell.
     """
 
     model = zntrack.deps()
@@ -420,6 +422,8 @@ class ASEMD(base.ProcessSingleAtom):
     dump_rate = zntrack.zn.params(1000)
     pop_last = zntrack.zn.params(False)
     use_momenta = zntrack.zn.params(False)
+    seed: int = zntrack.params(42)
+    wrap: bool = zntrack.params(False)
 
     metrics_dict = zntrack.zn.plots()
 
@@ -446,6 +450,8 @@ class ASEMD(base.ProcessSingleAtom):
 
     def run(self):  # noqa: C901
         """Run the simulation."""
+        np.random.seed(self.seed)
+
         if self.checker_list is None:
             self.checker_list = []
         if self.modifier is None:
@@ -511,7 +517,8 @@ class ASEMD(base.ProcessSingleAtom):
                             step=idx_outer * self.sampling_rate + idx_inner,
                             total_steps=self.steps,
                         )
-
+                    if self.wrap:
+                        atoms.wrap()
                     thermostat.run(1)
 
                     for checker in self.checker_list:

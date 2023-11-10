@@ -13,3 +13,5 @@
 - add `nl_skin: float = params(0.5)` and
   `transformations: dict[str, dict] = params(None)` to the `ApaxEnsemble`
 - add `BatchKernelSelection`
+- add `seed: int = params()` to `ASEMD` and `wrap: bool` to wrap the coordinates
+  during the simulation
