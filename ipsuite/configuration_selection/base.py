@@ -158,3 +158,35 @@ class ConfigurationSelection(base.ProcessAtoms):
         ax.scatter(indices, line_data[indices], c="r")
         ax.set_xlabel("Configuration")
         fig.savefig(self.img_selection, bbox_inches="tight")
+
+
+class BatchConfigurationSelection(ConfigurationSelection):
+    """Base node for BatchConfigurationSelection.
+
+    Attributes
+    ----------
+    data: list[ase.Atoms]
+        The atoms data to process. This must be an input to the Node
+    atoms: list[ase.Atoms]
+        The processed atoms data. This is an output of the Node.
+        It does not have to be 'field.Atoms' but can also be e.g. a 'property'.
+    """
+
+    train_data: list[ase.Atoms] = zntrack.deps()
+
+    def _post_init_(self):
+        if self.train_data is not None and not isinstance(self.train_data, dict):
+            try:
+                self.train_data = znflow.combine(
+                    self.train_data, attribute="atoms", return_dict_attr="name"
+                )
+            except TypeError:
+                self.train_data = znflow.combine(self.train_data, attribute="atoms")
+
+        if self.data is not None and not isinstance(self.data, dict):
+            try:
+                self.data = znflow.combine(
+                    self.data, attribute="atoms", return_dict_attr="name"
+                )
+            except TypeError:
+                self.data = znflow.combine(self.data, attribute="atoms")
