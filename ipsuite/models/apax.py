@@ -92,10 +92,12 @@ class Apax(MLModel):
         }
 
         if self.model is not None:
-            param_files = self.model._parameter["data"]["model_path"]
-            base_path = {"base_model_checkpoint": param_files + "/best"}
-
-            self._parameter["checkpoints"].update(base_path)
+            param_files = self.model._parameter["data"]["directory"]
+            base_path = {"base_model_checkpoint": param_files}
+            try:
+                self._parameter["checkpoints"].update(base_path)
+            except KeyError:
+                self._parameter["checkpoints"] = base_path
 
         check_duplicate_keys(custom_parameters, self._parameter["data"], log)
         self._parameter["data"].update(custom_parameters)
