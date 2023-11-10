@@ -259,7 +259,7 @@ znh5md = "^0.1.7"
 type = "git"
 url = "https://github.com/apax-hub/apax.git"
 reference = "dev"
-resolved_reference = "536651be2bb585f1e8f2dcdea50f4a4d60ff0829"
+resolved_reference = "dea322f77afa1ca36761c1ef79fa21107a67c8eb"
 
 [[package]]
 name = "appdirs"
