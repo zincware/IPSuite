@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import zntrack
 
-from ipsuite.analysis.ensemble import plot_with_uncertainty
 from ipsuite.configuration_selection import ConfigurationSelection
 
 
@@ -135,26 +134,16 @@ class ThresholdSelection(ConfigurationSelection):
 
     def _get_plot(self, atoms_lst: typing.List[ase.Atoms], indices: typing.List[int]):
         indices = np.array(indices)
-
         values = np.array([atoms.calc.results[self.key] for atoms in atoms_lst])
-        if self.reference is not None:
-            reference = np.array(
-                [atoms.calc.results[self.reference] for atoms in atoms_lst]
-            )
-            if reference.ndim > 1:
-                reference = np.max(reference, axis=self.reduction_axis)
 
-            fig, ax, _ = plot_with_uncertainty(
-                {"std": values, "mean": reference},
-                ylabel=self.key,
-                xlabel="configuration",
-            )
-            ax.plot(indices, reference[indices], "x", color="red")
-        else:
-            fig, ax = plt.subplots()
-            ax.plot(values, label=self.key)
-            ax.plot(indices, values[indices], "x", color="red")
-            ax.set_ylabel(self.key)
-            ax.set_xlabel("configuration")
+        if self.dim_reduction is not None:
+            reduction_fn = REDUCTIONS[self.dim_reduction]
+            values = reduction_fn(values, self.reduction_axis)
+
+        fig, ax = plt.subplots()
+        ax.plot(values, label=self.key)
+        ax.plot(indices, values[indices], "x", color="red")
+        ax.set_ylabel(self.key)
+        ax.set_xlabel("configuration")
 
         fig.savefig(self.img_selection, bbox_inches="tight")

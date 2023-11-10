@@ -40,6 +40,7 @@ mir-allegro = { git = "https://github.com/mir-group/allegro.git", optional = tru
 
 # [tool.poetry.group.mace.dependencies]
 mace = { git = "https://github.com/ACEsuit/mace.git", optional = true}
+dvc = "<3.24"
 
 
 [tool.poetry.group.dev.dependencies]
