@@ -26,6 +26,7 @@ class _Nodes:
     )
     UniformTemporalSelection = "ipsuite.configuration_selection.UniformTemporalSelection"
     ThresholdSelection = "ipsuite.configuration_selection.ThresholdSelection"
+    FilterOutlier = "ipsuite.configuration_selection.FilterOutlier"
 
     # Configuration Comparison
     REMatch = "ipsuite.configuration_comparison.REMatch"
