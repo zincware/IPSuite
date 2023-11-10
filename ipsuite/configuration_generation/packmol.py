@@ -63,6 +63,9 @@ class Packmol(base.IPSNode):
 
         if self.density is not None:
             self._get_box_from_molar_volume()
+
+        scaled_box = [x - self.tolerance for x in self.box]
+
         file = f"""
         tolerance {self.tolerance}
         filetype xyz
@@ -72,7 +75,7 @@ class Packmol(base.IPSNode):
             file += f"""
             structure {idx}.xyz
                 number {count}
-                inside box 0 0 0 {" ".join([f"{x:.4f}" for x in self.box])}
+                inside box 0 0 0 {" ".join([f"{x:.4f}" for x in scaled_box])}
             end structure
             """
         with pathlib.Path(self.structures / "packmole.inp").open("w") as f:
