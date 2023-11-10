@@ -187,12 +187,12 @@ class BatchKernelSelection(BatchConfigurationSelection):
     Attributes
     ----------
     models: Union[Apax, List[Apax]]
-        One or mode Apax models to construct a feature map from.
+        One or more Apax models to construct a feature map from.
     base_feature_map: dict
         Name and parameters for the feature map transformation.
     selection_method: str
         Name of the selection method to be used.
-    selection_batch_size: int
+    n_configurations: int
         Number of samples to be selected.
     processing_batch_size: int
         Number of samples to be processed in parallel.
@@ -202,7 +202,7 @@ class BatchKernelSelection(BatchConfigurationSelection):
     models: typing.List[Apax] = zntrack.deps()
     base_feature_map: dict = zntrack.params({"name": "ll_grad", "layer_name": "dense_2"})
     selection_method: str = zntrack.params("max_dist")
-    selection_batch_size: str = zntrack.params(10)
+    n_configurations: str = zntrack.params(10)
     processing_batch_size: str = zntrack.meta.Text(64)
     img_selection = zntrack.outs_path(zntrack.nwd / "selection.png")
 
@@ -221,7 +221,7 @@ class BatchKernelSelection(BatchConfigurationSelection):
             atoms_lst,
             self.base_feature_map,
             self.selection_method,
-            selection_batch_size=self.selection_batch_size,
+            selection_batch_size=self.n_configurations,
             processing_batch_size=self.processing_batch_size,
         )
         self._get_plot(atoms_lst, selected)
