@@ -191,7 +191,8 @@ class BatchKernelSelection(BatchConfigurationSelection):
     base_feature_map: dict
         Name and parameters for the feature map transformation.
     selection_method: str
-        Name of the selection method to be used.
+        Name of the selection method to be used. Choose from:
+        ["max_dist", ]
     n_configurations: int
         Number of samples to be selected.
     processing_batch_size: int
@@ -202,7 +203,7 @@ class BatchKernelSelection(BatchConfigurationSelection):
     models: typing.List[Apax] = zntrack.deps()
     base_feature_map: dict = zntrack.params({"name": "ll_grad", "layer_name": "dense_2"})
     selection_method: str = zntrack.params("max_dist")
-    n_configurations: str = zntrack.params(10)
+    n_configurations: str = zntrack.params()
     processing_batch_size: str = zntrack.meta.Text(64)
     img_selection = zntrack.outs_path(zntrack.nwd / "selection.png")
 
