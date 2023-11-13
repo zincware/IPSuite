@@ -86,7 +86,13 @@ class BoxOscillatingRampModifier(base.IPSNode):
                 )
 
         percentage = step / (total_steps - 1)
-        ramp = percentage * (self.end_cell - self._initial_cell)
+        # we only want the positive part of the sine
+        # we increase the box size to the end cell after the first oscillation
+        percentage_per_oscillation = percentage * self.num_oscillations * 2
+        if percentage_per_oscillation > 1:
+            percentage_per_oscillation = 1
+
+        ramp = percentage_per_oscillation * (self.end_cell - self._initial_cell)
         oscillation = self.cell_amplitude * np.sin(
             2 * np.pi * percentage * self.num_oscillations
         )
