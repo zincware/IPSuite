@@ -59,11 +59,15 @@ class BoxOscillatingRampModifier(base.IPSNode):
         number of oscillations. No oscillations will occur if set to 0.
     interval: int, default 1
         interval in which the box size is changed.
+    num_ramp_oscillations: float, default = 0.5
+        number of oscillations to ramp the box size to the end cell.
+        This value has to be smaller than num_oscillations.
     """
 
     end_cell: int = zntrack.zn.params(None)
     cell_amplitude: typing.Union[float, list[float]] = zntrack.zn.params()
     num_oscillations: float = zntrack.zn.params()
+    num_ramp_oscillations: float = zntrack.zn.params(None)
     interval: int = zntrack.zn.params(1)
     _initial_cell = None
 
@@ -88,9 +92,10 @@ class BoxOscillatingRampModifier(base.IPSNode):
         percentage = step / (total_steps - 1)
         # we only want the positive part of the sine
         # we increase the box size to the end cell after the first oscillation
-        percentage_per_oscillation = percentage * self.num_oscillations * 2
-        if percentage_per_oscillation > 1:
-            percentage_per_oscillation = 1
+        percentage_per_oscillation = (
+            percentage * self.num_oscillations / self.num_ramp_oscillations
+        )
+        percentage_per_oscillation = min(percentage_per_oscillation, 1)
 
         ramp = percentage_per_oscillation * (self.end_cell - self._initial_cell)
         oscillation = self.cell_amplitude * np.sin(
