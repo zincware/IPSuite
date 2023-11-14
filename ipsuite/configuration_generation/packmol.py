@@ -151,7 +151,7 @@ class MultiPackmol(Packmol):
         if self.density is not None:
             self._get_box_from_molar_volume()
 
-        if self.scale_box:
+        if self.pbc:
             scaled_box = [x - self.tolerance for x in self.box]
         else:
             scaled_box = self.box
