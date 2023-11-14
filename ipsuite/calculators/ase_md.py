@@ -59,11 +59,25 @@ class BoxOscillatingRampModifier(base.IPSNode):
         number of oscillations. No oscillations will occur if set to 0.
     interval: int, default 1
         interval in which the box size is changed.
+    num_ramp_oscillations: float, optional
+        number of oscillations to ramp the box size to the end cell.
+        This value has to be smaller than num_oscillations.
+        For LotF applications, this can prevent a loop of ever decreasing cell sizes.
+        To ensure this use a value of 0.5.
     """
+
+    def _post_init_(self):
+        super()._post_init_()
+        if self.num_ramp_oscillations is not None:
+            if self.num_ramp_oscillations > self.num_oscillations:
+                raise ValueError(
+                    "num_ramp_oscillations has to be smaller than num_oscillations."
+                )
 
     end_cell: int = zntrack.zn.params(None)
     cell_amplitude: typing.Union[float, list[float]] = zntrack.zn.params()
     num_oscillations: float = zntrack.zn.params()
+    num_ramp_oscillations: float = zntrack.zn.params(None)
     interval: int = zntrack.zn.params(1)
     _initial_cell = None
 
@@ -86,7 +100,20 @@ class BoxOscillatingRampModifier(base.IPSNode):
                 )
 
         percentage = step / (total_steps - 1)
-        ramp = percentage * (self.end_cell - self._initial_cell)
+        # if num_ramp_oscillations is set, the cell size is ramped to end_cell within
+        # num_ramp_oscillations instead of num_oscillations. This can prevent a loop of
+        # ever decreasing cell sizes in LoTF applications where simulations
+        # can be aborted at small cell sizes.
+        if self.num_ramp_oscillations is not None:
+            percentage_per_oscillation = (
+                percentage * self.num_oscillations / self.num_ramp_oscillations
+            )
+            percentage_per_oscillation = min(percentage_per_oscillation, 1)
+        else:
+            # ramp over all oscillations
+            percentage_per_oscillation = percentage
+
+        ramp = percentage_per_oscillation * (self.end_cell - self._initial_cell)
         oscillation = self.cell_amplitude * np.sin(
             2 * np.pi * percentage * self.num_oscillations
         )
