@@ -136,38 +136,35 @@ class MultiPackmol(Packmol):
             scaled_box = self.box
 
         self.structures.mkdir(exist_ok=True, parents=True)
-        for idx in range(self.n_configurations):
-            directory = self.structures / f"{idx}"
-            directory.mkdir(exist_ok=True, parents=True)
+        for idx, atoms_list in enumerate(self.data):
+            for jdx, atoms in enumerate(atoms_list):
+                ase.io.write(self.structures / f"{idx}_{jdx}.xyz", atoms)
 
+        for idx in range(self.n_configurations):
             file = f"""
             tolerance {self.tolerance}
             filetype xyz
-            output mixture.xyz
+            output mixture_{idx}.xyz
             """
-            # TODO: write every structure once and create different packmol
-            # scripts instead in a single directory
-
-            for jdx, (count, atoms_list) in enumerate(zip(self.count, self.data)):
-                atoms_idx = np.random.choice(len(atoms_list), count)
-                atoms_list = [atoms_list[x] for x in atoms_idx]
-                for kdx, atoms in enumerate(atoms_list):
-                    ase.io.write(directory / f"{jdx}_{kdx}.xyz", atoms)
-
+            for jdx, count in enumerate(self.count):
+                choices = np.random.choice(len(self.data[jdx]), count)
+                for kdx in choices:
                     file += f"""
                     structure {jdx}_{kdx}.xyz
                         number 1
                         inside box 0 0 0 {" ".join([f"{x:.4f}" for x in scaled_box])}
                     end structure
                     """
-
-            with pathlib.Path(directory / "packmole.inp").open("w") as f:
+            with pathlib.Path(self.structures / f"packmole_{idx}.inp").open("w") as f:
                 f.write(file)
 
-            subprocess.check_call("packmol < packmole.inp", shell=True, cwd=directory)
+            subprocess.check_call(
+                f"packmol < packmole_{idx}.inp", shell=True, cwd=self.structures
+            )
 
-            atoms = ase.io.read(directory / "mixture.xyz")
+            atoms = ase.io.read(self.structures / f"mixture_{idx}.xyz")
             if self.pbc:
                 atoms.cell = self.box
                 atoms.pbc = True
+
             self.atoms.append(atoms)
