@@ -6,6 +6,7 @@ import subprocess
 
 import ase
 import ase.units
+import numpy as np
 import zntrack
 from ase.visualize import view
 
@@ -115,3 +116,58 @@ class Packmol(base.IPSNode):
 
     def view(self) -> view:
         return view(self.atoms, viewer="x3d")
+
+
+class MultiPackmol(Packmol):
+    n_configurations: int = zntrack.params()
+    seed: int = zntrack.params(42)
+    data_ids = None
+
+    def run(self):
+        np.random.seed(self.seed)
+        self.atoms = []
+
+        if self.density is not None:
+            self._get_box_from_molar_volume()
+
+        if self.scale_box:
+            scaled_box = [x - self.tolerance for x in self.box]
+        else:
+            scaled_box = self.box
+
+        self.structures.mkdir(exist_ok=True, parents=True)
+        for idx in range(self.n_configurations):
+            directory = self.structures / f"{idx}"
+            directory.mkdir(exist_ok=True, parents=True)
+
+            file = f"""
+            tolerance {self.tolerance}
+            filetype xyz
+            output mixture.xyz
+            """
+            # TODO: write every structure once and create different packmol
+            # scripts instead in a single directory
+
+            for jdx, (count, atoms_list) in enumerate(zip(self.count, self.data)):
+                atoms_idx = np.random.choice(len(atoms_list), count)
+                atoms_list = [atoms_list[x] for x in atoms_idx]
+                for kdx, atoms in enumerate(atoms_list):
+                    ase.io.write(directory / f"{jdx}_{kdx}.xyz", atoms)
+
+                    file += f"""
+                    structure {jdx}_{kdx}.xyz
+                        number 1
+                        inside box 0 0 0 {" ".join([f"{x:.4f}" for x in scaled_box])}
+                    end structure
+                    """
+
+            with pathlib.Path(directory / "packmole.inp").open("w") as f:
+                f.write(file)
+
+            subprocess.check_call("packmol < packmole.inp", shell=True, cwd=directory)
+
+            atoms = ase.io.read(directory / "mixture.xyz")
+            if self.pbc:
+                atoms.cell = self.box
+                atoms.pbc = True
+            self.atoms.append(atoms)

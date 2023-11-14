@@ -35,6 +35,7 @@ class _Nodes:
 
     # Configuration Generation
     Packmol = "ipsuite.configuration_generation.Packmol"
+    MultiPackmol = "ipsuite.configuration_generation.MultiPackmol"
     SmilesToAtoms = "ipsuite.configuration_generation.SmilesToAtoms"
     SmilesToConformers = "ipsuite.configuration_generation.SmilesToConformers"
 
