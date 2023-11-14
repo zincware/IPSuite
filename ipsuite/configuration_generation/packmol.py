@@ -119,6 +119,29 @@ class Packmol(base.IPSNode):
 
 
 class MultiPackmol(Packmol):
+    """Create multiple configurations with packmol.
+
+    This Node generates multiple configurations with packmol.
+    This is best used in conjunction with SmilesToConformers:
+
+    >>> import ipsuite as ips
+    >>> with ips.Project(automatic_node_names=True) as project:
+    >>>    water = ips.configuration_generation.SmilesToConformers(
+    >>>         smiles='O', numConfs=100
+    >>>    )
+    >>>    boxes = ips.configuration_generation.MultiPackmol(
+    >>>         data=[water.atoms], count=[10], density=997, n_configurations=10
+    >>>    )
+    >>> project.run()
+
+    Attributes
+    ----------
+    n_configurations : int
+        Number of configurations to create.
+    seed : int
+        Seed for the random number generator.
+    """
+
     n_configurations: int = zntrack.params()
     seed: int = zntrack.params(42)
     data_ids = None
