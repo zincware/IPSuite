@@ -15,3 +15,5 @@
 - add `BatchKernelSelection`
 - add `seed: int = params()` to `ASEMD` and `wrap: bool` to wrap the coordinates
   during the simulation
+- add `pbc: bool` to `Packmol` to fix PBC not supported by PACKMOL
+- add `num_ramp_oscillations: float` to `BoxOscillatingRampModifier`
