@@ -6,6 +6,7 @@ import subprocess
 
 import ase
 import ase.units
+import numpy as np
 import zntrack
 from ase.visualize import view
 
@@ -33,22 +34,20 @@ class Packmol(base.IPSNode):
         Box size in angstrom. Either density or box is required.
     density : float
         Density of the system in kg/m^3. Either density or box is required.
-    scale_box : bool
-        If True the box used by packmol is scaled by the tolerance, to avoid
-        overlapping atoms with periodic boundary conditions.
     pbc : bool
-        If True the periodic boundary conditions are set for the generated structure.
+        If True the periodic boundary conditions are set for the generated structure and
+        the box used by packmol is scaled by the tolerance, to avoid overlapping atoms
+        with periodic boundary conditions.
     """
 
     data: list[list[ase.Atoms]] = zntrack.deps()
-    data_ids: list[int] = zntrack.zn.params(None)
-    count: list = zntrack.zn.params()
-    tolerance: float = zntrack.zn.params(2.0)
-    box: list = zntrack.zn.params(None)
-    density: float = zntrack.zn.params(None)
-    structures = zntrack.dvc.outs(zntrack.nwd / "packmol")
+    data_ids: list[int] = zntrack.params(None)
+    count: list = zntrack.params()
+    tolerance: float = zntrack.params(2.0)
+    box: list = zntrack.params(None)
+    density: float = zntrack.params(None)
+    structures = zntrack.outs_path(zntrack.nwd / "packmol")
     atoms = fields.Atoms()
-    scale_box: bool = zntrack.params(True)
     pbc: bool = zntrack.params(True)
 
     def _post_init_(self):
@@ -70,7 +69,7 @@ class Packmol(base.IPSNode):
         if self.density is not None:
             self._get_box_from_molar_volume()
 
-        if self.scale_box:
+        if self.pbc:
             scaled_box = [x - self.tolerance for x in self.box]
         else:
             scaled_box = self.box
@@ -115,3 +114,78 @@ class Packmol(base.IPSNode):
 
     def view(self) -> view:
         return view(self.atoms, viewer="x3d")
+
+
+class MultiPackmol(Packmol):
+    """Create multiple configurations with packmol.
+
+    This Node generates multiple configurations with packmol.
+    This is best used in conjunction with SmilesToConformers:
+
+    >>> import ipsuite as ips
+    >>> with ips.Project(automatic_node_names=True) as project:
+    >>>    water = ips.configuration_generation.SmilesToConformers(
+    >>>         smiles='O', numConfs=100
+    >>>    )
+    >>>    boxes = ips.configuration_generation.MultiPackmol(
+    >>>         data=[water.atoms], count=[10], density=997, n_configurations=10
+    >>>    )
+    >>> project.run()
+
+    Attributes
+    ----------
+    n_configurations : int
+        Number of configurations to create.
+    seed : int
+        Seed for the random number generator.
+    """
+
+    n_configurations: int = zntrack.params()
+    seed: int = zntrack.params(42)
+    data_ids = None
+
+    def run(self):
+        np.random.seed(self.seed)
+        self.atoms = []
+
+        if self.density is not None:
+            self._get_box_from_molar_volume()
+
+        if self.pbc:
+            scaled_box = [x - self.tolerance for x in self.box]
+        else:
+            scaled_box = self.box
+
+        self.structures.mkdir(exist_ok=True, parents=True)
+        for idx, atoms_list in enumerate(self.data):
+            for jdx, atoms in enumerate(atoms_list):
+                ase.io.write(self.structures / f"{idx}_{jdx}.xyz", atoms)
+
+        for idx in range(self.n_configurations):
+            file = f"""
+            tolerance {self.tolerance}
+            filetype xyz
+            output mixture_{idx}.xyz
+            """
+            for jdx, count in enumerate(self.count):
+                choices = np.random.choice(len(self.data[jdx]), count)
+                for kdx in choices:
+                    file += f"""
+                    structure {jdx}_{kdx}.xyz
+                        number 1
+                        inside box 0 0 0 {" ".join([f"{x:.4f}" for x in scaled_box])}
+                    end structure
+                    """
+            with pathlib.Path(self.structures / f"packmole_{idx}.inp").open("w") as f:
+                f.write(file)
+
+            subprocess.check_call(
+                f"packmol < packmole_{idx}.inp", shell=True, cwd=self.structures
+            )
+
+            atoms = ase.io.read(self.structures / f"mixture_{idx}.xyz")
+            if self.pbc:
+                atoms.cell = self.box
+                atoms.pbc = True
+
+            self.atoms.append(atoms)
