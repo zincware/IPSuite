@@ -33,17 +33,21 @@ class Packmol(base.IPSNode):
         Box size in angstrom. Either density or box is required.
     density : float
         Density of the system in kg/m^3. Either density or box is required.
-
+    pbc : bool
+        If True the periodic boundary conditions are set for the generated structure and
+        the box used by packmol is scaled by the tolerance, to avoid overlapping atoms
+        with periodic boundary conditions.
     """
 
     data: list[list[ase.Atoms]] = zntrack.deps()
-    data_ids: list[int] = zntrack.zn.params(None)
-    count: list = zntrack.zn.params()
-    tolerance: float = zntrack.zn.params(2.0)
-    box: list = zntrack.zn.params(None)
-    density: float = zntrack.zn.params(None)
-    structures = zntrack.dvc.outs(zntrack.nwd / "packmol")
+    data_ids: list[int] = zntrack.params(None)
+    count: list = zntrack.params()
+    tolerance: float = zntrack.params(2.0)
+    box: list = zntrack.params(None)
+    density: float = zntrack.params(None)
+    structures = zntrack.outs_path(zntrack.nwd / "packmol")
     atoms = fields.Atoms()
+    pbc: bool = zntrack.params(True)
 
     def _post_init_(self):
         if self.box is None and self.density is None:
@@ -63,6 +67,12 @@ class Packmol(base.IPSNode):
 
         if self.density is not None:
             self._get_box_from_molar_volume()
+
+        if self.pbc:
+            scaled_box = [x - self.tolerance for x in self.box]
+        else:
+            scaled_box = self.box
+
         file = f"""
         tolerance {self.tolerance}
         filetype xyz
@@ -72,7 +82,7 @@ class Packmol(base.IPSNode):
             file += f"""
             structure {idx}.xyz
                 number {count}
-                inside box 0 0 0 {" ".join([f"{x:.4f}" for x in self.box])}
+                inside box 0 0 0 {" ".join([f"{x:.4f}" for x in scaled_box])}
             end structure
             """
         with pathlib.Path(self.structures / "packmole.inp").open("w") as f:
@@ -81,8 +91,9 @@ class Packmol(base.IPSNode):
         subprocess.check_call("packmol < packmole.inp", shell=True, cwd=self.structures)
 
         atoms = ase.io.read(self.structures / "mixture.xyz")
-        atoms.cell = self.box
-        atoms.pbc = True
+        if self.pbc:
+            atoms.cell = self.box
+            atoms.pbc = True
         self.atoms = [atoms]
 
     def _get_box_from_molar_volume(self):
