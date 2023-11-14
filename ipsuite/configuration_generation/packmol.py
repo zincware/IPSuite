@@ -33,22 +33,20 @@ class Packmol(base.IPSNode):
         Box size in angstrom. Either density or box is required.
     density : float
         Density of the system in kg/m^3. Either density or box is required.
-    scale_box : bool
-        If True the box used by packmol is scaled by the tolerance, to avoid
-        overlapping atoms with periodic boundary conditions.
     pbc : bool
-        If True the periodic boundary conditions are set for the generated structure.
+        If True the periodic boundary conditions are set for the generated structure and
+        the box used by packmol is scaled by the tolerance, to avoid overlapping atoms
+        with periodic boundary conditions.
     """
 
     data: list[list[ase.Atoms]] = zntrack.deps()
-    data_ids: list[int] = zntrack.zn.params(None)
-    count: list = zntrack.zn.params()
-    tolerance: float = zntrack.zn.params(2.0)
-    box: list = zntrack.zn.params(None)
-    density: float = zntrack.zn.params(None)
-    structures = zntrack.dvc.outs(zntrack.nwd / "packmol")
+    data_ids: list[int] = zntrack.params(None)
+    count: list = zntrack.params()
+    tolerance: float = zntrack.params(2.0)
+    box: list = zntrack.params(None)
+    density: float = zntrack.params(None)
+    structures = zntrack.outs_path(zntrack.nwd / "packmol")
     atoms = fields.Atoms()
-    scale_box: bool = zntrack.params(True)
     pbc: bool = zntrack.params(True)
 
     def _post_init_(self):
@@ -70,7 +68,7 @@ class Packmol(base.IPSNode):
         if self.density is not None:
             self._get_box_from_molar_volume()
 
-        if self.scale_box:
+        if self.pbc:
             scaled_box = [x - self.tolerance for x in self.box]
         else:
             scaled_box = self.box
