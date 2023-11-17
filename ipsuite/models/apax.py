@@ -39,8 +39,6 @@ class Apax(MLModel):
         atoms object with the validation data set
     model_directory: pathlib.Path
         model directory
-    train_log_file: pathlib.Path
-        log file directory
     train_data_file: pathlib.Path
         path to the training data
     validation_data_file: pathlib.Path
@@ -52,7 +50,6 @@ class Apax(MLModel):
     model: Optional[MLModel] = zntrack.deps(None)
 
     model_directory: pathlib.Path = dvc.outs(zntrack.nwd / "apax_model")
-    train_log_file: pathlib.Path = dvc.outs(zntrack.nwd / "train.log")
 
     train_data_file: pathlib.Path = dvc.outs(zntrack.nwd / "train_atoms.extxyz")
     validation_data_file: pathlib.Path = dvc.outs(zntrack.nwd / "val_atoms.extxyz")
@@ -104,7 +101,7 @@ class Apax(MLModel):
 
     def train_model(self):
         """Train the model using `apax.train.run`"""
-        apax_run(self._parameter, log_file=self.train_log_file)
+        apax_run(self._parameter)
 
     def move_metrics(self):
         """Move the metrics to the correct directories for DVC"""
@@ -126,9 +123,6 @@ class Apax(MLModel):
         self.train_model()
         self.move_metrics()
         self.get_metrics_from_plots()
-
-        with pathlib.Path(self.train_log_file).open("a") as f:
-            f.write("Training completed\n")
 
     def get_calculator(self, **kwargs):
         """Get an apax ase calculator"""
