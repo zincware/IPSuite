@@ -1,8 +1,10 @@
 import ase.io
 import numpy as np
+import numpy.testing as npt
 from ase import units
 
 import ipsuite as ips
+from ipsuite.utils.ase_sim import get_density_from_atoms
 
 
 def test_ase_md(proj_path, cu_box):
@@ -38,6 +40,37 @@ def test_ase_md(proj_path, cu_box):
     assert md.atoms[1].cell[0, 0] > 7.22
     assert md.atoms[1].cell[0, 0] < 10
     assert md.atoms[-1].cell[0, 0] == 10
+
+
+def test_ase_md_target_density(proj_path, cu_box):
+    ase.io.write("cu_box.xyz", cu_box)
+    checker = ips.analysis.TemperatureCheck()
+    thermostat = ips.calculators.LangevinThermostat(
+        time_step=1,
+        temperature=1,
+        friction=1,
+    )
+    rescale_box = ips.calculators.RescaleBoxModifier(density=1000)
+
+    with ips.Project() as project:
+        data = ips.AddData(file="cu_box.xyz")
+        model = ips.calculators.EMTSinglePoint(data=data.atoms)
+        md = ips.calculators.ASEMD(
+            data=data.atoms,
+            model=model,
+            checker_list=[checker],
+            modifier=[rescale_box],
+            thermostat=thermostat,
+            steps=30,
+            sampling_rate=1,
+            dump_rate=33,
+        )
+
+    project.run()
+
+    md.load()
+    npt.assert_almost_equal(get_density_from_atoms(md.atoms[0]), 8971.719659196913)
+    npt.assert_almost_equal(get_density_from_atoms(md.atoms[-1]), 1000)
 
 
 def test_ase_md_box_ramp(proj_path, cu_box):

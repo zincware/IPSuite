@@ -8,6 +8,7 @@ from ipsuite.analysis.bin_property import (
 )
 from ipsuite.analysis.bond_stretch import BondStretchAnalyses
 from ipsuite.analysis.ensemble import ModelEnsembleAnalysis
+from ipsuite.analysis.md import AnalyseDensity
 from ipsuite.analysis.model import (
     BoxHeatUp,
     BoxScale,
@@ -54,4 +55,5 @@ __all__ = [
     "StressHistogram",
     "ForcesUncertaintyHistogram",
     "EnergyUncertaintyHistogram",
+    "AnalyseDensity",
 ]
