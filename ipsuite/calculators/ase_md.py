@@ -38,7 +38,7 @@ class RescaleBoxModifier(base.IPSNode):
 
     def modify(self, thermostat, step, total_steps):
         # we use the thermostat, so we can also modify e.g. temperature
-        if self.density is not None:
+        if self.cell is None:
             self.cell = get_box_from_density([[thermostat.atoms]], [1], self.density)
         if isinstance(self.cell, int):
             self.cell = np.array(
