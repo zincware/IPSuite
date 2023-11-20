@@ -11,6 +11,7 @@ import zntrack
 from ase.visualize import view
 
 from ipsuite import base, fields
+from ipsuite.utils.ase_sim import get_box_from_density
 
 log = logging.getLogger(__name__)
 
@@ -99,17 +100,7 @@ class Packmol(base.IPSNode):
 
     def _get_box_from_molar_volume(self):
         """Get the box size from the molar volume"""
-        molar_mass = [
-            sum(atoms[0].get_masses()) * count
-            for atoms, count in zip(self.data, self.count)
-        ]
-        molar_mass = sum(molar_mass)  #  g / mol
-        molar_volume = molar_mass / self.density / 1000  # m^3 / mol
-
-        # convert to particles / A^3
-        volume = molar_volume * (ase.units.m**3) / ase.units.mol
-
-        self.box = [volume ** (1 / 3) for _ in range(3)]
+        self.box = get_box_from_density(self.data, self.count, self.density)
         log.info(f"estimated box size: {self.box}")
 
     def view(self) -> view:

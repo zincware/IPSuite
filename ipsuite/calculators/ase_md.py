@@ -18,17 +18,28 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from tqdm import trange
 
 from ipsuite import base
-from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
+from ipsuite.utils.ase_sim import freeze_copy_atoms, get_box_from_density, get_energy
 
 log = logging.getLogger(__name__)
 
 
 class RescaleBoxModifier(base.IPSNode):
-    cell: int = zntrack.zn.params()
+    cell: int = zntrack.params(None)
+    density: float = zntrack.params(None)
     _initial_cell = None
+
+    # def _post_init_(self):
+    #     super()._post_init_()
+    #     if self.density is not None and self.cell is not None:
+    #         raise ValueError("Only one of density or cell can be given.")
+    #     if self.density is None and self.cell is None:
+    #         raise ValueError("Either density or cell has to be given.")
+    # Currently not possible due to a ZnTrack bug
 
     def modify(self, thermostat, step, total_steps):
         # we use the thermostat, so we can also modify e.g. temperature
+        if self.density is not None:
+            self.cell = get_box_from_density([[thermostat.atoms]], [1], self.density)
         if isinstance(self.cell, int):
             self.cell = np.array(
                 [[self.cell, 0, 0], [0, self.cell, 0], [0, 0, self.cell]]
