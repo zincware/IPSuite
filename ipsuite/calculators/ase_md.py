@@ -634,7 +634,7 @@ def update_metrics_dict(atoms, metrics_dict, checker_list, compute_pressure: boo
         volume = atoms.get_volume()
         stress = atoms.get_stress(voigt=False)
         pressure = (e_kin + stress.trace()) / (3 * volume)
-        # pressure /= units.bar
+        pressure /= units.bar
         metrics_dict["pressure"].append(pressure)
 
     for checker in checker_list:
