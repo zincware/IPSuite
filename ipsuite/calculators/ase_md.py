@@ -517,7 +517,6 @@ class ASEMD(base.ProcessSingleAtom):
         metrics_dict = {"energy": [], "temperature": []}
         if self.compute_pressure:
             metrics_dict["pressure"] = []
-            metrics_dict["e_kin"] = []
         for checker in self.checker_list:
             checker.initialize(atoms)
             if checker.get_quantity() is not None:
@@ -628,18 +627,21 @@ def get_desc(temperature: float, total_energy: float, time: float, total_time: f
     )
 
 
-def update_metrics_dict(atoms, metrics_dict, checker_list, compute_pressure: bool):
+def update_metrics_dict(
+    atoms: ase.Atoms, metrics_dict, checker_list, compute_pressure: bool
+):
     temperature, energy = get_energy(atoms)
     metrics_dict["energy"].append(energy)
     metrics_dict["temperature"].append(temperature)
     if compute_pressure:
-        e_kin = atoms.get_kinetic_energy()
-        volume = atoms.get_volume()
-        stress = atoms.get_stress(voigt=False)
-        pressure = (2 * e_kin - (stress.trace()) / 3) / (3 * volume)
+        # e_kin = atoms.get_kinetic_energy()
+        # volume = atoms.get_volume()
+        # stress = atoms.get_stress(voigt=False)
+        # pressure = (2 * e_kin - (stress.trace()) / 3) / (3 * volume)
+        pressure = atoms.get_stress(voigt=False, include_ideal_gas=True).trace() / 3
         pressure /= units.bar
         metrics_dict["pressure"].append(pressure)
-        metrics_dict["e_kin"].append(e_kin)
+        # metrics_dict["e_kin"].append(e_kin)
 
     for checker in checker_list:
         metric = checker.get_value(atoms)
