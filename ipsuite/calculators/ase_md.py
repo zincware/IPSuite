@@ -514,7 +514,9 @@ class ASEMD(base.ProcessSingleAtom):
         thermostat = self.thermostat.get_thermostat(atoms=atoms)
 
         # initialize Atoms calculator and metrics_dict
-        metrics_dict = {"energy": [], "temperature": [], "pressure": []}
+        metrics_dict = {"energy": [], "temperature": []}
+        if self.compute_pressure:
+            metrics_dict["pressure"] = []
         for checker in self.checker_list:
             checker.initialize(atoms)
             if checker.get_quantity() is not None:
