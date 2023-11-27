@@ -55,7 +55,7 @@ class ModelEnsembleAnalysis(base.AnalyseAtoms):
         data: list of ASE Atoms objects to evaluate against.
     """
 
-    models: list = zntrack.zn.deps()
+    models: list = zntrack.deps()
 
     normal_plot_path = zntrack.dvc.outs(zntrack.nwd / "normal_plot.png")
     sorted_plot_path = zntrack.dvc.outs(zntrack.nwd / "sorted_plot.png")

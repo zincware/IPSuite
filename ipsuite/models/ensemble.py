@@ -13,11 +13,10 @@ from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
 class EnsembleCalculator(Calculator):
-    implemented_properties = ["energy", "forces", "stress"]
-
     def __init__(self, calculators: typing.List[Calculator], **kwargs):
         Calculator.__init__(self, **kwargs)
         self.calculators = calculators
+        self.implemented_properties = self.calculators[0].implemented_properties
 
     def calculate(
         self,
@@ -45,7 +44,7 @@ class EnsembleCalculator(Calculator):
             [x.get_forces() for x in results], axis=0
         )
 
-        if "stress" in results[0].calc.implemented_properties:
+        if "stress" in self.implemented_properties:
             self.results["stress"] = np.mean([x.get_stress() for x in results], axis=0)
             self.results["stress_uncertainty"] = np.std(
                 [x.get_stress() for x in results], axis=0
@@ -53,7 +52,7 @@ class EnsembleCalculator(Calculator):
 
 
 class EnsembleModel(base.IPSNode):
-    models: typing.List[MLModel] = zntrack.zn.deps()
+    models: typing.List[MLModel] = zntrack.deps()
 
     uuid = zntrack.zn.outs()  # to connect this Node to other Nodes it requires an output.
 

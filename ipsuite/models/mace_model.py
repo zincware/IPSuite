@@ -37,7 +37,7 @@ class MACE(MLModel):
 
     train_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "train-data.extxyz")
 
-    test_data = zntrack.zn.deps()
+    test_data = zntrack.deps()
     test_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "test-data.extxyz")
     model_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "model")
 
@@ -119,7 +119,17 @@ class MACE(MLModel):
 
     def get_calculator(self, device=None, **kwargs):
         """Return the ASE calculator."""
-        device = device or self.device
-        return MACECalculator(
-            model_path=self.model_dir / "MACE_model.model", device=self.device
-        )
+        import unittest.mock
+
+        with self.state.fs.open(self.config) as f:
+            config = yaml.safe_load(f)
+            default_dtype = config.get("default_dtype", "float64")
+
+        with unittest.mock.patch(
+            "torch.serialization._open_file_like", self.state.fs.open
+        ):
+            return MACECalculator(
+                model_path=self.model_dir / "MACE_model_swa.model",
+                device=device or self.device,
+                default_dtype=default_dtype,
+            )

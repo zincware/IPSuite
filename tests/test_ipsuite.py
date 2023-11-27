@@ -1,10 +1,11 @@
 """Test 'IPSuite' version."""
+
 import ipsuite as ips
 
 
 def test_version():
     """Test 'IPSuite' version."""
-    assert ips.__version__ == "0.1.0a3"
+    assert ips.__version__ == "0.1.2"
 
 
 def test_node_imports():

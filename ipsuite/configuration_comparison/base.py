@@ -118,7 +118,6 @@ class ConfigurationComparison(base.IPSNode):
 
     Attributes
     ----------
-        hash used to use this Node as zn.Nodes()
     reference: typing.Union[utils.helpers.UNION_ATOMS_OR_ATOMS_LST,
      utils.types.SupportsAtoms]
         reference configurations to compare analyte to
@@ -136,10 +135,13 @@ class ConfigurationComparison(base.IPSNode):
         name of the node used within the dvc graph
     compile_with_jit: bool
         choose if kernel should be compiled with jit or not.
+    memory: int
+            How far back to look in the MMK vector.
     """
 
-    reference: base.protocol.HasOrIsAtoms = zntrack.zn.deps()
-    analyte: base.protocol.HasOrIsAtoms = zntrack.zn.deps()
+    reference: base.protocol.HasOrIsAtoms = zntrack.deps()
+    analyte: base.protocol.HasOrIsAtoms = zntrack.deps()
+    memory: int = zntrack.params(1000)
     similarities = zntrack.zn.plots()
     soap: typing.Union[dict, SOAPParameter] = zntrack.zn.params(SOAPParameter())
     result: typing.List[float] = zntrack.zn.outs()
@@ -204,9 +206,9 @@ class ConfigurationComparison(base.IPSNode):
         _soap = SOAP(
             species=species,
             periodic=False,  # any(self.analyte[0].pbc),
-            rcut=self.soap.r_cut,
-            nmax=self.soap.n_max,
-            lmax=self.soap.l_max,
+            r_cut=self.soap.r_cut,
+            n_max=self.soap.n_max,
+            l_max=self.soap.l_max,
             sigma=self.soap.sigma,
             rbf=self.soap.rbf,
             weighting=self.soap.weighting,
@@ -292,6 +294,12 @@ class ConfigurationComparison(base.IPSNode):
                         if max_index == 0:
                             continue
                         reference_soap = representation_file["soap"][:max_index]
+                        # if max_index <= self.memory:
+                        #     reference_soap = representation_file["soap"][:max_index]
+                        # else:
+                        #     reference_soap = representation_file["soap"][
+                        #         max_index - self.memory : max_index
+                        #     ]
                         analyte_soap = representation_file["soap"][max_index]
                         comparison = self.compare(reference_soap, analyte_soap)
                         self.result.append(float(comparison.numpy()))
@@ -307,6 +315,14 @@ class ConfigurationComparison(base.IPSNode):
                 ) as pbar:
                     for max_index, _atoms in enumerate(self.analyte):
                         reference_soap = representation_file["soap_reference"]
+                        # if max_index <= self.memory:
+                        #     reference_soap = representation_file["soap_reference"][
+                        #         :max_index
+                        #     ]
+                        # else:
+                        #     reference_soap = representation_file["soap_reference"][
+                        #         max_index - self.memory : max_index
+                        #     ]
                         analyte_soap = representation_file["soap_analyte"][max_index]
                         comparison = self.compare(reference_soap, analyte_soap)
                         self.result.append(float(comparison.numpy()))

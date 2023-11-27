@@ -1,4 +1,5 @@
 """The Nequip and allegro model module."""
+
 import logging
 import pathlib
 import shutil
@@ -38,7 +39,7 @@ class Nequip(MLModel):
     """The Nequip and allegro model."""
 
     config: str = zntrack.dvc.params()
-    validation_data = zntrack.zn.deps()
+    validation_data = zntrack.deps()
 
     train_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "train.extxyz")
     validation_data_file: pathlib.Path = zntrack.dvc.outs(
@@ -167,12 +168,17 @@ class Nequip(MLModel):
 
     def get_calculator(self, **kwargs):
         """Get a nequip ase calculator."""
+        import unittest.mock
+
         from nequip.ase.nequip_calculator import NequIPCalculator
 
-        return NequIPCalculator.from_deployed_model(
-            model_path=self.deployed_model.as_posix(),
-            device=self.device,
-        )
+        with unittest.mock.patch(
+            "torch.serialization._open_file_like", self.state.fs.open
+        ):
+            return NequIPCalculator.from_deployed_model(
+                model_path=self.deployed_model.as_posix(),
+                device=self.device,
+            )
 
     @property
     def lammps_pair_style(self) -> str:

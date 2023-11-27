@@ -13,6 +13,7 @@ class _Nodes:
     MACE = "ipsuite.models.MACE"
     Nequip = "ipsuite.models.Nequip"
     Apax = "ipsuite.models.Apax"
+    ApaxEnsemble = "ipsuite.models.ApaxEnsemble"
 
     # Configuration Selection
     IndexSelection = "ipsuite.configuration_selection.IndexSelection"
@@ -25,6 +26,8 @@ class _Nodes:
     )
     UniformTemporalSelection = "ipsuite.configuration_selection.UniformTemporalSelection"
     ThresholdSelection = "ipsuite.configuration_selection.ThresholdSelection"
+    FilterOutlier = "ipsuite.configuration_selection.FilterOutlier"
+    BatchKernelSelection = "ipsuite.models.apax.BatchKernelSelection"
 
     # Configuration Comparison
     REMatch = "ipsuite.configuration_comparison.REMatch"
@@ -32,7 +35,9 @@ class _Nodes:
 
     # Configuration Generation
     Packmol = "ipsuite.configuration_generation.Packmol"
+    MultiPackmol = "ipsuite.configuration_generation.MultiPackmol"
     SmilesToAtoms = "ipsuite.configuration_generation.SmilesToAtoms"
+    SmilesToConformers = "ipsuite.configuration_generation.SmilesToConformers"
 
     # Data
     AddData = "ipsuite.data_loading.AddData"
@@ -42,12 +47,16 @@ class _Nodes:
     RattleAtoms = "ipsuite.bootstrap.RattleAtoms"
     TranslateMolecules = "ipsuite.bootstrap.TranslateMolecules"
     RotateMolecules = "ipsuite.bootstrap.RotateMolecules"
+    SurfaceRasterScan = "ipsuite.bootstrap.SurfaceRasterScan"
+    SurfaceRasterMetrics = "ipsuite.bootstrap.SurfaceRasterMetrics"
 
     # Analysis
     DipoleHistogram = "ipsuite.analysis.DipoleHistogram"
     EnergyHistogram = "ipsuite.analysis.EnergyHistogram"
     ForcesHistogram = "ipsuite.analysis.ForcesHistogram"
     StressHistogram = "ipsuite.analysis.StressHistogram"
+    ForcesUncertaintyHistogram = "ipsuite.analysis.ForcesUncertaintyHistogram"
+    EnergyUncertaintyHistogram = "ipsuite.analysis.EnergyUncertaintyHistogram"
     ModelEnsembleAnalysis = "ipsuite.analysis.ModelEnsembleAnalysis"
     PredictionMetrics = "ipsuite.analysis.PredictionMetrics"
     ForceAngles = "ipsuite.analysis.ForceAngles"
@@ -65,17 +74,20 @@ class _Nodes:
     ForceDecomposition = "ipsuite.analysis.ForceDecomposition"
     ThresholdCheck = "ipsuite.analysis.ThresholdCheck"
     TemperatureCheck = "ipsuite.analysis.TemperatureCheck"
+    FixedSphereConstraint = "ipsuite.calculators.FixedSphereConstraint"
+    AnalyseDensity = "ipsuite.analysis.AnalyseDensity"
 
     # calculators
     CP2KSinglePoint = "ipsuite.calculators.CP2KSinglePoint"
     CP2KYaml = "ipsuite.calculators.CP2KYaml"
     ASEGeoOpt = "ipsuite.calculators.ASEGeoOpt"
     ASEMD = "ipsuite.calculators.ASEMD"
-    FixedSphereASEMD = "ipsuite.calculators.FixedSphereASEMD"
     xTBSinglePoint = "ipsuite.calculators.xTBSinglePoint"
     LJSinglePoint = "ipsuite.calculators.LJSinglePoint"
     EMTSinglePoint = "ipsuite.calculators.EMTSinglePoint"
+    OrcaSinglePoint = "ipsuite.calculators.OrcaSinglePoint"
     ApaxJaxMD = "ipsuite.calculators.ApaxJaxMD"
+    LammpsSimulator = "ipsuite.calculators.LammpsSimulator"
 
     LangevinThermostat = "ipsuite.calculators.LangevinThermostat"
     NPTThermostat = "ipsuite.calculators.NPTThermostat"

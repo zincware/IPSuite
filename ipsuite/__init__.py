@@ -1,4 +1,5 @@
 """The ipsuite package."""
+
 import importlib.metadata
 
 from ipsuite import (

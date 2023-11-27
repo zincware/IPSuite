@@ -3,7 +3,7 @@ from .ase_geoopt import ASEGeoOpt
 from .ase_md import (
     ASEMD,
     BoxOscillatingRampModifier,
-    FixedSphereASEMD,
+    FixedSphereConstraint,
     LangevinThermostat,
     NPTThermostat,
     PressureRampModifier,
@@ -13,6 +13,8 @@ from .ase_md import (
 )
 from .ase_standard import EMTSinglePoint, LJSinglePoint
 from .cp2k import CP2KSinglePoint, CP2KYaml
+from .lammps import LammpsSimulator
+from .orca import OrcaSinglePoint
 from .xtb import xTBSinglePoint
 
 __all__ = [
@@ -20,7 +22,7 @@ __all__ = [
     "CP2KYaml",
     "ASEGeoOpt",
     "ASEMD",
-    "FixedSphereASEMD",
+    "FixedSphereConstraint",
     "xTBSinglePoint",
     "LJSinglePoint",
     "LangevinThermostat",
@@ -32,4 +34,6 @@ __all__ = [
     "PressureRampModifier",
     "TemperatureOscillatingRampModifier",
     "NPTThermostat",
+    "OrcaSinglePoint",
+    "LammpsSimulator",
 ]

@@ -1,4 +1,5 @@
 """Lazy ASE Atoms loading."""
+
 import functools
 import typing
 

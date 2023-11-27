@@ -1,4 +1,5 @@
 """Minimum Membership Kernel (MMKernel) module."""
+
 import numpy as np
 import tensorflow as tf
 

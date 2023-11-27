@@ -1,9 +1,11 @@
 """Base Node for ConfigurationSelection."""
+
 import logging
 import typing
-import uuid
 
 import ase
+import matplotlib.pyplot as plt
+import numpy as np
 import znflow
 import zntrack
 
@@ -27,12 +29,13 @@ class ConfigurationSelection(base.ProcessAtoms):
 
     """
 
-    _hash = zntrack.zn.outs()
     exclude_configurations: typing.Union[
         typing.Dict[str, typing.List[int]], base.protocol.HasSelectedConfigurations
-    ] = zntrack.zn.deps(None)
-    exclude: typing.Union[zntrack.Node, typing.List[zntrack.Node]] = zntrack.zn.deps(None)
+    ] = zntrack.deps(None)
+    exclude: typing.Union[zntrack.Node, typing.List[zntrack.Node]] = zntrack.deps(None)
     selected_configurations: typing.Dict[str, typing.List[int]] = zntrack.zn.outs()
+
+    img_selection = zntrack.outs_path(zntrack.nwd / "selection.png")
 
     _name_ = "ConfigurationSelection"
 
@@ -47,7 +50,6 @@ class ConfigurationSelection(base.ProcessAtoms):
 
     def run(self):
         """ZnTrack Node Run method."""
-        self._hash = str(uuid.uuid4())
         if self.exclude is not None:
             if self.exclude_configurations is None:
                 self.exclude_configurations = {}
@@ -75,6 +77,8 @@ class ConfigurationSelection(base.ProcessAtoms):
             selected_configurations, per_key=True
         )
 
+        self._get_plot(data, selected_configurations)
+
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         """Run the selection method.
 
@@ -101,6 +105,8 @@ class ConfigurationSelection(base.ProcessAtoms):
                     if idx in self.selected_configurations:
                         results.append(atoms)
             elif isinstance(data, dict):
+                # This only triggers, if the file was changed manually.
+                assert data.keys() == self.selected_configurations.keys()
                 for key, atoms_lst in data.items():
                     if key in self.selected_configurations:
                         for idx, atoms in enumerate(atoms_lst):
@@ -123,6 +129,8 @@ class ConfigurationSelection(base.ProcessAtoms):
             elif isinstance(data, dict) and isinstance(
                 self.selected_configurations, dict
             ):
+                # This only triggers, if the file was changed manually.
+                assert data.keys() == self.selected_configurations.keys()
                 for key, atoms_lst in data.items():
                     if key not in self.selected_configurations:
                         results.extend(atoms_lst)
@@ -133,3 +141,52 @@ class ConfigurationSelection(base.ProcessAtoms):
             else:
                 raise ValueError(f"Data must be a list or dict, not {type(data)}")
             return results
+
+    def _get_plot(self, atoms_lst: typing.List[ase.Atoms], indices: typing.List[int]):
+        """Plot the selected configurations."""
+        # if energies are available, plot them, otherwise just plot indices over time
+        fig, ax = plt.subplots()
+
+        try:
+            line_data = np.array([atoms.get_potential_energy() for atoms in atoms_lst])
+            ax.set_ylabel("Energy")
+        except Exception:
+            line_data = np.arange(len(atoms_lst))
+            ax.set_ylabel("Configuration")
+
+        ax.plot(line_data)
+        ax.scatter(indices, line_data[indices], c="r")
+        ax.set_xlabel("Configuration")
+        fig.savefig(self.img_selection, bbox_inches="tight")
+
+
+class BatchConfigurationSelection(ConfigurationSelection):
+    """Base node for BatchConfigurationSelection.
+
+    Attributes
+    ----------
+    data: list[ase.Atoms]
+        The atoms data to process. This must be an input to the Node
+    atoms: list[ase.Atoms]
+        The processed atoms data. This is an output of the Node.
+        It does not have to be 'field.Atoms' but can also be e.g. a 'property'.
+    """
+
+    train_data: list[ase.Atoms] = zntrack.deps()
+
+    def _post_init_(self):
+        if self.train_data is not None and not isinstance(self.train_data, dict):
+            try:
+                self.train_data = znflow.combine(
+                    self.train_data, attribute="atoms", return_dict_attr="name"
+                )
+            except TypeError:
+                self.train_data = znflow.combine(self.train_data, attribute="atoms")
+
+        if self.data is not None and not isinstance(self.data, dict):
+            try:
+                self.data = znflow.combine(
+                    self.data, attribute="atoms", return_dict_attr="name"
+                )
+            except TypeError:
+                self.data = znflow.combine(self.data, attribute="atoms")
