@@ -269,7 +269,7 @@ class LangevinThermostat(base.IPSNode):
     def get_thermostat(self, atoms):
         thermostat = Langevin(
             atoms=atoms,
-            timestep=self.time_step*units.fs,
+            timestep=self.time_step * units.fs,
             temperature_K=self.temperature,
             friction=self.friction,
         )
