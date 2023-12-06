@@ -267,10 +267,9 @@ class LangevinThermostat(base.IPSNode):
     friction: float = zntrack.zn.params()
 
     def get_thermostat(self, atoms):
-        self.time_step *= units.fs
         thermostat = Langevin(
             atoms=atoms,
-            timestep=self.time_step,
+            timestep=self.time_step*units.fs,
             temperature_K=self.temperature,
             friction=self.friction,
         )
