@@ -1,16 +1,17 @@
 import typing as t
 
+import ase
 import matplotlib.pyplot as plt
 import numpy as np
 import zntrack
 
-from ipsuite import base
+from ipsuite.configuration_selection import ConfigurationSelection
 
 
 def direct_cutoff(values, threshold, cutoffs):
     # Filtering the direct cutoff values
     if cutoffs is None:
-        raise ValueError("cutoffs not specified.")
+        raise ValueError("cutoffs have to be specified for using the direct cutoff filter.")
     return (cutoffs[0], cutoffs[1])
 
 def cutoff_around_mean(values, threshold, cutoffs):
@@ -18,9 +19,9 @@ def cutoff_around_mean(values, threshold, cutoffs):
     mean = np.mean(values)
     std = np.std(values)
 
-    upper_limit = mean + threshold * std
-    lower_limit = mean - threshold * std
-    return (upper_limit, lower_limit)
+    upper_cutoff = mean + threshold * std
+    lower_cutoff = mean - threshold * std
+    return (lower_cutoff, upper_cutoff)
 
 CUTOFF = {
     "direct": direct_cutoff,
@@ -28,7 +29,7 @@ CUTOFF = {
 }
 
 
-class FilterOutliers(base.ProcessAtoms):
+class FilterOutlier(ConfigurationSelection):
     """Remove outliers from the data based on a given property.
 
     Attributes
@@ -42,69 +43,68 @@ class FilterOutliers(base.ProcessAtoms):
     threshold : float, default=3
         The threshold for filtering in units of standard deviations.
     cutoffs : list(float), default=None
-        Upper and lower cutoff.
+        Lower and upper cutoff.
     """
 
     key: str = zntrack.params("energy")
     cutoff_type: t.Literal["direct", "around_mean"] = zntrack.params("around_mean")
     direction: t.Literal["above", "below", "both"] = zntrack.params("both")
     threshold: float = zntrack.params(3)
-    cutoffs: list(float) = zntrack.params(None)
+    cutoffs: t.Union[t.List[float], None] = zntrack.params(None)
 
-
-    filtered_indices: list = zntrack.outs()
     histogram: str = zntrack.outs_path(zntrack.nwd / "histogram.png")
+    
+    def select_atoms(self, atoms_lst: t.List[ase.Atoms]) -> t.List[int]:         
+        values = [atoms.calc.results[self.key] for atoms in atoms_lst]
 
-    def run(self):         
-        values = [x.calc.results[self.key] for x in self.data]
-
-        if len(values[0][0]) == 3:
+        # get maximal atomic value per struckture
+        if np.array(values).ndim == 3:
             # calculates the maximal magnetude of cartesian values
             values = [np.max(np.linalg.norm(value, axis=1), axis=0) for value in values]
-
-        upper_limit, lower_limit = CUTOFF(self.cutoff_type)(
+        elif np.array(values).ndim == 2:
+            # calculates the maximal atomic values
+            values = [np.max(value, axis=0) for value in values]
+            
+        lower_limit, upper_limit = CUTOFF[self.cutoff_type](
             values,
             self.threshold,
             self.cutoffs,
         )
 
         if self.direction == "above":
-            self.filtered_indices = [
-                i for i, x in enumerate(values) if x > upper_limit
+            selection = [
+                i for i, x in enumerate(values) if x < upper_limit
             ]
         elif self.direction == "below":
-            self.filtered_indices = [
-                i for i, x in enumerate(values) if x < lower_limit
+            selection = [
+                i for i, x in enumerate(values) if x > lower_limit
             ]
         else:
-            self.filtered_indices = [
+            selection = [
                 i
                 for i, x in enumerate(values)
-                if x > upper_limit or x < lower_limit
+                if x > lower_limit and x < upper_limit
             ]
 
-        plot_hist(values, self.filtered_indices, self.histogram)
+        return selection
 
-    @property
-    def atoms(self):
-        return [
-            self.data[i] for i in range(len(self.data)) if i not in self.filtered_indices
-        ]
 
-    @property
-    def excluded_atoms(self):
-        return [self.data[i] for i in self.filtered_indices]
-    
+    def get_hist(self, atoms_lst: t.List[ase.Atoms], indices: t.List[int]):
+        values = [atoms.calc.results[self.key] for atoms in atoms_lst]
 
-def plot_hist(values, filtered_indices, histogram):
-    fig, ax = plt.subplots(3, figsize=(10, 10))
-    ax[0].hist(values, bins=100)
-    ax[0].set_title("All")
-    ax[1].hist(
-        [values[i] for i in range(len(values)) if i not in filtered_indices],
-        bins=100,
-    )
-    ax[1].set_title("Filtered")
-    ax[2].hist([values[i] for i in filtered_indices], bins=100)
-    ax[2].set_title("Excluded")
-    fig.savefig(histogram, bbox_inches="tight")
+        # check if property is in cartesian basis
+        if np.array(values).ndim == 3:
+            # calculates the maximal magnetude of cartesian values
+            values = [np.max(np.linalg.norm(value, axis=1), axis=0) for value in values]
+
+        fig, ax = plt.subplots(3, figsize=(10, 10))
+        ax[0].hist(values, bins=100)
+        ax[0].set_title("All")
+        ax[1].hist(
+            [values[i] for i in range(len(values)) if i not in indices],
+            bins=100,
+        )
+        ax[1].set_title("Filtered")
+        ax[2].hist([values[i] for i in indices], bins=100)
+        ax[2].set_title("Excluded")
+        fig.savefig(self.img_selection, bbox_inches="tight")
