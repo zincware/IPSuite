@@ -12,7 +12,7 @@ from ipsuite import fields
 def modify_xyz_file(file_path, target_string, replacement_string):
     new_file_path = file_path.with_name(file_path.stem + "_mod" + file_path.suffix)
 
-    with open(file_path, "r") as input_file, open(new_file_path, "w") as output_file:
+    with file_path.open("r") as input_file, new_file_path.open("w") as output_file:
         for line in input_file:
             # Replace all occurrences of the target string with the replacement string
             modified_line = line.replace(target_string, replacement_string)
@@ -60,7 +60,7 @@ class MD22Dataset(zntrack.Node):
 
     def run(self):
         self.raw_data_dir.mkdir(exist_ok=True)
-        if not self.dataset in self.datasets.keys():
+        if self.dataset not in self.datasets.keys():
             raise FileNotFoundError(
                 f"Dataset {self.dataset} is not known. Key has top be in {self.datasets}"
             )
