@@ -51,8 +51,6 @@ class FilterOutlier(ConfigurationSelection):
     direction: t.Literal["above", "below", "both"] = zntrack.params("both")
     threshold: float = zntrack.params(3)
     cutoffs: t.Union[t.List[float], None] = zntrack.params(None)
-
-    histogram: str = zntrack.outs_path(zntrack.nwd / "histogram.png")
     
     def select_atoms(self, atoms_lst: t.List[ase.Atoms]) -> t.List[int]:         
         values = [atoms.calc.results[self.key] for atoms in atoms_lst]
@@ -89,7 +87,7 @@ class FilterOutlier(ConfigurationSelection):
         return selection
 
 
-    def get_hist(self, atoms_lst: t.List[ase.Atoms], indices: t.List[int]):
+    def _get_plot(self, atoms_lst: t.List[ase.Atoms], indices: t.List[int]):
         values = [atoms.calc.results[self.key] for atoms in atoms_lst]
 
         # check if property is in cartesian basis
