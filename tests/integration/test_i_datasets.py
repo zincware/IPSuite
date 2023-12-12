@@ -1,5 +1,6 @@
-import ipsuite as ips
 import requests
+
+import ipsuite as ips
 
 
 def test_md22():
@@ -16,4 +17,3 @@ def test_md22():
 
     data.load()
     assert len(data.atoms) > 0
-
