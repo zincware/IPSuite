@@ -11,8 +11,11 @@ from ipsuite.configuration_selection import ConfigurationSelection
 def direct_cutoff(values, threshold, cutoffs):
     # Filtering the direct cutoff values
     if cutoffs is None:
-        raise ValueError("cutoffs have to be specified for using the direct cutoff filter.")
+        raise ValueError(
+            "cutoffs have to be specified for using the direct cutoff filter."
+        )
     return (cutoffs[0], cutoffs[1])
+
 
 def cutoff_around_mean(values, threshold, cutoffs):
     # Filtering in multiples of the standard deviation around the mean.
@@ -23,10 +26,8 @@ def cutoff_around_mean(values, threshold, cutoffs):
     lower_cutoff = mean - threshold * std
     return (lower_cutoff, upper_cutoff)
 
-CUTOFF = {
-    "direct": direct_cutoff,
-    "around_mean": cutoff_around_mean
-}
+
+CUTOFF = {"direct": direct_cutoff, "around_mean": cutoff_around_mean}
 
 
 class FilterOutlier(ConfigurationSelection):
@@ -62,7 +63,7 @@ class FilterOutlier(ConfigurationSelection):
         elif np.array(values).ndim == 2:
             # calculates the maximal atomic values
             values = [np.max(value, axis=0) for value in values]
-            
+
         lower_limit, upper_limit = CUTOFF[self.cutoff_type](
             values,
             self.threshold,
@@ -70,18 +71,12 @@ class FilterOutlier(ConfigurationSelection):
         )
 
         if self.direction == "above":
-            selection = [
-                i for i, x in enumerate(values) if x < upper_limit
-            ]
+            selection = [i for i, x in enumerate(values) if x < upper_limit]
         elif self.direction == "below":
-            selection = [
-                i for i, x in enumerate(values) if x > lower_limit
-            ]
+            selection = [i for i, x in enumerate(values) if x > lower_limit]
         else:
             selection = [
-                i
-                for i, x in enumerate(values)
-                if x > lower_limit and x < upper_limit
+                i for i, x in enumerate(values) if x > lower_limit and x < upper_limit
             ]
 
         return selection
