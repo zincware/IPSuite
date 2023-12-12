@@ -43,6 +43,9 @@ class _Nodes:
     AddData = "ipsuite.data_loading.AddData"
     AddDataH5MD = "ipsuite.data_loading.AddDataH5MD"
 
+    # Datasets
+    MD22Dataset = "ipsuite.datasets.MD22Dataset"
+
     # Bootstrap
     RattleAtoms = "ipsuite.bootstrap.RattleAtoms"
     TranslateMolecules = "ipsuite.bootstrap.TranslateMolecules"
