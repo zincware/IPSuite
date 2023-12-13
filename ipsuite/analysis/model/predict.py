@@ -37,6 +37,7 @@ class Prediction(base.ProcessAtoms):
             atoms = configuration.copy()
             atoms.calc = calc
             atoms.get_potential_energy()
+            _ = atoms.get_forces()
             if "stress" in calc.implemented_properties:
                 try:
                     atoms.get_stress()
@@ -57,6 +58,8 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
     - forces: meV/Å
     - stress: eV/Å^3
     """
+
+    normalize: bool = zntrack.params(False)
 
     energy_df_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "energy_df.csv")
     forces_df_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "forces_df.csv")
@@ -175,6 +178,12 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
             self.stress_df = pd.DataFrame({})
             self.stress_hydro_df = pd.DataFrame({})
             self.stress_deviat_df = pd.DataFrame({})
+
+        if self.normalize:
+            self.energy_df["true"] -= self.energy_df["true"].mean()
+            self.energy_df["true"] /= self.energy_df["true"].std()
+            self.energy_df["prediction"] -= self.energy_df["prediction"].mean()
+            self.energy_df["prediction"] /= self.energy_df["prediction"].std()
 
     def get_metrics(self):
         """Update the metrics."""
