@@ -6,6 +6,7 @@ from pathlib import Path
 import ase
 import zntrack
 
+import ipsuite as ips
 from ipsuite import fields
 
 
@@ -35,7 +36,7 @@ def download_data(url: str, data_path: Path):
     return file_path
 
 
-class MD22Dataset(zntrack.Node):
+class MD22Dataset(ips.base.IPSNode):
     dataset: str = zntrack.params()
 
     atoms: typing.List[ase.Atoms] = fields.Atoms()
