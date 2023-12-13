@@ -19,3 +19,4 @@
 - add `num_ramp_oscillations: float` to `BoxOscillatingRampModifier`
 - remove `train_log_file` from apax Node
 - add `density` to `RescaleBoxModifier`
+- add `compute_pressure` to `ASEMD`

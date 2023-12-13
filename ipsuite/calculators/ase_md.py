@@ -443,6 +443,8 @@ class ASEMD(base.ProcessSingleAtom):
         write them to the trajectory file every 'dump_rate' steps.
     wrap: bool
         Keep the atoms in the cell.
+    compute_pressure: bool, default=False
+        Compute the pressure and store it in the metrics_dict.
     """
 
     model = zntrack.deps()
@@ -461,6 +463,7 @@ class ASEMD(base.ProcessSingleAtom):
     use_momenta = zntrack.zn.params(False)
     seed: int = zntrack.params(42)
     wrap: bool = zntrack.params(False)
+    compute_pressure: bool = zntrack.params(False)
 
     metrics_dict = zntrack.zn.plots()
 
@@ -511,6 +514,8 @@ class ASEMD(base.ProcessSingleAtom):
 
         # initialize Atoms calculator and metrics_dict
         metrics_dict = {"energy": [], "temperature": []}
+        if self.compute_pressure:
+            metrics_dict["pressure"] = []
         for checker in self.checker_list:
             checker.initialize(atoms)
             if checker.get_quantity() is not None:
@@ -573,7 +578,7 @@ class ASEMD(base.ProcessSingleAtom):
                     break
                 else:
                     metrics_dict = update_metrics_dict(
-                        atoms, metrics_dict, self.checker_list
+                        atoms, metrics_dict, self.checker_list, self.compute_pressure
                     )
                     atoms_cache.append(freeze_copy_atoms(atoms))
                     if len(atoms_cache) == self.dump_rate:
@@ -595,7 +600,9 @@ class ASEMD(base.ProcessSingleAtom):
                     pbar.update(self.sampling_rate)
 
         if not self.pop_last and self.steps_before_stopping != -1:
-            metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checker_list)
+            metrics_dict = update_metrics_dict(
+                atoms, metrics_dict, self.checker_list, self.compute_pressure
+            )
             atoms_cache.append(freeze_copy_atoms(atoms))
 
         db.add(
@@ -619,10 +626,22 @@ def get_desc(temperature: float, total_energy: float, time: float, total_time: f
     )
 
 
-def update_metrics_dict(atoms, metrics_dict, checker_list):
+def update_metrics_dict(
+    atoms: ase.Atoms, metrics_dict, checker_list, compute_pressure: bool
+):
     temperature, energy = get_energy(atoms)
     metrics_dict["energy"].append(energy)
     metrics_dict["temperature"].append(temperature)
+    if compute_pressure:
+        # e_kin = atoms.get_kinetic_energy()
+        # volume = atoms.get_volume()
+        # stress = atoms.get_stress(voigt=False)
+        # pressure = (2 * e_kin - (stress.trace()) / 3) / (3 * volume)
+        pressure = atoms.get_stress(voigt=False, include_ideal_gas=True).trace() / 3
+        pressure /= units.bar
+        metrics_dict["pressure"].append(pressure)
+        # metrics_dict["e_kin"].append(e_kin)
+
     for checker in checker_list:
         metric = checker.get_value(atoms)
         if metric is not None:
