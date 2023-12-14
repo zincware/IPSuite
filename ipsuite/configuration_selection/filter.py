@@ -60,7 +60,9 @@ class PropertyFilter(ConfigurationSelection):
         if isinstance(values[0], np.ndarray):
             if values[0].ndim == 2:
                 # calculates the maximal magnetude of atomic cartesian property
-                values = [np.max(np.linalg.norm(value, axis=1), axis=0) for value in values]
+                values = [
+                    np.max(np.linalg.norm(value, axis=1), axis=0) for value in values
+                ]
             elif values[0].ndim == 1:
                 # calculates the maximal atomic property
                 values = [np.max(value, axis=0) for value in values]
@@ -89,7 +91,9 @@ class PropertyFilter(ConfigurationSelection):
         if isinstance(values[0], np.ndarray):
             if values[0].ndim == 2:
                 # calculates the maximal magnetude of atomic cartesian property
-                values = [np.max(np.linalg.norm(value, axis=1), axis=0) for value in values]
+                values = [
+                    np.max(np.linalg.norm(value, axis=1), axis=0) for value in values
+                ]
             elif values[0].ndim == 1:
                 # calculates the maximal atomic property
                 values = [np.max(value, axis=0) for value in values]
