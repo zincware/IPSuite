@@ -30,8 +30,8 @@ def cutoff_around_mean(values, threshold, cutoffs):
 CUTOFF = {"direct": direct_cutoff, "around_mean": cutoff_around_mean}
 
 
-class FilterOutlier(ConfigurationSelection):
-    """Remove outliers from the data based on a given property.
+class PropertyFilter(ConfigurationSelection):
+    """Filter structures from the dataset based on a given property.
 
     Attributes
     ----------
@@ -72,12 +72,12 @@ class FilterOutlier(ConfigurationSelection):
         )
 
         if self.direction == "above":
-            selection = [i for i, x in enumerate(values) if x < upper_limit]
+            selection = [i for i, x in enumerate(values) if x > upper_limit]
         elif self.direction == "below":
-            selection = [i for i, x in enumerate(values) if x > lower_limit]
+            selection = [i for i, x in enumerate(values) if x < lower_limit]
         else:
             selection = [
-                i for i, x in enumerate(values) if x < lower_limit or x > upper_limit
+                i for i, x in enumerate(values) if x > lower_limit and x < upper_limit
             ]
 
         return selection
@@ -98,11 +98,11 @@ class FilterOutlier(ConfigurationSelection):
         fig, ax = plt.subplots(3, figsize=(10, 10))
         ax[0].hist(values, bins=100)
         ax[0].set_title("All")
-        ax[1].hist(
+        ax[1].hist([values[i] for i in indices], bins=100)
+        ax[1].set_title("Selected")
+        ax[2].hist(
             [values[i] for i in range(len(values)) if i not in indices],
             bins=100,
         )
-        ax[1].set_title("Filtered")
-        ax[2].hist([values[i] for i in indices], bins=100)
         ax[2].set_title("Excluded")
         fig.savefig(self.img_selection, bbox_inches="tight")

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from ipsuite.configuration_selection import FilterOutlier
+from ipsuite.configuration_selection import PropertyFilter
 
 
 @pytest.mark.parametrize(
@@ -14,9 +14,9 @@ from ipsuite.configuration_selection import FilterOutlier
 )
 def test_get_selected_atoms(atoms_list, key, cutoff_type, direction, cutoffs):
     for idx, atoms in enumerate(atoms_list):
-        atoms.calc.results[key] = [idx, 0, 0]
+        atoms.calc.results[key] = np.array([[idx, 0, 0], [0, 0, 0]])
 
-    filter = FilterOutlier(
+    filter = PropertyFilter(
         key=key,
         cutoff_type=cutoff_type,
         direction=direction,
