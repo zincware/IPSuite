@@ -57,12 +57,13 @@ class FilterOutlier(ConfigurationSelection):
         values = [atoms.calc.results[self.key] for atoms in atoms_lst]
 
         # get maximal atomic value per struckture
-        if np.array(values).ndim == 3:
-            # calculates the maximal magnetude of cartesian values
-            values = [np.max(np.linalg.norm(value, axis=1), axis=0) for value in values]
-        elif np.array(values).ndim == 2:
-            # calculates the maximal atomic values
-            values = [np.max(value, axis=0) for value in values]
+        if isinstance(values[0], np.ndarray):
+            if values[0].ndim == 2:
+                # calculates the maximal magnetude of atomic cartesian property
+                values = [np.max(np.linalg.norm(value, axis=1), axis=0) for value in values]
+            elif values[0].ndim == 1:
+                # calculates the maximal atomic property
+                values = [np.max(value, axis=0) for value in values]
 
         lower_limit, upper_limit = CUTOFF[self.cutoff_type](
             values,
@@ -76,7 +77,7 @@ class FilterOutlier(ConfigurationSelection):
             selection = [i for i, x in enumerate(values) if x > lower_limit]
         else:
             selection = [
-                i for i, x in enumerate(values) if x > lower_limit and x < upper_limit
+                i for i, x in enumerate(values) if x < lower_limit or x > upper_limit
             ]
 
         return selection
@@ -85,10 +86,14 @@ class FilterOutlier(ConfigurationSelection):
     def _get_plot(self, atoms_lst: t.List[ase.Atoms], indices: t.List[int]):
         values = [atoms.calc.results[self.key] for atoms in atoms_lst]
 
-        # check if property is in cartesian basis
-        if np.array(values).ndim == 3:
-            # calculates the maximal magnetude of cartesian values
-            values = [np.max(np.linalg.norm(value, axis=1), axis=0) for value in values]
+        # get maximal atomic value per struckture
+        if isinstance(values[0], np.ndarray):
+            if values[0].ndim == 2:
+                # calculates the maximal magnetude of atomic cartesian property
+                values = [np.max(np.linalg.norm(value, axis=1), axis=0) for value in values]
+            elif values[0].ndim == 1:
+                # calculates the maximal atomic property
+                values = [np.max(value, axis=0) for value in values]
 
         fig, ax = plt.subplots(3, figsize=(10, 10))
         ax[0].hist(values, bins=100)
