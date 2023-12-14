@@ -142,8 +142,8 @@ def test_exclude_configurations_list(proj_path, traj_file):
 def test_filter_outlier(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
-        filtered_data = ips.configuration_selection.FilterOutlier(
-            data=data.atoms, key="energy", threshold=1, direction="both"
+        filtered_data = ips.configuration_selection.PropertyFilter(
+            data=data.atoms, key="energy", cutoff_type='around_mean', threshold=1, direction="both"
         )
 
     project.run()
