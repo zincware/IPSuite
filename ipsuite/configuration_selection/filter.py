@@ -52,8 +52,8 @@ class PropertyFilter(ConfigurationSelection):
     direction: t.Literal["above", "below", "both"] = zntrack.params("both")
     threshold: float = zntrack.params(3)
     cutoffs: t.Union[t.List[float], None] = zntrack.params(None)
-    
-    def select_atoms(self, atoms_lst: t.List[ase.Atoms]) -> t.List[int]:         
+
+    def select_atoms(self, atoms_lst: t.List[ase.Atoms]) -> t.List[int]:
         values = [atoms.calc.results[self.key] for atoms in atoms_lst]
 
         # get maximal atomic value per struckture
@@ -81,7 +81,6 @@ class PropertyFilter(ConfigurationSelection):
             ]
 
         return selection
-
 
     def _get_plot(self, atoms_lst: t.List[ase.Atoms], indices: t.List[int]):
         values = [atoms.calc.results[self.key] for atoms in atoms_lst]
