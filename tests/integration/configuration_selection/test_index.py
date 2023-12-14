@@ -143,7 +143,11 @@ def test_filter_outlier(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
         filtered_data = ips.configuration_selection.PropertyFilter(
-            data=data.atoms, key="energy", cutoff_type='around_mean', threshold=1, direction="both"
+            data=data.atoms,
+            key="energy",
+            cutoff_type="around_mean",
+            threshold=1,
+            direction="both",
         )
 
     project.run()
