@@ -1588,13 +1588,13 @@ pgp = ["gpg"]
 
 [[package]]
 name = "dvc"
-version = "3.23.0"
+version = "3.33.4"
 description = "Git for data scientists - manage your code and data together"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "dvc-3.23.0-py3-none-any.whl", hash = "sha256:b41161a1377f6e73ab25a2dd07d54c8cda96e00e032f5ee96baa295ba4cefd28"},
-    {file = "dvc-3.23.0.tar.gz", hash = "sha256:3f5b134e0e27e8941ec5ba66ff48b692c805ffeadedd172f49c74fa604ba6e84"},
+    {file = "dvc-3.33.4-py3-none-any.whl", hash = "sha256:130881585e4d96b1c7ed29b15466bbad70add00ad8823a2b5573fa7702f0ef3a"},
+    {file = "dvc-3.33.4.tar.gz", hash = "sha256:2458852fc21762ed8384073e17575f3f7b60cdd22a31a7d1a55083a89ede8dd9"},
 ]
 
 [package.dependencies]
@@ -1602,16 +1602,16 @@ colorama = ">=0.3.9"
 configobj = ">=5.0.6"
 distro = ">=1.3"
 dpath = ">=2.1.0,<3"
-dvc-data = ">=2.16.3,<2.17.0"
+dvc-data = ">=2.24,<2.25"
 dvc-http = ">=2.29.0"
-dvc-render = ">=0.3.1,<1"
-dvc-studio-client = ">=0.13.0,<1"
+dvc-render = ">=1.0.0,<2"
+dvc-studio-client = ">=0.17.1,<1"
 dvc-task = ">=0.3.0,<1"
 flatten-dict = ">=0.4.1,<1"
 "flufl.lock" = ">=5,<8"
 funcy = ">=1.14"
 grandalf = ">=0.7,<1"
-gto = ">=1.3.0,<2"
+gto = ">=1.4.0,<2"
 hydra-core = ">=1.1"
 iterative-telemetry = ">=0.0.7"
 networkx = ">=2.5"
@@ -1625,7 +1625,7 @@ pyparsing = ">=2.4.7"
 requests = ">=2.22"
 rich = ">=12"
 "ruamel.yaml" = ">=0.17.11"
-scmrepo = ">=1.2.1,<2"
+scmrepo = ">=1.5.0,<2"
 shortuuid = ">=0.5"
 shtab = ">=1.3.4,<2"
 tabulate = ">=0.8.7"
@@ -1636,48 +1636,49 @@ voluptuous = ">=0.11.7"
 
 [package.extras]
 all = ["dvc[azure,gdrive,gs,hdfs,oss,s3,ssh,webdav,webhdfs]"]
-azure = ["dvc-azure (>=2.21.2)"]
+azure = ["dvc-azure (>=2.23.0)"]
 dev = ["dvc[azure,gdrive,gs,hdfs,lint,oss,s3,ssh,tests,webdav,webhdfs]"]
 gdrive = ["dvc-gdrive (==2.20)"]
 gs = ["dvc-gs (==2.22.1)"]
 hdfs = ["dvc-hdfs (==2.19)"]
-lint = ["mypy (==1.5.1)", "pylint (==2.17.6)", "types-colorama", "types-psutil", "types-pyinstaller", "types-requests", "types-tabulate", "types-toml", "types-tqdm"]
-oss = ["dvc-oss (>=2.20.0)"]
+lint = ["mypy (==1.7.1)", "pandas-stubs", "types-colorama", "types-psutil", "types-pyinstaller", "types-requests", "types-tabulate", "types-toml", "types-tqdm"]
+oss = ["dvc-oss (>=2.22.0)"]
 s3 = ["dvc-s3 (==2.23.0)"]
 ssh = ["dvc-ssh (>=2.22.1,<3)"]
 ssh-gssapi = ["dvc-ssh[gssapi] (>=2.22.1,<3)"]
-testing = ["pytest-benchmark[histogram]", "pytest-test-utils", "pytest-virtualenv"]
-tests = ["beautifulsoup4 (>=4.4)", "dvc-ssh", "dvc[testing]", "filelock", "flaky", "pytest (>=7,<8)", "pytest-cov (>=4.1.0)", "pytest-docker (>=1,<3)", "pytest-lazy-fixture", "pytest-mock", "pytest-test-utils", "pytest-timeout (>=2)", "pytest-xdist (>=3.2)", "pywin32 (>=225)", "tzdata"]
+testing = ["pytest-benchmark[histogram]", "pytest-test-utils", "virtualenv"]
+tests = ["beautifulsoup4 (>=4.4)", "dbt-sqlite", "dvc-ssh", "dvc[testing]", "filelock", "flaky", "pandas (>=1)", "pytest (>=7,<8)", "pytest-cov (>=4.1.0)", "pytest-docker (>=1,<3)", "pytest-lazy-fixture", "pytest-mock", "pytest-test-utils", "pytest-timeout (>=2)", "pytest-xdist (>=3.2)", "pywin32 (>=225)", "sqlalchemy (>=1,<3)", "tzdata"]
 webdav = ["dvc-webdav (==2.19.1)"]
 webhdfs = ["dvc-webhdfs (==2.19)"]
 webhdfs-kerberos = ["dvc-webhdfs[kerberos] (==2.19)"]
 
 [[package]]
 name = "dvc-data"
-version = "2.16.4"
-description = "dvc data"
+version = "2.24.0"
+description = "DVC's data management subsystem"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "dvc-data-2.16.4.tar.gz", hash = "sha256:8030b8682f4603f35173303ef158bfa59b78b1e02995a4ed76476fc3780886b9"},
-    {file = "dvc_data-2.16.4-py3-none-any.whl", hash = "sha256:3a4ea5aa1ae30a2ed90ba2274e565e6c0962b9aabdd6af9633c12bfd76f40322"},
+    {file = "dvc-data-2.24.0.tar.gz", hash = "sha256:521cc4c751fafe115d2576ce69aae14b55d8c5946a09d44bb57908cada9ee3bf"},
+    {file = "dvc_data-2.24.0-py3-none-any.whl", hash = "sha256:dce7492758857c2bc26d823b1d6305d36313e0b2c2f771b31bfdd6c908dbb889"},
 ]
 
 [package.dependencies]
 attrs = ">=21.3.0"
 dictdiffer = ">=0.8.1"
 diskcache = ">=5.2.1"
-dvc-objects = ">=1.0.1,<2"
+dvc-objects = ">=2,<3"
 funcy = ">=1.14"
 pygtrie = ">=2.3.2"
 shortuuid = ">=0.5.0"
-sqltrie = ">=0.6.0,<1"
+sqltrie = ">=0.9.0,<1"
+tqdm = ">=4.63.1,<5"
 
 [package.extras]
-all = ["rich (>=10.11.0,<14.0.0)", "typer[all] (>=0.6)"]
+all = ["dvc-data[cli]"]
 cli = ["rich (>=10.11.0,<14.0.0)", "typer[all] (>=0.6)"]
-dev = ["blake3 (>=0.3.1)", "mypy (==1.5.1)", "pylint (==2.17.5)", "pytest (==7.2.0)", "pytest-benchmark (==4.0.0)", "pytest-cov (==4.0.0)", "pytest-mock (==3.10.0)", "pytest-servers[s3] (==0.1.3)", "pytest-sugar (==0.9.6)", "rich (>=10.11.0,<14.0.0)", "typer[all] (>=0.6)"]
-tests = ["mypy (==1.5.1)", "pylint (==2.17.5)", "pytest (==7.2.0)", "pytest-benchmark (==4.0.0)", "pytest-cov (==4.0.0)", "pytest-mock (==3.10.0)", "pytest-servers[s3] (==0.1.3)", "pytest-sugar (==0.9.6)"]
+dev = ["blake3 (>=0.3.1)", "dvc-data[all]", "dvc-data[tests]", "mypy (==1.7.1)", "types-tqdm"]
+tests = ["pytest (>=7,<8)", "pytest-benchmark (>=4)", "pytest-cov (>=4.1.0)", "pytest-mock", "pytest-servers[s3] (==0.1.3)", "pytest-sugar"]
 
 [[package]]
 name = "dvc-http"
@@ -1699,36 +1700,33 @@ tests = ["dvc[testing]", "flaky (==3.7.0)", "mypy (==0.910)", "pylint (==2.15.9)
 
 [[package]]
 name = "dvc-objects"
-version = "1.4.9"
-description = "dvc objects"
+version = "2.0.1"
+description = "dvc objects - filesystem and object-db level abstractions to use in dvc and dvc-data"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "dvc-objects-1.4.9.tar.gz", hash = "sha256:40f739a7678bcf35742d6b8fbfaeb3ba01a8b4c9e6f99f2e841b184aea7be74e"},
-    {file = "dvc_objects-1.4.9-py3-none-any.whl", hash = "sha256:d40a746db91b214bfcaf5c6de7202b984b1ecc9b9ae9b1114cfc4bf716b03951"},
+    {file = "dvc-objects-2.0.1.tar.gz", hash = "sha256:444566cb95c452f186f50ac08a9972f32c33d496c82f8a334b58317f243e3d37"},
+    {file = "dvc_objects-2.0.1-py3-none-any.whl", hash = "sha256:fcf104495ee2d7dc9fe53644b16abbe3c221255188a812e505b147d7a6e6b414"},
 ]
 
 [package.dependencies]
 fsspec = ">=2022.10.0"
 funcy = ">=1.14"
-packaging = ">=19"
 shortuuid = ">=0.5.0"
-tqdm = ">=4.63.1,<5"
-typing-extensions = ">=3.7.4"
 
 [package.extras]
-dev = ["dvc-objects[tests]", "types-tqdm"]
-tests = ["mypy (==1.5.1)", "pytest (==7.2.0)", "pytest-benchmark", "pytest-cov (==4.0.0)", "pytest-mock (==3.8.2)", "pytest-servers[s3] (==0.1.3)", "pytest-sugar (==0.9.6)", "reflink"]
+dev = ["dvc-objects[tests]", "mypy (==1.7.1)", "types-tqdm", "typing-extensions (>=3.7.4)"]
+tests = ["pytest (>=7,<8)", "pytest-benchmark", "pytest-cov (>=4.1.0)", "pytest-mock", "pytest-sugar", "reflink", "tqdm (>=4.63.1,<5)"]
 
 [[package]]
 name = "dvc-render"
-version = "0.7.0"
+version = "1.0.0"
 description = "DVC render"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "dvc-render-0.7.0.tar.gz", hash = "sha256:8f0fc1a2924249152f2c5259af41821a1e9c9004d2197f3057e5f9f73d761d43"},
-    {file = "dvc_render-0.7.0-py3-none-any.whl", hash = "sha256:ee5c2475baf80a163fe6726796535a9aea7ea1389dad9936f3df9211c2f45ece"},
+    {file = "dvc-render-1.0.0.tar.gz", hash = "sha256:64be22457a92d7c7983de89cb5c4da2d27e289d10f4ee5d4c51ba885ad1c7762"},
+    {file = "dvc_render-1.0.0-py3-none-any.whl", hash = "sha256:08ffd17c1de07fce3440a7082c18f1d7f9dc156e44b42f982f28938fb27b1376"},
 ]
 
 [package.extras]
@@ -3492,7 +3490,7 @@ e3nn = "0.4.4"
 matplotlib = "*"
 matscipy = "*"
 numpy = "*"
-opt-einsum = "*"
+opt_einsum = "*"
 pandas = "*"
 prettytable = "*"
 torch = ">=1.12"
@@ -7301,4 +7299,4 @@ nequip = ["nequip"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "8729342c9684b52870978ae4e4450aa4e3a84294cb1bb2bce9f2a4b34513a279"
+content-hash = "c9759e41f3b4e545c86ea6dabb428f4720f6b1ff157fd6408edacf6b23e11715"
