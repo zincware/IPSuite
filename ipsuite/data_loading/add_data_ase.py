@@ -1,5 +1,6 @@
 """ipsuite data loading with ASE."""
 
+import functools
 import logging
 import pathlib
 import typing
@@ -39,6 +40,32 @@ def load_data(
             break
         atoms.append(atom)
     return atoms
+
+
+class ReadData(base.IPSNode):
+    """Read data without converting it to H5MD.
+
+    This Node can be used instead of `AddData` to avoid
+    initial conversion to H5MD. Later Nodes might still
+    convert the data to H5MD.
+
+    Attributes
+    ----------
+    file: str|Path
+        path to the file that should be read.
+    lines_to_read: int, optional
+        maximal number of lines/configurations to read, None for read all
+    """
+
+    file: typing.Union[str, pathlib.Path] = zntrack.deps_path()
+    lines_to_read: int = zntrack.params(None)
+
+    def run(self):
+        pass
+
+    @functools.cached_property
+    def atoms(self) -> typing.List[ase.Atoms]:
+        return load_data(self.file, self.lines_to_read)
 
 
 class AddData(base.IPSNode):
