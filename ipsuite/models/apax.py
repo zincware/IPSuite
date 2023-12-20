@@ -164,7 +164,7 @@ class ApaxEnsemble(base.IPSNode):
         """
 
         param_files = [
-            m._parameter["data"]["directory"]+ "/experiment" for m in self.models
+            m._parameter["data"]["directory"] + "/experiment" for m in self.models
         ]
 
         transformations = []
