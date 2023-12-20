@@ -42,6 +42,7 @@ class _Nodes:
     # Data
     AddData = "ipsuite.data_loading.AddData"
     AddDataH5MD = "ipsuite.data_loading.AddDataH5MD"
+    ReadData = "ipsuite.data_loading.ReadData"
 
     # Bootstrap
     RattleAtoms = "ipsuite.bootstrap.RattleAtoms"
