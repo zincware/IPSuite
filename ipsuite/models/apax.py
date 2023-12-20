@@ -163,9 +163,7 @@ class ApaxEnsemble(base.IPSNode):
             ase calculator object
         """
 
-        param_files = [
-            m._parameter["data"]["directory"] for m in self.models
-        ]
+        param_files = [m._parameter["data"]["directory"] for m in self.models]
 
         transformations = []
         if self.transformations:
@@ -209,9 +207,7 @@ class BatchKernelSelection(BatchConfigurationSelection):
 
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         if isinstance(self.models, list):
-            param_files = [
-                m._parameter["data"]["directory"] for m in self.models
-            ]
+            param_files = [m._parameter["data"]["directory"] for m in self.models]
         else:
             param_files = self.models._parameter["data"]["directory"]
 
