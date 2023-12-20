@@ -1,0 +1,59 @@
+import contextlib
+
+import ase
+import torch
+import tqdm
+import zntrack
+from torch_dftd.torch_dftd3_calculator import TorchDFTD3Calculator
+
+from ipsuite import base, fields
+from ipsuite.utils.ase_sim import freeze_copy_atoms
+
+
+class TorchD3(base.ProcessAtoms):
+    xc: str = zntrack.params()
+    damping: str = zntrack.params()
+    cutoff: float = zntrack.params()
+    abc: bool = zntrack.params()
+    cnthr: float = zntrack.params()
+    dtype: str = zntrack.params()
+
+    atoms: list[ase.Atoms] = fields.Atoms()
+
+    def run(self) -> None:
+        calc = self.get_calculator()
+        self.atoms = []
+        for atoms in tqdm.tqdm(self.get_data(), ncols=70):
+            _atoms = freeze_copy_atoms(atoms)
+
+            atoms.calc = calc
+            energy = atoms.get_potential_energy()
+            forces = atoms.get_forces()
+            stress = atoms.get_stress()
+
+            with contextlib.suppress(KeyError):
+                _atoms.calc.results["energy"] += energy
+            with contextlib.suppress(KeyError):
+                _atoms.calc.results["forces"] += forces
+            with contextlib.suppress(KeyError):
+                _atoms.calc.results["stress"] += stress
+
+            self.atoms.append(_atoms)
+
+    def get_calculator(self, **kwargs):
+        if self.dtype == "float64":
+            dtype = torch.float64
+        elif self.dtype == "float32":
+            dtype = torch.float32
+        else:
+            raise ValueError("dtype must be float64 or float32")
+
+        return TorchDFTD3Calculator(
+            xc=self.xc,
+            damping=self.damping,
+            cutoff=self.cutoff,
+            abc=self.abc,
+            cnthr=self.cnthr,
+            dtype=dtype,
+            atoms=None,
+        )

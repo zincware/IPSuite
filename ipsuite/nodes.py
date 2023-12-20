@@ -99,6 +99,7 @@ class _Nodes:
         "ipsuite.calculators.TemperatureOscillatingRampModifier"
     )
     TemperatureRampModifier = "ipsuite.calculators.TemperatureRampModifier"
+    TorchD3 = "ipsuite.calculators.TorchD3"
 
     # Geometry
     BarycenterMapping = "ipsuite.geometry.BarycenterMapping"

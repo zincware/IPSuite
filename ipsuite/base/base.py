@@ -134,10 +134,15 @@ class AnalyseProcessAtoms(IPSNode):
     """Analyse the output of a ProcessAtoms Node."""
 
     data: ProcessAtoms = zntrack.deps()
+    reference: ProcessAtoms = zntrack.deps(None)
 
     def get_data(self) -> typing.Tuple[list[ase.Atoms], list[ase.Atoms]]:
-        self.data.update_data()  # otherwise, data might not be available
-        return self.data.data, self.data.atoms
+        if self.reference is None:
+            self.data.update_data()  # otherwise, data might not be available
+            return self.data.data, self.data.atoms
+        else:
+            # TODO: support both, Nodes and Connections
+            return self.reference, self.data
 
 
 class Mapping(ProcessAtoms):
