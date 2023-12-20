@@ -83,7 +83,7 @@ class Apax(MLModel):
             self._parameter = yaml.safe_load(pathlib.Path(self.config).read_text())
 
             custom_parameters = {
-                "directory": self.model_directory.as_posix(),
+                "directory": self.model_directory.resolve().as_posix(),
                 "experiment": "",
                 "train_data_path": self.train_data_file.as_posix(),
                 "val_data_path": self.validation_data_file.as_posix(),
@@ -106,7 +106,8 @@ class Apax(MLModel):
 
     def move_metrics(self):
         """Move the metrics to the correct directories for DVC"""
-        shutil.move(self.model_directory / self.metrics_epoch.name, self.metrics_epoch)
+        path = self.model_directory / self.metrics_epoch.name
+        shutil.move(path, self.metrics_epoch)
 
     def get_metrics_from_plots(self):
         """In addition to the plots write a model metric"""
