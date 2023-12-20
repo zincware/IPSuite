@@ -84,7 +84,7 @@ class Apax(MLModel):
 
             custom_parameters = {
                 "directory": self.model_directory.resolve().as_posix(),
-                "experiment": "experiment",
+                "experiment": "",
                 "train_data_path": self.train_data_file.as_posix(),
                 "val_data_path": self.validation_data_file.as_posix(),
             }
@@ -106,7 +106,7 @@ class Apax(MLModel):
 
     def move_metrics(self):
         """Move the metrics to the correct directories for DVC"""
-        path = self.model_directory / "experiment" / self.metrics_epoch.name
+        path = self.model_directory / self.metrics_epoch.name
         shutil.move(path, self.metrics_epoch)
 
     def get_metrics_from_plots(self):
@@ -129,7 +129,7 @@ class Apax(MLModel):
     def get_calculator(self, **kwargs):
         """Get an apax ase calculator"""
         with self.state.use_tmp_path():
-            return ASECalculator(model_dir=self.model_directory / "experiment")
+            return ASECalculator(model_dir=self.model_directory)
 
 
 class ApaxEnsemble(base.IPSNode):
@@ -164,7 +164,7 @@ class ApaxEnsemble(base.IPSNode):
         """
 
         param_files = [
-            m._parameter["data"]["directory"] + "/experiment" for m in self.models
+            m._parameter["data"]["directory"] for m in self.models
         ]
 
         transformations = []
@@ -210,7 +210,7 @@ class BatchKernelSelection(BatchConfigurationSelection):
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         if isinstance(self.models, list):
             param_files = [
-                m._parameter["data"]["directory"] + "/experiment" for m in self.models
+                m._parameter["data"]["directory"] for m in self.models
             ]
         else:
             param_files = self.models._parameter["data"]["directory"]
