@@ -3,6 +3,7 @@ from .ase_geoopt import ASEGeoOpt
 from .ase_md import (
     ASEMD,
     BoxOscillatingRampModifier,
+    FixedLayerConstraint,
     FixedSphereConstraint,
     LangevinThermostat,
     NPTThermostat,
@@ -10,7 +11,6 @@ from .ase_md import (
     RescaleBoxModifier,
     TemperatureOscillatingRampModifier,
     TemperatureRampModifier,
-    FixedLayerConstraint,
 )
 from .ase_standard import EMTSinglePoint, LJSinglePoint
 from .cp2k import CP2KSinglePoint, CP2KYaml
