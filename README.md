@@ -21,3 +21,13 @@ Examples can be found at:
 - https://dagshub.com/PythonFZ/IPS-Examples/src/intro/main.ipynb
 - https://dagshub.com/PythonFZ/IPS-Examples/src/graph/main.ipynb
 - https://dagshub.com/PythonFZ/IPS-Examples/src/modify_graph/main.ipynb
+
+# Docker Image
+
+You can use IPSuite directly from within docker by calling it e.g. like:
+
+```sh
+docker run -it -v "$(pwd):/app" --gpus all pythonf/ipsuite dvc repro
+docker run -it -v "$(pwd):/app" --gpus all pythonf/ipsuite python
+docker run -it -v "$(pwd):/app" --gpus all pythonf/ipsuite zntrack list
+```
