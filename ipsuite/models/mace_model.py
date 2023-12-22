@@ -129,7 +129,7 @@ class MACE(MLModel):
             "torch.serialization._open_file_like", self.state.fs.open
         ):
             return MACECalculator(
-                model_path=self.model_dir / "MACE_model_swa.model",
+                model_paths=self.model_dir / "MACE_model_swa.model",
                 device=device or self.device,
                 default_dtype=default_dtype,
             )

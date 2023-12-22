@@ -3,6 +3,7 @@ from .ase_geoopt import ASEGeoOpt
 from .ase_md import (
     ASEMD,
     BoxOscillatingRampModifier,
+    FixedLayerConstraint,
     FixedSphereConstraint,
     LangevinThermostat,
     NPTThermostat,
@@ -36,4 +37,5 @@ __all__ = [
     "NPTThermostat",
     "OrcaSinglePoint",
     "LammpsSimulator",
+    "FixedLayerConstraint",
 ]
