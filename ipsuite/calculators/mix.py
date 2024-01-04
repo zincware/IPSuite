@@ -1,14 +1,19 @@
-from ase.calculators.calculator import Calculator, all_changes, PropertyNotImplementedError
-from ipsuite import base
-import typing
-from ipsuite.models.base import MLModel
-import zntrack
-import numpy as np
-from ipsuite import base, fields
-from ipsuite.utils.ase_sim import freeze_copy_atoms
-import tqdm
-import ase
 import contextlib
+import typing
+
+import ase
+import numpy as np
+import tqdm
+import zntrack
+from ase.calculators.calculator import (
+    Calculator,
+    PropertyNotImplementedError,
+    all_changes,
+)
+
+from ipsuite import base, fields
+from ipsuite.models.base import MLModel
+from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
 class _MixCalculator(Calculator):
@@ -47,18 +52,18 @@ class _MixCalculator(Calculator):
                 self.results["energy"] += atoms.get_potential_energy()
             else:
                 self.results["energy"] = atoms.get_potential_energy()
-            
+
             if "forces" in self.results:
                 self.results["forces"] += atoms.get_forces()
             else:
                 self.results["forces"] = atoms.get_forces()
-            
+
             with contextlib.suppress(PropertyNotImplementedError):
                 if "stress" in self.results:
                     self.results["stress"] += atoms.get_stress()
                 else:
                     self.results["stress"] = atoms.get_stress()
-        
+
         if "energy" in self.results:
             self.results["energy"] /= len(mean_results)
         if "forces" in self.results:
@@ -71,22 +76,21 @@ class _MixCalculator(Calculator):
                 self.results["energy"] += atoms.get_potential_energy()
             else:
                 self.results["energy"] = atoms.get_potential_energy()
-        
+
             if "forces" in self.results:
                 self.results["forces"] += atoms.get_forces()
             else:
                 self.results["forces"] = atoms.get_forces()
-            
+
             with contextlib.suppress(PropertyNotImplementedError):
                 if "stress" in self.results:
                     self.results["stress"] += atoms.get_stress()
                 else:
                     self.results["stress"] = atoms.get_stress()
-                    
+
 
 class CalculatorNode(typing.Protocol):
-    def get_calculator(self) -> typing.Type[Calculator]:
-        ...
+    def get_calculator(self) -> typing.Type[Calculator]: ...
 
 
 class MixCalculator(base.ProcessAtoms):
