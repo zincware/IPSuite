@@ -155,7 +155,7 @@ class ConfigurationComparison(base.IPSNode):
         analyte=None,
         soap: dict = None,
         use_jit: bool = True,
-        **kwargs
+        **kwargs,
     ):
         """Initialize the ConfigurationComparison node.
 
