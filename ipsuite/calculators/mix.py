@@ -1,8 +1,6 @@
 import contextlib
 import typing
 
-import ase
-import numpy as np
 import tqdm
 import zntrack
 from ase.calculators.calculator import (
@@ -11,8 +9,7 @@ from ase.calculators.calculator import (
     all_changes,
 )
 
-from ipsuite import base, fields
-from ipsuite.models.base import MLModel
+from ipsuite import base
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 

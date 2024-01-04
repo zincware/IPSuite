@@ -1,5 +1,4 @@
 import typing
-from uuid import uuid4
 
 import ase
 import numpy as np
