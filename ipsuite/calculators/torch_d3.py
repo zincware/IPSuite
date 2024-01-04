@@ -14,6 +14,23 @@ from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
 class TorchD3(base.ProcessAtoms):
+    """Compute D3 correction terms using torch-dftd.
+
+    Attributes
+    ----------
+    xc : str
+    damping : str
+    cutoff : float
+    abc : bool
+        ATM 3-body interaction
+    cnthr : float
+        Coordination number cutoff distance in angstrom
+    dtype : str
+        Data type used for the calculation.
+    device : str
+        Device used for the calculation. Defaults to "cuda" if available, otherwise "cpu".
+    """
+
     xc: str = zntrack.params()
     damping: str = zntrack.params()
     cutoff: float = zntrack.params()
