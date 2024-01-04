@@ -59,6 +59,7 @@ def test_mix_calculators(proj_path, traj_file):
         assert true_energy == d.get_potential_energy()
         npt.assert_almost_equal(true_forces, d.get_forces())
 
+
 def test_mix_calculator_external(proj_path, traj_file):
     lj1 = ips.calculators.LJSinglePoint(data=None)
     lj2 = ips.calculators.LJSinglePoint(data=None)
@@ -72,7 +73,7 @@ def test_mix_calculator_external(proj_path, traj_file):
             calculators=[lj1, lj2],
             methods="mean",
         )
-    
+
     proj.run()
 
     lj3.load()
