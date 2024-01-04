@@ -20,8 +20,13 @@ class TorchD3(base.ProcessAtoms):
     abc: bool = zntrack.params()
     cnthr: float = zntrack.params()
     dtype: str = zntrack.params()
+    device: str = zntrack.meta.Text(None)
 
     atoms: list[ase.Atoms] = fields.Atoms()
+
+    def _post_load_(self) -> None:
+        if self.device is None:
+            self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
     def run(self) -> None:
         calc = self.get_calculator()
@@ -71,4 +76,5 @@ class TorchD3(base.ProcessAtoms):
             cnthr=self.cnthr,
             dtype=dtype,
             atoms=None,
+            device=self.device,
         )
