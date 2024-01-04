@@ -82,23 +82,23 @@ class Apax(MLModel):
         with self.state.use_tmp_path():
             self._parameter = yaml.safe_load(pathlib.Path(self.config).read_text())
 
-        custom_parameters = {
-            "directory": self.model_directory.as_posix(),
-            "experiment": "",
-            "train_data_path": self.train_data_file.as_posix(),
-            "val_data_path": self.validation_data_file.as_posix(),
-        }
+            custom_parameters = {
+                "directory": self.model_directory.resolve().as_posix(),
+                "experiment": "",
+                "train_data_path": self.train_data_file.as_posix(),
+                "val_data_path": self.validation_data_file.as_posix(),
+            }
 
-        if self.model is not None:
-            param_files = self.model._parameter["data"]["directory"]
-            base_path = {"base_model_checkpoint": param_files}
-            try:
-                self._parameter["checkpoints"].update(base_path)
-            except KeyError:
-                self._parameter["checkpoints"] = base_path
+            if self.model is not None:
+                param_files = self.model._parameter["data"]["directory"]
+                base_path = {"base_model_checkpoint": param_files}
+                try:
+                    self._parameter["checkpoints"].update(base_path)
+                except KeyError:
+                    self._parameter["checkpoints"] = base_path
 
-        check_duplicate_keys(custom_parameters, self._parameter["data"], log)
-        self._parameter["data"].update(custom_parameters)
+            check_duplicate_keys(custom_parameters, self._parameter["data"], log)
+            self._parameter["data"].update(custom_parameters)
 
     def train_model(self):
         """Train the model using `apax.train.run`"""
