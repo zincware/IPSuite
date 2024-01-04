@@ -2331,6 +2331,16 @@ files = [
 ]
 
 [[package]]
+name = "future"
+version = "0.18.3"
+description = "Clean single-source support for Python 3 and 2"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+files = [
+    {file = "future-0.18.3.tar.gz", hash = "sha256:34a17436ed1e96697a86f9de3d15a3b0be01d8bc8de9c1dffd59fb8234ed5307"},
+]
+
+[[package]]
 name = "gast"
 version = "0.4.0"
 description = "Python AST that abstracts the underlying Python version"
@@ -3007,7 +3017,7 @@ jax = ["jax (>=0.2.20)", "jaxlib (>=0.1.71)"]
 name = "joblib"
 version = "1.3.2"
 description = "Lightweight pipelining with Python functions"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "joblib-1.3.2-py3-none-any.whl", hash = "sha256:ef4331c65f239985f3f2220ecc87db222f08fd22097a3dd5698f693875f8cbb9"},
@@ -3513,6 +3523,20 @@ yaml = ["PyYAML (>=3.10)"]
 zookeeper = ["kazoo (>=2.8.0)"]
 
 [[package]]
+name = "latexcodec"
+version = "2.0.1"
+description = "A lexer and codec to work with LaTeX code in Python."
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+files = [
+    {file = "latexcodec-2.0.1-py2.py3-none-any.whl", hash = "sha256:c277a193638dc7683c4c30f6684e3db728a06efb0dc9cf346db8bd0aa6c5d271"},
+    {file = "latexcodec-2.0.1.tar.gz", hash = "sha256:2aa2551c373261cefe2ad3a8953a6d6533e68238d180eb4bb91d7964adb3fe9a"},
+]
+
+[package.dependencies]
+six = ">=1.4.1"
+
+[[package]]
 name = "lazy-loader"
 version = "0.2"
 description = "lazy_loader"
@@ -3865,10 +3889,21 @@ numpy = {version = ">=1.21.2", markers = "python_version >= \"3.10\""}
 dev = ["absl-py", "pyink", "pylint (>=2.6.0)", "pytest", "pytest-xdist"]
 
 [[package]]
+name = "monty"
+version = "2023.11.3"
+description = "Monty is the missing complement to Python."
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "monty-2023.11.3-py3-none-any.whl", hash = "sha256:45ec3db046a77ca696041553d8403bc43162ad4892096a6c4c825acdb8b5e819"},
+    {file = "monty-2023.11.3.tar.gz", hash = "sha256:d961c14b0b20901c7603aa00d275e62dee8333fbdaf1179f5d862c6fb3f3c52f"},
+]
+
+[[package]]
 name = "mpmath"
 version = "1.3.0"
 description = "Python library for arbitrary-precision floating-point arithmetic"
-optional = true
+optional = false
 python-versions = "*"
 files = [
     {file = "mpmath-1.3.0-py3-none-any.whl", hash = "sha256:a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c"},
@@ -4528,6 +4563,17 @@ files = [
 ]
 
 [[package]]
+name = "palettable"
+version = "3.3.3"
+description = "Color palettes for Python"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "palettable-3.3.3-py2.py3-none-any.whl", hash = "sha256:74e9e7d7fe5a9be065e02397558ed1777b2df0b793a6f4ce1a5ee74f74fb0caa"},
+    {file = "palettable-3.3.3.tar.gz", hash = "sha256:094dd7d9a5fc1cca4854773e5c1fc6a315b33bd5b3a8f47064928facaf0490a8"},
+]
+
+[[package]]
 name = "pandas"
 version = "2.1.4"
 description = "Powerful data structures for data analysis, time series, and statistics"
@@ -4767,6 +4813,21 @@ docs = ["furo (>=2023.7.26)", "proselint (>=0.13)", "sphinx (>=7.1.1)", "sphinx-
 test = ["appdirs (==1.4.4)", "covdefaults (>=2.3)", "pytest (>=7.4)", "pytest-cov (>=4.1)", "pytest-mock (>=3.11.1)"]
 
 [[package]]
+name = "plotly"
+version = "5.18.0"
+description = "An open-source, interactive data visualization library for Python"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "plotly-5.18.0-py3-none-any.whl", hash = "sha256:23aa8ea2f4fb364a20d34ad38235524bd9d691bf5299e800bca608c31e8db8de"},
+    {file = "plotly-5.18.0.tar.gz", hash = "sha256:360a31e6fbb49d12b007036eb6929521343d6bee2236f8459915821baefa2cbb"},
+]
+
+[package.dependencies]
+packaging = "*"
+tenacity = ">=6.2.0"
+
+[[package]]
 name = "pluggy"
 version = "1.3.0"
 description = "plugin and hook calling mechanisms for python"
@@ -4993,6 +5054,25 @@ files = [
 
 [package.extras]
 global = ["pybind11-global (==2.11.1)"]
+
+[[package]]
+name = "pybtex"
+version = "0.24.0"
+description = "A BibTeX-compatible bibliography processor in Python"
+optional = false
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*"
+files = [
+    {file = "pybtex-0.24.0-py2.py3-none-any.whl", hash = "sha256:e1e0c8c69998452fea90e9179aa2a98ab103f3eed894405b7264e517cc2fcc0f"},
+    {file = "pybtex-0.24.0.tar.gz", hash = "sha256:818eae35b61733e5c007c3fcd2cfb75ed1bc8b4173c1f70b56cc4c0802d34755"},
+]
+
+[package.dependencies]
+latexcodec = ">=1.0.4"
+PyYAML = ">=3.01"
+six = "*"
+
+[package.extras]
+test = ["pytest"]
 
 [[package]]
 name = "pycparser"
@@ -5223,6 +5303,60 @@ files = [
     {file = "pygtrie-2.5.0-py3-none-any.whl", hash = "sha256:8795cda8105493d5ae159a5bef313ff13156c5d4d72feddefacaad59f8c8ce16"},
     {file = "pygtrie-2.5.0.tar.gz", hash = "sha256:203514ad826eb403dab1d2e2ddd034e0d1534bbe4dbe0213bb0593f66beba4e2"},
 ]
+
+[[package]]
+name = "pymatgen"
+version = "2023.9.25"
+description = "Python Materials Genomics is a robust materials analysis code that defines core object representations for structures and molecules with support for many electronic structure codes. It is currently the core analysis code powering the Materials Project (https://materialsproject.org)."
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "pymatgen-2023.9.25-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:56d5ed3a68b1e0fdbc2f62d3c37a4349a5b59de2e65e6d17b76f84916c011fb8"},
+    {file = "pymatgen-2023.9.25-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c6658d82056dce751f0789839869fb2fc115e17ed8acd94ec75ef7280bccc040"},
+    {file = "pymatgen-2023.9.25-cp310-cp310-win32.whl", hash = "sha256:67f7f8515f15df865efdc00b1a6ba3d6e1cdce21f3ae1194f2d4f5335acdae51"},
+    {file = "pymatgen-2023.9.25-cp310-cp310-win_amd64.whl", hash = "sha256:4f50e69efa723ade050baf5fd07ece2596b5e3de9804966a949ebebb1573821b"},
+    {file = "pymatgen-2023.9.25-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:35e3bebe51bea00fabd7802454d013ff909711d32ab302906d1de7ef746785df"},
+    {file = "pymatgen-2023.9.25-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:70b1e3dceb0d3b51f1ce8b11a125a56b98e6dac567fa1756ac3808ac38c33801"},
+    {file = "pymatgen-2023.9.25-cp311-cp311-win32.whl", hash = "sha256:b54f6dbee39fdb8b68928d9b1b3cf0ed17bdbd4e143325daa6c77c2640314ce8"},
+    {file = "pymatgen-2023.9.25-cp311-cp311-win_amd64.whl", hash = "sha256:df92a831cbf56768bc0772f19dcd14fc127b6067f928870d8d00d0ec73a9f29a"},
+    {file = "pymatgen-2023.9.25-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:2f82886691301f594fac0e6d101fce3a5d90f6004292cc99e3dc84b0036ba3b0"},
+    {file = "pymatgen-2023.9.25-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:4ce171969bec91e3cc05d937ac5d0a4673b66ce945596de0c9f21349c45bf34c"},
+    {file = "pymatgen-2023.9.25-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b60103d360e324c73415888f5864e6e93be105899117d486998b7cbc89a6aa77"},
+    {file = "pymatgen-2023.9.25-cp39-cp39-win32.whl", hash = "sha256:d4eabdf6f758c69b98549343c34c1315d372e8f63386b69650ac1ffad6ac4a49"},
+    {file = "pymatgen-2023.9.25-cp39-cp39-win_amd64.whl", hash = "sha256:afbbe34a095275afcd75f75fe012b0fa28e638015fbe259e71de03d91f228362"},
+    {file = "pymatgen-2023.9.25.tar.gz", hash = "sha256:f76ff146ce8143b523383b3aa692e98f338205264708c2cae771431f2506edc4"},
+]
+
+[package.dependencies]
+joblib = "*"
+matplotlib = ">=1.5"
+monty = ">=3.0.2"
+networkx = ">=2.2"
+numpy = ">=1.20.1"
+palettable = ">=3.1.1"
+pandas = "*"
+plotly = ">=4.5.0"
+pybtex = "*"
+requests = "*"
+"ruamel.yaml" = ">=0.17.0"
+scipy = ">=1.5.0"
+spglib = ">=2.0.2"
+sympy = "*"
+tabulate = "*"
+tqdm = "*"
+uncertainties = ">=3.1.4"
+
+[package.extras]
+abinit = ["netcdf4"]
+ase = ["ase (>=3.3)"]
+dev = ["black", "mypy", "pre-commit", "pytest", "pytest-cov", "pytest-split", "ruff"]
+docs = ["doc2dash", "sphinx", "sphinx-rtd-theme"]
+electronic-structure = ["fdint (>=2.0.2)"]
+numba = ["numba"]
+optional = ["BoltzTraP2 (>=22.3.2)", "ase (>=3.22.1)", "chemview (>=0.6)", "chgnet", "f90nml (>=1.1.2)", "galore (>=0.6.1)", "h5py (>=3.8.0)", "jarvis-tools (>=2020.7.14)", "matgl", "netCDF4 (>=1.5.8)", "phonopy (>=2.4.2)", "seekpath (>=1.9.4)", "tblite[ase] (>=0.3.0)"]
+relaxation = ["chgnet", "matgl"]
+tblite = ["tblite[ase] (>=0.3.0)"]
+vis = ["vtk (>=6.0.0)"]
 
 [[package]]
 name = "pyparsing"
@@ -6225,6 +6359,48 @@ tests = ["dask[array]", "pytest (>=3.5)", "pytest-black", "pytest-cov"]
 tox = ["dask[array]", "pytest (>=3.5)", "pytest-black", "pytest-cov", "tox"]
 
 [[package]]
+name = "spglib"
+version = "2.2.0"
+description = "This is the spglib module."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "spglib-2.2.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:079d822b9b3c888ab3493927c50a13e05e1052822a5c909e46a30f13e331c641"},
+    {file = "spglib-2.2.0-cp310-cp310-manylinux_2_17_aarch64.whl", hash = "sha256:9db322858bf85e449477e19f5a9bc40ff1d545319870fe555b36d424998319f5"},
+    {file = "spglib-2.2.0-cp310-cp310-manylinux_2_17_x86_64.whl", hash = "sha256:56aa1ce2946e13d84d5426e69588f6fc9ea4b9567268f68b1b73afadd0c05c4d"},
+    {file = "spglib-2.2.0-cp310-cp310-win_amd64.whl", hash = "sha256:f5e48e542b79d3232fff3cf3c5187f6955fe0edf358bea150c660016e7a2c9b2"},
+    {file = "spglib-2.2.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:7be4945c91ba7cdc1050c938aba2453d172c7a44b2d965f73c6e8ccd8d4bba86"},
+    {file = "spglib-2.2.0-cp311-cp311-manylinux_2_17_aarch64.whl", hash = "sha256:24d3b4d595840a2a1525d064f3bdf59d4f34df7d21eafae11df7e56694284f0d"},
+    {file = "spglib-2.2.0-cp311-cp311-manylinux_2_17_x86_64.whl", hash = "sha256:0911f407c4a7f2f367a4fe42ba5d76a4fb4cca296b34d6c3ae44e8bb4e3a9473"},
+    {file = "spglib-2.2.0-cp311-cp311-win_amd64.whl", hash = "sha256:4d5067b266d8135caf2f8fecf75e4383c9c64725438fc28d415c346b64b23643"},
+    {file = "spglib-2.2.0-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:ded9bca4bf4deb1bf6e2bdf2dd55f0a87c0d96826d599ecb8087c24e147be0d9"},
+    {file = "spglib-2.2.0-cp37-cp37m-manylinux_2_17_aarch64.whl", hash = "sha256:d682c0e354945477e57a7f83283da36f7a1e9ab7dd126413d02d353ce5fb9e62"},
+    {file = "spglib-2.2.0-cp37-cp37m-manylinux_2_17_x86_64.whl", hash = "sha256:98629129220b67ceea89c574a7ab0b28800983cb32fed34ab4befc316129504b"},
+    {file = "spglib-2.2.0-cp37-cp37m-win_amd64.whl", hash = "sha256:eabd5b430bcefbb651fd4bcb83d62be4469fe57a8a06fb9028980ef8bbf7c5bf"},
+    {file = "spglib-2.2.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:ce8bb8f6e30628425c22ee2e31490cbc8eb35299a416da7f152d44df3e781e91"},
+    {file = "spglib-2.2.0-cp38-cp38-manylinux_2_17_aarch64.whl", hash = "sha256:872d86529d6270dc84f74ae0def5126d899a21629b256ac5e8ff97d1fc5c00d1"},
+    {file = "spglib-2.2.0-cp38-cp38-manylinux_2_17_x86_64.whl", hash = "sha256:029bf782ae816af3989804e0a4a5a560b0acd63e595ae1d412073758d22be045"},
+    {file = "spglib-2.2.0-cp38-cp38-win_amd64.whl", hash = "sha256:41d5e50c3f79b34f9e49f447c6a5d1ea5255c94f0d1ae17d7dee19adcb6b5434"},
+    {file = "spglib-2.2.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:373502d78319c459896f71ea31e72f2e6c27c4152a5b64cffe59cec899b75d35"},
+    {file = "spglib-2.2.0-cp39-cp39-manylinux_2_17_aarch64.whl", hash = "sha256:4db1481f86ff15d7b1d7d88d27601b5c5f55d075bd1ca575c43133c0035587fc"},
+    {file = "spglib-2.2.0-cp39-cp39-manylinux_2_17_x86_64.whl", hash = "sha256:c44de3b5f2939936477b48f3e9ea80c12a796b47d663ff1ee0e35d88d06cc96f"},
+    {file = "spglib-2.2.0-cp39-cp39-win_amd64.whl", hash = "sha256:8d126fadd543f34503be716ef0d7980f7ea5afffc91e4e310bc48c1bc597170f"},
+    {file = "spglib-2.2.0.tar.gz", hash = "sha256:4a7c71f6adb860cbe14acdfd6ca43dcd29ecd9aed3f38c02cd76da80ffa5d01c"},
+]
+
+[package.dependencies]
+numpy = "*"
+
+[package.extras]
+dev = ["pre-commit", "spglib[test]"]
+doc = ["spglib[docs]"]
+docs = ["Sphinx (>=7.0)", "linkify-it-py", "myst-parser (>=2.0)", "sphinx-book-theme", "sphinxcontrib-bibtex (>=2.5)"]
+test = ["pytest", "pyyaml"]
+test-benchmark = ["pytest-benchmark", "spglib[test]"]
+test-cov = ["pytest-cov", "spglib[test]"]
+testing = ["spglib[test]"]
+
+[[package]]
 name = "sqltrie"
 version = "0.11.0"
 description = "SQL-based prefix tree inspired by pygtrie and python-diskcache"
@@ -6267,7 +6443,7 @@ tests = ["cython", "littleutils", "pygments", "pytest", "typeguard"]
 name = "sympy"
 version = "1.12"
 description = "Computer algebra system (CAS) in Python"
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "sympy-1.12-py3-none-any.whl", hash = "sha256:c3588cd4295d0c0f603d0f2ae780587e64e2efeedb3521e46b9bb1d08d184fa5"},
@@ -6290,6 +6466,20 @@ files = [
 
 [package.extras]
 widechars = ["wcwidth"]
+
+[[package]]
+name = "tenacity"
+version = "8.2.3"
+description = "Retry code until it succeeds"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "tenacity-8.2.3-py3-none-any.whl", hash = "sha256:ce510e327a630c9e1beaf17d42e6ffacc88185044ad85cf74c0a8887c6a0f88c"},
+    {file = "tenacity-8.2.3.tar.gz", hash = "sha256:5398ef0d78e63f40007c1fb4c0bff96e1911394d2fa8d194f77619c05ff6cc8a"},
+]
+
+[package.extras]
+doc = ["reno", "sphinx", "tornado (>=4.5)"]
 
 [[package]]
 name = "tensorboard"
@@ -6708,6 +6898,24 @@ files = [
 typing-extensions = "*"
 
 [[package]]
+name = "torch-dftd"
+version = "0.4.0"
+description = "pytorch implementation of dftd2 & dftd3"
+optional = false
+python-versions = "*"
+files = [
+    {file = "torch-dftd-0.4.0.tar.gz", hash = "sha256:964c1e90bda7ff22723e03bb3bf0f9c1f6149944d464752278a5915ba2c0c3c1"},
+    {file = "torch_dftd-0.4.0-py3-none-any.whl", hash = "sha256:74c6e9a37db94ed844f6e40548e0fc7883c3f30acb1176ccc82129eddaa8a7ac"},
+]
+
+[package.dependencies]
+ase = ">=3.18,<4.0.0"
+pymatgen = ">=2020.1.28"
+
+[package.extras]
+develop = ["ase (==3.21.1)", "pysen[lint] (==0.10.5)"]
+
+[[package]]
 name = "torch-ema"
 version = "0.3"
 description = "PyTorch library for computing moving averages of model parameters."
@@ -6875,6 +7083,26 @@ files = [
     {file = "tzdata-2023.4-py2.py3-none-any.whl", hash = "sha256:aa3ace4329eeacda5b7beb7ea08ece826c28d761cda36e747cfbf97996d39bf3"},
     {file = "tzdata-2023.4.tar.gz", hash = "sha256:dd54c94f294765522c77399649b4fefd95522479a664a0cec87f41bebc6148c9"},
 ]
+
+[[package]]
+name = "uncertainties"
+version = "3.1.7"
+description = "Transparent calculations with uncertainties on the quantities involved (aka error propagation); fast calculation of derivatives"
+optional = false
+python-versions = "*"
+files = [
+    {file = "uncertainties-3.1.7-py2.py3-none-any.whl", hash = "sha256:4040ec64d298215531922a68fa1506dc6b1cb86cd7cca8eca848fcfe0f987151"},
+    {file = "uncertainties-3.1.7.tar.gz", hash = "sha256:80111e0839f239c5b233cb4772017b483a0b7a1573a581b92ab7746a35e6faab"},
+]
+
+[package.dependencies]
+future = "*"
+
+[package.extras]
+all = ["nose", "numpy", "sphinx"]
+docs = ["sphinx"]
+optional = ["numpy"]
+tests = ["nose", "numpy"]
 
 [[package]]
 name = "uri-template"
@@ -7463,4 +7691,4 @@ nequip = ["nequip"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "70878be72e53bede463604ee699f8bcdc66c051f5078d209fc1446b6d38b5ef2"
+content-hash = "2a1d17ee89e3993931aef8704debf7c83e7ab0436cdc843da39f390122bb3730"
