@@ -1,13 +1,13 @@
 import contextlib
 
 import ase
-from ase.calculators.calculator import PropertyNotImplementedError
+import numpy as np
 import torch
 import tqdm
 import zntrack
-from torch_dftd.torch_dftd3_calculator import TorchDFTD3Calculator
+from ase.calculators.calculator import PropertyNotImplementedError
 from ase.calculators.singlepoint import SinglePointCalculator
-import numpy as np
+from torch_dftd.torch_dftd3_calculator import TorchDFTD3Calculator
 
 from ipsuite import base, fields
 from ipsuite.utils.ase_sim import freeze_copy_atoms
@@ -32,7 +32,7 @@ class TorchD3(base.ProcessAtoms):
         calc = self.get_calculator()
         self.atoms = []
         for atoms in tqdm.tqdm(self.get_data(), ncols=70):
-            
+
             if atoms.calc is None:
                 atoms.calc = SinglePointCalculator(
                     atoms,
