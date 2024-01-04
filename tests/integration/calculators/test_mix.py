@@ -1,5 +1,6 @@
-import ipsuite as ips
 import numpy.testing as npt
+
+import ipsuite as ips
 
 
 def test_mix_calculators(proj_path, traj_file):
@@ -52,14 +53,8 @@ def test_mix_calculators(proj_path, traj_file):
     for a, b, c, d in zip(lj1.atoms, lj2.atoms, lj3.atoms, mix3.atoms):
 
         # (a + c / 2) + b
-        true_energy = (
-            a.get_potential_energy()
-            + b.get_potential_energy()
-        )
-        true_forces = (
-            a.get_forces()
-            + b.get_forces()
-        )
+        true_energy = a.get_potential_energy() + b.get_potential_energy()
+        true_forces = a.get_forces() + b.get_forces()
 
         assert true_energy == d.get_potential_energy()
         npt.assert_almost_equal(true_forces, d.get_forces())
