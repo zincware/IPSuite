@@ -95,7 +95,7 @@ class ModelEnsembleAnalysis(base.AnalyseAtoms):
 
     def get_plots(self):
         energy = np.stack(
-            [np.stack(x.get_potential_energy() for x in p) for p in self.prediction_list]
+            [np.stack([x.get_potential_energy() for x in p]) for p in self.prediction_list]
         )
 
         figures = []
