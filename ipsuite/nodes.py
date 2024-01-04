@@ -90,6 +90,7 @@ class _Nodes:
     OrcaSinglePoint = "ipsuite.calculators.OrcaSinglePoint"
     ApaxJaxMD = "ipsuite.calculators.ApaxJaxMD"
     LammpsSimulator = "ipsuite.calculators.LammpsSimulator"
+    MixCalculator = "ipsuite.calculators.MixCalculator"
 
     LangevinThermostat = "ipsuite.calculators.LangevinThermostat"
     NPTThermostat = "ipsuite.calculators.NPTThermostat"

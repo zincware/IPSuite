@@ -18,6 +18,7 @@ from .lammps import LammpsSimulator
 from .orca import OrcaSinglePoint
 from .torch_d3 import TorchD3
 from .xtb import xTBSinglePoint
+from .mix import MixCalculator
 
 __all__ = [
     "CP2KSinglePoint",
@@ -40,4 +41,5 @@ __all__ = [
     "LammpsSimulator",
     "TorchD3",
     "FixedLayerConstraint",
+    "MixCalculator",
 ]
