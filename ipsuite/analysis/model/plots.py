@@ -42,7 +42,7 @@ def density_scatter(ax, x, y, bins, **kwargs) -> None:
     # Sort the points by density, so that the densest points are plotted last
     idx = z.argsort()
     x, y, z = x[idx], y[idx], z[idx]
-    ax.scatter(x, y, c=z, **kwargs)
+    return ax.scatter(x, y, c=z, **kwargs)
 
 
 def get_figure(
