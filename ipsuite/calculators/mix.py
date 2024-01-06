@@ -44,11 +44,17 @@ class _MixCalculator(Calculator):
             else:
                 raise NotImplementedError
 
-        self.results["energy"] = sum(x.get_potential_energy() for x in mean_results) / len(mean_results)
-        self.results["forces"] = sum(x.get_forces() for x in mean_results) / len(mean_results)
+        self.results["energy"] = sum(
+            x.get_potential_energy() for x in mean_results
+        ) / len(mean_results)
+        self.results["forces"] = sum(x.get_forces() for x in mean_results) / len(
+            mean_results
+        )
         with contextlib.suppress(PropertyNotImplementedError):
-            self.results["stress"] = sum(x.get_stress() for x in mean_results) / len(mean_results)
-        
+            self.results["stress"] = sum(x.get_stress() for x in mean_results) / len(
+                mean_results
+            )
+
         if "energy" in self.results:
             self.results["energy"] += sum(x.get_potential_energy() for x in sum_results)
         else:
