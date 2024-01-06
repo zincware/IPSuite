@@ -44,46 +44,24 @@ class _MixCalculator(Calculator):
             else:
                 raise NotImplementedError
 
-        for atoms in mean_results:
-            if "energy" in self.results:
-                self.results["energy"] += atoms.get_potential_energy()
-            else:
-                self.results["energy"] = atoms.get_potential_energy()
-
-            if "forces" in self.results:
-                self.results["forces"] += atoms.get_forces()
-            else:
-                self.results["forces"] = atoms.get_forces()
-
-            with contextlib.suppress(PropertyNotImplementedError):
-                if "stress" in self.results:
-                    self.results["stress"] += atoms.get_stress()
-                else:
-                    self.results["stress"] = atoms.get_stress()
-
+        self.results["energy"] = sum(x.get_potential_energy() for x in mean_results) / len(mean_results)
+        self.results["forces"] = sum(x.get_forces() for x in mean_results) / len(mean_results)
+        with contextlib.suppress(PropertyNotImplementedError):
+            self.results["stress"] = sum(x.get_stress() for x in mean_results) / len(mean_results)
+        
         if "energy" in self.results:
-            self.results["energy"] /= len(mean_results)
+            self.results["energy"] += sum(x.get_potential_energy() for x in sum_results)
+        else:
+            self.results["energy"] = sum(x.get_potential_energy() for x in sum_results)
         if "forces" in self.results:
-            self.results["forces"] /= len(mean_results)
-        if "stress" in self.results:
-            self.results["stress"] /= len(mean_results)
-
-        for atoms in sum_results:
-            if "energy" in self.results:
-                self.results["energy"] += atoms.get_potential_energy()
+            self.results["forces"] += sum(x.get_forces() for x in sum_results)
+        else:
+            self.results["forces"] = sum(x.get_forces() for x in sum_results)
+        with contextlib.suppress(PropertyNotImplementedError):
+            if "stress" in self.results:
+                self.results["stress"] += sum(x.get_stress() for x in sum_results)
             else:
-                self.results["energy"] = atoms.get_potential_energy()
-
-            if "forces" in self.results:
-                self.results["forces"] += atoms.get_forces()
-            else:
-                self.results["forces"] = atoms.get_forces()
-
-            with contextlib.suppress(PropertyNotImplementedError):
-                if "stress" in self.results:
-                    self.results["stress"] += atoms.get_stress()
-                else:
-                    self.results["stress"] = atoms.get_stress()
+                self.results["stress"] = sum(x.get_stress() for x in sum_results)
 
 
 class CalculatorNode(typing.Protocol):
@@ -106,6 +84,7 @@ class MixCalculator(base.ProcessAtoms):
 
     calculators: typing.List[CalculatorNode] = zntrack.deps()
     methods: str | typing.List[str] = zntrack.params("sum")
+    # weights: list = zntrack.params(None) ?
 
     def run(self) -> None:
         calc = self.get_calculator()
