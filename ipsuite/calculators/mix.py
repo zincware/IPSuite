@@ -13,6 +13,18 @@ from ipsuite import base
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
+def _update_is_exists(results, key, atoms_list, func, mean: bool):
+    with contextlib.suppress(PropertyNotImplementedError):
+        value = sum(func(x) for x in atoms_list)
+        if mean and len(atoms_list) > 0:
+            value /= len(atoms_list)
+
+        if key in results:
+            results[key] += value
+        else:
+            results[key] = value
+
+
 class _MixCalculator(Calculator):
     def __init__(self, calculators: typing.List[Calculator], methods: list, **kwargs):
         Calculator.__init__(self, **kwargs)
@@ -43,31 +55,14 @@ class _MixCalculator(Calculator):
                 sum_results.append(_atoms)
             else:
                 raise NotImplementedError
+        
+        _update_is_exists(self.results, "energy", mean_results, lambda x: x.get_potential_energy(), True)
+        _update_is_exists(self.results, "forces", mean_results, lambda x: x.get_forces(), True)
+        _update_is_exists(self.results, "stress", mean_results, lambda x: x.get_stress(), True)
 
-        self.results["energy"] = sum(
-            x.get_potential_energy() for x in mean_results
-        ) / len(mean_results)
-        self.results["forces"] = sum(x.get_forces() for x in mean_results) / len(
-            mean_results
-        )
-        with contextlib.suppress(PropertyNotImplementedError):
-            self.results["stress"] = sum(x.get_stress() for x in mean_results) / len(
-                mean_results
-            )
-
-        if "energy" in self.results:
-            self.results["energy"] += sum(x.get_potential_energy() for x in sum_results)
-        else:
-            self.results["energy"] = sum(x.get_potential_energy() for x in sum_results)
-        if "forces" in self.results:
-            self.results["forces"] += sum(x.get_forces() for x in sum_results)
-        else:
-            self.results["forces"] = sum(x.get_forces() for x in sum_results)
-        with contextlib.suppress(PropertyNotImplementedError):
-            if "stress" in self.results:
-                self.results["stress"] += sum(x.get_stress() for x in sum_results)
-            else:
-                self.results["stress"] = sum(x.get_stress() for x in sum_results)
+        _update_is_exists(self.results, "energy", sum_results, lambda x: x.get_potential_energy(), False)
+        _update_is_exists(self.results, "forces", sum_results, lambda x: x.get_forces(), False)
+        _update_is_exists(self.results, "stress", sum_results, lambda x: x.get_stress(), False)
 
 
 class CalculatorNode(typing.Protocol):
