@@ -55,14 +55,26 @@ class _MixCalculator(Calculator):
                 sum_results.append(_atoms)
             else:
                 raise NotImplementedError
-        
-        _update_is_exists(self.results, "energy", mean_results, lambda x: x.get_potential_energy(), True)
-        _update_is_exists(self.results, "forces", mean_results, lambda x: x.get_forces(), True)
-        _update_is_exists(self.results, "stress", mean_results, lambda x: x.get_stress(), True)
 
-        _update_is_exists(self.results, "energy", sum_results, lambda x: x.get_potential_energy(), False)
-        _update_is_exists(self.results, "forces", sum_results, lambda x: x.get_forces(), False)
-        _update_is_exists(self.results, "stress", sum_results, lambda x: x.get_stress(), False)
+        _update_is_exists(
+            self.results, "energy", mean_results, lambda x: x.get_potential_energy(), True
+        )
+        _update_is_exists(
+            self.results, "forces", mean_results, lambda x: x.get_forces(), True
+        )
+        _update_is_exists(
+            self.results, "stress", mean_results, lambda x: x.get_stress(), True
+        )
+
+        _update_is_exists(
+            self.results, "energy", sum_results, lambda x: x.get_potential_energy(), False
+        )
+        _update_is_exists(
+            self.results, "forces", sum_results, lambda x: x.get_forces(), False
+        )
+        _update_is_exists(
+            self.results, "stress", sum_results, lambda x: x.get_stress(), False
+        )
 
 
 class CalculatorNode(typing.Protocol):
