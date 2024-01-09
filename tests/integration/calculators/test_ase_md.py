@@ -145,7 +145,7 @@ def test_ase_npt(proj_path, cu_box):
     assert len(md.atoms) == 30
     assert md.atoms[0].cell[0, 0] == 7.22
     cell = md.atoms[-1].cell
-    assert np.all(np.diag(cell.array) - cell[0,0] < 1e-6)
+    assert np.all(np.diag(cell.array) - cell[0, 0] < 1e-6)
     assert abs(md.atoms[1].cell[0, 0] - 7.22) > 1e-6
 
 
