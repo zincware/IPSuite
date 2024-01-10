@@ -21,6 +21,7 @@ def test_d3(proj_path):
             abc=False,
             cnthr=4,
             dtype="float32",
+            device="cpu",
         )
 
     proj.run()
@@ -55,15 +56,32 @@ def test_d3_existing_calc(proj_path):
             abc=False,
             cnthr=4,
             dtype="float32",
+            device="cpu",
+        )
+        d3nl = ips.calculators.TorchD3(
+            data=lj.atoms,
+            xc="pbe",
+            damping="bj",
+            cutoff=5,
+            abc=False,
+            cnthr=4,
+            dtype="float32",
+            device="cpu",
+            skin=0.5,
+            name="d3nl",
         )
 
     proj.run()
 
     lj.load()
     d3.load()
+    d3nl.load()
 
     assert lj.atoms[0].get_potential_energy() == pytest.approx(1.772068860)
     assert lj.atoms[0].get_potential_energy() - d3.atoms[
+        0
+    ].get_potential_energy() == pytest.approx(0.00978192157)
+    assert lj.atoms[0].get_potential_energy() - d3nl.atoms[
         0
     ].get_potential_energy() == pytest.approx(0.00978192157)
 
