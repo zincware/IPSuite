@@ -1,20 +1,18 @@
 import contextlib
+from typing import Dict, Optional, Tuple
 
 import ase
 import numpy as np
 import torch
 import tqdm
 import zntrack
-from ase.calculators.calculator import PropertyNotImplementedError
-from ase.calculators.singlepoint import SinglePointCalculator
-from torch_dftd.torch_dftd3_calculator import TorchDFTD3Calculator
-from torch import Tensor
-from ase.units import Bohr
 from ase import Atoms
-from ase.calculators.calculator import Calculator
+from ase.calculators.calculator import Calculator, PropertyNotImplementedError
+from ase.calculators.singlepoint import SinglePointCalculator
+from ase.units import Bohr
+from torch import Tensor
 from torch_dftd.functions.edge_extraction import calc_edge_index
-from typing import Optional, Tuple, Dict
-
+from torch_dftd.torch_dftd3_calculator import TorchDFTD3Calculator
 
 from ipsuite import base, fields
 from ipsuite.utils.ase_sim import freeze_copy_atoms
@@ -68,9 +66,14 @@ class TorchDFTD3CalculatorNL(TorchDFTD3Calculator):
         cell: Optional[Tensor] = None,
         pbc: Optional[Tensor] = None,
     ) -> Tuple[Tensor, Tensor]:
-        return calc_edge_index(
-            pos, cell, pbc, cutoff=self.cutoff + self.skin, bidirectional=self.bidirectional
+        edge_index = calc_edge_index(
+            pos,
+            cell,
+            pbc,
+            cutoff=self.cutoff + self.skin,
+            bidirectional=self.bidirectional
         )
+        return edge_index
 
     def _preprocess_atoms(self, atoms: Atoms) -> Dict[str, Optional[Tensor]]:
         pos = torch.tensor(atoms.get_positions(), device=self.device, dtype=self.dtype)
@@ -101,9 +104,14 @@ class TorchDFTD3CalculatorNL(TorchDFTD3Calculator):
         else:
             shift_pos = torch.mm(self.S, cell.detach())
 
-        input_dicts = dict(
-            pos=pos, Z=Z, cell=cell, pbc=pbc, edge_index=self.edge_index, shift_pos=shift_pos
-        )
+        input_dicts = {
+            "pos":pos,
+            "Z":Z,
+            "cell":cell,
+            "pbc":pbc,
+            "edge_index":self.edge_index,
+            "shift_pos":shift_pos,
+        }
         return input_dicts
 
 
