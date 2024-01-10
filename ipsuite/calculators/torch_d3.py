@@ -70,7 +70,7 @@ class TorchDFTD3CalculatorNL(TorchDFTD3Calculator):
             cell,
             pbc,
             cutoff=self.cutoff + self.skin,
-            bidirectional=self.bidirectional
+            bidirectional=self.bidirectional,
         )
         return edge_index
 
@@ -107,12 +107,12 @@ class TorchDFTD3CalculatorNL(TorchDFTD3Calculator):
             shift_pos = torch.mm(self.S, cell.detach())
 
         input_dicts = {
-            "pos":pos,
-            "Z":Z,
-            "cell":cell,
-            "pbc":pbc,
-            "edge_index":self.edge_index,
-            "shift_pos":shift_pos,
+            "pos": pos,
+            "Z": Z,
+            "cell": cell,
+            "pbc": pbc,
+            "edge_index": self.edge_index,
+            "shift_pos": shift_pos,
         }
         return input_dicts
 
