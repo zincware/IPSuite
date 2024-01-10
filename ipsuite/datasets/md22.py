@@ -2,8 +2,10 @@ import typing
 import urllib
 import zipfile
 from pathlib import Path
+import tempfile
 
 import ase
+from ase import units
 import zntrack
 
 import ipsuite as ips
@@ -60,13 +62,25 @@ class MD22Dataset(ips.base.IPSNode):
     }
 
     def run(self):
-        self.raw_data_dir.mkdir(exist_ok=True)
+        tmpdir = tempfile.TemporaryDirectory()
+        raw_data_dir = Path(tmpdir.name) / "raw_data"
+        raw_data_dir.mkdir(parents=True, exist_ok=True)
         if self.dataset not in self.datasets.keys():
             raise FileNotFoundError(
                 f"Dataset {self.dataset} is not known. Key has top be in {self.datasets}"
             )
 
         url = self.datasets[self.dataset]
-        file_path = download_data(url, self.raw_data_dir)
+        print("url")
+
+        file_path = download_data(url, raw_data_dir)
+        print("download")
 
         self.atoms = ase.io.read(file_path, ":")
+        print("read")
+        for atoms in self.atoms:
+            atoms.calc.results["energy"] *= units.kcal / units.mol
+            atoms.calc.results["forces"] *= units.kcal / units.mol
+        print("units")
+        tmpdir.cleanup()
+        print("clean")
