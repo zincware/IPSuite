@@ -37,7 +37,6 @@ class TorchDFTD3CalculatorNL(TorchDFTD3Calculator):
         skin=0.5,
         **kwargs,
     ):
-        
         self.skin = skin
         self.pbc = torch.tensor([False, False, False], device=device)
         self.Z = None
@@ -57,7 +56,7 @@ class TorchDFTD3CalculatorNL(TorchDFTD3Calculator):
             dtype=dtype,
             bidirectional=bidirectional,
             cutoff_smoothing=cutoff_smoothing,
-            **kwargs
+            **kwargs,
         )
 
     def _calc_edge_index(
@@ -91,8 +90,11 @@ class TorchDFTD3CalculatorNL(TorchDFTD3Calculator):
         else:
             cell = None
         pbc = torch.tensor(atoms.pbc, device=self.device)
-        condition = (torch.any(self.pbc != pbc) or len(self.Z) != len(Z) or
-                ((self.pos0 - pos)**2).sum(1).max() > self.skin**2 / 4.0)
+        condition = (
+            torch.any(self.pbc != pbc)
+            or len(self.Z) != len(Z)
+            or ((self.pos0 - pos) ** 2).sum(1).max() > self.skin**2 / 4.0
+        )
 
         if condition:
             self.edge_index, self.S = self._calc_edge_index(pos, cell, pbc)
@@ -190,7 +192,7 @@ class TorchD3(base.ProcessAtoms):
             dtype = torch.float32
         else:
             raise ValueError("dtype must be float64 or float32")
-        
+
         if self.skin < 1e-5:
             calc = TorchDFTD3Calculator(
                 xc=self.xc,

@@ -68,7 +68,7 @@ def test_d3_existing_calc(proj_path):
             dtype="float32",
             device="cpu",
             skin=0.5,
-            name="d3nl"
+            name="d3nl",
         )
 
     proj.run()
