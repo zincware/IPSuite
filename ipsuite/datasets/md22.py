@@ -1,12 +1,12 @@
+import tempfile
 import typing
 import urllib
 import zipfile
 from pathlib import Path
-import tempfile
 
 import ase
-from ase import units
 import zntrack
+from ase import units
 
 import ipsuite as ips
 from ipsuite import fields
