@@ -71,16 +71,11 @@ class MD22Dataset(ips.base.IPSNode):
             )
 
         url = self.datasets[self.dataset]
-        print("url")
 
         file_path = download_data(url, raw_data_dir)
-        print("download")
 
         self.atoms = ase.io.read(file_path, ":")
-        print("read")
         for atoms in self.atoms:
             atoms.calc.results["energy"] *= units.kcal / units.mol
             atoms.calc.results["forces"] *= units.kcal / units.mol
-        print("units")
         tmpdir.cleanup()
-        print("clean")
