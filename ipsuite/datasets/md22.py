@@ -43,8 +43,6 @@ class MD22Dataset(ips.base.IPSNode):
 
     atoms: typing.List[ase.Atoms] = fields.Atoms()
 
-    raw_data_dir: Path = zntrack.outs_path(zntrack.nwd / "raw_data")
-
     datasets = {
         "Ac-Ala3-NHMe": (
             "http://www.quantum-machine.org/gdml/repo/static/md22_Ac-Ala3-NHMe.zip"
