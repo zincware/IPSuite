@@ -13,11 +13,7 @@ from ipsuite import base
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
-def _update_if_exists(
-    results, key, atoms_list, func, mean: bool, first_run: bool, existing_properties: list
-):
-    if key in existing_properties and not first_run:
-        return
+def _update_if_exists(results, key, atoms_list, func, mean: bool):
     with contextlib.suppress(PropertyNotImplementedError):
         value = sum(func(x) for x in atoms_list)
         if mean and len(atoms_list) > 0:
@@ -28,9 +24,6 @@ def _update_if_exists(
         else:
             results[key] = value
 
-        if first_run:
-            existing_properties.append(key)
-
 
 class _MixCalculator(Calculator):
     def __init__(self, calculators: typing.List[Calculator], methods: list, **kwargs):
@@ -38,8 +31,6 @@ class _MixCalculator(Calculator):
         self.calculators = calculators
         self.implemented_properties = self.calculators[0].implemented_properties
         self.methods = methods
-        self._existing_properties = {"sum": [], "mean": []}
-        self._first_run = True
 
     def calculate(
         self,
@@ -66,62 +57,24 @@ class _MixCalculator(Calculator):
                 raise NotImplementedError
 
         _update_if_exists(
-            self.results,
-            "energy",
-            mean_results,
-            lambda x: x.get_potential_energy(),
-            True,
-            self._first_run,
-            self._existing_properties["mean"],
+            self.results, "energy", mean_results, lambda x: x.get_potential_energy(), True
         )
         _update_if_exists(
-            self.results,
-            "forces",
-            mean_results,
-            lambda x: x.get_forces(),
-            True,
-            self._first_run,
-            self._existing_properties["mean"],
+            self.results, "forces", mean_results, lambda x: x.get_forces(), True
         )
         _update_if_exists(
-            self.results,
-            "stress",
-            mean_results,
-            lambda x: x.get_stress(),
-            True,
-            self._first_run,
-            self._existing_properties["mean"],
+            self.results, "stress", mean_results, lambda x: x.get_stress(), True
         )
 
         _update_if_exists(
-            self.results,
-            "energy",
-            sum_results,
-            lambda x: x.get_potential_energy(),
-            False,
-            self._first_run,
-            self._existing_properties["sum"],
+            self.results, "energy", sum_results, lambda x: x.get_potential_energy(), False
         )
         _update_if_exists(
-            self.results,
-            "forces",
-            sum_results,
-            lambda x: x.get_forces(),
-            False,
-            self._first_run,
-            self._existing_properties["sum"],
+            self.results, "forces", sum_results, lambda x: x.get_forces(), False
         )
         _update_if_exists(
-            self.results,
-            "stress",
-            sum_results,
-            lambda x: x.get_stress(),
-            False,
-            self._first_run,
-            self._existing_properties["sum"],
+            self.results, "stress", sum_results, lambda x: x.get_stress(), False
         )
-
-        self._first_run = False
 
 
 class CalculatorNode(typing.Protocol):
