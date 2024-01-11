@@ -13,7 +13,7 @@ from ipsuite import base
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
-def _update_is_exists(results, key, atoms_list, func, mean: bool):
+def _update_if_exists(results, key, atoms_list, func, mean: bool):
     with contextlib.suppress(PropertyNotImplementedError):
         value = sum(func(x) for x in atoms_list)
         if mean and len(atoms_list) > 0:
@@ -56,23 +56,23 @@ class _MixCalculator(Calculator):
             else:
                 raise NotImplementedError
 
-        _update_is_exists(
+        _update_if_exists(
             self.results, "energy", mean_results, lambda x: x.get_potential_energy(), True
         )
-        _update_is_exists(
+        _update_if_exists(
             self.results, "forces", mean_results, lambda x: x.get_forces(), True
         )
-        _update_is_exists(
+        _update_if_exists(
             self.results, "stress", mean_results, lambda x: x.get_stress(), True
         )
 
-        _update_is_exists(
+        _update_if_exists(
             self.results, "energy", sum_results, lambda x: x.get_potential_energy(), False
         )
-        _update_is_exists(
+        _update_if_exists(
             self.results, "forces", sum_results, lambda x: x.get_forces(), False
         )
-        _update_is_exists(
+        _update_if_exists(
             self.results, "stress", sum_results, lambda x: x.get_stress(), False
         )
 
