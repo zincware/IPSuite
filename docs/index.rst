@@ -10,8 +10,9 @@ Welcome to IPSuite's documentation!
    :maxdepth: 2
    :caption: Contents:
    
+   quickstart
    modules
-
+   cheatsheet
 
 
 Indices and tables
