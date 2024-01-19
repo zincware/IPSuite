@@ -1,5 +1,4 @@
 import typing
-from uuid import uuid4
 
 import ase
 import numpy as np
@@ -54,10 +53,8 @@ class EnsembleCalculator(Calculator):
 class EnsembleModel(base.IPSNode):
     models: typing.List[MLModel] = zntrack.deps()
 
-    uuid = zntrack.zn.outs()  # to connect this Node to other Nodes it requires an output.
-
     def run(self) -> None:
-        self.uuid = str(uuid4())
+        pass
 
     def get_calculator(self, **kwargs) -> ase.calculators.calculator.Calculator:
         """Property to return a model specific ase calculator object.
