@@ -11,6 +11,7 @@ from ipsuite import (
     configuration_generation,
     configuration_selection,
     data_loading,
+    datasets,
     fields,
     geometry,
     models,
@@ -38,6 +39,7 @@ __all__ = [
     "geometry",
     "combine",
     "data_loading",
+    "datasets",
     "nodes",
 ]
 
