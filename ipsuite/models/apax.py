@@ -79,9 +79,9 @@ class Apax(MLModel):
         self._handle_parameter_file()
 
     def _handle_parameter_file(self):
-        with self.state.use_tmp_path():
-            self._parameter = yaml.safe_load(pathlib.Path(self.config).read_text())
+        self._parameter = yaml.safe_load(self.state.fs.read_text(self.config))
 
+        with self.state.use_tmp_path():
             custom_parameters = {
                 "directory": self.model_directory.resolve().as_posix(),
                 "experiment": "",
