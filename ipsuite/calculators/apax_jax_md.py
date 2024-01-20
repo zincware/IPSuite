@@ -83,13 +83,14 @@ class ApaxJaxMD(ProcessSingleAtom):
         from apax.md.nvt import run_md
 
         self._handle_parameter_file()
-        atoms = self.get_data()
-        if self.repeat is not None:
-            atoms = atoms.repeat(self.repeat)
-        ase.io.write(self.init_struc_dir.as_posix(), atoms)
+        if not self.state.restarted:
+            atoms = self.get_data()
+            if self.repeat is not None:
+                atoms = atoms.repeat(self.repeat)
+            ase.io.write(self.init_struc_dir.as_posix(), atoms)
 
         self.model._handle_parameter_file()
-        run_md(self.model._parameter, self.md_parameter)
+        run_md(self.model._parameter, self.md_parameter, log_level="info")
 
     @functools.cached_property
     def atoms(self) -> typing.List[ase.Atoms]:
