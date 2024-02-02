@@ -301,14 +301,18 @@ class NPTThermostat(base.IPSNode):
         if True allows only the diagonal elements of the box to change,
         i.e. box angles are constant
 
+    fraction_traceless: Union[int, float]
+        How much of the traceless part of the virial to keep.
+        If set to 0, the volume of the cell can change, but the shape cannot.
     """
 
-    time_step: float = zntrack.zn.params()
-    temperature: float = zntrack.zn.params()
-    pressure: float = zntrack.zn.params()
-    ttime: float = zntrack.zn.params()
-    pfactor: float = zntrack.zn.params()
-    tetragonal_strain: bool = zntrack.zn.params(True)
+    time_step: float = zntrack.params()
+    temperature: float = zntrack.params()
+    pressure: float = zntrack.params()
+    ttime: float = zntrack.params()
+    pfactor: float = zntrack.params()
+    tetragonal_strain: bool = zntrack.params(True)
+    fraction_traceless: typing.Union[int, float] = zntrack.params(1)
 
     def get_thermostat(self, atoms):
         if self.tetragonal_strain:
@@ -331,6 +335,7 @@ class NPTThermostat(base.IPSNode):
             pfactor=self.pfactor,
             mask=mask,
         )
+        thermostat.set_fraction_traceless(self.fraction_traceless)
         return thermostat
 
 

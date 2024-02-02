@@ -19,4 +19,5 @@
 - add `num_ramp_oscillations: float` to `BoxOscillatingRampModifier`
 - remove `train_log_file` from apax Node
 - add `density` to `RescaleBoxModifier`
+- add `fraction_traceless` parameter to `NPTThermostat`
 - add `TorchD3NL` calculator
