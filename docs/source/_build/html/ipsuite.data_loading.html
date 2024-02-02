@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ipsuite.data_loading package &mdash; IPSuite 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a58bc63e"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ipsuite.fields package" href="ipsuite.fields.html" />
+    <link rel="prev" title="ipsuite.configuration_selection package" href="ipsuite.configuration_selection.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            IPSuite
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ipsuite</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ipsuite.html">ipsuite package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ipsuite.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.analysis.html">ipsuite.analysis package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.base.html">ipsuite.base package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.bootstrap.html">ipsuite.bootstrap package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.calculators.html">ipsuite.calculators package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_comparison.html">ipsuite.configuration_comparison package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_generation.html">ipsuite.configuration_generation package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_selection.html">ipsuite.configuration_selection package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ipsuite.data_loading package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.fields.html">ipsuite.fields package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.geometry.html">ipsuite.geometry package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.models.html">ipsuite.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.project.html">ipsuite.project package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.static_data.html">ipsuite.static_data package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.utils.html">ipsuite.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#module-ipsuite.nodes">ipsuite.nodes module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#module-ipsuite">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cheatsheet.html">Cheatsheet</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">IPSuite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ipsuite</a></li>
+          <li class="breadcrumb-item"><a href="ipsuite.html">ipsuite package</a></li>
+      <li class="breadcrumb-item active">ipsuite.data_loading package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/ipsuite.data_loading.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ipsuite-data-loading-package">
+<h1>ipsuite.data_loading package<a class="headerlink" href="#ipsuite-data-loading-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-ipsuite.data_loading.add_data_ase">
+<span id="ipsuite-data-loading-add-data-ase-module"></span><h2>ipsuite.data_loading.add_data_ase module<a class="headerlink" href="#module-ipsuite.data_loading.add_data_ase" title="Link to this heading"></a></h2>
+<p>ipsuite data loading with ASE.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.data_loading.add_data_ase.AddData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.data_loading.add_data_ase.</span></span><span class="sig-name descname"><span class="pre">AddData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lines_to_read</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.data_loading.add_data_ase.AddData" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ipsuite.base.html#ipsuite.base.base.IPSNode" title="ipsuite.base.base.IPSNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">IPSNode</span></code></a></p>
+<p>Add data using ASE.</p>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>use_dvc: bool</dt><dd><p>Don’t use the filename as a parameter but rather use dvc add &lt;file&gt;
+to track the file with DVC.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.data_loading.add_data_ase.AddData.atoms">
+<span class="sig-name descname"><span class="pre">atoms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.data_loading.add_data_ase.AddData.atoms" title="Link to this definition"></a></dt>
+<dd><p>Store list[ase.Atoms] in an ASE database.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.data_loading.add_data_ase.AddData.file">
+<span class="sig-name descname"><span class="pre">file</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></em><a class="headerlink" href="#ipsuite.data_loading.add_data_ase.AddData.file" title="Link to this definition"></a></dt>
+<dd><p>A field that is used as a dvc option.</p>
+<p>The DVCOption field is designed for paths only.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.data_loading.add_data_ase.AddData.lines_to_read">
+<span class="sig-name descname"><span class="pre">lines_to_read</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#ipsuite.data_loading.add_data_ase.AddData.lines_to_read" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.data_loading.add_data_ase.AddData.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.data_loading.add_data_ase.AddData.run" title="Link to this definition"></a></dt>
+<dd><p>ZnTrack run method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.data_loading.add_data_ase.AddData.save_atoms_to_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_atoms_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.data_loading.add_data_ase.AddData.save_atoms_to_file" title="Link to this definition"></a></dt>
+<dd><p>Save atoms to a file.</p>
+<section id="id1">
+<h4>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>atoms: list</dt><dd><p>list of atoms objects</p>
+</dd>
+<dt>file: str</dt><dd><p>path to the file to save to</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.data_loading.add_data_ase.load_data">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.data_loading.add_data_ase.</span></span><span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lines_to_read</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.data_loading.add_data_ase.load_data" title="Link to this definition"></a></dt>
+<dd><p>Add data to the database.</p>
+<section id="id2">
+<h3>Parameters<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>database: Database</dt><dd><p>instance of a database to add data to</p>
+</dd>
+<dt>file: str|Path</dt><dd><p>path to the file that should be added to the database</p>
+</dd>
+<dt>lines_to_read: int, optional</dt><dd><p>maximal number of lines/configurations to read, None for read all</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.data_loading.add_data_h5md">
+<span id="ipsuite-data-loading-add-data-h5md-module"></span><h2>ipsuite.data_loading.add_data_h5md module<a class="headerlink" href="#module-ipsuite.data_loading.add_data_h5md" title="Link to this heading"></a></h2>
+<p>Load Data directly from a H5MD trajectory file.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.data_loading.add_data_h5md.AddDataH5MD">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.data_loading.add_data_h5md.</span></span><span class="sig-name descname"><span class="pre">AddDataH5MD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.data_loading.add_data_h5md.AddDataH5MD" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ipsuite.base.html#ipsuite.base.base.IPSNode" title="ipsuite.base.base.IPSNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">IPSNode</span></code></a></p>
+<p>Load Data directly from a H5MD trajectory file.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="ipsuite.data_loading.add_data_h5md.AddDataH5MD.atoms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atoms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.data_loading.add_data_h5md.AddDataH5MD.atoms" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.data_loading.add_data_h5md.AddDataH5MD.file">
+<span class="sig-name descname"><span class="pre">file</span></span><a class="headerlink" href="#ipsuite.data_loading.add_data_h5md.AddDataH5MD.file" title="Link to this definition"></a></dt>
+<dd><p>A field that is used as a dvc option.</p>
+<p>The DVCOption field is designed for paths only.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.data_loading.add_data_h5md.AddDataH5MD.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.data_loading.add_data_h5md.AddDataH5MD.run" title="Link to this definition"></a></dt>
+<dd><p>Run the node’s code.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.data_loading">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ipsuite.data_loading" title="Link to this heading"></a></h2>
+<p>ipsuite data loading module.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.data_loading.AddData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.data_loading.</span></span><span class="sig-name descname"><span class="pre">AddData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lines_to_read</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.data_loading.AddData" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ipsuite.base.html#ipsuite.base.base.IPSNode" title="ipsuite.base.base.IPSNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">IPSNode</span></code></a></p>
+<p>Add data using ASE.</p>
+<section id="id3">
+<h3>Attributes<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>use_dvc: bool</dt><dd><p>Don’t use the filename as a parameter but rather use dvc add &lt;file&gt;
+to track the file with DVC.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.data_loading.AddData.atoms">
+<span class="sig-name descname"><span class="pre">atoms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.data_loading.AddData.atoms" title="Link to this definition"></a></dt>
+<dd><p>Store list[ase.Atoms] in an ASE database.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.data_loading.AddData.file">
+<span class="sig-name descname"><span class="pre">file</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></em><a class="headerlink" href="#ipsuite.data_loading.AddData.file" title="Link to this definition"></a></dt>
+<dd><p>A field that is used as a dvc option.</p>
+<p>The DVCOption field is designed for paths only.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.data_loading.AddData.lines_to_read">
+<span class="sig-name descname"><span class="pre">lines_to_read</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#ipsuite.data_loading.AddData.lines_to_read" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id4">
+<h4>Parameters<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.data_loading.AddData.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.data_loading.AddData.run" title="Link to this definition"></a></dt>
+<dd><p>ZnTrack run method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.data_loading.AddData.save_atoms_to_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_atoms_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.data_loading.AddData.save_atoms_to_file" title="Link to this definition"></a></dt>
+<dd><p>Save atoms to a file.</p>
+<section id="id5">
+<h4>Parameters<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>atoms: list</dt><dd><p>list of atoms objects</p>
+</dd>
+<dt>file: str</dt><dd><p>path to the file to save to</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.data_loading.AddDataH5MD">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.data_loading.</span></span><span class="sig-name descname"><span class="pre">AddDataH5MD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.data_loading.AddDataH5MD" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ipsuite.base.html#ipsuite.base.base.IPSNode" title="ipsuite.base.base.IPSNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">IPSNode</span></code></a></p>
+<p>Load Data directly from a H5MD trajectory file.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="ipsuite.data_loading.AddDataH5MD.atoms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atoms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.data_loading.AddDataH5MD.atoms" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.data_loading.AddDataH5MD.file">
+<span class="sig-name descname"><span class="pre">file</span></span><a class="headerlink" href="#ipsuite.data_loading.AddDataH5MD.file" title="Link to this definition"></a></dt>
+<dd><p>A field that is used as a dvc option.</p>
+<p>The DVCOption field is designed for paths only.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.data_loading.AddDataH5MD.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.data_loading.AddDataH5MD.run" title="Link to this definition"></a></dt>
+<dd><p>Run the node’s code.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ipsuite.configuration_selection.html" class="btn btn-neutral float-left" title="ipsuite.configuration_selection package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ipsuite.fields.html" class="btn btn-neutral float-right" title="ipsuite.fields package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, zincwarecode.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ipsuite &mdash; IPSuite 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a58bc63e"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ipsuite package" href="ipsuite.html" />
+    <link rel="prev" title="Welcome to IPSuite’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            IPSuite
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ipsuite</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ipsuite.html">ipsuite package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cheatsheet.html">Cheatsheet</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">IPSuite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">ipsuite</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ipsuite">
+<h1>ipsuite<a class="headerlink" href="#ipsuite" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ipsuite.html">ipsuite package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ipsuite.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.analysis.html">ipsuite.analysis package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.analysis.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.analysis.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.analysis.html#module-ipsuite.analysis.bin_property">ipsuite.analysis.bin_property module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.analysis.html#module-ipsuite.analysis.bond_stretch">ipsuite.analysis.bond_stretch module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.analysis.html#module-ipsuite.analysis.ensemble">ipsuite.analysis.ensemble module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.analysis.html#module-ipsuite.analysis.md">ipsuite.analysis.md module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.analysis.html#module-ipsuite.analysis.sensitivity">ipsuite.analysis.sensitivity module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.analysis.html#module-ipsuite.analysis">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.base.html">ipsuite.base package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.base.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.base.html#module-ipsuite.base.base">ipsuite.base.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.base.html#module-ipsuite.base.protocol">ipsuite.base.protocol module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.base.html#module-ipsuite.base">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.bootstrap.html">ipsuite.bootstrap package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.bootstrap.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.bootstrap.html#module-ipsuite.bootstrap.random_displacements">ipsuite.bootstrap.random_displacements module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.bootstrap.html#module-ipsuite.bootstrap.surface_mods">ipsuite.bootstrap.surface_mods module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.bootstrap.html#module-ipsuite.bootstrap">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.calculators.html">ipsuite.calculators package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.calculators.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.calculators.html#ipsuite-calculators-apax-jax-md-module">ipsuite.calculators.apax_jax_md module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.calculators.html#module-ipsuite.calculators.ase_geoopt">ipsuite.calculators.ase_geoopt module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.calculators.html#module-ipsuite.calculators.ase_md">ipsuite.calculators.ase_md module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.calculators.html#module-ipsuite.calculators.ase_standard">ipsuite.calculators.ase_standard module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.calculators.html#module-ipsuite.calculators.cp2k">ipsuite.calculators.cp2k module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.calculators.html#module-ipsuite.calculators.lammps">ipsuite.calculators.lammps module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.calculators.html#module-ipsuite.calculators.orca">ipsuite.calculators.orca module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.calculators.html#module-ipsuite.calculators.xtb">ipsuite.calculators.xtb module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.calculators.html#module-ipsuite.calculators">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.configuration_comparison.html">ipsuite.configuration_comparison package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_comparison.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_comparison.html#ipsuite-configuration-comparison-mmkernel-module">ipsuite.configuration_comparison.MMKernel module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_comparison.html#ipsuite-configuration-comparison-rematch-module">ipsuite.configuration_comparison.REMatch module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_comparison.html#ipsuite-configuration-comparison-base-module">ipsuite.configuration_comparison.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_comparison.html#module-ipsuite.configuration_comparison">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.configuration_generation.html">ipsuite.configuration_generation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_generation.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_generation.html#module-ipsuite.configuration_generation.packmol">ipsuite.configuration_generation.packmol module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_generation.html#module-ipsuite.configuration_generation.smiles_to_atoms">ipsuite.configuration_generation.smiles_to_atoms module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_generation.html#module-ipsuite.configuration_generation">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.configuration_selection.html">ipsuite.configuration_selection package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_selection.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_selection.html#module-ipsuite.configuration_selection.base">ipsuite.configuration_selection.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_selection.html#module-ipsuite.configuration_selection.filter">ipsuite.configuration_selection.filter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_selection.html#module-ipsuite.configuration_selection.index">ipsuite.configuration_selection.index module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_selection.html#module-ipsuite.configuration_selection.kernel">ipsuite.configuration_selection.kernel module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_selection.html#module-ipsuite.configuration_selection.random">ipsuite.configuration_selection.random module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_selection.html#module-ipsuite.configuration_selection.split">ipsuite.configuration_selection.split module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_selection.html#module-ipsuite.configuration_selection.threshold">ipsuite.configuration_selection.threshold module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_selection.html#module-ipsuite.configuration_selection.uniform_arange">ipsuite.configuration_selection.uniform_arange module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_selection.html#module-ipsuite.configuration_selection.uniform_energetic">ipsuite.configuration_selection.uniform_energetic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_selection.html#module-ipsuite.configuration_selection.uniform_temporal">ipsuite.configuration_selection.uniform_temporal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_selection.html#module-ipsuite.configuration_selection">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.data_loading.html">ipsuite.data_loading package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.data_loading.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.data_loading.html#module-ipsuite.data_loading.add_data_ase">ipsuite.data_loading.add_data_ase module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.data_loading.html#module-ipsuite.data_loading.add_data_h5md">ipsuite.data_loading.add_data_h5md module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.data_loading.html#module-ipsuite.data_loading">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.fields.html">ipsuite.fields package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.fields.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.fields.html#module-ipsuite.fields.atoms">ipsuite.fields.atoms module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.fields.html#module-ipsuite.fields">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.geometry.html">ipsuite.geometry package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.geometry.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.geometry.html#module-ipsuite.geometry.barycenter_coarse_grain">ipsuite.geometry.barycenter_coarse_grain module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.geometry.html#module-ipsuite.geometry.graphs">ipsuite.geometry.graphs module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.geometry.html#module-ipsuite.geometry.mapping">ipsuite.geometry.mapping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.geometry.html#module-ipsuite.geometry.unwrap">ipsuite.geometry.unwrap module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.geometry.html#module-ipsuite.geometry">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.models.html">ipsuite.models package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.models.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.models.html#ipsuite-models-apax-module">ipsuite.models.apax module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.models.html#module-ipsuite.models.base">ipsuite.models.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.models.html#module-ipsuite.models.ensemble">ipsuite.models.ensemble module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.models.html#ipsuite-models-gap-module">ipsuite.models.gap module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.models.html#ipsuite-models-mace-model-module">ipsuite.models.mace_model module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.models.html#ipsuite-models-nequip-module">ipsuite.models.nequip module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.models.html#module-ipsuite.models">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.project.html">ipsuite.project package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.project.html#module-ipsuite.project">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.static_data.html">ipsuite.static_data package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.static_data.html#module-ipsuite.static_data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.utils.html">ipsuite.utils package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.utils.html#module-ipsuite.utils.ase_sim">ipsuite.utils.ase_sim module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.utils.html#module-ipsuite.utils.combine">ipsuite.utils.combine module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.utils.html#module-ipsuite.utils.helpers">ipsuite.utils.helpers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.utils.html#module-ipsuite.utils.logs">ipsuite.utils.logs module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.utils.html#module-ipsuite.utils.md">ipsuite.utils.md module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.utils.html#module-ipsuite.utils.metrics">ipsuite.utils.metrics module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.utils.html#module-ipsuite.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ipsuite.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipsuite.html#module-ipsuite.nodes">ipsuite.nodes module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEGeoOpt"><code class="docutils literal notranslate"><span class="pre">ASEGeoOpt</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEGeoOpt.atoms"><code class="docutils literal notranslate"><span class="pre">ASEGeoOpt.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEGeoOpt.checker_list"><code class="docutils literal notranslate"><span class="pre">ASEGeoOpt.checker_list</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEGeoOpt.dump_rate"><code class="docutils literal notranslate"><span class="pre">ASEGeoOpt.dump_rate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEGeoOpt.get_atoms"><code class="docutils literal notranslate"><span class="pre">ASEGeoOpt.get_atoms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEGeoOpt.init_kwargs"><code class="docutils literal notranslate"><span class="pre">ASEGeoOpt.init_kwargs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEGeoOpt.model"><code class="docutils literal notranslate"><span class="pre">ASEGeoOpt.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEGeoOpt.model_outs"><code class="docutils literal notranslate"><span class="pre">ASEGeoOpt.model_outs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEGeoOpt.optimizer"><code class="docutils literal notranslate"><span class="pre">ASEGeoOpt.optimizer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEGeoOpt.repeat"><code class="docutils literal notranslate"><span class="pre">ASEGeoOpt.repeat</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEGeoOpt.run"><code class="docutils literal notranslate"><span class="pre">ASEGeoOpt.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEGeoOpt.run_kwargs"><code class="docutils literal notranslate"><span class="pre">ASEGeoOpt.run_kwargs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEGeoOpt.traj_file"><code class="docutils literal notranslate"><span class="pre">ASEGeoOpt.traj_file</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD"><code class="docutils literal notranslate"><span class="pre">ASEMD</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.atoms"><code class="docutils literal notranslate"><span class="pre">ASEMD.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.checker_list"><code class="docutils literal notranslate"><span class="pre">ASEMD.checker_list</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.constraint_list"><code class="docutils literal notranslate"><span class="pre">ASEMD.constraint_list</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.dump_rate"><code class="docutils literal notranslate"><span class="pre">ASEMD.dump_rate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.get_atoms"><code class="docutils literal notranslate"><span class="pre">ASEMD.get_atoms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.metrics_dict"><code class="docutils literal notranslate"><span class="pre">ASEMD.metrics_dict</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.model"><code class="docutils literal notranslate"><span class="pre">ASEMD.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.model_outs"><code class="docutils literal notranslate"><span class="pre">ASEMD.model_outs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.modifier"><code class="docutils literal notranslate"><span class="pre">ASEMD.modifier</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.pop_last"><code class="docutils literal notranslate"><span class="pre">ASEMD.pop_last</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.repeat"><code class="docutils literal notranslate"><span class="pre">ASEMD.repeat</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.run"><code class="docutils literal notranslate"><span class="pre">ASEMD.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.sampling_rate"><code class="docutils literal notranslate"><span class="pre">ASEMD.sampling_rate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.seed"><code class="docutils literal notranslate"><span class="pre">ASEMD.seed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.steps"><code class="docutils literal notranslate"><span class="pre">ASEMD.steps</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.steps_before_stopping"><code class="docutils literal notranslate"><span class="pre">ASEMD.steps_before_stopping</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.thermostat"><code class="docutils literal notranslate"><span class="pre">ASEMD.thermostat</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.traj_file"><code class="docutils literal notranslate"><span class="pre">ASEMD.traj_file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.use_momenta"><code class="docutils literal notranslate"><span class="pre">ASEMD.use_momenta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ASEMD.wrap"><code class="docutils literal notranslate"><span class="pre">ASEMD.wrap</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AddData"><code class="docutils literal notranslate"><span class="pre">AddData</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AddData.atoms"><code class="docutils literal notranslate"><span class="pre">AddData.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AddData.file"><code class="docutils literal notranslate"><span class="pre">AddData.file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AddData.lines_to_read"><code class="docutils literal notranslate"><span class="pre">AddData.lines_to_read</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AddData.run"><code class="docutils literal notranslate"><span class="pre">AddData.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AddData.save_atoms_to_file"><code class="docutils literal notranslate"><span class="pre">AddData.save_atoms_to_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AddDataH5MD"><code class="docutils literal notranslate"><span class="pre">AddDataH5MD</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AddDataH5MD.atoms"><code class="docutils literal notranslate"><span class="pre">AddDataH5MD.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AddDataH5MD.file"><code class="docutils literal notranslate"><span class="pre">AddDataH5MD.file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AddDataH5MD.run"><code class="docutils literal notranslate"><span class="pre">AddDataH5MD.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseDensity"><code class="docutils literal notranslate"><span class="pre">AnalyseDensity</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseDensity.density"><code class="docutils literal notranslate"><span class="pre">AnalyseDensity.density</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseDensity.end"><code class="docutils literal notranslate"><span class="pre">AnalyseDensity.end</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseDensity.figure"><code class="docutils literal notranslate"><span class="pre">AnalyseDensity.figure</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseDensity.results"><code class="docutils literal notranslate"><span class="pre">AnalyseDensity.results</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseDensity.run"><code class="docutils literal notranslate"><span class="pre">AnalyseDensity.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseDensity.start"><code class="docutils literal notranslate"><span class="pre">AnalyseDensity.start</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseDensity.window"><code class="docutils literal notranslate"><span class="pre">AnalyseDensity.window</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseGlobalForceSensitivity"><code class="docutils literal notranslate"><span class="pre">AnalyseGlobalForceSensitivity</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseGlobalForceSensitivity.atoms_list"><code class="docutils literal notranslate"><span class="pre">AnalyseGlobalForceSensitivity.atoms_list</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseGlobalForceSensitivity.plots"><code class="docutils literal notranslate"><span class="pre">AnalyseGlobalForceSensitivity.plots</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseGlobalForceSensitivity.run"><code class="docutils literal notranslate"><span class="pre">AnalyseGlobalForceSensitivity.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseSingleForceSensitivity"><code class="docutils literal notranslate"><span class="pre">AnalyseSingleForceSensitivity</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseSingleForceSensitivity.alpha"><code class="docutils literal notranslate"><span class="pre">AnalyseSingleForceSensitivity.alpha</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseSingleForceSensitivity.data"><code class="docutils literal notranslate"><span class="pre">AnalyseSingleForceSensitivity.data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseSingleForceSensitivity.get_values"><code class="docutils literal notranslate"><span class="pre">AnalyseSingleForceSensitivity.get_values()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseSingleForceSensitivity.run"><code class="docutils literal notranslate"><span class="pre">AnalyseSingleForceSensitivity.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseSingleForceSensitivity.sensitivity"><code class="docutils literal notranslate"><span class="pre">AnalyseSingleForceSensitivity.sensitivity</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseSingleForceSensitivity.sensitivity_plot"><code class="docutils literal notranslate"><span class="pre">AnalyseSingleForceSensitivity.sensitivity_plot</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseSingleForceSensitivity.sim_list"><code class="docutils literal notranslate"><span class="pre">AnalyseSingleForceSensitivity.sim_list</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.AnalyseSingleForceSensitivity.t_confidence_interval"><code class="docutils literal notranslate"><span class="pre">AnalyseSingleForceSensitivity.t_confidence_interval()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BarycenterMapping"><code class="docutils literal notranslate"><span class="pre">BarycenterMapping</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BarycenterMapping.backward_mapping"><code class="docutils literal notranslate"><span class="pre">BarycenterMapping.backward_mapping()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BarycenterMapping.forward_mapping"><code class="docutils literal notranslate"><span class="pre">BarycenterMapping.forward_mapping()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxHeatUp"><code class="docutils literal notranslate"><span class="pre">BoxHeatUp</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxHeatUp.flux_data"><code class="docutils literal notranslate"><span class="pre">BoxHeatUp.flux_data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxHeatUp.friction"><code class="docutils literal notranslate"><span class="pre">BoxHeatUp.friction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxHeatUp.get_atoms"><code class="docutils literal notranslate"><span class="pre">BoxHeatUp.get_atoms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxHeatUp.max_temperature"><code class="docutils literal notranslate"><span class="pre">BoxHeatUp.max_temperature</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxHeatUp.model"><code class="docutils literal notranslate"><span class="pre">BoxHeatUp.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxHeatUp.model_outs"><code class="docutils literal notranslate"><span class="pre">BoxHeatUp.model_outs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxHeatUp.plot_temperature"><code class="docutils literal notranslate"><span class="pre">BoxHeatUp.plot_temperature()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxHeatUp.plots"><code class="docutils literal notranslate"><span class="pre">BoxHeatUp.plots</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxHeatUp.repeat"><code class="docutils literal notranslate"><span class="pre">BoxHeatUp.repeat</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxHeatUp.run"><code class="docutils literal notranslate"><span class="pre">BoxHeatUp.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxHeatUp.start_temperature"><code class="docutils literal notranslate"><span class="pre">BoxHeatUp.start_temperature</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxHeatUp.steps"><code class="docutils literal notranslate"><span class="pre">BoxHeatUp.steps</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxHeatUp.stop_temperature"><code class="docutils literal notranslate"><span class="pre">BoxHeatUp.stop_temperature</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxHeatUp.time_step"><code class="docutils literal notranslate"><span class="pre">BoxHeatUp.time_step</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxOscillatingRampModifier"><code class="docutils literal notranslate"><span class="pre">BoxOscillatingRampModifier</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxOscillatingRampModifier.cell_amplitude"><code class="docutils literal notranslate"><span class="pre">BoxOscillatingRampModifier.cell_amplitude</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxOscillatingRampModifier.end_cell"><code class="docutils literal notranslate"><span class="pre">BoxOscillatingRampModifier.end_cell</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxOscillatingRampModifier.interval"><code class="docutils literal notranslate"><span class="pre">BoxOscillatingRampModifier.interval</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxOscillatingRampModifier.modify"><code class="docutils literal notranslate"><span class="pre">BoxOscillatingRampModifier.modify()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxOscillatingRampModifier.num_oscillations"><code class="docutils literal notranslate"><span class="pre">BoxOscillatingRampModifier.num_oscillations</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxOscillatingRampModifier.num_ramp_oscillations"><code class="docutils literal notranslate"><span class="pre">BoxOscillatingRampModifier.num_ramp_oscillations</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxScale"><code class="docutils literal notranslate"><span class="pre">BoxScale</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxScale.energies"><code class="docutils literal notranslate"><span class="pre">BoxScale.energies</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxScale.mapping"><code class="docutils literal notranslate"><span class="pre">BoxScale.mapping</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxScale.model"><code class="docutils literal notranslate"><span class="pre">BoxScale.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxScale.model_outs"><code class="docutils literal notranslate"><span class="pre">BoxScale.model_outs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxScale.num"><code class="docutils literal notranslate"><span class="pre">BoxScale.num</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxScale.plot"><code class="docutils literal notranslate"><span class="pre">BoxScale.plot</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxScale.run"><code class="docutils literal notranslate"><span class="pre">BoxScale.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxScale.start"><code class="docutils literal notranslate"><span class="pre">BoxScale.start</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.BoxScale.stop"><code class="docutils literal notranslate"><span class="pre">BoxScale.stop</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KSinglePoint"><code class="docutils literal notranslate"><span class="pre">CP2KSinglePoint</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KSinglePoint.atoms"><code class="docutils literal notranslate"><span class="pre">CP2KSinglePoint.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KSinglePoint.cp2k_directory"><code class="docutils literal notranslate"><span class="pre">CP2KSinglePoint.cp2k_directory</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KSinglePoint.cp2k_files"><code class="docutils literal notranslate"><span class="pre">CP2KSinglePoint.cp2k_files</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KSinglePoint.cp2k_params"><code class="docutils literal notranslate"><span class="pre">CP2KSinglePoint.cp2k_params</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KSinglePoint.cp2k_shell"><code class="docutils literal notranslate"><span class="pre">CP2KSinglePoint.cp2k_shell</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KSinglePoint.get_calculator"><code class="docutils literal notranslate"><span class="pre">CP2KSinglePoint.get_calculator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KSinglePoint.get_input_script"><code class="docutils literal notranslate"><span class="pre">CP2KSinglePoint.get_input_script()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KSinglePoint.output_file"><code class="docutils literal notranslate"><span class="pre">CP2KSinglePoint.output_file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KSinglePoint.run"><code class="docutils literal notranslate"><span class="pre">CP2KSinglePoint.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KSinglePoint.wfn_restart_file"><code class="docutils literal notranslate"><span class="pre">CP2KSinglePoint.wfn_restart_file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KSinglePoint.wfn_restart_node"><code class="docutils literal notranslate"><span class="pre">CP2KSinglePoint.wfn_restart_node</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KYaml"><code class="docutils literal notranslate"><span class="pre">CP2KYaml</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KYaml.atoms"><code class="docutils literal notranslate"><span class="pre">CP2KYaml.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KYaml.cp2k_bin"><code class="docutils literal notranslate"><span class="pre">CP2KYaml.cp2k_bin</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KYaml.cp2k_directory"><code class="docutils literal notranslate"><span class="pre">CP2KYaml.cp2k_directory</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KYaml.cp2k_params"><code class="docutils literal notranslate"><span class="pre">CP2KYaml.cp2k_params</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KYaml.run"><code class="docutils literal notranslate"><span class="pre">CP2KYaml.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.CP2KYaml.wfn_restart"><code class="docutils literal notranslate"><span class="pre">CP2KYaml.wfn_restart</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ConnectivityCheck"><code class="docutils literal notranslate"><span class="pre">ConnectivityCheck</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ConnectivityCheck.check"><code class="docutils literal notranslate"><span class="pre">ConnectivityCheck.check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ConnectivityCheck.initialize"><code class="docutils literal notranslate"><span class="pre">ConnectivityCheck.initialize()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.DipoleHistogram"><code class="docutils literal notranslate"><span class="pre">DipoleHistogram</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.DipoleHistogram.datalabel"><code class="docutils literal notranslate"><span class="pre">DipoleHistogram.datalabel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.DipoleHistogram.get_labels"><code class="docutils literal notranslate"><span class="pre">DipoleHistogram.get_labels()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.DipoleHistogram.xlabel"><code class="docutils literal notranslate"><span class="pre">DipoleHistogram.xlabel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EMTSinglePoint"><code class="docutils literal notranslate"><span class="pre">EMTSinglePoint</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EMTSinglePoint.get_calculator"><code class="docutils literal notranslate"><span class="pre">EMTSinglePoint.get_calculator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EMTSinglePoint.run"><code class="docutils literal notranslate"><span class="pre">EMTSinglePoint.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnergyHistogram"><code class="docutils literal notranslate"><span class="pre">EnergyHistogram</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnergyHistogram.datalabel"><code class="docutils literal notranslate"><span class="pre">EnergyHistogram.datalabel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnergyHistogram.get_labels"><code class="docutils literal notranslate"><span class="pre">EnergyHistogram.get_labels()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnergyHistogram.xlabel"><code class="docutils literal notranslate"><span class="pre">EnergyHistogram.xlabel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnergySpikeCheck"><code class="docutils literal notranslate"><span class="pre">EnergySpikeCheck</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnergySpikeCheck.check"><code class="docutils literal notranslate"><span class="pre">EnergySpikeCheck.check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnergySpikeCheck.initialize"><code class="docutils literal notranslate"><span class="pre">EnergySpikeCheck.initialize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnergySpikeCheck.max_factor"><code class="docutils literal notranslate"><span class="pre">EnergySpikeCheck.max_factor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnergySpikeCheck.min_factor"><code class="docutils literal notranslate"><span class="pre">EnergySpikeCheck.min_factor</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnergyUncertaintyHistogram"><code class="docutils literal notranslate"><span class="pre">EnergyUncertaintyHistogram</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnergyUncertaintyHistogram.datalabel"><code class="docutils literal notranslate"><span class="pre">EnergyUncertaintyHistogram.datalabel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnergyUncertaintyHistogram.get_labels"><code class="docutils literal notranslate"><span class="pre">EnergyUncertaintyHistogram.get_labels()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnergyUncertaintyHistogram.xlabel"><code class="docutils literal notranslate"><span class="pre">EnergyUncertaintyHistogram.xlabel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnsembleModel"><code class="docutils literal notranslate"><span class="pre">EnsembleModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnsembleModel.get_calculator"><code class="docutils literal notranslate"><span class="pre">EnsembleModel.get_calculator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnsembleModel.models"><code class="docutils literal notranslate"><span class="pre">EnsembleModel.models</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnsembleModel.predict"><code class="docutils literal notranslate"><span class="pre">EnsembleModel.predict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnsembleModel.run"><code class="docutils literal notranslate"><span class="pre">EnsembleModel.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.EnsembleModel.uuid"><code class="docutils literal notranslate"><span class="pre">EnsembleModel.uuid</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.FilterOutlier"><code class="docutils literal notranslate"><span class="pre">FilterOutlier</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.FilterOutlier.atoms"><code class="docutils literal notranslate"><span class="pre">FilterOutlier.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.FilterOutlier.direction"><code class="docutils literal notranslate"><span class="pre">FilterOutlier.direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.FilterOutlier.excluded_atoms"><code class="docutils literal notranslate"><span class="pre">FilterOutlier.excluded_atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.FilterOutlier.filtered_indices"><code class="docutils literal notranslate"><span class="pre">FilterOutlier.filtered_indices</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.FilterOutlier.histogram"><code class="docutils literal notranslate"><span class="pre">FilterOutlier.histogram</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.FilterOutlier.key"><code class="docutils literal notranslate"><span class="pre">FilterOutlier.key</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.FilterOutlier.run"><code class="docutils literal notranslate"><span class="pre">FilterOutlier.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.FilterOutlier.threshold"><code class="docutils literal notranslate"><span class="pre">FilterOutlier.threshold</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.FixedSphereConstraint"><code class="docutils literal notranslate"><span class="pre">FixedSphereConstraint</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.FixedSphereConstraint.atom_id"><code class="docutils literal notranslate"><span class="pre">FixedSphereConstraint.atom_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.FixedSphereConstraint.atom_type"><code class="docutils literal notranslate"><span class="pre">FixedSphereConstraint.atom_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.FixedSphereConstraint.get_constraint"><code class="docutils literal notranslate"><span class="pre">FixedSphereConstraint.get_constraint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.FixedSphereConstraint.get_selected_atom_id"><code class="docutils literal notranslate"><span class="pre">FixedSphereConstraint.get_selected_atom_id()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.FixedSphereConstraint.radius"><code class="docutils literal notranslate"><span class="pre">FixedSphereConstraint.radius</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceAngles"><code class="docutils literal notranslate"><span class="pre">ForceAngles</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceAngles.angles"><code class="docutils literal notranslate"><span class="pre">ForceAngles.angles</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceAngles.log_plot"><code class="docutils literal notranslate"><span class="pre">ForceAngles.log_plot</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceAngles.plot"><code class="docutils literal notranslate"><span class="pre">ForceAngles.plot</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceAngles.run"><code class="docutils literal notranslate"><span class="pre">ForceAngles.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceDecomposition"><code class="docutils literal notranslate"><span class="pre">ForceDecomposition</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceDecomposition.get_histogram"><code class="docutils literal notranslate"><span class="pre">ForceDecomposition.get_histogram()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceDecomposition.get_metrics"><code class="docutils literal notranslate"><span class="pre">ForceDecomposition.get_metrics()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceDecomposition.get_plots"><code class="docutils literal notranslate"><span class="pre">ForceDecomposition.get_plots()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceDecomposition.histogram_plt"><code class="docutils literal notranslate"><span class="pre">ForceDecomposition.histogram_plt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceDecomposition.rot_force_plt"><code class="docutils literal notranslate"><span class="pre">ForceDecomposition.rot_force_plt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceDecomposition.rot_forces"><code class="docutils literal notranslate"><span class="pre">ForceDecomposition.rot_forces</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceDecomposition.run"><code class="docutils literal notranslate"><span class="pre">ForceDecomposition.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceDecomposition.trans_force_plt"><code class="docutils literal notranslate"><span class="pre">ForceDecomposition.trans_force_plt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceDecomposition.trans_forces"><code class="docutils literal notranslate"><span class="pre">ForceDecomposition.trans_forces</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceDecomposition.vib_force_plt"><code class="docutils literal notranslate"><span class="pre">ForceDecomposition.vib_force_plt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceDecomposition.vib_forces"><code class="docutils literal notranslate"><span class="pre">ForceDecomposition.vib_forces</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForceDecomposition.wasserstein_distance"><code class="docutils literal notranslate"><span class="pre">ForceDecomposition.wasserstein_distance</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForcesHistogram"><code class="docutils literal notranslate"><span class="pre">ForcesHistogram</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForcesHistogram.datalabel"><code class="docutils literal notranslate"><span class="pre">ForcesHistogram.datalabel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForcesHistogram.get_labels"><code class="docutils literal notranslate"><span class="pre">ForcesHistogram.get_labels()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForcesHistogram.xlabel"><code class="docutils literal notranslate"><span class="pre">ForcesHistogram.xlabel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForcesUncertaintyHistogram"><code class="docutils literal notranslate"><span class="pre">ForcesUncertaintyHistogram</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForcesUncertaintyHistogram.datalabel"><code class="docutils literal notranslate"><span class="pre">ForcesUncertaintyHistogram.datalabel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForcesUncertaintyHistogram.get_labels"><code class="docutils literal notranslate"><span class="pre">ForcesUncertaintyHistogram.get_labels()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ForcesUncertaintyHistogram.xlabel"><code class="docutils literal notranslate"><span class="pre">ForcesUncertaintyHistogram.xlabel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.IndexSelection"><code class="docutils literal notranslate"><span class="pre">IndexSelection</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.IndexSelection.indices"><code class="docutils literal notranslate"><span class="pre">IndexSelection.indices</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.IndexSelection.select_atoms"><code class="docutils literal notranslate"><span class="pre">IndexSelection.select_atoms()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.KernelSelection"><code class="docutils literal notranslate"><span class="pre">KernelSelection</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.KernelSelection.correlation_time"><code class="docutils literal notranslate"><span class="pre">KernelSelection.correlation_time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.KernelSelection.initial_configurations"><code class="docutils literal notranslate"><span class="pre">KernelSelection.initial_configurations</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.KernelSelection.kernel"><code class="docutils literal notranslate"><span class="pre">KernelSelection.kernel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.KernelSelection.kernel_results"><code class="docutils literal notranslate"><span class="pre">KernelSelection.kernel_results</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.KernelSelection.n_configurations"><code class="docutils literal notranslate"><span class="pre">KernelSelection.n_configurations</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.KernelSelection.plot_kernel"><code class="docutils literal notranslate"><span class="pre">KernelSelection.plot_kernel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.KernelSelection.points_per_cycle"><code class="docutils literal notranslate"><span class="pre">KernelSelection.points_per_cycle</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.KernelSelection.seed"><code class="docutils literal notranslate"><span class="pre">KernelSelection.seed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.KernelSelection.select_atoms"><code class="docutils literal notranslate"><span class="pre">KernelSelection.select_atoms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.KernelSelection.threshold"><code class="docutils literal notranslate"><span class="pre">KernelSelection.threshold</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LJSinglePoint"><code class="docutils literal notranslate"><span class="pre">LJSinglePoint</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LJSinglePoint.get_calculator"><code class="docutils literal notranslate"><span class="pre">LJSinglePoint.get_calculator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LJSinglePoint.run"><code class="docutils literal notranslate"><span class="pre">LJSinglePoint.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LammpsSimulator"><code class="docutils literal notranslate"><span class="pre">LammpsSimulator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LammpsSimulator.atoms"><code class="docutils literal notranslate"><span class="pre">LammpsSimulator.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LammpsSimulator.create_input_script"><code class="docutils literal notranslate"><span class="pre">LammpsSimulator.create_input_script()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LammpsSimulator.dump_file"><code class="docutils literal notranslate"><span class="pre">LammpsSimulator.dump_file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LammpsSimulator.fill_atoms_with_life"><code class="docutils literal notranslate"><span class="pre">LammpsSimulator.fill_atoms_with_life()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LammpsSimulator.get_atoms"><code class="docutils literal notranslate"><span class="pre">LammpsSimulator.get_atoms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LammpsSimulator.get_template"><code class="docutils literal notranslate"><span class="pre">LammpsSimulator.get_template()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LammpsSimulator.lmp_directory"><code class="docutils literal notranslate"><span class="pre">LammpsSimulator.lmp_directory</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LammpsSimulator.lmp_exe"><code class="docutils literal notranslate"><span class="pre">LammpsSimulator.lmp_exe</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LammpsSimulator.lmp_params"><code class="docutils literal notranslate"><span class="pre">LammpsSimulator.lmp_params</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LammpsSimulator.lmp_template"><code class="docutils literal notranslate"><span class="pre">LammpsSimulator.lmp_template</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LammpsSimulator.log_file"><code class="docutils literal notranslate"><span class="pre">LammpsSimulator.log_file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LammpsSimulator.run"><code class="docutils literal notranslate"><span class="pre">LammpsSimulator.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LammpsSimulator.skiprun"><code class="docutils literal notranslate"><span class="pre">LammpsSimulator.skiprun</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LangevinThermostat"><code class="docutils literal notranslate"><span class="pre">LangevinThermostat</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LangevinThermostat.friction"><code class="docutils literal notranslate"><span class="pre">LangevinThermostat.friction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LangevinThermostat.get_thermostat"><code class="docutils literal notranslate"><span class="pre">LangevinThermostat.get_thermostat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LangevinThermostat.temperature"><code class="docutils literal notranslate"><span class="pre">LangevinThermostat.temperature</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.LangevinThermostat.time_step"><code class="docutils literal notranslate"><span class="pre">LangevinThermostat.time_step</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MDStability"><code class="docutils literal notranslate"><span class="pre">MDStability</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MDStability.atoms"><code class="docutils literal notranslate"><span class="pre">MDStability.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MDStability.bins"><code class="docutils literal notranslate"><span class="pre">MDStability.bins</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MDStability.checks"><code class="docutils literal notranslate"><span class="pre">MDStability.checks</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MDStability.get_plots"><code class="docutils literal notranslate"><span class="pre">MDStability.get_plots()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MDStability.initial_temperature"><code class="docutils literal notranslate"><span class="pre">MDStability.initial_temperature</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MDStability.max_steps"><code class="docutils literal notranslate"><span class="pre">MDStability.max_steps</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MDStability.model"><code class="docutils literal notranslate"><span class="pre">MDStability.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MDStability.model_outs"><code class="docutils literal notranslate"><span class="pre">MDStability.model_outs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MDStability.plots_dir"><code class="docutils literal notranslate"><span class="pre">MDStability.plots_dir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MDStability.run"><code class="docutils literal notranslate"><span class="pre">MDStability.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MDStability.save_last_n"><code class="docutils literal notranslate"><span class="pre">MDStability.save_last_n</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MDStability.seed"><code class="docutils literal notranslate"><span class="pre">MDStability.seed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MDStability.stable_steps_df"><code class="docutils literal notranslate"><span class="pre">MDStability.stable_steps_df</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MDStability.time_step"><code class="docutils literal notranslate"><span class="pre">MDStability.time_step</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MDStability.traj_file"><code class="docutils literal notranslate"><span class="pre">MDStability.traj_file</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ModelEnsembleAnalysis"><code class="docutils literal notranslate"><span class="pre">ModelEnsembleAnalysis</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ModelEnsembleAnalysis.bins"><code class="docutils literal notranslate"><span class="pre">ModelEnsembleAnalysis.bins</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ModelEnsembleAnalysis.get_plots"><code class="docutils literal notranslate"><span class="pre">ModelEnsembleAnalysis.get_plots()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ModelEnsembleAnalysis.histogram"><code class="docutils literal notranslate"><span class="pre">ModelEnsembleAnalysis.histogram</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ModelEnsembleAnalysis.models"><code class="docutils literal notranslate"><span class="pre">ModelEnsembleAnalysis.models</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ModelEnsembleAnalysis.normal_plot_path"><code class="docutils literal notranslate"><span class="pre">ModelEnsembleAnalysis.normal_plot_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ModelEnsembleAnalysis.prediction_list"><code class="docutils literal notranslate"><span class="pre">ModelEnsembleAnalysis.prediction_list</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ModelEnsembleAnalysis.predictions"><code class="docutils literal notranslate"><span class="pre">ModelEnsembleAnalysis.predictions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ModelEnsembleAnalysis.run"><code class="docutils literal notranslate"><span class="pre">ModelEnsembleAnalysis.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ModelEnsembleAnalysis.sorted_plot_path"><code class="docutils literal notranslate"><span class="pre">ModelEnsembleAnalysis.sorted_plot_path</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MoveSingleParticle"><code class="docutils literal notranslate"><span class="pre">MoveSingleParticle</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MoveSingleParticle.atom_id"><code class="docutils literal notranslate"><span class="pre">MoveSingleParticle.atom_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MoveSingleParticle.atoms"><code class="docutils literal notranslate"><span class="pre">MoveSingleParticle.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MoveSingleParticle.atoms_list"><code class="docutils literal notranslate"><span class="pre">MoveSingleParticle.atoms_list</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MoveSingleParticle.atoms_list_id"><code class="docutils literal notranslate"><span class="pre">MoveSingleParticle.atoms_list_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MoveSingleParticle.atoms_path"><code class="docutils literal notranslate"><span class="pre">MoveSingleParticle.atoms_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MoveSingleParticle.get_atom_filenames"><code class="docutils literal notranslate"><span class="pre">MoveSingleParticle.get_atom_filenames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MoveSingleParticle.run"><code class="docutils literal notranslate"><span class="pre">MoveSingleParticle.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MoveSingleParticle.samples"><code class="docutils literal notranslate"><span class="pre">MoveSingleParticle.samples</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MoveSingleParticle.scale"><code class="docutils literal notranslate"><span class="pre">MoveSingleParticle.scale</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MoveSingleParticle.seed"><code class="docutils literal notranslate"><span class="pre">MoveSingleParticle.seed</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MultiPackmol"><code class="docutils literal notranslate"><span class="pre">MultiPackmol</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MultiPackmol.data_ids"><code class="docutils literal notranslate"><span class="pre">MultiPackmol.data_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MultiPackmol.n_configurations"><code class="docutils literal notranslate"><span class="pre">MultiPackmol.n_configurations</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MultiPackmol.run"><code class="docutils literal notranslate"><span class="pre">MultiPackmol.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.MultiPackmol.seed"><code class="docutils literal notranslate"><span class="pre">MultiPackmol.seed</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.NPTThermostat"><code class="docutils literal notranslate"><span class="pre">NPTThermostat</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.NPTThermostat.get_thermostat"><code class="docutils literal notranslate"><span class="pre">NPTThermostat.get_thermostat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.NPTThermostat.pfactor"><code class="docutils literal notranslate"><span class="pre">NPTThermostat.pfactor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.NPTThermostat.pressure"><code class="docutils literal notranslate"><span class="pre">NPTThermostat.pressure</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.NPTThermostat.temperature"><code class="docutils literal notranslate"><span class="pre">NPTThermostat.temperature</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.NPTThermostat.tetragonal_strain"><code class="docutils literal notranslate"><span class="pre">NPTThermostat.tetragonal_strain</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.NPTThermostat.time_step"><code class="docutils literal notranslate"><span class="pre">NPTThermostat.time_step</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.NPTThermostat.ttime"><code class="docutils literal notranslate"><span class="pre">NPTThermostat.ttime</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.NaNCheck"><code class="docutils literal notranslate"><span class="pre">NaNCheck</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.NaNCheck.check"><code class="docutils literal notranslate"><span class="pre">NaNCheck.check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.NaNCheck.initialize"><code class="docutils literal notranslate"><span class="pre">NaNCheck.initialize()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.OrcaSinglePoint"><code class="docutils literal notranslate"><span class="pre">OrcaSinglePoint</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.OrcaSinglePoint.ASE_ORCA_COMMAND"><code class="docutils literal notranslate"><span class="pre">OrcaSinglePoint.ASE_ORCA_COMMAND</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.OrcaSinglePoint.atoms"><code class="docutils literal notranslate"><span class="pre">OrcaSinglePoint.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.OrcaSinglePoint.get_calculator"><code class="docutils literal notranslate"><span class="pre">OrcaSinglePoint.get_calculator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.OrcaSinglePoint.orca_directory"><code class="docutils literal notranslate"><span class="pre">OrcaSinglePoint.orca_directory</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.OrcaSinglePoint.orcablocks"><code class="docutils literal notranslate"><span class="pre">OrcaSinglePoint.orcablocks</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.OrcaSinglePoint.orcasimpleinput"><code class="docutils literal notranslate"><span class="pre">OrcaSinglePoint.orcasimpleinput</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.OrcaSinglePoint.output_file"><code class="docutils literal notranslate"><span class="pre">OrcaSinglePoint.output_file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.OrcaSinglePoint.run"><code class="docutils literal notranslate"><span class="pre">OrcaSinglePoint.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.Packmol"><code class="docutils literal notranslate"><span class="pre">Packmol</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.Packmol.atoms"><code class="docutils literal notranslate"><span class="pre">Packmol.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.Packmol.box"><code class="docutils literal notranslate"><span class="pre">Packmol.box</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.Packmol.count"><code class="docutils literal notranslate"><span class="pre">Packmol.count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.Packmol.data"><code class="docutils literal notranslate"><span class="pre">Packmol.data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.Packmol.data_ids"><code class="docutils literal notranslate"><span class="pre">Packmol.data_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.Packmol.density"><code class="docutils literal notranslate"><span class="pre">Packmol.density</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.Packmol.pbc"><code class="docutils literal notranslate"><span class="pre">Packmol.pbc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.Packmol.run"><code class="docutils literal notranslate"><span class="pre">Packmol.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.Packmol.structures"><code class="docutils literal notranslate"><span class="pre">Packmol.structures</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.Packmol.tolerance"><code class="docutils literal notranslate"><span class="pre">Packmol.tolerance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.Packmol.view"><code class="docutils literal notranslate"><span class="pre">Packmol.view()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.Prediction"><code class="docutils literal notranslate"><span class="pre">Prediction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.Prediction.model"><code class="docutils literal notranslate"><span class="pre">Prediction.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.Prediction.run"><code class="docutils literal notranslate"><span class="pre">Prediction.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.deviat_stress"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.deviat_stress</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.energy"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.energy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.energy_df"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.energy_df</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.energy_df_file"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.energy_df_file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.forces"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.forces</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.forces_df"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.forces_df</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.forces_df_file"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.forces_df_file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.get_dataframes"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.get_dataframes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.get_metrics"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.get_metrics()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.get_plots"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.get_plots()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.hydro_stress"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.hydro_stress</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.plots_dir"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.plots_dir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.run"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.stress"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.stress</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.stress_deviat_df"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.stress_deviat_df</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.stress_deviatoric_df_file"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.stress_deviatoric_df_file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.stress_df"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.stress_df</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.stress_df_file"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.stress_df_file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.stress_hydro_df"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.stress_hydro_df</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.PredictionMetrics.stress_hydrostatic_df_file"><code class="docutils literal notranslate"><span class="pre">PredictionMetrics.stress_hydrostatic_df_file</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RandomSelection"><code class="docutils literal notranslate"><span class="pre">RandomSelection</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RandomSelection.n_configurations"><code class="docutils literal notranslate"><span class="pre">RandomSelection.n_configurations</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RandomSelection.seed"><code class="docutils literal notranslate"><span class="pre">RandomSelection.seed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RandomSelection.select_atoms"><code class="docutils literal notranslate"><span class="pre">RandomSelection.select_atoms()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RattleAnalysis"><code class="docutils literal notranslate"><span class="pre">RattleAnalysis</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RattleAnalysis.energies"><code class="docutils literal notranslate"><span class="pre">RattleAnalysis.energies</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RattleAnalysis.factor"><code class="docutils literal notranslate"><span class="pre">RattleAnalysis.factor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RattleAnalysis.logspace"><code class="docutils literal notranslate"><span class="pre">RattleAnalysis.logspace</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RattleAnalysis.model"><code class="docutils literal notranslate"><span class="pre">RattleAnalysis.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RattleAnalysis.model_outs"><code class="docutils literal notranslate"><span class="pre">RattleAnalysis.model_outs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RattleAnalysis.num"><code class="docutils literal notranslate"><span class="pre">RattleAnalysis.num</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RattleAnalysis.post_init"><code class="docutils literal notranslate"><span class="pre">RattleAnalysis.post_init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RattleAnalysis.run"><code class="docutils literal notranslate"><span class="pre">RattleAnalysis.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RattleAnalysis.seed"><code class="docutils literal notranslate"><span class="pre">RattleAnalysis.seed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RattleAnalysis.stop"><code class="docutils literal notranslate"><span class="pre">RattleAnalysis.stop</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RattleAtoms"><code class="docutils literal notranslate"><span class="pre">RattleAtoms</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RattleAtoms.bootstrap_configs"><code class="docutils literal notranslate"><span class="pre">RattleAtoms.bootstrap_configs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RescaleBoxModifier"><code class="docutils literal notranslate"><span class="pre">RescaleBoxModifier</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RescaleBoxModifier.cell"><code class="docutils literal notranslate"><span class="pre">RescaleBoxModifier.cell</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RescaleBoxModifier.density"><code class="docutils literal notranslate"><span class="pre">RescaleBoxModifier.density</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RescaleBoxModifier.modify"><code class="docutils literal notranslate"><span class="pre">RescaleBoxModifier.modify()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RotateMolecules"><code class="docutils literal notranslate"><span class="pre">RotateMolecules</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.RotateMolecules.bootstrap_configs"><code class="docutils literal notranslate"><span class="pre">RotateMolecules.bootstrap_configs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToAtoms"><code class="docutils literal notranslate"><span class="pre">SmilesToAtoms</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToAtoms.atoms"><code class="docutils literal notranslate"><span class="pre">SmilesToAtoms.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToAtoms.cell"><code class="docutils literal notranslate"><span class="pre">SmilesToAtoms.cell</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToAtoms.image"><code class="docutils literal notranslate"><span class="pre">SmilesToAtoms.image</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToAtoms.optimizer"><code class="docutils literal notranslate"><span class="pre">SmilesToAtoms.optimizer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToAtoms.run"><code class="docutils literal notranslate"><span class="pre">SmilesToAtoms.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToAtoms.seed"><code class="docutils literal notranslate"><span class="pre">SmilesToAtoms.seed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToAtoms.smiles"><code class="docutils literal notranslate"><span class="pre">SmilesToAtoms.smiles</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToAtoms.view"><code class="docutils literal notranslate"><span class="pre">SmilesToAtoms.view()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToConformers"><code class="docutils literal notranslate"><span class="pre">SmilesToConformers</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToConformers.atoms"><code class="docutils literal notranslate"><span class="pre">SmilesToConformers.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToConformers.cell"><code class="docutils literal notranslate"><span class="pre">SmilesToConformers.cell</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToConformers.maxAttempts"><code class="docutils literal notranslate"><span class="pre">SmilesToConformers.maxAttempts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToConformers.numConfs"><code class="docutils literal notranslate"><span class="pre">SmilesToConformers.numConfs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToConformers.run"><code class="docutils literal notranslate"><span class="pre">SmilesToConformers.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToConformers.seed"><code class="docutils literal notranslate"><span class="pre">SmilesToConformers.seed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SmilesToConformers.smiles"><code class="docutils literal notranslate"><span class="pre">SmilesToConformers.smiles</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SplitSelection"><code class="docutils literal notranslate"><span class="pre">SplitSelection</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SplitSelection.select_atoms"><code class="docutils literal notranslate"><span class="pre">SplitSelection.select_atoms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SplitSelection.split"><code class="docutils literal notranslate"><span class="pre">SplitSelection.split</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.StressHistogram"><code class="docutils literal notranslate"><span class="pre">StressHistogram</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.StressHistogram.bins"><code class="docutils literal notranslate"><span class="pre">StressHistogram.bins</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.StressHistogram.get_hist"><code class="docutils literal notranslate"><span class="pre">StressHistogram.get_hist()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.StressHistogram.get_labels"><code class="docutils literal notranslate"><span class="pre">StressHistogram.get_labels()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.StressHistogram.get_plots"><code class="docutils literal notranslate"><span class="pre">StressHistogram.get_plots()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.StressHistogram.labels_df"><code class="docutils literal notranslate"><span class="pre">StressHistogram.labels_df</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.StressHistogram.logy_scale"><code class="docutils literal notranslate"><span class="pre">StressHistogram.logy_scale</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.StressHistogram.plots_dir"><code class="docutils literal notranslate"><span class="pre">StressHistogram.plots_dir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.StressHistogram.run"><code class="docutils literal notranslate"><span class="pre">StressHistogram.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.StressHistogram.ylabel"><code class="docutils literal notranslate"><span class="pre">StressHistogram.ylabel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SurfaceRasterMetrics"><code class="docutils literal notranslate"><span class="pre">SurfaceRasterMetrics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SurfaceRasterMetrics.get_plots"><code class="docutils literal notranslate"><span class="pre">SurfaceRasterMetrics.get_plots()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SurfaceRasterMetrics.scan_node"><code class="docutils literal notranslate"><span class="pre">SurfaceRasterMetrics.scan_node</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SurfaceRasterScan"><code class="docutils literal notranslate"><span class="pre">SurfaceRasterScan</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SurfaceRasterScan.cell_fraction"><code class="docutils literal notranslate"><span class="pre">SurfaceRasterScan.cell_fraction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SurfaceRasterScan.max_rattel_shift"><code class="docutils literal notranslate"><span class="pre">SurfaceRasterScan.max_rattel_shift</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SurfaceRasterScan.n_conf_per_dist"><code class="docutils literal notranslate"><span class="pre">SurfaceRasterScan.n_conf_per_dist</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SurfaceRasterScan.random"><code class="docutils literal notranslate"><span class="pre">SurfaceRasterScan.random</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SurfaceRasterScan.run"><code class="docutils literal notranslate"><span class="pre">SurfaceRasterScan.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SurfaceRasterScan.seed"><code class="docutils literal notranslate"><span class="pre">SurfaceRasterScan.seed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SurfaceRasterScan.symbol"><code class="docutils literal notranslate"><span class="pre">SurfaceRasterScan.symbol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.SurfaceRasterScan.z_dist_list"><code class="docutils literal notranslate"><span class="pre">SurfaceRasterScan.z_dist_list</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TemperatureCheck"><code class="docutils literal notranslate"><span class="pre">TemperatureCheck</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TemperatureCheck.check"><code class="docutils literal notranslate"><span class="pre">TemperatureCheck.check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TemperatureCheck.initialize"><code class="docutils literal notranslate"><span class="pre">TemperatureCheck.initialize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TemperatureCheck.max_temperature"><code class="docutils literal notranslate"><span class="pre">TemperatureCheck.max_temperature</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TemperatureOscillatingRampModifier"><code class="docutils literal notranslate"><span class="pre">TemperatureOscillatingRampModifier</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TemperatureOscillatingRampModifier.end_temperature"><code class="docutils literal notranslate"><span class="pre">TemperatureOscillatingRampModifier.end_temperature</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TemperatureOscillatingRampModifier.interval"><code class="docutils literal notranslate"><span class="pre">TemperatureOscillatingRampModifier.interval</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TemperatureOscillatingRampModifier.modify"><code class="docutils literal notranslate"><span class="pre">TemperatureOscillatingRampModifier.modify()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TemperatureOscillatingRampModifier.num_oscillations"><code class="docutils literal notranslate"><span class="pre">TemperatureOscillatingRampModifier.num_oscillations</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TemperatureOscillatingRampModifier.start_temperature"><code class="docutils literal notranslate"><span class="pre">TemperatureOscillatingRampModifier.start_temperature</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TemperatureOscillatingRampModifier.temperature_amplitude"><code class="docutils literal notranslate"><span class="pre">TemperatureOscillatingRampModifier.temperature_amplitude</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TemperatureRampModifier"><code class="docutils literal notranslate"><span class="pre">TemperatureRampModifier</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TemperatureRampModifier.interval"><code class="docutils literal notranslate"><span class="pre">TemperatureRampModifier.interval</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TemperatureRampModifier.modify"><code class="docutils literal notranslate"><span class="pre">TemperatureRampModifier.modify()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TemperatureRampModifier.start_temperature"><code class="docutils literal notranslate"><span class="pre">TemperatureRampModifier.start_temperature</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TemperatureRampModifier.temperature"><code class="docutils literal notranslate"><span class="pre">TemperatureRampModifier.temperature</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdCheck"><code class="docutils literal notranslate"><span class="pre">ThresholdCheck</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdCheck.check"><code class="docutils literal notranslate"><span class="pre">ThresholdCheck.check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdCheck.get_quantity"><code class="docutils literal notranslate"><span class="pre">ThresholdCheck.get_quantity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdCheck.get_value"><code class="docutils literal notranslate"><span class="pre">ThresholdCheck.get_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdCheck.larger_only"><code class="docutils literal notranslate"><span class="pre">ThresholdCheck.larger_only</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdCheck.max_std"><code class="docutils literal notranslate"><span class="pre">ThresholdCheck.max_std</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdCheck.max_value"><code class="docutils literal notranslate"><span class="pre">ThresholdCheck.max_value</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdCheck.minimum_window_size"><code class="docutils literal notranslate"><span class="pre">ThresholdCheck.minimum_window_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdCheck.value"><code class="docutils literal notranslate"><span class="pre">ThresholdCheck.value</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdCheck.window_size"><code class="docutils literal notranslate"><span class="pre">ThresholdCheck.window_size</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdSelection"><code class="docutils literal notranslate"><span class="pre">ThresholdSelection</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdSelection.dim_reduction"><code class="docutils literal notranslate"><span class="pre">ThresholdSelection.dim_reduction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdSelection.get_selection"><code class="docutils literal notranslate"><span class="pre">ThresholdSelection.get_selection()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdSelection.key"><code class="docutils literal notranslate"><span class="pre">ThresholdSelection.key</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdSelection.min_distance"><code class="docutils literal notranslate"><span class="pre">ThresholdSelection.min_distance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdSelection.n_configurations"><code class="docutils literal notranslate"><span class="pre">ThresholdSelection.n_configurations</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdSelection.reduction_axis"><code class="docutils literal notranslate"><span class="pre">ThresholdSelection.reduction_axis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdSelection.reference"><code class="docutils literal notranslate"><span class="pre">ThresholdSelection.reference</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdSelection.select_atoms"><code class="docutils literal notranslate"><span class="pre">ThresholdSelection.select_atoms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.ThresholdSelection.threshold"><code class="docutils literal notranslate"><span class="pre">ThresholdSelection.threshold</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TranslateMolecules"><code class="docutils literal notranslate"><span class="pre">TranslateMolecules</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.TranslateMolecules.bootstrap_configs"><code class="docutils literal notranslate"><span class="pre">TranslateMolecules.bootstrap_configs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.UniformArangeSelection"><code class="docutils literal notranslate"><span class="pre">UniformArangeSelection</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.UniformArangeSelection.select_atoms"><code class="docutils literal notranslate"><span class="pre">UniformArangeSelection.select_atoms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.UniformArangeSelection.step"><code class="docutils literal notranslate"><span class="pre">UniformArangeSelection.step</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.UniformEnergeticSelection"><code class="docutils literal notranslate"><span class="pre">UniformEnergeticSelection</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.UniformEnergeticSelection.n_configurations"><code class="docutils literal notranslate"><span class="pre">UniformEnergeticSelection.n_configurations</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.UniformEnergeticSelection.select_atoms"><code class="docutils literal notranslate"><span class="pre">UniformEnergeticSelection.select_atoms()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.UniformTemporalSelection"><code class="docutils literal notranslate"><span class="pre">UniformTemporalSelection</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.UniformTemporalSelection.n_configurations"><code class="docutils literal notranslate"><span class="pre">UniformTemporalSelection.n_configurations</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.UniformTemporalSelection.select_atoms"><code class="docutils literal notranslate"><span class="pre">UniformTemporalSelection.select_atoms()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.xTBSinglePoint"><code class="docutils literal notranslate"><span class="pre">xTBSinglePoint</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.xTBSinglePoint.get_calculator"><code class="docutils literal notranslate"><span class="pre">xTBSinglePoint.get_calculator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.xTBSinglePoint.method"><code class="docutils literal notranslate"><span class="pre">xTBSinglePoint.method</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.nodes.xTBSinglePoint.run"><code class="docutils literal notranslate"><span class="pre">xTBSinglePoint.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ipsuite.html#module-ipsuite">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.AddData"><code class="docutils literal notranslate"><span class="pre">AddData</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.AddData.atoms"><code class="docutils literal notranslate"><span class="pre">AddData.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.AddData.file"><code class="docutils literal notranslate"><span class="pre">AddData.file</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.AddData.lines_to_read"><code class="docutils literal notranslate"><span class="pre">AddData.lines_to_read</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.AddData.run"><code class="docutils literal notranslate"><span class="pre">AddData.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.html#ipsuite.AddData.save_atoms_to_file"><code class="docutils literal notranslate"><span class="pre">AddData.save_atoms_to_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#ipsuite.Project"><code class="docutils literal notranslate"><span class="pre">Project</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to IPSuite’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ipsuite.html" class="btn btn-neutral float-right" title="ipsuite package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, zincwarecode.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

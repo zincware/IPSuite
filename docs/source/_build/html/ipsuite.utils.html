@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ipsuite.utils package &mdash; IPSuite 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a58bc63e"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Cheatsheet" href="cheatsheet.html" />
+    <link rel="prev" title="ipsuite.static_data package" href="ipsuite.static_data.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            IPSuite
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ipsuite</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ipsuite.html">ipsuite package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ipsuite.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.analysis.html">ipsuite.analysis package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.base.html">ipsuite.base package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.bootstrap.html">ipsuite.bootstrap package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.calculators.html">ipsuite.calculators package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_comparison.html">ipsuite.configuration_comparison package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_generation.html">ipsuite.configuration_generation package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_selection.html">ipsuite.configuration_selection package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.data_loading.html">ipsuite.data_loading package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.fields.html">ipsuite.fields package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.geometry.html">ipsuite.geometry package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.models.html">ipsuite.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.project.html">ipsuite.project package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.static_data.html">ipsuite.static_data package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ipsuite.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#module-ipsuite.nodes">ipsuite.nodes module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#module-ipsuite">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cheatsheet.html">Cheatsheet</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">IPSuite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ipsuite</a></li>
+          <li class="breadcrumb-item"><a href="ipsuite.html">ipsuite package</a></li>
+      <li class="breadcrumb-item active">ipsuite.utils package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/ipsuite.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ipsuite-utils-package">
+<h1>ipsuite.utils package<a class="headerlink" href="#ipsuite-utils-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-ipsuite.utils.ase_sim">
+<span id="ipsuite-utils-ase-sim-module"></span><h2>ipsuite.utils.ase_sim module<a class="headerlink" href="#module-ipsuite.utils.ase_sim" title="Link to this heading"></a></h2>
+<p>Utils that help running simulations with ASE.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.ase_sim.freeze_copy_atoms">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.ase_sim.</span></span><span class="sig-name descname"><span class="pre">freeze_copy_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Atoms</span></span></span><a class="headerlink" href="#ipsuite.utils.ase_sim.freeze_copy_atoms" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.ase_sim.</span></span><span class="sig-name descname"><span class="pre">freeze_copy_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.ase_sim.get_box_from_density">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.ase_sim.</span></span><span class="sig-name descname"><span class="pre">get_box_from_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.utils.ase_sim.get_box_from_density" title="Link to this definition"></a></dt>
+<dd><p>Get the box size from the molar volume.</p>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>data: list[list[ase.Atoms]]</dt><dd><p>List of list of atoms objects. The last atoms object is used to compute the
+molar volume.</p>
+</dd>
+<dt>count: list[int]</dt><dd><p>Number of molecules for each entry in data.</p>
+</dd>
+<dt>density: float</dt><dd><p>Density of the system in kg/m^3.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.ase_sim.get_density_from_atoms">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.ase_sim.</span></span><span class="sig-name descname"><span class="pre">get_density_from_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Atoms</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#ipsuite.utils.ase_sim.get_density_from_atoms" title="Link to this definition"></a></dt>
+<dd><p>Compute the density of the atoms in kg/m3.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.ase_sim.get_desc">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.ase_sim.</span></span><span class="sig-name descname"><span class="pre">get_desc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.utils.ase_sim.get_desc" title="Link to this definition"></a></dt>
+<dd><p>TQDM description.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.ase_sim.get_energy">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.ase_sim.</span></span><span class="sig-name descname"><span class="pre">get_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Atoms</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.utils.ase_sim.get_energy" title="Link to this definition"></a></dt>
+<dd><p>Compute the temperature and the total energy.</p>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>atoms: ase.Atoms</dt><dd><p>Atoms objects for which energy will be calculated</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>temperature: float</dt><dd><p>temperature of the system</p>
+</dd>
+<dt>np.squeeze(total): float</dt><dd><p>total energy of the system</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.utils.combine">
+<span id="ipsuite-utils-combine-module"></span><h2>ipsuite.utils.combine module<a class="headerlink" href="#module-ipsuite.utils.combine" title="Link to this heading"></a></h2>
+<p>Helpers to work with inputs from multiple nodes.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.utils.combine.ExcludeIds">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.utils.combine.</span></span><span class="sig-name descname"><span class="pre">ExcludeIds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.utils.combine.ExcludeIds" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Remove entries from a dataset.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.utils.combine.ExcludeIds.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#ipsuite.utils.combine.ExcludeIds.data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.utils.combine.ExcludeIds.get_clean_data">
+<span class="sig-name descname"><span class="pre">get_clean_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flatten</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#ipsuite.utils.combine.ExcludeIds.get_clean_data" title="Link to this definition"></a></dt>
+<dd><p>Remove the ‘ids’ from the ‘data’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.utils.combine.ExcludeIds.get_original_ids">
+<span class="sig-name descname"><span class="pre">get_original_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#ipsuite.utils.combine.ExcludeIds.get_original_ids" title="Link to this definition"></a></dt>
+<dd><p>Shift the ‘ids’ such that they are valid for the initial data.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.utils.combine.ExcludeIds.ids">
+<span class="sig-name descname"><span class="pre">ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#ipsuite.utils.combine.ExcludeIds.ids" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ipsuite.utils.combine.ExcludeIds.ids_as_list">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ids_as_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ipsuite.utils.combine.ExcludeIds.ids_as_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.combine.get_flat_data_from_dict">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.combine.</span></span><span class="sig-name descname"><span class="pre">get_flat_data_from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent_ignore</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#ipsuite.utils.combine.get_flat_data_from_dict" title="Link to this definition"></a></dt>
+<dd><p>Flatten a dictionary of lists into a single list.</p>
+<section id="id1">
+<h3>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>data<span class="classifier">dict</span></dt><dd><p>Dictionary of lists.</p>
+</dd>
+<dt>silent_ignore<span class="classifier">bool, optional</span></dt><dd><p>If True, the function will return the input if it is not a
+dictionary. If False, it will raise a TypeError.</p>
+</dd>
+</dl>
+</section>
+<section id="example">
+<h3>Example<a class="headerlink" href="#example" title="Link to this heading"></a></h3>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_flat_data_from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># [1, 2, 3, 4, 5, 6]</span>
+</pre></div>
+</div>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.combine.get_ids_per_key">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.combine.</span></span><span class="sig-name descname"><span class="pre">get_ids_per_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent_ignore</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.utils.combine.get_ids_per_key" title="Link to this definition"></a></dt>
+<dd><p>Get the ids per key from a dictionary of lists.</p>
+<section id="id2">
+<h3>Parameters<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>data<span class="classifier">dict</span></dt><dd><p>Dictionary of lists.</p>
+</dd>
+<dt>ids<span class="classifier">list</span></dt><dd><p>List of ids. The ids are assumed to be taken from the flattened
+‘get_flat_data_from_dict(data)’ data. If the ids aren’t sorted,
+they will be sorted.</p>
+</dd>
+<dt>silent_ignore<span class="classifier">bool, optional</span></dt><dd><p>If True, the function will return the input if it is not a
+dictionary. If False, it will raise a TypeError.</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h3>Example<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_ids_per_key</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># {&#39;a&#39;: [0, 1], &#39;b&#39;: [0, 2]}</span>
+</pre></div>
+</div>
+</section>
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.utils.helpers">
+<span id="ipsuite-utils-helpers-module"></span><h2>ipsuite.utils.helpers module<a class="headerlink" href="#module-ipsuite.utils.helpers" title="Link to this heading"></a></h2>
+<p>ipsuite helper modules.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.helpers.check_duplicate_keys">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">check_duplicate_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Logger</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#ipsuite.utils.helpers.check_duplicate_keys" title="Link to this definition"></a></dt>
+<dd><p>Check if a key of dict_a is present in dict_b and then log a warning.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.helpers.get_deps_if_node">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">get_deps_if_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.utils.helpers.get_deps_if_node" title="Link to this definition"></a></dt>
+<dd><p>Apply getdeps if obj is subclass/instance of a Node.</p>
+<section id="id4">
+<h3>Parameters<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>obj: any</dt><dd><p>Any object that is either a Node or not.</p>
+</dd>
+<dt>attribute: str</dt><dd><p>Name of the attribute to get.</p>
+</dd>
+</dl>
+</section>
+<section id="id5">
+<h3>Returns<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<p>Either the requested attribute if obj is a Node.
+Otherwise, it will return the obj itself.</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.helpers.setup_ase">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">setup_ase</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.utils.helpers.setup_ase" title="Link to this definition"></a></dt>
+<dd><p>Add uncertainty keys to ASE all properties.</p>
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.utils.logs">
+<span id="ipsuite-utils-logs-module"></span><h2>ipsuite.utils.logs module<a class="headerlink" href="#module-ipsuite.utils.logs" title="Link to this heading"></a></h2>
+<p>Logging Setup for the ipsuite package.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.logs.setup_logging">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.logs.</span></span><span class="sig-name descname"><span class="pre">setup_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#ipsuite.utils.logs.setup_logging" title="Link to this definition"></a></dt>
+<dd><p>Configure logging for the ipsuite package.</p>
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.utils.md">
+<span id="ipsuite-utils-md-module"></span><h2>ipsuite.utils.md module<a class="headerlink" href="#module-ipsuite.utils.md" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.md.get_energy_terms">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.md.</span></span><span class="sig-name descname"><span class="pre">get_energy_terms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Atoms</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.utils.md.get_energy_terms" title="Link to this definition"></a></dt>
+<dd><p>Returns total, kinetic and potentials energy terms.
+Useful for seeing whether the total energy is conserved in an NVE simulation.</p>
+<section id="id6">
+<h3>Parameters<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>atoms: ase.Atoms</dt><dd><p>Atoms objects for which energy will be calculated</p>
+</dd>
+</dl>
+</section>
+<section id="id7">
+<h3>Returns<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>etot: float</dt><dd><p>total energy per atom</p>
+</dd>
+<dt>ekin: float</dt><dd><p>kinetic energy per atom</p>
+</dd>
+<dt>epot: float</dt><dd><p>potential energy per atom</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.utils.metrics">
+<span id="ipsuite-utils-metrics-module"></span><h2>ipsuite.utils.metrics module<a class="headerlink" href="#module-ipsuite.utils.metrics" title="Link to this heading"></a></h2>
+<p>Utils for computing metrics.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.metrics.calculate_l_p_norm">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.metrics.</span></span><span class="sig-name descname"><span class="pre">calculate_l_p_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.utils.metrics.calculate_l_p_norm" title="Link to this definition"></a></dt>
+<dd><p>Calculate the mean of the l_p_norm of given data.</p>
+<div class="math notranslate nohighlight">
+\[l_{p} = \frac{1}{N} \sum_{i}^{N} \left| x_{i} - x_{i}^{\text{true}}\right|^{p}.\]</div>
+<section id="id8">
+<h3>Parameters<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>y_true: np.ndarray</dt><dd><p>reference values with shape (b,)</p>
+</dd>
+<dt>y_pred: np.ndarray</dt><dd><p>values to compare reference with shape (b,)</p>
+</dd>
+<dt>p: int</dt><dd><p>order of the Lp norm</p>
+</dd>
+</dl>
+</section>
+<section id="id9">
+<h3>Returns<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>mean: float</dt><dd><p>mean of the lp norm of the given data.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.metrics.get_angles">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.metrics.</span></span><span class="sig-name descname"><span class="pre">get_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vec1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vec2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#ipsuite.utils.metrics.get_angles" title="Link to this definition"></a></dt>
+<dd><p>Compute the angle between two vectors.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.metrics.get_full_metrics">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.metrics.</span></span><span class="sig-name descname"><span class="pre">get_full_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">true</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#ipsuite.utils.metrics.get_full_metrics" title="Link to this definition"></a></dt>
+<dd><p>Calculate metrics for a given true and predicted value.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.metrics.get_u_vecs">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.metrics.</span></span><span class="sig-name descname"><span class="pre">get_u_vecs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.utils.metrics.get_u_vecs" title="Link to this definition"></a></dt>
+<dd><p>Get unit vectors from a vector array.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.metrics.maximum_error">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.metrics.</span></span><span class="sig-name descname"><span class="pre">maximum_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.utils.metrics.maximum_error" title="Link to this definition"></a></dt>
+<dd><p>Calculate the maximum error.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.metrics.mean_absolute_error">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.metrics.</span></span><span class="sig-name descname"><span class="pre">mean_absolute_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.utils.metrics.mean_absolute_error" title="Link to this definition"></a></dt>
+<dd><p>Calculate the mean absolute error.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.metrics.mean_squared_error">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.metrics.</span></span><span class="sig-name descname"><span class="pre">mean_squared_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.utils.metrics.mean_squared_error" title="Link to this definition"></a></dt>
+<dd><p>Calculate the mean squared error between data_ids.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.metrics.relative_rmse">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.metrics.</span></span><span class="sig-name descname"><span class="pre">relative_rmse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.utils.metrics.relative_rmse" title="Link to this definition"></a></dt>
+<dd><p>Calculate the relative root mean squared error between data_ids.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.utils.metrics.root_mean_squared_error">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.utils.metrics.</span></span><span class="sig-name descname"><span class="pre">root_mean_squared_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.utils.metrics.root_mean_squared_error" title="Link to this definition"></a></dt>
+<dd><p>Calculate the root mean squared error between data_ids.</p>
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ipsuite.utils" title="Link to this heading"></a></h2>
+<p>ipsuite utils module.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ipsuite.static_data.html" class="btn btn-neutral float-left" title="ipsuite.static_data package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cheatsheet.html" class="btn btn-neutral float-right" title="Cheatsheet" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, zincwarecode.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

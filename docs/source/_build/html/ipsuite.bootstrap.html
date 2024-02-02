@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ipsuite.bootstrap package &mdash; IPSuite 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a58bc63e"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ipsuite.calculators package" href="ipsuite.calculators.html" />
+    <link rel="prev" title="ipsuite.base package" href="ipsuite.base.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            IPSuite
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ipsuite</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ipsuite.html">ipsuite package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ipsuite.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.analysis.html">ipsuite.analysis package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.base.html">ipsuite.base package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ipsuite.bootstrap package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.calculators.html">ipsuite.calculators package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_comparison.html">ipsuite.configuration_comparison package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_generation.html">ipsuite.configuration_generation package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_selection.html">ipsuite.configuration_selection package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.data_loading.html">ipsuite.data_loading package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.fields.html">ipsuite.fields package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.geometry.html">ipsuite.geometry package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.models.html">ipsuite.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.project.html">ipsuite.project package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.static_data.html">ipsuite.static_data package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.utils.html">ipsuite.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#module-ipsuite.nodes">ipsuite.nodes module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#module-ipsuite">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cheatsheet.html">Cheatsheet</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">IPSuite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ipsuite</a></li>
+          <li class="breadcrumb-item"><a href="ipsuite.html">ipsuite package</a></li>
+      <li class="breadcrumb-item active">ipsuite.bootstrap package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/ipsuite.bootstrap.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ipsuite-bootstrap-package">
+<h1>ipsuite.bootstrap package<a class="headerlink" href="#ipsuite-bootstrap-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-ipsuite.bootstrap.random_displacements">
+<span id="ipsuite-bootstrap-random-displacements-module"></span><h2>ipsuite.bootstrap.random_displacements module<a class="headerlink" href="#module-ipsuite.bootstrap.random_displacements" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.random_displacements.Bootstrap">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.bootstrap.random_displacements.</span></span><span class="sig-name descname"><span class="pre">Bootstrap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_original</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ipsuite.base.html#ipsuite.base.base.IPSNode" title="ipsuite.base.base.IPSNode"><span class="pre">IPSNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_outs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.random_displacements.Bootstrap" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ipsuite.base.html#ipsuite.base.base.ProcessSingleAtom" title="ipsuite.base.base.ProcessSingleAtom"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProcessSingleAtom</span></code></a></p>
+<p>Baseclass for dataset bootstrapping.
+Derived classes need to implement a <cite>bootstrap_config</cite> method.</p>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>n_configurations: int</dt><dd><p>Number of displaced configurations.</p>
+</dd>
+<dt>maximum: float</dt><dd><p>Bounds for uniform distribution from which displacements are drawn.</p>
+</dd>
+<dt>include_original: bool</dt><dd><p>Whether or not to include the original configuration in <cite>self.atoms</cite>.</p>
+</dd>
+<dt>seed: int</dt><dd><p>Random seed.</p>
+</dd>
+<dt>model: IPSNode</dt><dd><p>Any IPSNode that provides a <cite>get_calculator</cite> method to
+label the bootstrapped configurations.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.random_displacements.Bootstrap.bootstrap_configs">
+<span class="sig-name descname"><span class="pre">bootstrap_configs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.random_displacements.Bootstrap.bootstrap_configs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.random_displacements.Bootstrap.include_original">
+<span class="sig-name descname"><span class="pre">include_original</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#ipsuite.bootstrap.random_displacements.Bootstrap.include_original" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.random_displacements.Bootstrap.maximum">
+<span class="sig-name descname"><span class="pre">maximum</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#ipsuite.bootstrap.random_displacements.Bootstrap.maximum" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id1">
+<h4>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.random_displacements.Bootstrap.model">
+<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="ipsuite.base.html#ipsuite.base.base.IPSNode" title="ipsuite.base.base.IPSNode"><span class="pre">IPSNode</span></a></em><a class="headerlink" href="#ipsuite.bootstrap.random_displacements.Bootstrap.model" title="Link to this definition"></a></dt>
+<dd><p>A dependency field.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.random_displacements.Bootstrap.model_outs">
+<span class="sig-name descname"><span class="pre">model_outs</span></span><a class="headerlink" href="#ipsuite.bootstrap.random_displacements.Bootstrap.model_outs" title="Link to this definition"></a></dt>
+<dd><p>A field that is used as a dvc option.</p>
+<p>The DVCOption field is designed for paths only.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.random_displacements.Bootstrap.n_configurations">
+<span class="sig-name descname"><span class="pre">n_configurations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#ipsuite.bootstrap.random_displacements.Bootstrap.n_configurations" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id2">
+<h4>Parameters<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.random_displacements.Bootstrap.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#ipsuite.bootstrap.random_displacements.Bootstrap.run" title="Link to this definition"></a></dt>
+<dd><p>Run the node’s code.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.random_displacements.Bootstrap.seed">
+<span class="sig-name descname"><span class="pre">seed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#ipsuite.bootstrap.random_displacements.Bootstrap.seed" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id3">
+<h4>Parameters<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.random_displacements.RattleAtoms">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.bootstrap.random_displacements.</span></span><span class="sig-name descname"><span class="pre">RattleAtoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_original</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_outs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.random_displacements.RattleAtoms" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.bootstrap.random_displacements.Bootstrap" title="ipsuite.bootstrap.random_displacements.Bootstrap"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bootstrap</span></code></a></p>
+<p>Create randomly displaced versions of a particular atomic configuration.
+Useful for learning on the fly applications.
+<cite>maximum</cite> specifies the maximal atomic displacement.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.random_displacements.RattleAtoms.bootstrap_configs">
+<span class="sig-name descname"><span class="pre">bootstrap_configs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.random_displacements.RattleAtoms.bootstrap_configs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.random_displacements.RotateMolecules">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.bootstrap.random_displacements.</span></span><span class="sig-name descname"><span class="pre">RotateMolecules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_original</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_outs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.random_displacements.RotateMolecules" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.bootstrap.random_displacements.Bootstrap" title="ipsuite.bootstrap.random_displacements.Bootstrap"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bootstrap</span></code></a></p>
+<p>Create versions of a particular atomic configuration with
+randomly rotated molecular units.
+Only applicable if there are covalent units present in the system.
+Useful for learning on the fly applications.
+<cite>maximum</cite> specifies the maximal molecular rotation in degrees.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.random_displacements.RotateMolecules.bootstrap_configs">
+<span class="sig-name descname"><span class="pre">bootstrap_configs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.random_displacements.RotateMolecules.bootstrap_configs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.random_displacements.TranslateMolecules">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.bootstrap.random_displacements.</span></span><span class="sig-name descname"><span class="pre">TranslateMolecules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_original</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_outs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.random_displacements.TranslateMolecules" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.bootstrap.random_displacements.Bootstrap" title="ipsuite.bootstrap.random_displacements.Bootstrap"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bootstrap</span></code></a></p>
+<p>Create versions of a particular atomic configuration with
+randomly displaced molecular units.
+Only applicable if there are covalent units present in the system.
+Useful for learning on the fly applications.
+<cite>maximum</cite> specifies the maximal molecular displacement.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.random_displacements.TranslateMolecules.bootstrap_configs">
+<span class="sig-name descname"><span class="pre">bootstrap_configs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.random_displacements.TranslateMolecules.bootstrap_configs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.bootstrap.surface_mods">
+<span id="ipsuite-bootstrap-surface-mods-module"></span><h2>ipsuite.bootstrap.surface_mods module<a class="headerlink" href="#module-ipsuite.bootstrap.surface_mods" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterMetrics">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.bootstrap.surface_mods.</span></span><span class="sig-name descname"><span class="pre">SurfaceRasterMetrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_df_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces_df_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plots_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterScan" title="ipsuite.bootstrap.surface_mods.SurfaceRasterScan"><span class="pre">SurfaceRasterScan</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stress_deviatoric_df_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stress_df_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stress_hydrostatic_df_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterMetrics" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ipsuite.analysis.model.html#ipsuite.analysis.model.predict.PredictionMetrics" title="ipsuite.analysis.model.predict.PredictionMetrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">PredictionMetrics</span></code></a></p>
+<p>This class analyzes the surface interaction of an additive with a surface.
+It is used to evaluate how well the surface structure is learned during training.
+Note that the bulk atoms should not be rattled in the SurfaceRasterScan node.</p>
+<section id="id4">
+<h3>Attributes<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>scan_node: SurfaceRasterScan()</dt><dd><p>The node used for generating the structures</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterMetrics.energy_df">
+<span class="sig-name descname"><span class="pre">energy_df</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pd.DataFrame</span></em><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterMetrics.energy_df" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterMetrics.forces_df">
+<span class="sig-name descname"><span class="pre">forces_df</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pd.DataFrame</span></em><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterMetrics.forces_df" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterMetrics.get_plots">
+<span class="sig-name descname"><span class="pre">get_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterMetrics.get_plots" title="Link to this definition"></a></dt>
+<dd><p>Create figures for all available data.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterMetrics.scan_node">
+<span class="sig-name descname"><span class="pre">scan_node</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterScan" title="ipsuite.bootstrap.surface_mods.SurfaceRasterScan"><span class="pre">SurfaceRasterScan</span></a></em><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterMetrics.scan_node" title="Link to this definition"></a></dt>
+<dd><p>A dependency field.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterMetrics.stress_deviat_df">
+<span class="sig-name descname"><span class="pre">stress_deviat_df</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pd.DataFrame</span></em><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterMetrics.stress_deviat_df" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterMetrics.stress_df">
+<span class="sig-name descname"><span class="pre">stress_df</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pd.DataFrame</span></em><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterMetrics.stress_df" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterMetrics.stress_hydro_df">
+<span class="sig-name descname"><span class="pre">stress_hydro_df</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pd.DataFrame</span></em><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterMetrics.stress_hydro_df" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterScan">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.bootstrap.surface_mods.</span></span><span class="sig-name descname"><span class="pre">SurfaceRasterScan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_rattel_shift</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_conf_per_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_dist_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterScan" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ipsuite.base.html#ipsuite.base.base.ProcessSingleAtom" title="ipsuite.base.base.ProcessSingleAtom"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProcessSingleAtom</span></code></a></p>
+<p>This class generates periodic structures by creating a vacuum slab in the
+z-direction and adding additives at various positions. It is useful for generating
+input structures for surface training simulations or in combination with the
+SurfaceRasterMetrics class to analyze how well surface interactions are captured
+in the training.</p>
+<section id="id5">
+<h3>Attributes<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>symbol: str</dt><dd><p>ASE symbol representing the additives.</p>
+</dd>
+<dt>z_dist_list: list[float]</dt><dd><p>A list of z-distances at which additives will be added.</p>
+</dd>
+<dt>n_conf_per_dist: list[int]</dt><dd><p>The number of configurations to generate per z-distance.</p>
+</dd>
+<dt>cell_fraction: list[float]</dt><dd><p>Fractional scaling of the unit cell in x and y directions.</p>
+</dd>
+<dt>random: bool</dt><dd><p>If True, additives are placed randomly within the specified cell_fraction.</p>
+</dd>
+<dt>max_rattel_shift: float</dt><dd><p>Maximum random displacement for each atom.</p>
+</dd>
+<dt>seed: int</dt><dd><p>Seed for randomly distributing the additive.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterScan.cell_fraction">
+<span class="sig-name descname"><span class="pre">cell_fraction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterScan.cell_fraction" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id6">
+<h4>Parameters<a class="headerlink" href="#id6" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterScan.max_rattel_shift">
+<span class="sig-name descname"><span class="pre">max_rattel_shift</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterScan.max_rattel_shift" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id7">
+<h4>Parameters<a class="headerlink" href="#id7" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterScan.n_conf_per_dist">
+<span class="sig-name descname"><span class="pre">n_conf_per_dist</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterScan.n_conf_per_dist" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id8">
+<h4>Parameters<a class="headerlink" href="#id8" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterScan.random">
+<span class="sig-name descname"><span class="pre">random</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterScan.random" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id9">
+<h4>Parameters<a class="headerlink" href="#id9" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterScan.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterScan.run" title="Link to this definition"></a></dt>
+<dd><p>Run the node’s code.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterScan.seed">
+<span class="sig-name descname"><span class="pre">seed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterScan.seed" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id10">
+<h4>Parameters<a class="headerlink" href="#id10" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterScan.symbol">
+<span class="sig-name descname"><span class="pre">symbol</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterScan.symbol" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id11">
+<h4>Parameters<a class="headerlink" href="#id11" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.SurfaceRasterScan.z_dist_list">
+<span class="sig-name descname"><span class="pre">z_dist_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterScan.z_dist_list" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id12">
+<h4>Parameters<a class="headerlink" href="#id12" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.surface_mods.plot_ture_vs_pred">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.bootstrap.surface_mods.</span></span><span class="sig-name descname"><span class="pre">plot_ture_vs_pred</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plots_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.surface_mods.plot_ture_vs_pred" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-ipsuite.bootstrap">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ipsuite.bootstrap" title="Link to this heading"></a></h2>
+<p>The Nodes provided by this submodule can be used to create an initial dataset with some structural diversity.
+This can be useful when starting out from a single configuration and iteratively building datasets with learning on the fly.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.RattleAtoms">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.bootstrap.</span></span><span class="sig-name descname"><span class="pre">RattleAtoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_original</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_outs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.RattleAtoms" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.bootstrap.random_displacements.Bootstrap" title="ipsuite.bootstrap.random_displacements.Bootstrap"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bootstrap</span></code></a></p>
+<p>Create randomly displaced versions of a particular atomic configuration.
+Useful for learning on the fly applications.
+<cite>maximum</cite> specifies the maximal atomic displacement.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.RattleAtoms.bootstrap_configs">
+<span class="sig-name descname"><span class="pre">bootstrap_configs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.RattleAtoms.bootstrap_configs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.RotateMolecules">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.bootstrap.</span></span><span class="sig-name descname"><span class="pre">RotateMolecules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_original</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_outs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.RotateMolecules" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.bootstrap.random_displacements.Bootstrap" title="ipsuite.bootstrap.random_displacements.Bootstrap"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bootstrap</span></code></a></p>
+<p>Create versions of a particular atomic configuration with
+randomly rotated molecular units.
+Only applicable if there are covalent units present in the system.
+Useful for learning on the fly applications.
+<cite>maximum</cite> specifies the maximal molecular rotation in degrees.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.RotateMolecules.bootstrap_configs">
+<span class="sig-name descname"><span class="pre">bootstrap_configs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.RotateMolecules.bootstrap_configs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterMetrics">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.bootstrap.</span></span><span class="sig-name descname"><span class="pre">SurfaceRasterMetrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_df_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces_df_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plots_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterScan" title="ipsuite.bootstrap.surface_mods.SurfaceRasterScan"><span class="pre">SurfaceRasterScan</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stress_deviatoric_df_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stress_df_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stress_hydrostatic_df_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterMetrics" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ipsuite.analysis.model.html#ipsuite.analysis.model.predict.PredictionMetrics" title="ipsuite.analysis.model.predict.PredictionMetrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">PredictionMetrics</span></code></a></p>
+<p>This class analyzes the surface interaction of an additive with a surface.
+It is used to evaluate how well the surface structure is learned during training.
+Note that the bulk atoms should not be rattled in the SurfaceRasterScan node.</p>
+<section id="id13">
+<h3>Attributes<a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>scan_node: SurfaceRasterScan()</dt><dd><p>The node used for generating the structures</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterMetrics.energy_df">
+<span class="sig-name descname"><span class="pre">energy_df</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pd.DataFrame</span></em><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterMetrics.energy_df" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterMetrics.forces_df">
+<span class="sig-name descname"><span class="pre">forces_df</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pd.DataFrame</span></em><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterMetrics.forces_df" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterMetrics.get_plots">
+<span class="sig-name descname"><span class="pre">get_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterMetrics.get_plots" title="Link to this definition"></a></dt>
+<dd><p>Create figures for all available data.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterMetrics.scan_node">
+<span class="sig-name descname"><span class="pre">scan_node</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#ipsuite.bootstrap.surface_mods.SurfaceRasterScan" title="ipsuite.bootstrap.surface_mods.SurfaceRasterScan"><span class="pre">SurfaceRasterScan</span></a></em><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterMetrics.scan_node" title="Link to this definition"></a></dt>
+<dd><p>A dependency field.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterMetrics.stress_deviat_df">
+<span class="sig-name descname"><span class="pre">stress_deviat_df</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pd.DataFrame</span></em><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterMetrics.stress_deviat_df" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterMetrics.stress_df">
+<span class="sig-name descname"><span class="pre">stress_df</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pd.DataFrame</span></em><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterMetrics.stress_df" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterMetrics.stress_hydro_df">
+<span class="sig-name descname"><span class="pre">stress_hydro_df</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pd.DataFrame</span></em><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterMetrics.stress_hydro_df" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterScan">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.bootstrap.</span></span><span class="sig-name descname"><span class="pre">SurfaceRasterScan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_rattel_shift</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_conf_per_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_dist_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterScan" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ipsuite.base.html#ipsuite.base.base.ProcessSingleAtom" title="ipsuite.base.base.ProcessSingleAtom"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProcessSingleAtom</span></code></a></p>
+<p>This class generates periodic structures by creating a vacuum slab in the
+z-direction and adding additives at various positions. It is useful for generating
+input structures for surface training simulations or in combination with the
+SurfaceRasterMetrics class to analyze how well surface interactions are captured
+in the training.</p>
+<section id="id14">
+<h3>Attributes<a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>symbol: str</dt><dd><p>ASE symbol representing the additives.</p>
+</dd>
+<dt>z_dist_list: list[float]</dt><dd><p>A list of z-distances at which additives will be added.</p>
+</dd>
+<dt>n_conf_per_dist: list[int]</dt><dd><p>The number of configurations to generate per z-distance.</p>
+</dd>
+<dt>cell_fraction: list[float]</dt><dd><p>Fractional scaling of the unit cell in x and y directions.</p>
+</dd>
+<dt>random: bool</dt><dd><p>If True, additives are placed randomly within the specified cell_fraction.</p>
+</dd>
+<dt>max_rattel_shift: float</dt><dd><p>Maximum random displacement for each atom.</p>
+</dd>
+<dt>seed: int</dt><dd><p>Seed for randomly distributing the additive.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterScan.cell_fraction">
+<span class="sig-name descname"><span class="pre">cell_fraction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterScan.cell_fraction" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id15">
+<h4>Parameters<a class="headerlink" href="#id15" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterScan.max_rattel_shift">
+<span class="sig-name descname"><span class="pre">max_rattel_shift</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterScan.max_rattel_shift" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id16">
+<h4>Parameters<a class="headerlink" href="#id16" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterScan.n_conf_per_dist">
+<span class="sig-name descname"><span class="pre">n_conf_per_dist</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterScan.n_conf_per_dist" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id17">
+<h4>Parameters<a class="headerlink" href="#id17" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterScan.random">
+<span class="sig-name descname"><span class="pre">random</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterScan.random" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id18">
+<h4>Parameters<a class="headerlink" href="#id18" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterScan.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterScan.run" title="Link to this definition"></a></dt>
+<dd><p>Run the node’s code.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterScan.seed">
+<span class="sig-name descname"><span class="pre">seed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterScan.seed" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id19">
+<h4>Parameters<a class="headerlink" href="#id19" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterScan.symbol">
+<span class="sig-name descname"><span class="pre">symbol</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterScan.symbol" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id20">
+<h4>Parameters<a class="headerlink" href="#id20" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.SurfaceRasterScan.z_dist_list">
+<span class="sig-name descname"><span class="pre">z_dist_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.bootstrap.SurfaceRasterScan.z_dist_list" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id21">
+<h4>Parameters<a class="headerlink" href="#id21" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.TranslateMolecules">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.bootstrap.</span></span><span class="sig-name descname"><span class="pre">TranslateMolecules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_original</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_outs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.TranslateMolecules" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.bootstrap.random_displacements.Bootstrap" title="ipsuite.bootstrap.random_displacements.Bootstrap"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bootstrap</span></code></a></p>
+<p>Create versions of a particular atomic configuration with
+randomly displaced molecular units.
+Only applicable if there are covalent units present in the system.
+Useful for learning on the fly applications.
+<cite>maximum</cite> specifies the maximal molecular displacement.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.bootstrap.TranslateMolecules.bootstrap_configs">
+<span class="sig-name descname"><span class="pre">bootstrap_configs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.bootstrap.TranslateMolecules.bootstrap_configs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ipsuite.base.html" class="btn btn-neutral float-left" title="ipsuite.base package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ipsuite.calculators.html" class="btn btn-neutral float-right" title="ipsuite.calculators package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, zincwarecode.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

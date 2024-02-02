@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ipsuite.configuration_selection package &mdash; IPSuite 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a58bc63e"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ipsuite.data_loading package" href="ipsuite.data_loading.html" />
+    <link rel="prev" title="ipsuite.configuration_generation package" href="ipsuite.configuration_generation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            IPSuite
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ipsuite</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ipsuite.html">ipsuite package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ipsuite.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.analysis.html">ipsuite.analysis package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.base.html">ipsuite.base package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.bootstrap.html">ipsuite.bootstrap package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.calculators.html">ipsuite.calculators package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_comparison.html">ipsuite.configuration_comparison package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.configuration_generation.html">ipsuite.configuration_generation package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ipsuite.configuration_selection package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.data_loading.html">ipsuite.data_loading package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.fields.html">ipsuite.fields package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.geometry.html">ipsuite.geometry package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.models.html">ipsuite.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.project.html">ipsuite.project package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.static_data.html">ipsuite.static_data package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ipsuite.utils.html">ipsuite.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#module-ipsuite.nodes">ipsuite.nodes module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ipsuite.html#module-ipsuite">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cheatsheet.html">Cheatsheet</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">IPSuite</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ipsuite</a></li>
+          <li class="breadcrumb-item"><a href="ipsuite.html">ipsuite package</a></li>
+      <li class="breadcrumb-item active">ipsuite.configuration_selection package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/ipsuite.configuration_selection.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ipsuite-configuration-selection-package">
+<h1>ipsuite.configuration_selection package<a class="headerlink" href="#ipsuite-configuration-selection-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-ipsuite.configuration_selection.base">
+<span id="ipsuite-configuration-selection-base-module"></span><h2>ipsuite.configuration_selection.base module<a class="headerlink" href="#module-ipsuite.configuration_selection.base" title="Link to this heading"></a></h2>
+<p>Base Node for ConfigurationSelection.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.base.BatchConfigurationSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.base.</span></span><span class="sig-name descname"><span class="pre">BatchConfigurationSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.base.BatchConfigurationSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>Base node for BatchConfigurationSelection.</p>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>data: list[ase.Atoms]</dt><dd><p>The atoms data to process. This must be an input to the Node</p>
+</dd>
+<dt>atoms: list[ase.Atoms]</dt><dd><p>The processed atoms data. This is an output of the Node.
+It does not have to be ‘field.Atoms’ but can also be e.g. a ‘property’.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.base.BatchConfigurationSelection.train_data">
+<span class="sig-name descname"><span class="pre">train_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.configuration_selection.base.BatchConfigurationSelection.train_data" title="Link to this definition"></a></dt>
+<dd><p>A dependency field.</p>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.base.ConfigurationSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.base.</span></span><span class="sig-name descname"><span class="pre">ConfigurationSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Node</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Node</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="ipsuite.base.html#ipsuite.base.protocol.HasSelectedConfigurations" title="ipsuite.base.protocol.HasSelectedConfigurations"><span class="pre">HasSelectedConfigurations</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ipsuite.base.html#ipsuite.base.base.ProcessAtoms" title="ipsuite.base.base.ProcessAtoms"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProcessAtoms</span></code></a></p>
+<p>Base Node for ConfigurationSelection.</p>
+<section id="id1">
+<h3>Attributes<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>data: list[Atoms]|list[list[Atoms]]|utils.types.SupportsAtoms</dt><dd><p>the data to select from</p>
+</dd>
+<dt>exclude_configurations: dict[str, list]|utils.types.SupportsSelectedConfigurations</dt><dd><p>Atoms to exclude from the</p>
+</dd>
+<dt>exclude: list[zntrack.Node]|zntrack.Node|None</dt><dd><p>Exclude the selected configurations from these nodes.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.base.ConfigurationSelection.atoms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atoms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.configuration_selection.base.ConfigurationSelection.atoms" title="Link to this definition"></a></dt>
+<dd><p>Get a list of the selected atoms objects.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.base.ConfigurationSelection.exclude">
+<span class="sig-name descname"><span class="pre">exclude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Node</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Node</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.configuration_selection.base.ConfigurationSelection.exclude" title="Link to this definition"></a></dt>
+<dd><p>A dependency field.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.base.ConfigurationSelection.exclude_configurations">
+<span class="sig-name descname"><span class="pre">exclude_configurations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="ipsuite.base.html#ipsuite.base.protocol.HasSelectedConfigurations" title="ipsuite.base.protocol.HasSelectedConfigurations"><span class="pre">HasSelectedConfigurations</span></a></em><a class="headerlink" href="#ipsuite.configuration_selection.base.ConfigurationSelection.exclude_configurations" title="Link to this definition"></a></dt>
+<dd><p>A dependency field.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.base.ConfigurationSelection.excluded_atoms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">excluded_atoms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.configuration_selection.base.ConfigurationSelection.excluded_atoms" title="Link to this definition"></a></dt>
+<dd><p>Get a list of the atoms objects that were not selected.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.base.ConfigurationSelection.img_selection">
+<span class="sig-name descname"><span class="pre">img_selection</span></span><a class="headerlink" href="#ipsuite.configuration_selection.base.ConfigurationSelection.img_selection" title="Link to this definition"></a></dt>
+<dd><p>A field that is used as a dvc option.</p>
+<p>The DVCOption field is designed for paths only.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.base.ConfigurationSelection.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.base.ConfigurationSelection.run" title="Link to this definition"></a></dt>
+<dd><p>ZnTrack Node Run method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.base.ConfigurationSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.base.ConfigurationSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Run the selection method.</p>
+<section id="id2">
+<h4>Attributes<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>atoms_lst: List[ase.Atoms]</dt><dd><p>List of ase Atoms objects to select configurations from.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h4>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>List[int]:</dt><dd><p>A list of the selected ids from 0 .. len(atoms_lst)</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.base.ConfigurationSelection.selected_configurations">
+<span class="sig-name descname"><span class="pre">selected_configurations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.configuration_selection.base.ConfigurationSelection.selected_configurations" title="Link to this definition"></a></dt>
+<dd><p>A field that is saved to disk.</p>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.configuration_selection.filter">
+<span id="ipsuite-configuration-selection-filter-module"></span><h2>ipsuite.configuration_selection.filter module<a class="headerlink" href="#module-ipsuite.configuration_selection.filter" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.filter.FilterOutlier">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.filter.</span></span><span class="sig-name descname"><span class="pre">FilterOutlier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'above'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'below'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'both'</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histogram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.filter.FilterOutlier" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ipsuite.base.html#ipsuite.base.base.ProcessAtoms" title="ipsuite.base.base.ProcessAtoms"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProcessAtoms</span></code></a></p>
+<p>Remove outliers from the data based on a given property.</p>
+<section id="id3">
+<h3>Attributes<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>key<span class="classifier">str, default=”energy”</span></dt><dd><p>The property to filter on.</p>
+</dd>
+<dt>threshold<span class="classifier">float, default=3</span></dt><dd><p>The threshold for filtering in units of standard deviations.</p>
+</dd>
+<dt>direction<span class="classifier">{“above”, “below”, “both”}, default=”both”</span></dt><dd><p>The direction to filter in.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.filter.FilterOutlier.atoms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atoms</span></span><a class="headerlink" href="#ipsuite.configuration_selection.filter.FilterOutlier.atoms" title="Link to this definition"></a></dt>
+<dd><p>Store list[ase.Atoms] in an ASE database.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.filter.FilterOutlier.direction">
+<span class="sig-name descname"><span class="pre">direction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'above'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'below'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'both'</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.configuration_selection.filter.FilterOutlier.direction" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.filter.FilterOutlier.excluded_atoms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">excluded_atoms</span></span><a class="headerlink" href="#ipsuite.configuration_selection.filter.FilterOutlier.excluded_atoms" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.filter.FilterOutlier.filtered_indices">
+<span class="sig-name descname"><span class="pre">filtered_indices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ipsuite.configuration_selection.filter.FilterOutlier.filtered_indices" title="Link to this definition"></a></dt>
+<dd><p>A field that is saved to disk.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.filter.FilterOutlier.histogram">
+<span class="sig-name descname"><span class="pre">histogram</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#ipsuite.configuration_selection.filter.FilterOutlier.histogram" title="Link to this definition"></a></dt>
+<dd><p>A field that is used as a dvc option.</p>
+<p>The DVCOption field is designed for paths only.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.filter.FilterOutlier.key">
+<span class="sig-name descname"><span class="pre">key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#ipsuite.configuration_selection.filter.FilterOutlier.key" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id4">
+<h4>Parameters<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.filter.FilterOutlier.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.filter.FilterOutlier.run" title="Link to this definition"></a></dt>
+<dd><p>Run the node’s code.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.filter.FilterOutlier.threshold">
+<span class="sig-name descname"><span class="pre">threshold</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#ipsuite.configuration_selection.filter.FilterOutlier.threshold" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id5">
+<h4>Parameters<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.configuration_selection.index">
+<span id="ipsuite-configuration-selection-index-module"></span><h2>ipsuite.configuration_selection.index module<a class="headerlink" href="#module-ipsuite.configuration_selection.index" title="Link to this heading"></a></h2>
+<p>Select configurations by item, e.g. slice or list of indices.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.index.IndexSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.index.</span></span><span class="sig-name descname"><span class="pre">IndexSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.index.IndexSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>Select atoms based on getitems.</p>
+<section id="id6">
+<h3>Attributes<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<p>indices: list[int]|slice|</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.index.IndexSelection.indices">
+<span class="sig-name descname"><span class="pre">indices</span></span><a class="headerlink" href="#ipsuite.configuration_selection.index.IndexSelection.indices" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id7">
+<h4>Parameters<a class="headerlink" href="#id7" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.index.IndexSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.index.IndexSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Select Atoms randomly.</p>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.configuration_selection.kernel">
+<span id="ipsuite-configuration-selection-kernel-module"></span><h2>ipsuite.configuration_selection.kernel module<a class="headerlink" href="#module-ipsuite.configuration_selection.kernel" title="Link to this heading"></a></h2>
+<p>Use a Kernel and some initial configuration to select further configurations.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.kernel.KernelSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.kernel.</span></span><span class="sig-name descname"><span class="pre">KernelSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correlation_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ase.Atoms</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ipsuite.configuration_comparison.ConfigurationComparison</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_per_cycle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.kernel.KernelSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>Use the chosen kernel to selected configurations furthes apart.</p>
+<section id="id8">
+<h3>Attributes<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>n_configurations: int</dt><dd><p>number of configurations to select</p>
+</dd>
+</dl>
+<p>kernel: ConfigurationComparison = zn.Nodes()
+points_per_cycle: int</p>
+<blockquote>
+<div><p>Number of configurations to add before recomputing the MMK</p>
+</div></blockquote>
+<dl class="simple">
+<dt>correlation_time: int</dt><dd><p>Ideally the correlation time of the data to only sample from uncorrelated data.
+This will only sample from configurations that are configuration_time apart.
+The smaller, the slower is the selection but the number of looked at
+configuration is larger giving potentially better results.</p>
+</dd>
+<dt>seed: int</dt><dd><p>seed selection in case of random picking initial configuration</p>
+</dd>
+<dt>threshold: float</dt><dd><p>threshold to stop the selection. The maximum number of configurations
+is still n_configurations. If the threshold is reached before, the
+selection stops. Typical values can be 0.995</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.kernel.KernelSelection.correlation_time">
+<span class="sig-name descname"><span class="pre">correlation_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#ipsuite.configuration_selection.kernel.KernelSelection.correlation_time" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id9">
+<h4>Parameters<a class="headerlink" href="#id9" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.kernel.KernelSelection.initial_configurations">
+<span class="sig-name descname"><span class="pre">initial_configurations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ase.Atoms</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.configuration_selection.kernel.KernelSelection.initial_configurations" title="Link to this definition"></a></dt>
+<dd><p>A dependency field.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.kernel.KernelSelection.kernel">
+<span class="sig-name descname"><span class="pre">kernel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ipsuite.configuration_comparison.ConfigurationComparison</span></em><a class="headerlink" href="#ipsuite.configuration_selection.kernel.KernelSelection.kernel" title="Link to this definition"></a></dt>
+<dd><p>A dependency field.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.kernel.KernelSelection.kernel_results">
+<span class="sig-name descname"><span class="pre">kernel_results</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.configuration_selection.kernel.KernelSelection.kernel_results" title="Link to this definition"></a></dt>
+<dd><p>A field that is saved to disk.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.kernel.KernelSelection.n_configurations">
+<span class="sig-name descname"><span class="pre">n_configurations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#ipsuite.configuration_selection.kernel.KernelSelection.n_configurations" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id10">
+<h4>Parameters<a class="headerlink" href="#id10" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.kernel.KernelSelection.plot_kernel">
+<span class="sig-name descname"><span class="pre">plot_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.kernel.KernelSelection.plot_kernel" title="Link to this definition"></a></dt>
+<dd><p>Generate an animation of the Kernel change while extending the reference.</p>
+<section id="raises">
+<h4>Raises<a class="headerlink" href="#raises" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>ImportError: the imageio package is not shipped with mlsuite by default but is</dt><dd><p>required for generating the animation.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.kernel.KernelSelection.points_per_cycle">
+<span class="sig-name descname"><span class="pre">points_per_cycle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#ipsuite.configuration_selection.kernel.KernelSelection.points_per_cycle" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id11">
+<h4>Parameters<a class="headerlink" href="#id11" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.kernel.KernelSelection.seed">
+<span class="sig-name descname"><span class="pre">seed</span></span><a class="headerlink" href="#ipsuite.configuration_selection.kernel.KernelSelection.seed" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id12">
+<h4>Parameters<a class="headerlink" href="#id12" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.kernel.KernelSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.kernel.KernelSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Atom Selection method.</p>
+<section id="id13">
+<h4>Parameters<a class="headerlink" href="#id13" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>atoms_lst: typing.List[ase.Atoms]</dt><dd><p>list of atoms objects</p>
+</dd>
+</dl>
+</section>
+<section id="id14">
+<h4>Returns<a class="headerlink" href="#id14" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>typing.List[int]:</dt><dd><p>list containing the taken indices</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.kernel.KernelSelection.threshold">
+<span class="sig-name descname"><span class="pre">threshold</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#ipsuite.configuration_selection.kernel.KernelSelection.threshold" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id15">
+<h4>Parameters<a class="headerlink" href="#id15" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.configuration_selection.random">
+<span id="ipsuite-configuration-selection-random-module"></span><h2>ipsuite.configuration_selection.random module<a class="headerlink" href="#module-ipsuite.configuration_selection.random" title="Link to this heading"></a></h2>
+<p>Module for selecting Atoms randomly.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.random.RandomSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.random.</span></span><span class="sig-name descname"><span class="pre">RandomSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.random.RandomSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>Select atoms randomly.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.random.RandomSelection.n_configurations">
+<span class="sig-name descname"><span class="pre">n_configurations</span></span><a class="headerlink" href="#ipsuite.configuration_selection.random.RandomSelection.n_configurations" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id16">
+<h3>Parameters<a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.random.RandomSelection.seed">
+<span class="sig-name descname"><span class="pre">seed</span></span><a class="headerlink" href="#ipsuite.configuration_selection.random.RandomSelection.seed" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id17">
+<h3>Parameters<a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.random.RandomSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.random.RandomSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Select Atoms randomly.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.configuration_selection.split">
+<span id="ipsuite-configuration-selection-split-module"></span><h2>ipsuite.configuration_selection.split module<a class="headerlink" href="#module-ipsuite.configuration_selection.split" title="Link to this heading"></a></h2>
+<p>Module for selecting Atoms randomly.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.split.SplitSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.split.</span></span><span class="sig-name descname"><span class="pre">SplitSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.split.SplitSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>Select the first n % of the data.</p>
+<section id="id18">
+<h3>Attributes<a class="headerlink" href="#id18" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>split<span class="classifier">float</span></dt><dd><p>The percentage of the data to select.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.split.SplitSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.split.SplitSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Select Atoms randomly.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.split.SplitSelection.split">
+<span class="sig-name descname"><span class="pre">split</span></span><a class="headerlink" href="#ipsuite.configuration_selection.split.SplitSelection.split" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id19">
+<h4>Parameters<a class="headerlink" href="#id19" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.configuration_selection.threshold">
+<span id="ipsuite-configuration-selection-threshold-module"></span><h2>ipsuite.configuration_selection.threshold module<a class="headerlink" href="#module-ipsuite.configuration_selection.threshold" title="Link to this heading"></a></h2>
+<p>Selecting atoms with a given step between them.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.threshold.ThresholdSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.threshold.</span></span><span class="sig-name descname"><span class="pre">ThresholdSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim_reduction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.threshold.ThresholdSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>Select atoms based on a given threshold.</p>
+<p>Select atoms above a given threshold or the n_configurations with the
+highest / lowest value. Typically useful for uncertainty based selection.</p>
+<section id="id20">
+<h3>Attributes<a class="headerlink" href="#id20" title="Link to this heading"></a></h3>
+<dl>
+<dt>key: str</dt><dd><p>The key in ‘calc.results’ to select from</p>
+</dd>
+<dt>threshold: float, optional</dt><dd><p>All values above (or below if negative) this threshold will be selected.
+If n_configurations is given, ‘self.threshold’ will be prioritized,
+but a maximum of n_configurations will be selected.</p>
+</dd>
+<dt>reference: str, optional</dt><dd><p>For visualizing the selection a reference value can be given.
+For ‘energy_uncertainty’ this would typically be ‘energy’.</p>
+</dd>
+<dt>n_configurations: int, optional</dt><dd><p>Number of configurations to select.</p>
+</dd>
+<dt>min_distance: int, optional</dt><dd><p>Minimum distance between selected configurations.</p>
+</dd>
+<dt>dim_reduction: str, optional</dt><dd><p>Reduces the dimensionality of the chosen uncertainty along the specified axis
+by calculating either the maximum or mean value.</p>
+<p>Choose from [“max”, “mean”]</p>
+</dd>
+<dt>reduction_axis: tuple(int), optional</dt><dd><p>Specifies the axis along which the reduction occurs.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.threshold.ThresholdSelection.dim_reduction">
+<span class="sig-name descname"><span class="pre">dim_reduction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#ipsuite.configuration_selection.threshold.ThresholdSelection.dim_reduction" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id21">
+<h4>Parameters<a class="headerlink" href="#id21" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.threshold.ThresholdSelection.get_selection">
+<span class="sig-name descname"><span class="pre">get_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.threshold.ThresholdSelection.get_selection" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.threshold.ThresholdSelection.key">
+<span class="sig-name descname"><span class="pre">key</span></span><a class="headerlink" href="#ipsuite.configuration_selection.threshold.ThresholdSelection.key" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id22">
+<h4>Parameters<a class="headerlink" href="#id22" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.threshold.ThresholdSelection.min_distance">
+<span class="sig-name descname"><span class="pre">min_distance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#ipsuite.configuration_selection.threshold.ThresholdSelection.min_distance" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id23">
+<h4>Parameters<a class="headerlink" href="#id23" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.threshold.ThresholdSelection.n_configurations">
+<span class="sig-name descname"><span class="pre">n_configurations</span></span><a class="headerlink" href="#ipsuite.configuration_selection.threshold.ThresholdSelection.n_configurations" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id24">
+<h4>Parameters<a class="headerlink" href="#id24" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.threshold.ThresholdSelection.reduction_axis">
+<span class="sig-name descname"><span class="pre">reduction_axis</span></span><a class="headerlink" href="#ipsuite.configuration_selection.threshold.ThresholdSelection.reduction_axis" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id25">
+<h4>Parameters<a class="headerlink" href="#id25" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.threshold.ThresholdSelection.reference">
+<span class="sig-name descname"><span class="pre">reference</span></span><a class="headerlink" href="#ipsuite.configuration_selection.threshold.ThresholdSelection.reference" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id26">
+<h4>Parameters<a class="headerlink" href="#id26" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.threshold.ThresholdSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_fig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.threshold.ThresholdSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Take every nth (step) object of a given atoms list.</p>
+<section id="id27">
+<h4>Parameters<a class="headerlink" href="#id27" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>atoms_lst: typing.List[ase.Atoms]</dt><dd><p>list of atoms objects to arange</p>
+</dd>
+</dl>
+</section>
+<section id="id28">
+<h4>Returns<a class="headerlink" href="#id28" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>typing.List[int]:</dt><dd><p>list containing the taken indices</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.threshold.ThresholdSelection.threshold">
+<span class="sig-name descname"><span class="pre">threshold</span></span><a class="headerlink" href="#ipsuite.configuration_selection.threshold.ThresholdSelection.threshold" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id29">
+<h4>Parameters<a class="headerlink" href="#id29" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.threshold.check_dimension">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.threshold.</span></span><span class="sig-name descname"><span class="pre">check_dimension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.threshold.check_dimension" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.threshold.max_reduction">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.threshold.</span></span><span class="sig-name descname"><span class="pre">max_reduction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.threshold.max_reduction" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.threshold.mean_reduction">
+<span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.threshold.</span></span><span class="sig-name descname"><span class="pre">mean_reduction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.threshold.mean_reduction" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-ipsuite.configuration_selection.uniform_arange">
+<span id="ipsuite-configuration-selection-uniform-arange-module"></span><h2>ipsuite.configuration_selection.uniform_arange module<a class="headerlink" href="#module-ipsuite.configuration_selection.uniform_arange" title="Link to this heading"></a></h2>
+<p>Selecting atoms with a given step between them.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.uniform_arange.UniformArangeSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.uniform_arange.</span></span><span class="sig-name descname"><span class="pre">UniformArangeSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.uniform_arange.UniformArangeSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>Class to perform a uniform arange action on a given atoms object list.</p>
+<section id="id30">
+<h3>Attributes<a class="headerlink" href="#id30" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>step: int</dt><dd><p>setting the step, every nth (step) object will be taken</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.uniform_arange.UniformArangeSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.uniform_arange.UniformArangeSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Take every nth (step) object of a given atoms list.</p>
+<section id="id31">
+<h4>Parameters<a class="headerlink" href="#id31" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>atoms_lst: typing.List[ase.Atoms]</dt><dd><p>list of atoms objects to arange</p>
+</dd>
+</dl>
+</section>
+<section id="id32">
+<h4>Returns<a class="headerlink" href="#id32" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>typing.List[int]:</dt><dd><p>list containing the taken indices</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.uniform_arange.UniformArangeSelection.step">
+<span class="sig-name descname"><span class="pre">step</span></span><a class="headerlink" href="#ipsuite.configuration_selection.uniform_arange.UniformArangeSelection.step" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id33">
+<h4>Parameters<a class="headerlink" href="#id33" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.configuration_selection.uniform_energetic">
+<span id="ipsuite-configuration-selection-uniform-energetic-module"></span><h2>ipsuite.configuration_selection.uniform_energetic module<a class="headerlink" href="#module-ipsuite.configuration_selection.uniform_energetic" title="Link to this heading"></a></h2>
+<p>Module for selecting atoms uniformly in energy space.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.uniform_energetic.UniformEnergeticSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.uniform_energetic.</span></span><span class="sig-name descname"><span class="pre">UniformEnergeticSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.uniform_energetic.UniformEnergeticSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>A class to perform data selection based on uniform global energy selection.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.uniform_energetic.UniformEnergeticSelection.n_configurations">
+<span class="sig-name descname"><span class="pre">n_configurations</span></span><a class="headerlink" href="#ipsuite.configuration_selection.uniform_energetic.UniformEnergeticSelection.n_configurations" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id34">
+<h3>Parameters<a class="headerlink" href="#id34" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.uniform_energetic.UniformEnergeticSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.uniform_energetic.UniformEnergeticSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Select Atoms uniform in energy space.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.configuration_selection.uniform_temporal">
+<span id="ipsuite-configuration-selection-uniform-temporal-module"></span><h2>ipsuite.configuration_selection.uniform_temporal module<a class="headerlink" href="#module-ipsuite.configuration_selection.uniform_temporal" title="Link to this heading"></a></h2>
+<p>Module for selecting atoms uniform in time.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.uniform_temporal.UniformTemporalSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.uniform_temporal.</span></span><span class="sig-name descname"><span class="pre">UniformTemporalSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.uniform_temporal.UniformTemporalSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>Select atoms uniform in time.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.uniform_temporal.UniformTemporalSelection.n_configurations">
+<span class="sig-name descname"><span class="pre">n_configurations</span></span><a class="headerlink" href="#ipsuite.configuration_selection.uniform_temporal.UniformTemporalSelection.n_configurations" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id35">
+<h3>Parameters<a class="headerlink" href="#id35" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.uniform_temporal.UniformTemporalSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.uniform_temporal.UniformTemporalSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Select Atoms uniform in time.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-ipsuite.configuration_selection">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ipsuite.configuration_selection" title="Link to this heading"></a></h2>
+<p>Configuration Selection Nodes.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ConfigurationSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.</span></span><span class="sig-name descname"><span class="pre">ConfigurationSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Node</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Node</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="ipsuite.base.html#ipsuite.base.protocol.HasSelectedConfigurations" title="ipsuite.base.protocol.HasSelectedConfigurations"><span class="pre">HasSelectedConfigurations</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.ConfigurationSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ipsuite.base.html#ipsuite.base.base.ProcessAtoms" title="ipsuite.base.base.ProcessAtoms"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProcessAtoms</span></code></a></p>
+<p>Base Node for ConfigurationSelection.</p>
+<section id="id36">
+<h3>Attributes<a class="headerlink" href="#id36" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>data: list[Atoms]|list[list[Atoms]]|utils.types.SupportsAtoms</dt><dd><p>the data to select from</p>
+</dd>
+<dt>exclude_configurations: dict[str, list]|utils.types.SupportsSelectedConfigurations</dt><dd><p>Atoms to exclude from the</p>
+</dd>
+<dt>exclude: list[zntrack.Node]|zntrack.Node|None</dt><dd><p>Exclude the selected configurations from these nodes.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ConfigurationSelection.atoms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atoms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.configuration_selection.ConfigurationSelection.atoms" title="Link to this definition"></a></dt>
+<dd><p>Get a list of the selected atoms objects.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ConfigurationSelection.exclude">
+<span class="sig-name descname"><span class="pre">exclude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Node</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Node</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.configuration_selection.ConfigurationSelection.exclude" title="Link to this definition"></a></dt>
+<dd><p>A dependency field.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ConfigurationSelection.exclude_configurations">
+<span class="sig-name descname"><span class="pre">exclude_configurations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="ipsuite.base.html#ipsuite.base.protocol.HasSelectedConfigurations" title="ipsuite.base.protocol.HasSelectedConfigurations"><span class="pre">HasSelectedConfigurations</span></a></em><a class="headerlink" href="#ipsuite.configuration_selection.ConfigurationSelection.exclude_configurations" title="Link to this definition"></a></dt>
+<dd><p>A dependency field.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ConfigurationSelection.excluded_atoms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">excluded_atoms</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.configuration_selection.ConfigurationSelection.excluded_atoms" title="Link to this definition"></a></dt>
+<dd><p>Get a list of the atoms objects that were not selected.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ConfigurationSelection.img_selection">
+<span class="sig-name descname"><span class="pre">img_selection</span></span><a class="headerlink" href="#ipsuite.configuration_selection.ConfigurationSelection.img_selection" title="Link to this definition"></a></dt>
+<dd><p>A field that is used as a dvc option.</p>
+<p>The DVCOption field is designed for paths only.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ConfigurationSelection.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.ConfigurationSelection.run" title="Link to this definition"></a></dt>
+<dd><p>ZnTrack Node Run method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ConfigurationSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.ConfigurationSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Run the selection method.</p>
+<section id="id37">
+<h4>Attributes<a class="headerlink" href="#id37" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>atoms_lst: List[ase.Atoms]</dt><dd><p>List of ase Atoms objects to select configurations from.</p>
+</dd>
+</dl>
+</section>
+<section id="id38">
+<h4>Returns<a class="headerlink" href="#id38" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>List[int]:</dt><dd><p>A list of the selected ids from 0 .. len(atoms_lst)</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ConfigurationSelection.selected_configurations">
+<span class="sig-name descname"><span class="pre">selected_configurations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.configuration_selection.ConfigurationSelection.selected_configurations" title="Link to this definition"></a></dt>
+<dd><p>A field that is saved to disk.</p>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.FilterOutlier">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.</span></span><span class="sig-name descname"><span class="pre">FilterOutlier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'above'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'below'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'both'</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histogram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.FilterOutlier" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ipsuite.base.html#ipsuite.base.base.ProcessAtoms" title="ipsuite.base.base.ProcessAtoms"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProcessAtoms</span></code></a></p>
+<p>Remove outliers from the data based on a given property.</p>
+<section id="id39">
+<h3>Attributes<a class="headerlink" href="#id39" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>key<span class="classifier">str, default=”energy”</span></dt><dd><p>The property to filter on.</p>
+</dd>
+<dt>threshold<span class="classifier">float, default=3</span></dt><dd><p>The threshold for filtering in units of standard deviations.</p>
+</dd>
+<dt>direction<span class="classifier">{“above”, “below”, “both”}, default=”both”</span></dt><dd><p>The direction to filter in.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.FilterOutlier.atoms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atoms</span></span><a class="headerlink" href="#ipsuite.configuration_selection.FilterOutlier.atoms" title="Link to this definition"></a></dt>
+<dd><p>Store list[ase.Atoms] in an ASE database.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.FilterOutlier.direction">
+<span class="sig-name descname"><span class="pre">direction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'above'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'below'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'both'</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.configuration_selection.FilterOutlier.direction" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id40">
+<h4>Parameters<a class="headerlink" href="#id40" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.FilterOutlier.excluded_atoms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">excluded_atoms</span></span><a class="headerlink" href="#ipsuite.configuration_selection.FilterOutlier.excluded_atoms" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.FilterOutlier.filtered_indices">
+<span class="sig-name descname"><span class="pre">filtered_indices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ipsuite.configuration_selection.FilterOutlier.filtered_indices" title="Link to this definition"></a></dt>
+<dd><p>A field that is saved to disk.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.FilterOutlier.histogram">
+<span class="sig-name descname"><span class="pre">histogram</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#ipsuite.configuration_selection.FilterOutlier.histogram" title="Link to this definition"></a></dt>
+<dd><p>A field that is used as a dvc option.</p>
+<p>The DVCOption field is designed for paths only.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.FilterOutlier.key">
+<span class="sig-name descname"><span class="pre">key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#ipsuite.configuration_selection.FilterOutlier.key" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id41">
+<h4>Parameters<a class="headerlink" href="#id41" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.FilterOutlier.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.FilterOutlier.run" title="Link to this definition"></a></dt>
+<dd><p>Run the node’s code.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.FilterOutlier.threshold">
+<span class="sig-name descname"><span class="pre">threshold</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#ipsuite.configuration_selection.FilterOutlier.threshold" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id42">
+<h4>Parameters<a class="headerlink" href="#id42" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.IndexSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.</span></span><span class="sig-name descname"><span class="pre">IndexSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.IndexSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>Select atoms based on getitems.</p>
+<section id="id43">
+<h3>Attributes<a class="headerlink" href="#id43" title="Link to this heading"></a></h3>
+<p>indices: list[int]|slice|</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.IndexSelection.indices">
+<span class="sig-name descname"><span class="pre">indices</span></span><a class="headerlink" href="#ipsuite.configuration_selection.IndexSelection.indices" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id44">
+<h4>Parameters<a class="headerlink" href="#id44" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.IndexSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.IndexSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Select Atoms randomly.</p>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.KernelSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.</span></span><span class="sig-name descname"><span class="pre">KernelSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correlation_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ase.Atoms</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ipsuite.configuration_comparison.ConfigurationComparison</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_per_cycle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.KernelSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>Use the chosen kernel to selected configurations furthes apart.</p>
+<section id="id45">
+<h3>Attributes<a class="headerlink" href="#id45" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>n_configurations: int</dt><dd><p>number of configurations to select</p>
+</dd>
+</dl>
+<p>kernel: ConfigurationComparison = zn.Nodes()
+points_per_cycle: int</p>
+<blockquote>
+<div><p>Number of configurations to add before recomputing the MMK</p>
+</div></blockquote>
+<dl class="simple">
+<dt>correlation_time: int</dt><dd><p>Ideally the correlation time of the data to only sample from uncorrelated data.
+This will only sample from configurations that are configuration_time apart.
+The smaller, the slower is the selection but the number of looked at
+configuration is larger giving potentially better results.</p>
+</dd>
+<dt>seed: int</dt><dd><p>seed selection in case of random picking initial configuration</p>
+</dd>
+<dt>threshold: float</dt><dd><p>threshold to stop the selection. The maximum number of configurations
+is still n_configurations. If the threshold is reached before, the
+selection stops. Typical values can be 0.995</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.KernelSelection.correlation_time">
+<span class="sig-name descname"><span class="pre">correlation_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#ipsuite.configuration_selection.KernelSelection.correlation_time" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id46">
+<h4>Parameters<a class="headerlink" href="#id46" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.KernelSelection.initial_configurations">
+<span class="sig-name descname"><span class="pre">initial_configurations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ase.Atoms</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.configuration_selection.KernelSelection.initial_configurations" title="Link to this definition"></a></dt>
+<dd><p>A dependency field.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.KernelSelection.kernel">
+<span class="sig-name descname"><span class="pre">kernel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ipsuite.configuration_comparison.ConfigurationComparison</span></em><a class="headerlink" href="#ipsuite.configuration_selection.KernelSelection.kernel" title="Link to this definition"></a></dt>
+<dd><p>A dependency field.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.KernelSelection.kernel_results">
+<span class="sig-name descname"><span class="pre">kernel_results</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ipsuite.configuration_selection.KernelSelection.kernel_results" title="Link to this definition"></a></dt>
+<dd><p>A field that is saved to disk.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.KernelSelection.n_configurations">
+<span class="sig-name descname"><span class="pre">n_configurations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#ipsuite.configuration_selection.KernelSelection.n_configurations" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id47">
+<h4>Parameters<a class="headerlink" href="#id47" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.KernelSelection.plot_kernel">
+<span class="sig-name descname"><span class="pre">plot_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.KernelSelection.plot_kernel" title="Link to this definition"></a></dt>
+<dd><p>Generate an animation of the Kernel change while extending the reference.</p>
+<section id="id48">
+<h4>Raises<a class="headerlink" href="#id48" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>ImportError: the imageio package is not shipped with mlsuite by default but is</dt><dd><p>required for generating the animation.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.KernelSelection.points_per_cycle">
+<span class="sig-name descname"><span class="pre">points_per_cycle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#ipsuite.configuration_selection.KernelSelection.points_per_cycle" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id49">
+<h4>Parameters<a class="headerlink" href="#id49" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.KernelSelection.seed">
+<span class="sig-name descname"><span class="pre">seed</span></span><a class="headerlink" href="#ipsuite.configuration_selection.KernelSelection.seed" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id50">
+<h4>Parameters<a class="headerlink" href="#id50" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.KernelSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.KernelSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Atom Selection method.</p>
+<section id="id51">
+<h4>Parameters<a class="headerlink" href="#id51" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>atoms_lst: typing.List[ase.Atoms]</dt><dd><p>list of atoms objects</p>
+</dd>
+</dl>
+</section>
+<section id="id52">
+<h4>Returns<a class="headerlink" href="#id52" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>typing.List[int]:</dt><dd><p>list containing the taken indices</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.KernelSelection.threshold">
+<span class="sig-name descname"><span class="pre">threshold</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#ipsuite.configuration_selection.KernelSelection.threshold" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id53">
+<h4>Parameters<a class="headerlink" href="#id53" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.RandomSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.</span></span><span class="sig-name descname"><span class="pre">RandomSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.RandomSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>Select atoms randomly.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.RandomSelection.n_configurations">
+<span class="sig-name descname"><span class="pre">n_configurations</span></span><a class="headerlink" href="#ipsuite.configuration_selection.RandomSelection.n_configurations" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id54">
+<h3>Parameters<a class="headerlink" href="#id54" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.RandomSelection.seed">
+<span class="sig-name descname"><span class="pre">seed</span></span><a class="headerlink" href="#ipsuite.configuration_selection.RandomSelection.seed" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id55">
+<h3>Parameters<a class="headerlink" href="#id55" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.RandomSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.RandomSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Select Atoms randomly.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.SplitSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.</span></span><span class="sig-name descname"><span class="pre">SplitSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.SplitSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>Select the first n % of the data.</p>
+<section id="id56">
+<h3>Attributes<a class="headerlink" href="#id56" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>split<span class="classifier">float</span></dt><dd><p>The percentage of the data to select.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.SplitSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.SplitSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Select Atoms randomly.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.SplitSelection.split">
+<span class="sig-name descname"><span class="pre">split</span></span><a class="headerlink" href="#ipsuite.configuration_selection.SplitSelection.split" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id57">
+<h4>Parameters<a class="headerlink" href="#id57" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ThresholdSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.</span></span><span class="sig-name descname"><span class="pre">ThresholdSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim_reduction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.ThresholdSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>Select atoms based on a given threshold.</p>
+<p>Select atoms above a given threshold or the n_configurations with the
+highest / lowest value. Typically useful for uncertainty based selection.</p>
+<section id="id58">
+<h3>Attributes<a class="headerlink" href="#id58" title="Link to this heading"></a></h3>
+<dl>
+<dt>key: str</dt><dd><p>The key in ‘calc.results’ to select from</p>
+</dd>
+<dt>threshold: float, optional</dt><dd><p>All values above (or below if negative) this threshold will be selected.
+If n_configurations is given, ‘self.threshold’ will be prioritized,
+but a maximum of n_configurations will be selected.</p>
+</dd>
+<dt>reference: str, optional</dt><dd><p>For visualizing the selection a reference value can be given.
+For ‘energy_uncertainty’ this would typically be ‘energy’.</p>
+</dd>
+<dt>n_configurations: int, optional</dt><dd><p>Number of configurations to select.</p>
+</dd>
+<dt>min_distance: int, optional</dt><dd><p>Minimum distance between selected configurations.</p>
+</dd>
+<dt>dim_reduction: str, optional</dt><dd><p>Reduces the dimensionality of the chosen uncertainty along the specified axis
+by calculating either the maximum or mean value.</p>
+<p>Choose from [“max”, “mean”]</p>
+</dd>
+<dt>reduction_axis: tuple(int), optional</dt><dd><p>Specifies the axis along which the reduction occurs.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ThresholdSelection.dim_reduction">
+<span class="sig-name descname"><span class="pre">dim_reduction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#ipsuite.configuration_selection.ThresholdSelection.dim_reduction" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id59">
+<h4>Parameters<a class="headerlink" href="#id59" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ThresholdSelection.get_selection">
+<span class="sig-name descname"><span class="pre">get_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.ThresholdSelection.get_selection" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ThresholdSelection.key">
+<span class="sig-name descname"><span class="pre">key</span></span><a class="headerlink" href="#ipsuite.configuration_selection.ThresholdSelection.key" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id60">
+<h4>Parameters<a class="headerlink" href="#id60" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ThresholdSelection.min_distance">
+<span class="sig-name descname"><span class="pre">min_distance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#ipsuite.configuration_selection.ThresholdSelection.min_distance" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id61">
+<h4>Parameters<a class="headerlink" href="#id61" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ThresholdSelection.n_configurations">
+<span class="sig-name descname"><span class="pre">n_configurations</span></span><a class="headerlink" href="#ipsuite.configuration_selection.ThresholdSelection.n_configurations" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id62">
+<h4>Parameters<a class="headerlink" href="#id62" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ThresholdSelection.reduction_axis">
+<span class="sig-name descname"><span class="pre">reduction_axis</span></span><a class="headerlink" href="#ipsuite.configuration_selection.ThresholdSelection.reduction_axis" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id63">
+<h4>Parameters<a class="headerlink" href="#id63" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ThresholdSelection.reference">
+<span class="sig-name descname"><span class="pre">reference</span></span><a class="headerlink" href="#ipsuite.configuration_selection.ThresholdSelection.reference" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id64">
+<h4>Parameters<a class="headerlink" href="#id64" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ThresholdSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_fig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.ThresholdSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Take every nth (step) object of a given atoms list.</p>
+<section id="id65">
+<h4>Parameters<a class="headerlink" href="#id65" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>atoms_lst: typing.List[ase.Atoms]</dt><dd><p>list of atoms objects to arange</p>
+</dd>
+</dl>
+</section>
+<section id="id66">
+<h4>Returns<a class="headerlink" href="#id66" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>typing.List[int]:</dt><dd><p>list containing the taken indices</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.ThresholdSelection.threshold">
+<span class="sig-name descname"><span class="pre">threshold</span></span><a class="headerlink" href="#ipsuite.configuration_selection.ThresholdSelection.threshold" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id67">
+<h4>Parameters<a class="headerlink" href="#id67" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.UniformArangeSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.</span></span><span class="sig-name descname"><span class="pre">UniformArangeSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.UniformArangeSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>Class to perform a uniform arange action on a given atoms object list.</p>
+<section id="id68">
+<h3>Attributes<a class="headerlink" href="#id68" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>step: int</dt><dd><p>setting the step, every nth (step) object will be taken</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.UniformArangeSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.UniformArangeSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Take every nth (step) object of a given atoms list.</p>
+<section id="id69">
+<h4>Parameters<a class="headerlink" href="#id69" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>atoms_lst: typing.List[ase.Atoms]</dt><dd><p>list of atoms objects to arange</p>
+</dd>
+</dl>
+</section>
+<section id="id70">
+<h4>Returns<a class="headerlink" href="#id70" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>typing.List[int]:</dt><dd><p>list containing the taken indices</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.UniformArangeSelection.step">
+<span class="sig-name descname"><span class="pre">step</span></span><a class="headerlink" href="#ipsuite.configuration_selection.UniformArangeSelection.step" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id71">
+<h4>Parameters<a class="headerlink" href="#id71" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.UniformEnergeticSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.</span></span><span class="sig-name descname"><span class="pre">UniformEnergeticSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.UniformEnergeticSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>A class to perform data selection based on uniform global energy selection.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.UniformEnergeticSelection.n_configurations">
+<span class="sig-name descname"><span class="pre">n_configurations</span></span><a class="headerlink" href="#ipsuite.configuration_selection.UniformEnergeticSelection.n_configurations" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id72">
+<h3>Parameters<a class="headerlink" href="#id72" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.UniformEnergeticSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.UniformEnergeticSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Select Atoms uniform in energy space.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.UniformTemporalSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ipsuite.configuration_selection.</span></span><span class="sig-name descname"><span class="pre">UniformTemporalSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_configurations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ipsuite.configuration_selection.UniformTemporalSelection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ipsuite.configuration_selection.base.ConfigurationSelection" title="ipsuite.configuration_selection.base.ConfigurationSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationSelection</span></code></a></p>
+<p>Select atoms uniform in time.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.UniformTemporalSelection.n_configurations">
+<span class="sig-name descname"><span class="pre">n_configurations</span></span><a class="headerlink" href="#ipsuite.configuration_selection.UniformTemporalSelection.n_configurations" title="Link to this definition"></a></dt>
+<dd><p>A parameter field.</p>
+<section id="id73">
+<h3>Parameters<a class="headerlink" href="#id73" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>dvc_option: str</dt><dd><p>The DVC option to use. Default is “params”.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ipsuite.configuration_selection.UniformTemporalSelection.select_atoms">
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms_lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Atoms</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ipsuite.configuration_selection.UniformTemporalSelection.select_atoms" title="Link to this definition"></a></dt>
+<dd><p>Select Atoms uniform in time.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ipsuite.configuration_generation.html" class="btn btn-neutral float-left" title="ipsuite.configuration_generation package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ipsuite.data_loading.html" class="btn btn-neutral float-right" title="ipsuite.data_loading package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, zincwarecode.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
