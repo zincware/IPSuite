@@ -137,7 +137,7 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
                     "prediction_z": pred_forces[:, 2],
                 }
             )
-        except PropertyNotImplementedError:
+        except (PropertyNotImplementedError, ValueError):
             self.forces_df = pd.DataFrame({})
 
         try:
@@ -171,7 +171,7 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
                     "prediction": deviat_pred,
                 }
             )
-        except PropertyNotImplementedError:
+        except (PropertyNotImplementedError, ValueError):
             self.stress_df = pd.DataFrame({})
             self.stress_hydro_df = pd.DataFrame({})
             self.stress_deviat_df = pd.DataFrame({})
