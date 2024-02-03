@@ -36,7 +36,7 @@ class ProcessAtoms(IPSNode):
 
     data: list[ase.Atoms] = zntrack.deps()
     data_file: str = zntrack.dvc.deps(None)
-    data_id: typing.Optional[int] = None # zntrack.params(None)
+    data_id: typing.Optional[int] = None  # zntrack.params(None)
     atoms: list[ase.Atoms] = fields.Atoms()
 
     def _post_init_(self):
