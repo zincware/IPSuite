@@ -143,12 +143,12 @@ class AnalyseProcessAtoms(IPSNode):
     reference: ProcessAtoms = zntrack.deps(None)
 
     def get_data(self) -> typing.Tuple[list[ase.Atoms], list[ase.Atoms]]:
-        
-        if self.reference is None: 
-            self.data.update_data()  # otherwise, data might not be available 
-            return self.data.data, self.data.atoms 
-        else: 
-            # TODO: support both, Nodes and Connections 
+
+        if self.reference is None:
+            self.data.update_data()  # otherwise, data might not be available
+            return self.data.data, self.data.atoms
+        else:
+            # TODO: support both, Nodes and Connections
             return self.reference, self.data
 
 
