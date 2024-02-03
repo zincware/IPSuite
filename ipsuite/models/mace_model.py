@@ -82,28 +82,28 @@ class MACE(MLModel):
     def run(self):
         """Train a MACE model."""
         self.model_dir.mkdir(parents=True, exist_ok=True)
-        cmd = """curl -sSL https://raw.githubusercontent.com/ACEsuit/mace/main/scripts/run_train.py | python - """  # noqa E501
-        cmd += '--name="MACE_model" '
-        cmd += f'--train_file="{self.train_data_file.resolve().as_posix()}" '
-        cmd += "--valid_fraction=0.05 "
-        cmd += f'--test_file="{self.test_data_file.resolve().as_posix()}" '
-        cmd += f"--device={self.device} "
+        cmd = ['mace_run_train']
+        cmd.append(f'--name=MACE_model')
+        cmd.append(f'--train_file={self.train_data_file.resolve().as_posix()}')
+        cmd.append('--valid_fraction=0.05')
+        cmd.append(f'--test_file={self.test_data_file.resolve().as_posix()}')
+        cmd.append(f"--device={self.device}")
 
         config = yaml.safe_load(pathlib.Path(self.config).read_text())
         for key, val in config.items():
             if val is True:
-                cmd += f"--{key} "
+                cmd.append(f'--{key}')
             elif val is False:
                 pass
             else:
-                cmd += f'--{key}="{val}" '
+                cmd.append(f'--{key}={val}')
 
         self.write_data_to_file(file=self.train_data_file, atoms_list=self.data)
         self.write_data_to_file(file=self.test_data_file, atoms_list=self.test_data)
 
         log.debug(f"Running: {cmd}")
 
-        for path in execute(cmd, shell=True, cwd=self.model_dir):
+        for path in execute(cmd, cwd=self.model_dir):
             print(path, end="")
             file = list((self.model_dir / "results").glob("*.*"))
             if len(file) == 1:
