@@ -82,21 +82,21 @@ class MACE(MLModel):
     def run(self):
         """Train a MACE model."""
         self.model_dir.mkdir(parents=True, exist_ok=True)
-        cmd = ['mace_run_train']
-        cmd.append(f'--name=MACE_model')
-        cmd.append(f'--train_file={self.train_data_file.resolve().as_posix()}')
-        cmd.append('--valid_fraction=0.05')
-        cmd.append(f'--test_file={self.test_data_file.resolve().as_posix()}')
+        cmd = ["mace_run_train"]
+        cmd.append(f"--name=MACE_model")
+        cmd.append(f"--train_file={self.train_data_file.resolve().as_posix()}")
+        cmd.append("--valid_fraction=0.05")
+        cmd.append(f"--test_file={self.test_data_file.resolve().as_posix()}")
         cmd.append(f"--device={self.device}")
 
         config = yaml.safe_load(pathlib.Path(self.config).read_text())
         for key, val in config.items():
             if val is True:
-                cmd.append(f'--{key}')
+                cmd.append(f"--{key}")
             elif val is False:
                 pass
             else:
-                cmd.append(f'--{key}={val}')
+                cmd.append(f"--{key}={val}")
 
         self.write_data_to_file(file=self.train_data_file, atoms_list=self.data)
         self.write_data_to_file(file=self.test_data_file, atoms_list=self.test_data)
