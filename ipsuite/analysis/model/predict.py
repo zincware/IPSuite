@@ -85,13 +85,16 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
     def _post_load_(self):
         """Load metrics - if available."""
         try:
-            self.energy_df = pd.read_csv(self.energy_df_file)
+            with self.state.fs.open(self.energy_df_file, "r") as f:
+                self.energy_df = pd.read_csv(f)
         except FileNotFoundError:
             self.energy_df = pd.DataFrame({})
         try:
-            self.forces_df = pd.read_csv(self.forces_df_file)
+            with self.state.fs.open(self.forces_df_file, "r") as f:
+                self.forces_df = pd.read_csv(f)
         except FileNotFoundError:
-            self.forces_df = pd.DataFrame({})
+            with self.state.fs.open(self.stress_df_file, "r") as f:
+                self.stress_df = pd.read_csv(f)
         try:
             self.stress_df = pd.read_csv(self.stress_df_file)
             self.stress_hydro_df = pd.read_csv(self.stress_hydrostatic_df_file)
