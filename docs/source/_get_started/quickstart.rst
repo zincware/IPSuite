@@ -1,23 +1,13 @@
-.. _quickstart:
+.. _getting_started:
 
-Quickstart
-==========
-
-.. image:: https://raw.githubusercontent.com/zincware/IPSuite/main/misc/IPS_logo.png
-    :width: 800
-    :alt: IPS Logo
-
-What is IPS?
-------------
-
-IPS (or Interatomic Potentials Suite) is a tool for working with Machine Learned Interatomic Potentials 
-and construcing computational workflows which are executed at a later time.
-Using `DVC <https://dvc.org/>`_ as its backbone, IPS allows efficent and transparent data versioning of complex datasets.
+Getting started
+===============
 
 Installation
 ------------
 
-Download `the latest IPS relase <https://github.com/zincware/IPSuite>`_  from GitHub or install the IPS package using pip
+The IPS package can be downloaded via the package-management system pip. 
+We recomend the usage of an python environment with the python version 3.10. Other versions might not currently work.
 
 .. code-block:: bash
 
@@ -38,7 +28,47 @@ In a file :code:`main.py` try importing IPS to check if everything is working co
 
     import ipsuite as ips
 
+Anther way to install IPSuite is to download the `latest version from GitHub <https://github.com/zincware/IPSuite>`_ 
+and using `Poetry <https://python-poetry.org/>`_ to install the python dependencies.
 
-Getting started
----------------
-A simple example
+.. code-block:: bash
+
+    git clone https://github.com/zincware/IPSuite.git
+    cd IPSuite
+    poetry install .
+
+The you can create another folder for your own project.
+
+.. code-block:: bash
+    
+    mkdir project
+    cd project
+    git init
+    dvc init
+
+To get to know the IPS procedures we will do an example problem.
+
+The First Project
+=================
+
+Initial Data Generation
+-----------------------
+This project will show the basic creation of an IPS Project using an additional piece of software
+called `Packmol <https://m3g.github.io/packmol/>`_.
+
+.. code-block:: python
+
+    import ipsuite as ips
+
+    with ips.Project() as project:
+        mol = ips.configuration_generation.SmilesToAtoms(smiles="O")
+        packmol = ips.configuration_generation.Packmol(data=[mol.atoms], count=[10], density=876)
+
+    project.build()
+
+
+
+
+
+Creating Experiments
+--------------------

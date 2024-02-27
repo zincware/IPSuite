@@ -11,8 +11,8 @@ Welcome to IPSuite's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   Quickstart Guide <_get_started/quickstart>
-   The First Project <_get_started/the_first_project>
+   What is IPS? <_get_started/ips>
+   Getting Started <_get_started/quickstart>
    Advanced Topics <_get_started/advanced_topics>
    IPSuite <_nodes/ipsuite>
    Cheatsheet <_get_started/cheatsheet>
