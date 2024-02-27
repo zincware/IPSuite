@@ -1,0 +1,22 @@
+-----------------------
+Doctesting:
+
+to test docstrings: pytest --doctest-modules
+
+def add(a, b): 
+    """Add two nums
+
+    Parameters
+    ----------
+    a : _type_
+        _description_
+    b : _type_
+        _description_
+    
+    Example
+    -------
+    >>> add(1, 2)
+    3
+    """
+
+-----------------------

@@ -20,4 +20,7 @@ Sort of like a Jigsaw multiple Nodes can be connected together in order to creat
 .. figure:: ../images/jigsaw_nodes.png
     :alt: Nodes Jigsaw
 
-IPSuite already provides various Nodes in order to meet the needs of MPL creation and training. 
+IPSuite already provides various Nodes in order to meet the needs of MPL creation and training.
+
+.. figure:: ../images/mlp.png
+    :alt: MLP Develepment Process.

@@ -13,9 +13,7 @@ Welcome to IPSuite's documentation!
 
    What is IPS? <_get_started/ips>
    Getting Started <_get_started/quickstart>
-   Advanced Topics <_get_started/advanced_topics>
    IPSuite <_nodes/ipsuite>
-   Cheatsheet <_get_started/cheatsheet>
    
 
 Indices and tables
