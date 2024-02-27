@@ -20,3 +20,5 @@ def add(a, b):
     """
 
 -----------------------
+
+Examples sphinx: https://www.sphinx-doc.org/en/master/usage/extensions/example_numpy.html
