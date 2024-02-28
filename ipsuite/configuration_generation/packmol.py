@@ -115,7 +115,14 @@ class MultiPackmol(Packmol):
     
     Example
     -------
-    
+    .. testsetup::
+        >>> import subprocess
+        >>> import os
+        >>> a = subprocess.run(["mkdir", "test_dir"])
+        >>> os.chdir("test_dir")
+        >>> a = subprocess.run(["git", "init"]) 
+        >>> a = subprocess.run(["dvc", "init"])
+
     >>> import ipsuite as ips
     >>> with ips.Project(automatic_node_names=True) as project:
     ...     water = ips.configuration_generation.SmilesToConformers(
@@ -125,6 +132,10 @@ class MultiPackmol(Packmol):
     ...         data=[water.atoms], count=[10], density=997, n_configurations=10
     ...         )
     >>> project.run()
+
+    .. testcleanup::
+        >>> os.chdir("..")
+        >>> a = subprocess.run(["rm", "-rf", "test_dir"])
 
     Attributes
     ----------

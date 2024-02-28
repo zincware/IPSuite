@@ -21,6 +21,7 @@ sys.path.insert(0, os.path.abspath('../../ipsuite/'))
 
 extensions = [
     "sphinx.ext.autodoc",
+    'sphinx.ext.doctest'
     ]
 
 templates_path = ['_templates']
