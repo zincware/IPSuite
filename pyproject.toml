@@ -57,6 +57,7 @@ ipywidgets = "^8.0.6"
 [tool.poetry.group.docs.dependencies]
 sphinx = "^7.2.6"
 sphinx-rtd-theme = "^2.0.0"
+furo = "^2024.1.29"
 
 [tool.poetry.extras]
 comparison = ["h5py", "tensorflow", "dscribe"]
