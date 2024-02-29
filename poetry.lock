@@ -6191,6 +6191,19 @@ sphinx = ">=4.0"
 docs = ["furo", "ipython", "myst-parser", "sphinx-copybutton", "sphinx-inline-tabs"]
 
 [[package]]
+name = "sphinx-mermaid"
+version = "0.0.8"
+description = "Mermaid graph support for sphinx generated documentations"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "sphinx_mermaid-0.0.8-py2.py3-none-any.whl", hash = "sha256:03cbad30c04130e5644c5112b4b2da7850d142f897876ac5aea83c8b5965bf76"},
+]
+
+[package.dependencies]
+sphinx = "*"
+
+[[package]]
 name = "sphinx-rtd-theme"
 version = "2.0.0"
 description = "Read the Docs theme for Sphinx"
@@ -7550,4 +7563,4 @@ nequip = ["nequip"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "db06413e13537063e6f8928fa9258f841875a581e3be361295b2a50ccf09242e"
+content-hash = "b6767b468434bb13e7d38b09f3a09dfa87d0799785b5a7e11d38cc0ef86cad34"

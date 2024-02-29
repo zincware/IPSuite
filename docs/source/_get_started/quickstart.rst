@@ -13,7 +13,17 @@ We recomend the usage of an python environment with the python version 3.10. Oth
 
     pip install ipsuite
 
-create a folder for your project and initialize git as well as DVC to start working with IPS.
+Alternativly the latest version of IPSuite can be downloaded from `GitHub <https://github.com/zincware/IPSuite>`_,
+using `Poetry <https://python-poetry.org/>`_ to install the python dependencies.
+
+.. code-block:: bash
+
+    git clone https://github.com/zincware/IPSuite.git
+    cd IPSuite
+    poetry install 
+
+For IPSuite to work, it is necessary for an IPS Project to be in a git as well as DVC initialized directory.
+Create a folder for your project and initalize git and DVC to start working with IPS.
 
 .. code-block:: bash
     
@@ -28,23 +38,7 @@ In a file :code:`main.py` try importing IPS to check if everything is working co
 
     import ipsuite as ips
 
-Anther way to install IPSuite is to download the `latest version from GitHub <https://github.com/zincware/IPSuite>`_ 
-and using `Poetry <https://python-poetry.org/>`_ to install the python dependencies.
 
-.. code-block:: bash
-
-    git clone https://github.com/zincware/IPSuite.git
-    cd IPSuite
-    poetry install .
-
-The you can create another folder for your own project.
-
-.. code-block:: bash
-    
-    mkdir project
-    cd project
-    git init
-    dvc init
 
 To get to know the IPS procedures we will do an example problem.
 
@@ -81,11 +75,18 @@ so `mol.atoms` as to be given as a list. The next attribute we need to set is th
 This also has to be a list with each entry being the amout for other ASE atoms obejct in the `data` list. Lastly the density has
 to be provided. Calling `project.build()` will save the workflow into DVC graph configuration and parameter files.
 After executing the code, the entire workflow is construced and can be visualised 
-by running `dvc dag`, which shows the graph of the workflow. 
-These parameters files, namely `params.yaml` can be viewed and parameters can be changed without rerunning the python script.
+by running `dvc dag`, which shows the graph of the workflow. Using the option `dvc dag --mermaid` will return a flowchart, which can be 
+used with `Mermaid <https://mermaid.js.org/>`_ to better visualise the workflows.
 
-By calling `dvc repro` the workflow aswell as
-the nodes are executed, which results in the generation of firstly a single water molecule by the SmilesToAtoms node and then the placement 
+.. mermaid::
+    flowchart TD
+	node1["Packmol"]
+	node2["SmilesToAtoms"]
+	node2-->node1
+
+The parameters files, namely `params.yaml` can be viewed and parameters can be changed without rerunning the python script.
+
+By calling `dvc repro` the workflow consiting of the nodes is executed, which results in the generation of firstly a single water molecule by the SmilesToAtoms node and then the placement 
 of multiple water molecules in a box by the Packmol node.
 After running `dvc repro` a new folder `nodes` is created which each node having their own subfolder. These folders
 contain the results from the Nodes.

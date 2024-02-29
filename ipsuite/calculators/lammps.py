@@ -38,11 +38,6 @@ class LammpsSimulator(base.ProcessSingleAtom):
         LAMMPS simulation using the specified executable, and saves the simulation
         output to the specified directory.
     
-    Example
-    -------
-    >>> x = 2
-    >>> x
-    2
     """
 
     """A few remarks for future programmers:
