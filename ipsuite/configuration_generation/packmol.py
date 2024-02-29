@@ -3,6 +3,7 @@
 import logging
 import pathlib
 import subprocess
+import os
 
 import ase
 import ase.units
@@ -10,7 +11,7 @@ import numpy as np
 import zntrack
 from ase.visualize import view
 
-from ipsuite import base, fields
+from ipsuite import base, fields, utils
 from ipsuite.utils.ase_sim import get_box_from_density
 
 log = logging.getLogger(__name__)
@@ -116,12 +117,8 @@ class MultiPackmol(Packmol):
     Example
     -------
     .. testsetup::
-        >>> import subprocess
-        >>> import os
-        >>> a = subprocess.run(["mkdir", "test_dir"])
-        >>> os.chdir("test_dir")
-        >>> a = subprocess.run(["git", "init"]) 
-        >>> a = subprocess.run(["dvc", "init"])
+        >>> helper = utils.docs.create_dvc_git_env_for_doctest()
+        >>> next(helper)
 
     >>> import ipsuite as ips
     >>> with ips.Project(automatic_node_names=True) as project:
@@ -134,8 +131,7 @@ class MultiPackmol(Packmol):
     >>> project.run()
 
     .. testcleanup::
-        >>> os.chdir("..")
-        >>> a = subprocess.run(["rm", "-rf", "test_dir"])
+        >>> next(helper)
 
     Attributes
     ----------

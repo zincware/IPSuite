@@ -78,12 +78,6 @@ After executing the code, the entire workflow is construced and can be visualise
 by running `dvc dag`, which shows the graph of the workflow. Using the option `dvc dag --mermaid` will return a flowchart, which can be 
 used with `Mermaid <https://mermaid.js.org/>`_ to better visualise the workflows.
 
-.. mermaid::
-    flowchart TD
-	node1["Packmol"]
-	node2["SmilesToAtoms"]
-	node2-->node1
-
 The parameters files, namely `params.yaml` can be viewed and parameters can be changed without rerunning the python script.
 
 By calling `dvc repro` the workflow consiting of the nodes is executed, which results in the generation of firstly a single water molecule by the SmilesToAtoms node and then the placement 

@@ -1,5 +1,5 @@
 """ipsuite utils module."""
 
-from ipsuite.utils import ase_sim, combine, helpers, md, metrics
+from ipsuite.utils import ase_sim, combine, helpers, md, metrics, docs
 
-__all__ = ["helpers", "metrics", "ase_sim", "combine", "md"]
+__all__ = ["helpers", "metrics", "ase_sim", "combine", "md", "docs"]
