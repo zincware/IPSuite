@@ -117,8 +117,7 @@ class MultiPackmol(Packmol):
     Example
     -------
     .. testsetup::
-        >>> helper = utils.docs.create_dvc_git_env_for_doctest()
-        >>> next(helper)
+        >>> tmp_path = utils.docs.create_dvc_git_env_for_doctest()
 
     >>> import ipsuite as ips
     >>> with ips.Project(automatic_node_names=True) as project:
@@ -131,7 +130,7 @@ class MultiPackmol(Packmol):
     >>> project.run()
 
     .. testcleanup::
-        >>> next(helper)
+        >>> tmp_path.cleanup()
 
     Attributes
     ----------
