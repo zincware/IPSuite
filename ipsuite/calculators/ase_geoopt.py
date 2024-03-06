@@ -29,6 +29,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
     model_outs = zntrack.dvc.outs(zntrack.nwd / "model_outs")
     optimizer: str = zntrack.zn.params("FIRE")
     checker_list: list = zntrack.deps(None)
+    constraint_list: list = zntrack.deps(None)
 
     repeat: list = zntrack.zn.params([1, 1, 1])
     run_kwargs: dict = zntrack.zn.params({"fmax": 0.05})
@@ -40,6 +41,8 @@ class ASEGeoOpt(base.ProcessSingleAtom):
     def run(self):
         if self.checker_list is None:
             self.checker_list = []
+        if self.constraint_list is None:
+            self.constraint_list = []
 
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
@@ -48,6 +51,9 @@ class ASEGeoOpt(base.ProcessSingleAtom):
         atoms = self.get_data()
         atoms = atoms.repeat(self.repeat)
         atoms.calc = calculator
+
+        for constraint in self.constraint_list:
+            atoms.set_constraint(constraint.get_constraint(atoms))
 
         atoms_cache = []
 

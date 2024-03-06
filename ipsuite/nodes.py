@@ -42,6 +42,7 @@ class _Nodes:
     # Data
     AddData = "ipsuite.data_loading.AddData"
     AddDataH5MD = "ipsuite.data_loading.AddDataH5MD"
+    ReadData = "ipsuite.data_loading.ReadData"
 
     # Bootstrap
     RattleAtoms = "ipsuite.bootstrap.RattleAtoms"
@@ -75,6 +76,7 @@ class _Nodes:
     ThresholdCheck = "ipsuite.analysis.ThresholdCheck"
     TemperatureCheck = "ipsuite.analysis.TemperatureCheck"
     FixedSphereConstraint = "ipsuite.calculators.FixedSphereConstraint"
+    FixedLayerConstraint = "ipsuite.calculators.FixedLayerConstraint"
     AnalyseDensity = "ipsuite.analysis.AnalyseDensity"
 
     # calculators
@@ -88,6 +90,7 @@ class _Nodes:
     OrcaSinglePoint = "ipsuite.calculators.OrcaSinglePoint"
     ApaxJaxMD = "ipsuite.calculators.ApaxJaxMD"
     LammpsSimulator = "ipsuite.calculators.LammpsSimulator"
+    MixCalculator = "ipsuite.calculators.MixCalculator"
 
     LangevinThermostat = "ipsuite.calculators.LangevinThermostat"
     NPTThermostat = "ipsuite.calculators.NPTThermostat"
@@ -98,6 +101,7 @@ class _Nodes:
         "ipsuite.calculators.TemperatureOscillatingRampModifier"
     )
     TemperatureRampModifier = "ipsuite.calculators.TemperatureRampModifier"
+    TorchD3 = "ipsuite.calculators.TorchD3"
 
     # Geometry
     BarycenterMapping = "ipsuite.geometry.BarycenterMapping"
