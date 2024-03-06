@@ -126,7 +126,7 @@ def get_flat_data_from_dict(data: dict, silent_ignore: bool = False) -> list:
     -------
         >>> data = {'a': [1, 2, 3], 'b': [4, 5, 6]}
         >>> get_flat_data_from_dict(data)
-        >>> # [1, 2, 3, 4, 5, 6]
+        [1, 2, 3, 4, 5, 6]
     """
     if not isinstance(data, dict):
         if silent_ignore:
@@ -161,7 +161,7 @@ def get_ids_per_key(
     -------
         >>> data = {'a': [1, 2, 3], 'b': [4, 5, 6]}
         >>> get_ids_per_key(data, [0, 1, 3, 5])
-        >>> # {'a': [0, 1], 'b': [0, 2]}
+        {'a': [0, 1], 'b': [0, 2]}
     """
     if not isinstance(data, dict):
         if silent_ignore:

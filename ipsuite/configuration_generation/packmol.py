@@ -1,6 +1,7 @@
 """Use packmole to create a periodic box"""
 
 import logging
+import os
 import pathlib
 import subprocess
 
@@ -10,7 +11,7 @@ import numpy as np
 import zntrack
 from ase.visualize import view
 
-from ipsuite import base, fields
+from ipsuite import base, fields, utils
 from ipsuite.utils.ase_sim import get_box_from_density
 
 log = logging.getLogger(__name__)
@@ -113,15 +114,23 @@ class MultiPackmol(Packmol):
     This Node generates multiple configurations with packmol.
     This is best used in conjunction with SmilesToConformers:
 
+    Example
+    -------
+    .. testsetup::
+        >>> tmp_path = utils.docs.create_dvc_git_env_for_doctest()
+
     >>> import ipsuite as ips
     >>> with ips.Project(automatic_node_names=True) as project:
-    >>>    water = ips.configuration_generation.SmilesToConformers(
-    >>>         smiles='O', numConfs=100
-    >>>    )
-    >>>    boxes = ips.configuration_generation.MultiPackmol(
-    >>>         data=[water.atoms], count=[10], density=997, n_configurations=10
-    >>>    )
+    ...     water = ips.configuration_generation.SmilesToConformers(
+    ...         smiles='O', numConfs=100
+    ...         )
+    ...     boxes = ips.configuration_generation.MultiPackmol(
+    ...         data=[water.atoms], count=[10], density=997, n_configurations=10
+    ...         )
     >>> project.run()
+
+    .. testcleanup::
+        >>> tmp_path.cleanup()
 
     Attributes
     ----------
