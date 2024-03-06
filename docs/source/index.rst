@@ -6,6 +6,9 @@
 Welcome to IPSuite's documentation!
 ===================================
 
+.. note::
+   IPSuite documentation is currently under development.
+   We will be adding more content soon.
 
 .. toctree::
    :maxdepth: 2
