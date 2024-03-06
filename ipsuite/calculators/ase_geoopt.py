@@ -4,11 +4,11 @@ import pathlib
 import typing
 
 import ase.io
-from ase.io.trajectory import TrajectoryWriter
 import ase.optimize
 import h5py
 import znh5md
 import zntrack
+from ase.io.trajectory import TrajectoryWriter
 
 from ipsuite import base
 from ipsuite.utils.ase_sim import freeze_copy_atoms
@@ -149,14 +149,16 @@ class BatchASEGeoOpt(base.ProcessAtoms):
                 atoms.calc = calculator
                 optimizer = getattr(ase.optimize, self.optimizer)
 
-                dyn = optimizer(atoms, trajectory=self.traj.as_posix(), **self.init_kwargs)
+                dyn = optimizer(
+                    atoms, trajectory=self.traj.as_posix(), **self.init_kwargs
+                )
                 dyn.run(**self.run_kwargs)
                 opt_structures.write(atoms)
 
     @property
     def atoms(self):
         return list(ase.io.iread(self.optimized_structures.as_posix()))
-    
+
     @property
     def trajectories(self):
         return list(ase.io.iread(self.traj.as_posix()))

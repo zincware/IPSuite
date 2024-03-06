@@ -37,7 +37,7 @@ class LammpsSimulator(base.ProcessSingleAtom):
         script based on the specified template and parameter files, runs the
         LAMMPS simulation using the specified executable, and saves the simulation
         output to the specified directory.
-    
+
     """
 
     """A few remarks for future programmers:

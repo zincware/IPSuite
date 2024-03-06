@@ -1,9 +1,9 @@
 """Use packmole to create a periodic box"""
 
 import logging
+import os
 import pathlib
 import subprocess
-import os
 
 import ase
 import ase.units
@@ -113,7 +113,7 @@ class MultiPackmol(Packmol):
 
     This Node generates multiple configurations with packmol.
     This is best used in conjunction with SmilesToConformers:
-    
+
     Example
     -------
     .. testsetup::

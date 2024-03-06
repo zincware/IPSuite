@@ -15,7 +15,7 @@ Welcome to IPSuite's documentation!
    Getting Started <_get_started/quickstart>
    IPSuite <_nodes/ipsuite>
    Modules <_nodes/modlules>
-   
+
 
 Indices and tables
 ==================
