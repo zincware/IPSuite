@@ -13,7 +13,7 @@ from apax.bal import kernel_selection
 from apax.md import ASECalculator
 from apax.md.function_transformations import available_transformations
 from apax.train.run import run as apax_run
-from jax.config import config
+from jax import config
 from matplotlib import pyplot as plt
 from zntrack import dvc, zn
 
