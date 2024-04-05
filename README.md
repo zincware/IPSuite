@@ -2,6 +2,7 @@
 [![ZnTrack](https://img.shields.io/badge/Powered%20by-ZnTrack-%23007CB0)](https://zntrack.readthedocs.io/en/latest/)
 [![zincware](https://img.shields.io/badge/Powered%20by-zincware-darkcyan)](https://github.com/zincware)
 [![DOI](https://img.shields.io/badge/DOI-10.1021/acs.jpcb.3c07187-red)](https://pubs.acs.org/doi/10.1021/acs.jpcb.3c07187)
+
 # IPS - The Inter Atomic Potential Suite
 
 ![Logo](https://raw.githubusercontent.com/zincware/IPSuite/main/misc/IPS_logo.png)
@@ -33,7 +34,8 @@ docker run -it -v "$(pwd):/app" --gpus all pythonf/ipsuite zntrack list
 
 # References
 
-If you use IPSuite in your research and find it helpful please consider citing us.
+If you use IPSuite in your research and find it helpful please consider citing
+us.
 
 ```bibtex
 @article{zillsCollaborationMachineLearnedPotentials2024,
