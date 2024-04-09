@@ -5,7 +5,7 @@ import zntrack
 
 
 def create_dvc_git_env_for_doctest() -> tempfile.TemporaryDirectory:
-    """Create a temporary directory and initilize git
+    """Create a temporary directory and initialize git
     and DVC in the new directory.
 
     This is necessary to construct IPS workflows in
@@ -20,7 +20,7 @@ def create_dvc_git_env_for_doctest() -> tempfile.TemporaryDirectory:
     Returns
     -------
     tempfile.TemporaryDirectory
-        returns a temporary Directory with git and DVC initalized.
+        returns a temporary Directory with git and DVC initialized.
     """
 
     tmp_path = zntrack.utils.cwd_temp_dir()

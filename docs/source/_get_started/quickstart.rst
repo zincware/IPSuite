@@ -7,13 +7,13 @@ Installation
 ------------
 
 The IPS package can be downloaded via the package-management system pip.
-We recomend the usage of an python environment with the python version 3.10. Other versions might not currently work.
+We recommend the usage of an python environment with the python version 3.10. Other versions might not currently work.
 
 .. code-block:: bash
 
     pip install ipsuite
 
-Alternativly the latest version of IPSuite can be downloaded from `GitHub <https://github.com/zincware/IPSuite>`_,
+Alternatively the latest version of IPSuite can be downloaded from `GitHub <https://github.com/zincware/IPSuite>`_,
 using `Poetry <https://python-poetry.org/>`_ to install the python dependencies.
 
 .. code-block:: bash
@@ -23,7 +23,7 @@ using `Poetry <https://python-poetry.org/>`_ to install the python dependencies.
     poetry install
 
 For IPSuite to work, it is necessary for an IPS Project to be in a git as well as DVC initialized directory.
-Create a folder for your project and initalize git and DVC to start working with IPS.
+Create a folder for your project and initialize git and DVC to start working with IPS.
 
 .. code-block:: bash
 
@@ -71,16 +71,16 @@ and generates an an `ASE atoms object <https://wiki.fysik.dtu.dk/ase/ase/atoms.h
 This atom from the SmilesToAtoms instance can be accessd by calling `mol.atoms`.
 This instance attribute is then handed over to the Packmol node in the `data` attribute.
 It is possible to hand over multiple different types of ASE atoms,
-so `mol.atoms` as to be given as a list. The next attribute we need to set is the amout of molecules we want to place in the box.
-This also has to be a list with each entry being the amout for other ASE atoms obejct in the `data` list. Lastly the density has
+so `mol.atoms` as to be given as a list. The next attribute we need to set is the amount of molecules we want to place in the box.
+This also has to be a list with each entry being the amount for other ASE atoms object in the `data` list. Lastly the density has
 to be provided. Calling `project.build()` will save the workflow into DVC graph configuration and parameter files.
-After executing the code, the entire workflow is construced and can be visualised
+After executing the code, the entire workflow is constructed and can be visualised
 by running `dvc dag`, which shows the graph of the workflow. Using the option `dvc dag --mermaid` will return a flowchart, which can be
 used with `Mermaid <https://mermaid.js.org/>`_ to better visualise the workflows.
 
 The parameters files, namely `params.yaml` can be viewed and parameters can be changed without rerunning the python script.
 
-By calling `dvc repro` the workflow consiting of the nodes is executed, which results in the generation of firstly a single water molecule by the SmilesToAtoms node and then the placement
+By calling `dvc repro` the workflow consisting of the nodes is executed, which results in the generation of firstly a single water molecule by the SmilesToAtoms node and then the placement
 of multiple water molecules in a box by the Packmol node.
 After running `dvc repro` a new folder `nodes` is created which each node having their own subfolder. These folders
 contain the results from the Nodes.
