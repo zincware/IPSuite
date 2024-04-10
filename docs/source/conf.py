@@ -20,9 +20,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath("../../ipsuite/"))
 
-extensions = ["sphinx.ext.autodoc", 
-              "sphinx.ext.doctest",
-              "sphinx_copybutton"]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.doctest", "sphinx_copybutton"]
 
 
 templates_path = ["_templates"]
