@@ -6,8 +6,11 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+import sys
+from pathlib import Path
+
 project = "IPSuite"
-copyright = "2024, zincwarecode"
+project_copyright = "2024, zincwarecode"
 author = "zincwarecode"
 release = "0.1.1"
 
@@ -15,12 +18,14 @@ release = "0.1.1"
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 
-import os
-import sys
 
-sys.path.insert(0, os.path.abspath("../../ipsuite/"))
 
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.doctest", "sphinx_copybutton", "sphinx.ext.viewcode"]
+sys.path.insert(0, Path("../../ipsuite/").resolve().as_posix())
+
+extensions = ["sphinx.ext.autodoc", 
+              "sphinx.ext.doctest", 
+              "sphinx_copybutton", 
+              "sphinx.ext.viewcode"]
 
 
 templates_path = ["_templates"]
