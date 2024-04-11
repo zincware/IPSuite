@@ -18,14 +18,14 @@ release = "0.1.1"
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 
-
-
 sys.path.insert(0, Path("../../ipsuite/").resolve().as_posix())
 
-extensions = ["sphinx.ext.autodoc", 
-              "sphinx.ext.doctest", 
-              "sphinx_copybutton", 
-              "sphinx.ext.viewcode"]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.doctest",
+    "sphinx_copybutton",
+    "sphinx.ext.viewcode",
+]
 
 
 templates_path = ["_templates"]

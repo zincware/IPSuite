@@ -1,6 +1,6 @@
-"""The Nodes provided by this submodule can be used to 
+"""The Nodes provided by this submodule can be used to
 create an initial dataset with some structural diversity.
-This can be useful when starting out from a single 
+This can be useful when starting out from a single
 configuration and iteratively building datasets with learning on the fly.
 """
 
