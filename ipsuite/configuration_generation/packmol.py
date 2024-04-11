@@ -1,7 +1,6 @@
 """Use packmole to create a periodic box"""
 
 import logging
-import os
 import pathlib
 import subprocess
 
@@ -11,7 +10,7 @@ import numpy as np
 import zntrack
 from ase.visualize import view
 
-from ipsuite import base, fields, utils
+from ipsuite import base, fields
 from ipsuite.utils.ase_sim import get_box_from_density
 
 log = logging.getLogger(__name__)
