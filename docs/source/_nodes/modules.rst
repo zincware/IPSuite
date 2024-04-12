@@ -1,5 +1,5 @@
 ipsuite
-=======
+#######
 
 .. toctree::
    :maxdepth: 4
