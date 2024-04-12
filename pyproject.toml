@@ -124,4 +124,4 @@ target-version = "py310"
 
 [tool.codespell]
 ignore-words-list = "dscribe"
-skip = "poetry.lock,ipsuite/static_data/*"
+skip = "poetry.lock,ipsuite/static_data/*,docs/source/examples/06_Bootstrapping_Datasets.ipynb"
