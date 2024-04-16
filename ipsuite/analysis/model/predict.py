@@ -89,16 +89,19 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
                 self.energy_df = pd.read_csv(f)
         except FileNotFoundError:
             self.energy_df = pd.DataFrame({})
+        
         try:
             with self.state.fs.open(self.forces_df_file, "r") as f:
                 self.forces_df = pd.read_csv(f)
         except FileNotFoundError:
             self.forces_df = pd.DataFrame({})
+        
         try:
             with self.state.fs.open(self.stress_df_file, "r") as f:
                 self.stress_df = pd.read_csv(f)
         except FileNotFoundError:
             self.stress_df = pd.DataFrame({})
+        
         try:
             self.stress_df = pd.read_csv(self.stress_df_file)
             self.stress_hydro_df = pd.read_csv(self.stress_hydrostatic_df_file)

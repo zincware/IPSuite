@@ -124,12 +124,17 @@ class MACE(MLModel):
         with self.state.fs.open(self.config) as f:
             config = yaml.safe_load(f)
             default_dtype = config.get("default_dtype", "float64")
+        
+        if self.state.fs.exists(self.model_dir / "MACE_model_swa.model"):
+            model_name = "MACE_model_swa.model"
+        else:
+            model_name = "MACE_model.model"
 
         with unittest.mock.patch(
             "torch.serialization._open_file_like", self.state.fs.open
         ):
             return MACECalculator(
-                model_paths=self.model_dir / "MACE_model_swa.model",
+                model_paths=self.model_dir / model_name,
                 device=device or self.device,
                 default_dtype=default_dtype,
             )
