@@ -54,6 +54,12 @@ dvc-s3 = "^3.0.1"
 jupyterlab = "^3.6.1"
 ipywidgets = "^8.0.6"
 
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "^7.2.6"
+furo = "^2024.1.29"
+sphinx-copybutton = "^0.5.2"
+
 [tool.poetry.extras]
 comparison = ["h5py", "tensorflow", "dscribe"]
 gap = ["quippy-ase", "xmltodict"]
@@ -118,4 +124,4 @@ target-version = "py310"
 
 [tool.codespell]
 ignore-words-list = "dscribe"
-skip = "poetry.lock,ipsuite/static_data/*"
+skip = "poetry.lock,ipsuite/static_data/*,docs/source/examples/06_Bootstrapping_Datasets.ipynb"
