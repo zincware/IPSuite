@@ -124,7 +124,7 @@ class MACE(MLModel):
         with self.state.fs.open(self.config) as f:
             config = yaml.safe_load(f)
             default_dtype = config.get("default_dtype", "float64")
-        
+
         if self.state.fs.exists(self.model_dir / "MACE_model_swa.model"):
             model_name = "MACE_model_swa.model"
         else:
