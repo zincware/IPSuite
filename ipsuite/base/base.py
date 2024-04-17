@@ -8,7 +8,7 @@ import tqdm
 import znflow
 import zntrack
 
-from ipsuite import fields, utils
+from ipsuite import fields
 
 # TODO raise error if both data and data_file are given
 
