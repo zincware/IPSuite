@@ -83,7 +83,7 @@ class MACE(MLModel):
         """Train a MACE model."""
         self.model_dir.mkdir(parents=True, exist_ok=True)
         cmd = ["mace_run_train"]
-        cmd.append(f"--name=MACE_model")
+        cmd.append("--name=MACE_model")
         cmd.append(f"--train_file={self.train_data_file.resolve().as_posix()}")
         cmd.append("--valid_fraction=0.05")
         cmd.append(f"--test_file={self.test_data_file.resolve().as_posix()}")
