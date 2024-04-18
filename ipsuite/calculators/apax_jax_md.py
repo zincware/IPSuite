@@ -39,7 +39,9 @@ class ApaxJaxMD(ProcessSingleAtom):
     md_parameter_file: str = zntrack.params_path(None)
 
     sim_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "md")
-    init_struc_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "initial_structure.extxyz")
+    init_struc_dir: pathlib.Path = zntrack.outs_path(
+        zntrack.nwd / "initial_structure.extxyz"
+    )
 
     def post_init(self):
         if not self.state.loaded:

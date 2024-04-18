@@ -51,7 +51,9 @@ class Apax(MLModel):
     model_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "apax_model")
 
     train_data_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "train_atoms.extxyz")
-    validation_data_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "val_atoms.extxyz")
+    validation_data_file: pathlib.Path = zntrack.outs_path(
+        zntrack.nwd / "val_atoms.extxyz"
+    )
 
     jax_enable_x64: bool = zntrack.params(True)
 
