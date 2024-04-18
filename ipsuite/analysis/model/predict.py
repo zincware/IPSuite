@@ -213,8 +213,7 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
 
 
 class CalibrationMetrics(base.AnalyseProcessAtoms):
-    """Analyse the calibration of a models uncertainty estimate.
-    """
+    """Analyse the calibration of a models uncertainty estimate."""
 
     data_file = zntrack.outs_path(zntrack.nwd / "data.npz")
     energy: dict = zntrack.metrics()
