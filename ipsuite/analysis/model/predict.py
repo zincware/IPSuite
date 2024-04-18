@@ -253,9 +253,7 @@ class CalibrationMetrics(base.ComparePredictions):
             true_forces = np.concatenate(true_forces, axis=0) * 1000
             pred_forces = [a.get_forces() for a in self.y]
             pred_forces = np.concatenate(pred_forces, axis=0) * 1000
-            forces_uncertainty = [
-                x.calc.results["forces_uncertainty"] for x in self.y
-            ]
+            forces_uncertainty = [x.calc.results["forces_uncertainty"] for x in self.y]
             forces_uncertainty = np.concatenate(forces_uncertainty, axis=0) * 1000
 
             self.content["forces_err"] = np.abs(true_forces - pred_forces)

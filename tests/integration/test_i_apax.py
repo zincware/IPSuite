@@ -30,7 +30,9 @@ def test_apax_model_training(proj_path, traj_file):
         )
 
         prediction = ips.analysis.Prediction(model=model, data=val_selection.atoms)
-        analysis = ips.analysis.PredictionMetrics(x=val_selection.atoms, y=prediction.atoms)
+        analysis = ips.analysis.PredictionMetrics(
+            x=val_selection.atoms, y=prediction.atoms
+        )
 
     project.run()
 
