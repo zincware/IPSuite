@@ -49,7 +49,7 @@ class Prediction(base.ProcessAtoms):
             self.atoms.append(freeze_copy_atoms(atoms))
 
 
-class PredictionMetrics(base.AnalyseProcessAtoms):
+class PredictionMetrics(base.ComparePredictions):
     """Analyse the Models Prediction on standard metrics.
 
     Units are given in:
@@ -79,32 +79,31 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
         except FileNotFoundError:
             self.content = {}
 
-    def get_dataframes(self):
-        """Create a pandas dataframe from the given data."""
-        true_data, pred_data = self.get_data()
-        true_keys = true_data[0].calc.results.keys()
-        pred_keys = pred_data[0].calc.results.keys()
+    def get_data(self):
+        """Create dict of all data."""
+        true_keys = self.true_data[0].calc.results.keys()
+        pred_keys = self.pred_data[0].calc.results.keys()
 
-        energy_true = [x.get_potential_energy() / len(x) for x in true_data]
+        energy_true = [x.get_potential_energy() / len(x) for x in self.true_data]
         energy_true = np.array(energy_true) * 1000
         self.content["energy_true"] = energy_true
 
-        energy_prediction = [x.get_potential_energy() / len(x) for x in pred_data]
+        energy_prediction = [x.get_potential_energy() / len(x) for x in self.pred_data]
         energy_prediction = np.array(energy_prediction) * 1000
         self.content["energy_pred"] = energy_prediction
 
         if "forces" in true_keys and "forces" in pred_keys:
-            true_forces = [x.get_forces() for x in true_data]
+            true_forces = [x.get_forces() for x in self.true_data]
             true_forces = np.concatenate(true_forces, axis=0) * 1000
             self.content["forces_true"] = np.reshape(true_forces, (-1,))
 
-            pred_forces = [x.get_forces() for x in pred_data]
+            pred_forces = [x.get_forces() for x in self.pred_data]
             pred_forces = np.concatenate(pred_forces, axis=0) * 1000
             self.content["forces_pred"] = np.reshape(pred_forces, (-1,))
 
         if "stress" in true_keys and "stress" in pred_keys:
-            true_stress = np.array([x.get_stress(voigt=False) for x in true_data])
-            pred_stress = np.array([x.get_stress(voigt=False) for x in pred_data])
+            true_stress = np.array([x.get_stress(voigt=False) for x in self.true_data])
+            pred_stress = np.array([x.get_stress(voigt=False) for x in self.pred_data])
             hydro_true, deviat_true = decompose_stress_tensor(true_stress)
             hydro_pred, deviat_pred = decompose_stress_tensor(pred_stress)
 
@@ -206,13 +205,13 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
 
     def run(self):
         self.nwd.mkdir(exist_ok=True, parents=True)
-        self.get_dataframes()
+        self.get_data()
         np.savez(self.data_file, **self.content)
         self.get_metrics()
         self.get_plots(save=True)
 
 
-class CalibrationMetrics(base.AnalyseProcessAtoms):
+class CalibrationMetrics(base.ComparePredictions):
     """Analyse the calibration of a models uncertainty estimate.
     """
 
@@ -234,29 +233,28 @@ class CalibrationMetrics(base.AnalyseProcessAtoms):
             self.content = {}
 
     def get_dataframes(self):
-        """Create a pandas dataframe from the given data."""
-        true_data, pred_data = self.get_data()
-        true_keys = true_data[0].calc.results.keys()
-        pred_keys = pred_data[0].calc.results.keys()
+        """Create dict of all data."""
+        true_keys = self.true_data[0].calc.results.keys()
+        pred_keys = self.pred_data[0].calc.results.keys()
 
-        energy_true = [x.get_potential_energy() / len(x) for x in true_data]
+        energy_true = [x.get_potential_energy() / len(x) for x in self.true_data]
         energy_true = np.array(energy_true) * 1000
-        energy_pred = [x.get_potential_energy() / len(x) for x in pred_data]
+        energy_pred = [x.get_potential_energy() / len(x) for x in self.pred_data]
         energy_pred = np.array(energy_pred) * 1000
         self.content["energy_err"] = np.abs(energy_true - energy_pred)
 
         energy_uncertainty = [
-            x.calc.results["energy_uncertainty"] / len(x) for x in pred_data
+            x.calc.results["energy_uncertainty"] / len(x) for x in self.pred_data
         ]
         energy_uncertainty = np.array(energy_uncertainty) * 1000
         self.content["energy_unc"] = energy_uncertainty
 
         if "forces" in true_keys and "forces_uncertainty" in pred_keys:
-            true_forces = [x.get_forces() for x in true_data]
+            true_forces = [x.get_forces() for x in self.true_data]
             true_forces = np.concatenate(true_forces, axis=0) * 1000
-            pred_forces = [x.get_forces() for x in pred_data]
+            pred_forces = [x.get_forces() for x in self.pred_data]
             pred_forces = np.concatenate(pred_forces, axis=0) * 1000
-            forces_uncertainty = [x.calc.results["forces_uncertainty"] for x in pred_data]
+            forces_uncertainty = [x.calc.results["forces_uncertainty"] for x in self.pred_data]
             forces_uncertainty = np.concatenate(forces_uncertainty, axis=0) * 1000
 
             self.content["forces_err"] = np.abs(true_forces - pred_forces)
@@ -323,16 +321,15 @@ class CalibrationMetrics(base.AnalyseProcessAtoms):
         self.get_plots(save=True)
 
 
-class ForceAngles(base.AnalyseProcessAtoms):
+class ForceAngles(base.ComparePredictions):
     plot: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "angle.png")
     log_plot: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "angle_ylog.png")
 
     angles: dict = zntrack.zn.metrics()
 
     def run(self):
-        true_data, pred_data = self.get_data()
-        true_forces = np.reshape([x.get_forces() for x in true_data], (-1, 3))
-        pred_forces = np.reshape([x.get_forces() for x in pred_data], (-1, 3))
+        true_forces = np.reshape([x.get_forces() for x in self.true_data], (-1, 3))
+        pred_forces = np.reshape([x.get_forces() for x in self.pred_data], (-1, 3))
 
         angles = utils.metrics.get_angles(true_forces, pred_forces)
 
@@ -354,7 +351,7 @@ class ForceAngles(base.AnalyseProcessAtoms):
         fig.savefig(self.log_plot)
 
 
-class ForceDecomposition(base.AnalyseProcessAtoms):
+class ForceDecomposition(base.ComparePredictions):
     """Node for decomposing forces in a system of molecular units into
     translational, rotational and vibrational components.
 
@@ -472,7 +469,6 @@ class ForceDecomposition(base.AnalyseProcessAtoms):
         fig.savefig(self.histogram_plt, bbox_inches="tight")
 
     def run(self):
-        true_atoms, pred_atoms = self.get_data()
         mapping = BarycenterMapping(data=None)
         # TODO make the force_decomposition return full forces
         # TODO check if you sum the forces they yield the full forces
@@ -482,7 +478,7 @@ class ForceDecomposition(base.AnalyseProcessAtoms):
         self.true_forces = {"all": [], "trans": [], "rot": [], "vib": []}
         self.pred_forces = {"all": [], "trans": [], "rot": [], "vib": []}
 
-        for atom in tqdm.tqdm(true_atoms, ncols=70):
+        for atom in tqdm.tqdm(self.true_atoms, ncols=70):
             atom_trans_forces, atom_rot_forces, atom_vib_forces = force_decomposition(
                 atom, mapping
             )
@@ -496,7 +492,7 @@ class ForceDecomposition(base.AnalyseProcessAtoms):
         self.true_forces["rot"] = np.concatenate(self.true_forces["rot"]) * 1000
         self.true_forces["vib"] = np.concatenate(self.true_forces["vib"]) * 1000
 
-        for atom in tqdm.tqdm(pred_atoms, ncols=70):
+        for atom in tqdm.tqdm(self.pred_atoms, ncols=70):
             atom_trans_forces, atom_rot_forces, atom_vib_forces = force_decomposition(
                 atom, mapping
             )
