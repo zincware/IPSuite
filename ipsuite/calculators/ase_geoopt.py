@@ -36,7 +36,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
     init_kwargs: dict = zntrack.params({})
     dump_rate = zntrack.params(1000)
 
-    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "trajectory.h5")
+    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
 
     def run(self):
         if self.checker_list is None:

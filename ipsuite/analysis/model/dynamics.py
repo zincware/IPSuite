@@ -369,7 +369,7 @@ class MDStability(base.ProcessAtoms):
     bins: int = zntrack.params(None)
     seed: int = zntrack.params(0)
 
-    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "trajectory.h5")
+    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
     stable_steps_df: pd.DataFrame = zntrack.plots()
 
