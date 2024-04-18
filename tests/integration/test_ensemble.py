@@ -47,7 +47,7 @@ def test_ensemble_model(data_repo):
             data=test_data, models=[model1, model2, model3]
         )
 
-        prediction = ips.analysis.Prediction(data=test_data, model=ensemble_model)
+        prediction = ips.analysis.Prediction(data=test_data.atoms, model=ensemble_model)
         prediction_metrics = ips.analysis.PredictionMetrics(data=prediction)
 
     project.run(environment={"OPENBLAS_NUM_THREADS": "1"})

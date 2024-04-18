@@ -17,14 +17,14 @@ def trained_model(proj_path, traj_file) -> tuple:
         data_1 = ipsuite.AddData(file=traj_file, name="data_1")
 
         train_selection = ipsuite.configuration_selection.UniformEnergeticSelection(
-            data=data_1, n_configurations=10, name="train_data"
+            data=data_1.atoms, n_configurations=10, name="train_data"
         )
 
         validation_selection = ipsuite.configuration_selection.UniformEnergeticSelection(
             data=train_selection @ "excluded_atoms", n_configurations=8, name="val_data"
         )
 
-        model = ipsuite.models.GAP(soap={"cutoff": 0.7}, data=train_selection)
+        model = ipsuite.models.GAP(soap={"cutoff": 0.7}, data=train_selection.atoms)
 
     project.run()
 
