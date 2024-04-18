@@ -12,7 +12,7 @@ from ipsuite.configuration_selection import ConfigurationSelection
 class UniformTemporalSelection(ConfigurationSelection):
     """Select atoms uniform in time."""
 
-    n_configurations = zntrack.zn.params()
+    n_configurations = zntrack.params()
 
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         """Select Atoms uniform in time."""

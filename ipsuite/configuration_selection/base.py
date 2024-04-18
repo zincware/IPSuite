@@ -33,7 +33,7 @@ class ConfigurationSelection(base.ProcessAtoms):
         typing.Dict[str, typing.List[int]], base.protocol.HasSelectedConfigurations
     ] = zntrack.deps(None)
     exclude: typing.Union[zntrack.Node, typing.List[zntrack.Node]] = zntrack.deps(None)
-    selected_configurations: typing.Dict[str, typing.List[int]] = zntrack.zn.outs()
+    selected_configurations: typing.Dict[str, typing.List[int]] = zntrack.outs()
 
     img_selection = zntrack.outs_path(zntrack.nwd / "selection.png")
 

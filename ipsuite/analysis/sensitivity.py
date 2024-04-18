@@ -40,15 +40,15 @@ class MoveSingleParticle(base.IPSNode):
     """Move a single particle in a given direction."""
 
     atoms_list = zntrack.deps()
-    atoms_list_id = zntrack.zn.params(0)  # the atoms object in the atoms list
-    atom_id = zntrack.zn.params(0)  # the atom id to move
-    scale = zntrack.zn.params(0.5)  # the standard deviation of the normal distribution
-    seed = zntrack.zn.params(1234)
+    atoms_list_id = zntrack.params(0)  # the atoms object in the atoms list
+    atom_id = zntrack.params(0)  # the atom id to move
+    scale = zntrack.params(0.5)  # the standard deviation of the normal distribution
+    seed = zntrack.params(1234)
 
-    samples = zntrack.zn.params(10)  # how many samples to take
+    samples = zntrack.params(10)  # how many samples to take
 
-    atoms: list = zntrack.zn.outs()
-    atoms_path = zntrack.dvc.outs(zntrack.nwd / "atoms")
+    atoms: list = zntrack.outs()
+    atoms_path = zntrack.outs_path(zntrack.nwd / "atoms")
 
     def run(self):
         """ZnTrack run method."""
@@ -67,7 +67,7 @@ class MoveSingleParticle(base.IPSNode):
 
 class AnalyseGlobalForceSensitivity(base.IPSNode):
     atoms_list = zntrack.deps()
-    plots = zntrack.dvc.outs(zntrack.nwd / "plots")
+    plots = zntrack.outs_path(zntrack.nwd / "plots")
 
     def run(self):
         # assume all atoms have only a single particle changed
@@ -108,12 +108,12 @@ class AnalyseSingleForceSensitivity(base.IPSNode):
     data: list[list[ase.Atoms]] = zntrack.deps()
     sim_list: list = zntrack.deps()  # list["ASEMD"]
 
-    alpha: float = zntrack.zn.params(
+    alpha: float = zntrack.params(
         0.05
     )  # Desired significance level (e.g., 95% confidence interval)
 
-    sensitivity: pd.DataFrame = zntrack.zn.plots()
-    sensitivity_plot: str = zntrack.dvc.outs(zntrack.nwd / "sensitivity.png")
+    sensitivity: pd.DataFrame = zntrack.plots()
+    sensitivity_plot: str = zntrack.outs_path(zntrack.nwd / "sensitivity.png")
 
     def t_confidence_interval(self, data):
         """Returns the confidence interval for the given data and significance level."""
