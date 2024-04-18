@@ -254,7 +254,8 @@ class CalibrationMetrics(base.AnalyseProcessAtoms):
         energy_pred = np.array(energy_pred) * 1000
         self.content["energy_err"] = np.abs(energy_true - energy_pred)
 
-        energy_uncertainty = [x.calc.results["energy_uncertainty"] / len(x) for x in pred_data]
+        energy_uncertainty = [x.calc.results["energy_uncertainty"] / len(x)
+                              for x in pred_data]
         energy_uncertainty = np.array(energy_uncertainty) * 1000
         self.content["energy_unc"] = energy_uncertainty
 
@@ -271,7 +272,10 @@ class CalibrationMetrics(base.AnalyseProcessAtoms):
 
     def get_metrics(self):
         """Update the metrics."""
-        self.energy = {"pearsonr": stats.pearsonr(self.content["energy_err"], self.content["energy_unc"])[0]}
+        e_err = self.content["energy_err"]
+        e_unc = self.content["energy_unc"]
+        pearsonr = stats.pearsonr(e_err, e_unc)[0]
+        self.energy = {"pearsonr": pearsonr}
 
         if "forces_err" in self.content.keys():
             f_err = np.reshape(self.content["forces_err"], (-1,))
