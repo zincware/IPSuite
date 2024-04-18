@@ -62,9 +62,9 @@ class ConfigurationSelection(base.ProcessAtoms):
                             exclude.selected_configurations[key]
                         )
                     else:
-                        self.exclude_configurations[key] = (
-                            exclude.selected_configurations[key]
-                        )
+                        self.exclude_configurations[
+                            key
+                        ] = exclude.selected_configurations[key]
 
         exclude = combine.ExcludeIds(self.get_data(), self.exclude_configurations)
         data = exclude.get_clean_data(flatten=True)

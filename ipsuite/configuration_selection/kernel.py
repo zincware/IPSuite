@@ -10,7 +10,6 @@ import numpy as np
 import tqdm
 import zntrack
 
-from ipsuite import utils
 from ipsuite.configuration_selection.base import ConfigurationSelection
 
 if typing.TYPE_CHECKING:

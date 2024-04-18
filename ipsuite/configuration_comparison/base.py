@@ -15,7 +15,7 @@ import zntrack
 from dscribe.descriptors import SOAP
 from tqdm import trange
 
-from ipsuite import base, utils
+from ipsuite import base
 
 
 def convert_to_df(similarities: typing.List) -> pd.DataFrame:

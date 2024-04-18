@@ -11,7 +11,6 @@ import yaml
 import zntrack
 from mace.calculators import MACECalculator
 
-from ipsuite import utils
 from ipsuite.models import MLModel
 from ipsuite.static_data import STATIC_PATH
 

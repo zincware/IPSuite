@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import zntrack
 
-from ipsuite import base, utils
+from ipsuite import base
 
 
 def plot_with_uncertainty(value, ylabel: str, xlabel: str, x=None, **kwargs) -> dict:

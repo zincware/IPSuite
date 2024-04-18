@@ -21,7 +21,7 @@ import zntrack
 from jinja2 import Template
 from znjson import ConverterBase, config
 
-from ipsuite import static_data, utils
+from ipsuite import static_data
 from ipsuite.models import MLModel
 
 log = logging.getLogger(__name__)

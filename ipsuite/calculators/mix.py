@@ -78,7 +78,8 @@ class _MixCalculator(Calculator):
 
 
 class CalculatorNode(typing.Protocol):
-    def get_calculator(self) -> typing.Type[Calculator]: ...
+    def get_calculator(self) -> typing.Type[Calculator]:
+        ...
 
 
 class MixCalculator(base.ProcessAtoms):

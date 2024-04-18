@@ -157,7 +157,6 @@ class TorchD3(base.ProcessAtoms):
         calc = self.get_calculator()
         self.atoms = []
         for atoms in tqdm.tqdm(self.get_data(), ncols=70):
-
             if atoms.calc is None:
                 atoms.calc = SinglePointCalculator(
                     atoms,

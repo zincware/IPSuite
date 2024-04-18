@@ -17,7 +17,7 @@ from jax import config
 from matplotlib import pyplot as plt
 from zntrack import dvc, zn
 
-from ipsuite import base, utils
+from ipsuite import base
 from ipsuite.analysis.ensemble import plot_with_uncertainty
 from ipsuite.configuration_selection.base import BatchConfigurationSelection
 from ipsuite.models.base import MLModel

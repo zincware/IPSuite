@@ -14,7 +14,6 @@ import yaml
 import zntrack
 import zntrack.utils
 
-from ipsuite import utils
 from ipsuite.models import MLModel
 from ipsuite.utils.helpers import check_duplicate_keys
 

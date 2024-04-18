@@ -10,7 +10,6 @@ import znh5md
 import zntrack.utils
 from zntrack import dvc, zn
 
-from ipsuite import utils
 from ipsuite.base import ProcessSingleAtom
 from ipsuite.models import Apax
 from ipsuite.utils.helpers import check_duplicate_keys
