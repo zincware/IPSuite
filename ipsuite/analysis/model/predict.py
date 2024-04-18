@@ -58,14 +58,8 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
     - stress: eV/Å^3
     """
 
-    energy_df_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "energy_df.csv")
-    forces_df_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "forces_df.csv")
-    stress_df_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "stress_df.csv")
-    stress_hydrostatic_df_file: pathlib.Path = zntrack.outs_path(
-        zntrack.nwd / "stress_hydrostatic_df.csv"
-    )
-    stress_deviatoric_df_file: pathlib.Path = zntrack.outs_path(
-        zntrack.nwd / "stress_deviatoric_df.csv"
+    data_file = zntrack.outs_path(
+        zntrack.nwd / "data.npz"
     )
 
     energy: dict = zntrack.metrics()
@@ -76,140 +70,73 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
 
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
 
-    energy_df: pd.DataFrame
-    forces_df: pd.DataFrame
-    stress_df: pd.DataFrame
-    stress_hydro_df: pd.DataFrame
-    stress_deviat_df: pd.DataFrame
-
     def _post_load_(self):
         """Load metrics - if available."""
         try:
-            with self.state.fs.open(self.energy_df_file, "r") as f:
-                self.energy_df = pd.read_csv(f)
+            with self.state.fs.open(self.data_file, "r") as f:
+                self.content = np.load(f)
         except FileNotFoundError:
-            self.energy_df = pd.DataFrame({})
+            self.content = {}
 
-        try:
-            with self.state.fs.open(self.forces_df_file, "r") as f:
-                self.forces_df = pd.read_csv(f)
-        except FileNotFoundError:
-            self.forces_df = pd.DataFrame({})
-
-        try:
-            with self.state.fs.open(self.stress_df_file, "r") as f:
-                self.stress_df = pd.read_csv(f)
-        except FileNotFoundError:
-            self.stress_df = pd.DataFrame({})
-
-        try:
-            self.stress_df = pd.read_csv(self.stress_df_file)
-            self.stress_hydro_df = pd.read_csv(self.stress_hydrostatic_df_file)
-            self.stress_deviat_df = pd.read_csv(self.stress_deviatoric_df_file)
-        except FileNotFoundError:
-            self.stress_df = pd.DataFrame({})
-            self.stress_hydro_df = pd.DataFrame({})
-            self.stress_deviat_df = pd.DataFrame({})
 
     def get_dataframes(self):
         """Create a pandas dataframe from the given data."""
         true_data, pred_data = self.get_data()
+        true_keys = true_data[0].calc.results.keys()
+        pred_keys = pred_data[0].calc.results.keys()
 
-        self.energy_df = pd.DataFrame(
-            {
-                "true": (
-                    np.array([x.get_potential_energy() / len(x) for x in true_data])
-                    * 1000
-                ),
-                "prediction": (
-                    np.array([x.get_potential_energy() / len(x) for x in pred_data])
-                    * 1000
-                ),
-            }
-        )
+        energy_true = [x.get_potential_energy() / len(x) for x in true_data]
+        energy_true = np.array(energy_true) * 1000
+        self.content["energy_true"] = energy_true
 
-        try:
-            true_forces = [np.reshape(x.get_forces(), (-1, 3)) for x in true_data]
+        energy_prediction = [x.get_potential_energy() / len(x) for x in pred_data]
+        energy_prediction = np.array(energy_prediction) * 1000
+        self.content["energy_pred"] = energy_prediction
+
+        if "forces" in true_keys and "forces" in pred_keys:
+            true_forces = [x.get_forces() for x in true_data]
             true_forces = np.concatenate(true_forces, axis=0) * 1000
+            self.content["forces_true"] = true_forces
 
-            pred_forces = [np.reshape(x.get_forces(), (-1, 3)) for x in pred_data]
+            pred_forces = [x.get_forces() for x in pred_data]
             pred_forces = np.concatenate(pred_forces, axis=0) * 1000
+            self.content["forces_pred"] = pred_forces
 
-            self.forces_df = pd.DataFrame(
-                {
-                    "true": np.linalg.norm(true_forces, axis=-1),
-                    "true_x": true_forces[:, 0],
-                    "true_y": true_forces[:, 1],
-                    "true_z": true_forces[:, 2],
-                    "prediction": np.linalg.norm(pred_forces, axis=-1),
-                    "prediction_x": pred_forces[:, 0],
-                    "prediction_y": pred_forces[:, 1],
-                    "prediction_z": pred_forces[:, 2],
-                }
-            )
-        except (PropertyNotImplementedError, ValueError):
-            self.forces_df = pd.DataFrame({})
-
-        try:
-            true_stress = [x.get_stress(voigt=False) for x in true_data]
-            pred_stress = [x.get_stress(voigt=False) for x in pred_data]
+        if "stress" in true_keys and "stress" in pred_keys:
+            true_stress = np.array([x.get_stress(voigt=False) for x in true_data])
+            pred_stress = np.array([x.get_stress(voigt=False) for x in pred_data])
             hydro_true, deviat_true = decompose_stress_tensor(true_stress)
             hydro_pred, deviat_pred = decompose_stress_tensor(pred_stress)
 
-            true_stress = np.reshape(true_stress, -1)
-            pred_stress = np.reshape(pred_stress, -1)
-            hydro_true = np.reshape(hydro_true, -1)
-            deviat_true = np.reshape(deviat_true, -1)
-            hydro_pred = np.reshape(hydro_pred, -1)
-            deviat_pred = np.reshape(deviat_pred, -1)
-
-            self.stress_df = pd.DataFrame(
-                {
-                    "true": true_stress,
-                    "prediction": pred_stress,
-                }
-            )
-            self.stress_hydro_df = pd.DataFrame(
-                {
-                    "true": hydro_true,
-                    "prediction": hydro_pred,
-                }
-            )
-            self.stress_deviat_df = pd.DataFrame(
-                {
-                    "true": deviat_true,
-                    "prediction": deviat_pred,
-                }
-            )
-        except (PropertyNotImplementedError, ValueError):
-            self.stress_df = pd.DataFrame({})
-            self.stress_hydro_df = pd.DataFrame({})
-            self.stress_deviat_df = pd.DataFrame({})
+            self.content["stress_true"] = true_stress
+            self.content["stress_pred"] = pred_stress
+            self.content["stress_hydro_true"] = hydro_true
+            self.content["stress_hydro_pred"] = hydro_pred
+            self.content["stress_deviat_true"] = deviat_true
+            self.content["stress_deviat_pred"] = deviat_pred
 
     def get_metrics(self):
         """Update the metrics."""
         self.energy = utils.metrics.get_full_metrics(
-            np.array(self.energy_df["true"]), np.array(self.energy_df["prediction"])
+            self.content["energy_true"], self.content["energy_pred"]
         )
 
-        if not self.forces_df.empty:
+        if "forces_true" in self.content.keys():
             self.forces = utils.metrics.get_full_metrics(
-                np.array(self.forces_df["true"]), np.array(self.forces_df["prediction"])
+                self.content["forces_true"], self.content["forces_pred"]
             )
         else:
             self.forces = {}
 
-        if not self.stress_df.empty:
+        if "stress_true" in self.content.keys():
             self.stress = utils.metrics.get_full_metrics(
-                np.array(self.stress_df["true"]), np.array(self.stress_df["prediction"])
+                self.content["stress_true"], self.content["stress_pred"]
             )
             self.hydro_stress = utils.metrics.get_full_metrics(
-                np.array(self.stress_hydro_df["true"]),
-                np.array(self.stress_hydro_df["prediction"]),
+                self.content["stress_hydro_true"], self.content["stress_hydro_pred"]
             )
             self.deviat_stress = utils.metrics.get_full_metrics(
-                np.array(self.stress_deviat_df["true"]),
-                np.array(self.stress_deviat_df["prediction"]),
+                self.content["stress_deviat_true"], self.content["stress_deviat_pred"]
             )
         else:
             self.stress = {}
@@ -221,8 +148,7 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
         self.plots_dir.mkdir(exist_ok=True)
 
         energy_plot = get_figure(
-            self.energy_df["true"],
-            self.energy_df["prediction"],
+            self.content["energy_true"], self.content["energy_pred"],
             datalabel=f"MAE: {self.energy['mae']:.2f} meV/atom",
             xlabel=r"$ab~initio$ energy $E$ / meV/atom",
             ylabel=r"predicted energy $E$ / meV/atom",
@@ -230,45 +156,46 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
         if save:
             energy_plot.savefig(self.plots_dir / "energy.png")
 
-        if not self.forces_df.empty:
+        if "forces_true" in self.content:
+            xlabel = r"$ab~initio$ magnitude of force per atom $|F|$ / meV$ \cdot \AA^{-1}$"
+            ylabel = r"predicted magnitude of force per atom $|F|$ / meV$ \cdot \AA^{-1}$"
+            f_true = np.reshape(self.content["forces_true"], (-1,))
+            f_pred = np.reshape(self.content["forces_pred"], (-1,))
             forces_plot = get_figure(
-                self.forces_df["true_x"]
-                + self.forces_df["true_y"]
-                + self.forces_df["true_z"],
-                self.forces_df["prediction_x"]
-                + self.forces_df["prediction_y"]
-                + self.forces_df["prediction_z"],
+                f_true,
+                f_pred,
                 datalabel=rf"MAE: {self.forces['mae']:.2f} meV$ / \AA$",
-                xlabel=(
-                    r"$ab~initio$ magnitude of force per atom $|F|$ / meV$ \cdot"
-                    r" \AA^{-1}$"
-                ),
-                ylabel=(
-                    r"predicted magnitude of force per atom $|F|$ / meV$ \cdot \AA^{-1}$"
-                ),
+                xlabel=xlabel,
+                ylabel=ylabel,
             )
             if save:
                 forces_plot.savefig(self.plots_dir / "forces.png")
 
-        if not self.stress_df.empty:
+        if "stress_true" in self.content:
+            s_true = self.content["stress_true"]
+            s_pred = self.content["stress_pred"]
+            shydro_true = self.content["stress_hydro_true"]
+            shydro_pred = self.content["stress_hydro_pred"]
+            sdeviat_true = self.content["stress_deviat_true"]
+            sdeviat_pred = self.content["stress_deviat_pred"]
+            
             stress_plot = get_figure(
-                self.stress_df["true"],
-                self.stress_df["prediction"],
+                s_true,
+                s_pred,
                 datalabel=rf"Max: {self.stress['max']:.4f}",
                 xlabel=r"$ab~initio$ stress",
                 ylabel=r"predicted stress",
             )
-
             hydrostatic_stress_plot = get_figure(
-                self.stress_hydro_df["true"],
-                self.stress_hydro_df["prediction"],
+                shydro_true,
+                shydro_pred,
                 datalabel=rf"Max: {self.hydro_stress['max']:.4f}",
                 xlabel=r"$ab~initio$ hydrostatic stress",
                 ylabel=r"predicted hydrostatic stress",
             )
             deviatoric_stress_plot = get_figure(
-                self.stress_deviat_df["true"],
-                self.stress_deviat_df["prediction"],
+                sdeviat_true,
+                sdeviat_pred,
                 datalabel=rf"Max: {self.deviat_stress['max']:.4f}",
                 xlabel=r"$ab~initio$ deviatoric stress",
                 ylabel=r"predicted deviatoric stress",
@@ -281,14 +208,9 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
     def run(self):
         self.nwd.mkdir(exist_ok=True, parents=True)
         self.get_dataframes()
+        np.savez(self.data_file, **self.content)
         self.get_metrics()
         self.get_plots(save=True)
-
-        self.energy_df.to_csv(self.energy_df_file)
-        self.forces_df.to_csv(self.forces_df_file)
-        self.stress_df.to_csv(self.stress_df_file)
-        self.stress_hydro_df.to_csv(self.stress_hydrostatic_df_file)
-        self.stress_deviat_df.to_csv(self.stress_deviatoric_df_file)
 
 
 class ForceAngles(base.AnalyseProcessAtoms):
