@@ -1,4 +1,4 @@
-ipsuite.calculators
+﻿ipsuite.calculators
 ===================
 
 .. automodule:: ipsuite.calculators

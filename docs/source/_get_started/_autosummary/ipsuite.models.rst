@@ -1,4 +1,4 @@
-ipsuite.models
+﻿ipsuite.models
 ==============
 
 .. automodule:: ipsuite.models

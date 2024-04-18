@@ -1,4 +1,4 @@
-ipsuite.configuration\_comparison
+﻿ipsuite.configuration\_comparison
 =================================
 
 .. automodule:: ipsuite.configuration_comparison

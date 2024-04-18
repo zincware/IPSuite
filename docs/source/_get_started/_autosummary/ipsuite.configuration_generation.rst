@@ -1,4 +1,4 @@
-ipsuite.configuration\_generation
+﻿ipsuite.configuration\_generation
 =================================
 
 .. automodule:: ipsuite.configuration_generation
