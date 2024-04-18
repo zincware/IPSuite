@@ -48,5 +48,3 @@ ipsuite.configuration\_comparison.REMatch
       ~REMatch.use_jit
       ~REMatch.use_repr
       ~REMatch.uuid
-
-

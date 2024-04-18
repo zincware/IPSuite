@@ -18,13 +18,3 @@ ipsuite.utils.ase\_sim
       get_density_from_atoms
       get_desc
       get_energy
-
-
-
-
-
-
-
-
-
-

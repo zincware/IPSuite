@@ -24,9 +24,3 @@ ipsuite.analysis.bin\_property
       ForcesUncertaintyHistogram
       LabelHistogram
       StressHistogram
-
-
-
-
-
-

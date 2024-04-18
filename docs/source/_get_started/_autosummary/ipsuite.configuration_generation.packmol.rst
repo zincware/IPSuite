@@ -19,9 +19,3 @@ ipsuite.configuration\_generation.packmol
 
       MultiPackmol
       Packmol
-
-
-
-
-
-

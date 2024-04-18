@@ -20,9 +20,3 @@ ipsuite.calculators.ase\_standard
       EMTCalculator
       EMTSinglePoint
       LJSinglePoint
-
-
-
-
-
-

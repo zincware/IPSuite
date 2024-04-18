@@ -18,9 +18,3 @@ ipsuite.configuration\_selection.uniform\_energetic
    .. autosummary::
 
       UniformEnergeticSelection
-
-
-
-
-
-

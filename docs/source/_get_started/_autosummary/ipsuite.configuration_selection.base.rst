@@ -19,9 +19,3 @@ ipsuite.configuration\_selection.base
 
       BatchConfigurationSelection
       ConfigurationSelection
-
-
-
-
-
-

@@ -19,9 +19,3 @@ ipsuite.calculators.torch\_d3
 
       TorchD3
       TorchDFTD3CalculatorNL
-
-
-
-
-
-

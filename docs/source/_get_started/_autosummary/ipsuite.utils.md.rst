@@ -14,13 +14,3 @@ ipsuite.utils.md
    .. autosummary::
 
       get_energy_terms
-
-
-
-
-
-
-
-
-
-

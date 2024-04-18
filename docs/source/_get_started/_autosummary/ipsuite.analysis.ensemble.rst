@@ -24,9 +24,3 @@ ipsuite.analysis.ensemble
    .. autosummary::
 
       ModelEnsembleAnalysis
-
-
-
-
-
-

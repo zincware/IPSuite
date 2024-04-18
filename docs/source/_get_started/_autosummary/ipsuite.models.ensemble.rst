@@ -19,9 +19,3 @@ ipsuite.models.ensemble
 
       EnsembleCalculator
       EnsembleModel
-
-
-
-
-
-

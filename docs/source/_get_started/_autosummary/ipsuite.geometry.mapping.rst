@@ -18,9 +18,3 @@ ipsuite.geometry.mapping
    .. autosummary::
 
       BarycenterMapping
-
-
-
-
-
-

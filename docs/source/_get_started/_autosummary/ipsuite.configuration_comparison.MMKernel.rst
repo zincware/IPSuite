@@ -45,5 +45,3 @@ ipsuite.configuration\_comparison.MMKernel
       ~MMKernel.use_jit
       ~MMKernel.use_repr
       ~MMKernel.uuid
-
-

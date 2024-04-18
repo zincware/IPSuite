@@ -18,9 +18,3 @@ ipsuite.configuration\_selection.kernel
    .. autosummary::
 
       KernelSelection
-
-
-
-
-
-

@@ -18,9 +18,3 @@ ipsuite.data\_loading.add\_data\_h5md
    .. autosummary::
 
       AddDataH5MD
-
-
-
-
-
-

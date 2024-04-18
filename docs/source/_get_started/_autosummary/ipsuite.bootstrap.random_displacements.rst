@@ -21,9 +21,3 @@ ipsuite.bootstrap.random\_displacements
       RattleAtoms
       RotateMolecules
       TranslateMolecules
-
-
-
-
-
-

@@ -18,9 +18,3 @@ ipsuite.models.base
    .. autosummary::
 
       MLModel
-
-
-
-
-
-

@@ -18,9 +18,3 @@ ipsuite.configuration\_selection.index
    .. autosummary::
 
       IndexSelection
-
-
-
-
-
-

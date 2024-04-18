@@ -17,13 +17,3 @@ ipsuite.geometry.graphs
       edges_from_atoms
       identify_molecules
       split_molecule
-
-
-
-
-
-
-
-
-
-

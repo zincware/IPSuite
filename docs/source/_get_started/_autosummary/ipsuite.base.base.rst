@@ -24,9 +24,3 @@ ipsuite.base.base
       Mapping
       ProcessAtoms
       ProcessSingleAtom
-
-
-
-
-
-

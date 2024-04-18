@@ -26,9 +26,3 @@ ipsuite.configuration\_selection.threshold
    .. autosummary::
 
       ThresholdSelection
-
-
-
-
-
-

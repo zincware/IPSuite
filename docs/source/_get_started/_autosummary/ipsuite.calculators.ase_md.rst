@@ -34,9 +34,3 @@ ipsuite.calculators.ase\_md
       RescaleBoxModifier
       TemperatureOscillatingRampModifier
       TemperatureRampModifier
-
-
-
-
-
-

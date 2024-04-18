@@ -1,4 +1,5 @@
 """Use RDKit to convert Smiles strings to atoms"""
+
 import pathlib
 
 import ase

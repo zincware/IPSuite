@@ -18,9 +18,3 @@ ipsuite.calculators.orca
    .. autosummary::
 
       OrcaSinglePoint
-
-
-
-
-
-

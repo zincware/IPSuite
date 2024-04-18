@@ -25,9 +25,3 @@ ipsuite.data\_loading.add\_data\_ase
 
       AddData
       ReadData
-
-
-
-
-
-

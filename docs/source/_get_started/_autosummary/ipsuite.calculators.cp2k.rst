@@ -19,9 +19,3 @@ ipsuite.calculators.cp2k
 
       CP2KSinglePoint
       CP2KYaml
-
-
-
-
-
-

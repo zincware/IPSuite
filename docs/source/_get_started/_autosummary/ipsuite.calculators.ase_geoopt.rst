@@ -19,9 +19,3 @@ ipsuite.calculators.ase\_geoopt
 
       ASEGeoOpt
       BatchASEGeoOpt
-
-
-
-
-
-

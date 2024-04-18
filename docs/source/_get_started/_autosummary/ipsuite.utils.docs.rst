@@ -14,13 +14,3 @@ ipsuite.utils.docs
    .. autosummary::
 
       create_dvc_git_env_for_doctest
-
-
-
-
-
-
-
-
-
-

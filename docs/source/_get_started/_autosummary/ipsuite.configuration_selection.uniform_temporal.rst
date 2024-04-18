@@ -18,9 +18,3 @@ ipsuite.configuration\_selection.uniform\_temporal
    .. autosummary::
 
       UniformTemporalSelection
-
-
-
-
-
-

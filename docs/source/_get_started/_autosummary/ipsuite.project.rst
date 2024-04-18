@@ -18,9 +18,3 @@
    .. autosummary::
 
       Project
-
-
-
-
-
-

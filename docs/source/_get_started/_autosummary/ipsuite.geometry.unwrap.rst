@@ -18,13 +18,3 @@ ipsuite.geometry.unwrap
       sort_atomic_edges
       unwrap
       unwrap_system
-
-
-
-
-
-
-
-
-
-

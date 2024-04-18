@@ -18,9 +18,3 @@ ipsuite.models.nequip
    .. autosummary::
 
       Nequip
-
-
-
-
-
-

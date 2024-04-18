@@ -15,13 +15,3 @@ ipsuite.geometry.barycenter\_coarse\_grain
 
       barycenter_backmapping
       coarse_grain_to_barycenter
-
-
-
-
-
-
-
-
-
-

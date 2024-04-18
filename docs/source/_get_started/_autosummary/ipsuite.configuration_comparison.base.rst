@@ -28,9 +28,3 @@ ipsuite.configuration\_comparison.base
       ConfigurationComparison
       SOAPParameter
       SOAPParameterConverter
-
-
-
-
-
-

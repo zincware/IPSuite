@@ -24,9 +24,3 @@ ipsuite.models.mace\_model
    .. autosummary::
 
       MACE
-
-
-
-
-
-

@@ -18,9 +18,3 @@ ipsuite.fields.atoms
    .. autosummary::
 
       Atoms
-
-
-
-
-
-

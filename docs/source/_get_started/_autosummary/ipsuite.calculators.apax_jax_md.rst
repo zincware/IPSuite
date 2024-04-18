@@ -18,9 +18,3 @@ ipsuite.calculators.apax\_jax\_md
    .. autosummary::
 
       ApaxJaxMD
-
-
-
-
-
-

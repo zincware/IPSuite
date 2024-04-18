@@ -18,9 +18,3 @@ ipsuite.configuration\_selection.random
    .. autosummary::
 
       RandomSelection
-
-
-
-
-
-

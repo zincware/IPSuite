@@ -18,9 +18,3 @@ ipsuite.calculators.lammps
    .. autosummary::
 
       LammpsSimulator
-
-
-
-
-
-

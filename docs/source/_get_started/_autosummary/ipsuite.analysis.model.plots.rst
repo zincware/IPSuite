@@ -17,13 +17,3 @@ ipsuite.analysis.model.plots
       get_figure
       get_hist
       get_histogram_figure
-
-
-
-
-
-
-
-
-
-

@@ -20,9 +20,3 @@ ipsuite.base.protocol
       HasAtoms
       HasSelectedConfigurations
       ProcessAtoms
-
-
-
-
-
-

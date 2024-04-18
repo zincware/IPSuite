@@ -18,13 +18,3 @@ ipsuite.analysis.model.math
       compute_trans_forces
       decompose_stress_tensor
       force_decomposition
-
-
-
-
-
-
-
-
-
-

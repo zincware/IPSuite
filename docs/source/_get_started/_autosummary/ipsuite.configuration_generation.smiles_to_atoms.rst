@@ -19,9 +19,3 @@ ipsuite.configuration\_generation.smiles\_to\_atoms
 
       SmilesToAtoms
       SmilesToConformers
-
-
-
-
-
-

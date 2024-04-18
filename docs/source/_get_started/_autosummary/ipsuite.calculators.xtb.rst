@@ -18,9 +18,3 @@ ipsuite.calculators.xtb
    .. autosummary::
 
       xTBSinglePoint
-
-
-
-
-
-
