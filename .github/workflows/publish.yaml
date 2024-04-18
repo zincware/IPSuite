@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Free disc space
         run: rm -rf /opt/hostedtoolcache
-        
+
       - name: Check out the repo
         uses: actions/checkout@v4
 
