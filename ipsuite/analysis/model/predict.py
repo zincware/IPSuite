@@ -477,7 +477,7 @@ class ForceDecomposition(base.ComparePredictions):
         self.true_forces = {"all": [], "trans": [], "rot": [], "vib": []}
         self.pred_forces = {"all": [], "trans": [], "rot": [], "vib": []}
 
-        for atom in tqdm.tqdm(self.true_atoms, ncols=70):
+        for atom in tqdm.tqdm(self.x, ncols=70):
             atom_trans_forces, atom_rot_forces, atom_vib_forces = force_decomposition(
                 atom, mapping
             )
@@ -491,7 +491,7 @@ class ForceDecomposition(base.ComparePredictions):
         self.true_forces["rot"] = np.concatenate(self.true_forces["rot"]) * 1000
         self.true_forces["vib"] = np.concatenate(self.true_forces["vib"]) * 1000
 
-        for atom in tqdm.tqdm(self.pred_atoms, ncols=70):
+        for atom in tqdm.tqdm(self.y, ncols=70):
             atom_trans_forces, atom_rot_forces, atom_vib_forces = force_decomposition(
                 atom, mapping
             )
