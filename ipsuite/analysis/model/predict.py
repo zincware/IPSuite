@@ -213,12 +213,7 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
 
 
 class CalibrationMetrics(base.AnalyseProcessAtoms):
-    """Analyse the Models Prediction on standard metrics.
-
-    Units are given in:
-    - energy: meV/atom
-    - forces: meV/Å
-    - stress: eV/Å^3
+    """Analyse the calibration of a models uncertainty estimate.
     """
 
     data_file = zntrack.outs_path(zntrack.nwd / "data.npz")
