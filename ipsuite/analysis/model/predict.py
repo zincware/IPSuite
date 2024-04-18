@@ -63,8 +63,8 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
     energy: dict = zntrack.metrics()
     forces: dict = zntrack.metrics()
     stress: dict = zntrack.metrics()
-    hydro_stress: dict = zntrack.metrics()
-    deviat_stress: dict = zntrack.metrics()
+    stress_hydro: dict = zntrack.metrics()
+    stress_deviat: dict = zntrack.metrics()
 
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
 
@@ -132,16 +132,16 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
             self.stress = utils.metrics.get_full_metrics(
                 self.content["stress_true"], self.content["stress_pred"]
             )
-            self.hydro_stress = utils.metrics.get_full_metrics(
+            self.stress_hydro = utils.metrics.get_full_metrics(
                 self.content["stress_hydro_true"], self.content["stress_hydro_pred"]
             )
-            self.deviat_stress = utils.metrics.get_full_metrics(
+            self.stress_deviat = utils.metrics.get_full_metrics(
                 self.content["stress_deviat_true"], self.content["stress_deviat_pred"]
             )
         else:
             self.stress = {}
-            self.hydro_stress = {}
-            self.deviat_stress = {}
+            self.stress_hydro = {}
+            self.stress_deviat = {}
 
     def get_plots(self, save=False):
         """Create figures for all available data."""
@@ -188,14 +188,14 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
             hydrostatic_stress_plot = get_figure(
                 shydro_true,
                 shydro_pred,
-                datalabel=rf"Max: {self.hydro_stress['max']:.4f}",
+                datalabel=rf"Max: {self.stress_hydro['max']:.4f}",
                 xlabel=r"$ab~initio$ hydrostatic stress",
                 ylabel=r"predicted hydrostatic stress",
             )
             deviatoric_stress_plot = get_figure(
                 sdeviat_true,
                 sdeviat_pred,
-                datalabel=rf"Max: {self.deviat_stress['max']:.4f}",
+                datalabel=rf"Max: {self.stress_deviat['max']:.4f}",
                 xlabel=r"$ab~initio$ deviatoric stress",
                 ylabel=r"predicted deviatoric stress",
             )

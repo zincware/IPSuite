@@ -77,6 +77,8 @@ def get_full_metrics(true: np.ndarray, prediction: np.ndarray) -> dict:
         "max": maximum_error(true, prediction),
         "lp4": calculate_l_p_norm(true, prediction, p=4),
         "rrmse": relative_rmse(true, prediction),
-        "pearsonr": stats.pearsonr(true, prediction)[0],
     }
+
+    if len(true) > 2:
+        metrics["pearsonr"] = stats.pearsonr(true, prediction)[0]
     return metrics
