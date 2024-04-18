@@ -198,16 +198,16 @@ class GAP(MLModel):
     """
 
     # SOAP
-    soap: typing.Union[dict, SOAP] = zntrack.zn.params(SOAP())
+    soap: typing.Union[dict, SOAP] = zntrack.params(SOAP())
     # DistanceNb
-    distance_nb: typing.Union[dict, DistanceNb] = zntrack.zn.params(DistanceNb())
+    distance_nb: typing.Union[dict, DistanceNb] = zntrack.params(DistanceNb())
     # GAP
-    gap: typing.Union[dict, GapParameter] = zntrack.zn.params(GapParameter())
+    gap: typing.Union[dict, GapParameter] = zntrack.params(GapParameter())
     # #
-    model_directory: Path = zntrack.dvc.outs(zntrack.nwd / "model")
-    train_data_file: Path = zntrack.dvc.outs(zntrack.nwd / "train_atoms.extxyz")
-    gap_input_script: Path = zntrack.dvc.outs(zntrack.nwd / "gap.input")
-    _train_idx_file: Path = zntrack.dvc.outs(zntrack.nwd / "train_atoms.extxyz.idx")
+    model_directory: Path = zntrack.outs_path(zntrack.nwd / "model")
+    train_data_file: Path = zntrack.outs_path(zntrack.nwd / "train_atoms.extxyz")
+    gap_input_script: Path = zntrack.outs_path(zntrack.nwd / "gap.input")
+    _train_idx_file: Path = zntrack.outs_path(zntrack.nwd / "train_atoms.extxyz.idx")
 
     #
     OPENBLAS_NUM_THREADS = zntrack.meta.Environment(None)

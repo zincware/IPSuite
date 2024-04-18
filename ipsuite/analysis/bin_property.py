@@ -20,17 +20,17 @@ class LabelHistogram(base.AnalyseAtoms):
         Number of bins in the histogram.
     """
 
-    bins: int = zntrack.zn.params(None)
-    x_lim: tuple = zntrack.zn.params(None)
-    y_lim: tuple = zntrack.zn.params(None)
-    plots_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "plots")
-    labels_df: pd.DataFrame = zntrack.zn.plots()
+    bins: int = zntrack.params(None)
+    x_lim: tuple = zntrack.params(None)
+    y_lim: tuple = zntrack.params(None)
+    plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
+    labels_df: pd.DataFrame = zntrack.plots()
     datalabel: str = None
     xlabel: str = None
     ylabel: str = "Occurrences"
     logy_scale: bool = True
 
-    metrics: float = zntrack.zn.metrics()
+    metrics: float = zntrack.metrics()
 
     def get_labels(self):
         raise NotImplementedError
@@ -146,9 +146,9 @@ class StressHistogram(base.AnalyseAtoms):
         Number of bins in the histogram.
     """
 
-    bins: int = zntrack.zn.params(None)
-    plots_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "plots")
-    labels_df: pd.DataFrame = zntrack.zn.plots()
+    bins: int = zntrack.params(None)
+    plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
+    labels_df: pd.DataFrame = zntrack.plots()
     ylabel: str = "Occurrences"
     logy_scale: bool = True
 

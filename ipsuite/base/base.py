@@ -88,8 +88,8 @@ class ProcessSingleAtom(IPSNode):
     """
 
     data: typing.Union[ase.Atoms, typing.List[ase.Atoms]] = zntrack.deps()
-    data_file: str = zntrack.dvc.deps(None)
-    data_id: typing.Optional[int] = zntrack.zn.params(0)
+    data_file: str = zntrack.deps_path(None)
+    data_id: typing.Optional[int] = zntrack.params(0)
 
     atoms: typing.List[ase.Atoms] = fields.Atoms()
 
@@ -160,8 +160,8 @@ class Mapping(ProcessAtoms):
         The indices of the molecules will be frozen for all configurations.
     """
 
-    molecules: list[ase.Atoms] = zntrack.zn.outs()
-    frozen: bool = zntrack.zn.params(False)
+    molecules: list[ase.Atoms] = zntrack.outs()
+    frozen: bool = zntrack.params(False)
 
     # TODO, should we allow to transfer the frozen mapping to another node?
     #  mapping = Mapping(frozen=True, reference=mapping)

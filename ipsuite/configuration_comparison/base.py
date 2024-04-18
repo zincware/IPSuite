@@ -19,7 +19,7 @@ from ipsuite import base
 
 
 def convert_to_df(similarities: typing.List) -> pd.DataFrame:
-    """Convert similarities to pd.DataFrame to save as zn.plots.
+    """Convert similarities to pd.DataFrame to save as zntrack.plots.
 
     Parameters
     ----------
@@ -125,7 +125,7 @@ class ConfigurationComparison(base.IPSNode):
         utils.helpers.UNION_ATOMS_OR_ATOMS_LST, utils.types.SupportsAtoms
     ]
         analyte comparison to compare with reference
-    similarities: zn.plots()
+    similarities: zntrack.plots()
         in the end a csv file to save computed maximal similarities
     soap: typing.Union[dict, SOAPParameter]
         parameter to use for the SOAP descriptor
@@ -142,9 +142,9 @@ class ConfigurationComparison(base.IPSNode):
     reference: base.protocol.HasOrIsAtoms = zntrack.deps()
     analyte: base.protocol.HasOrIsAtoms = zntrack.deps()
     memory: int = zntrack.params(1000)
-    similarities = zntrack.zn.plots()
-    soap: typing.Union[dict, SOAPParameter] = zntrack.zn.params(SOAPParameter())
-    result: typing.List[float] = zntrack.zn.outs()
+    similarities = zntrack.plots()
+    soap: typing.Union[dict, SOAPParameter] = zntrack.params(SOAPParameter())
+    result: typing.List[float] = zntrack.outs()
 
     _name_ = "ConfigurationComparison"
     use_jit: bool = zntrack.meta.Text(True)
@@ -168,7 +168,7 @@ class ConfigurationComparison(base.IPSNode):
                 utils.types.SupportsAtoms]
             analyte comparison to compare with reference (If reference is None, analyte
              will be compared to itself)
-        similarities: zn.plots()
+        similarities: zntrack.plots()
             In the end a csv file to save computed maximal similarities
         soap: dict
             Parameter to use for the SOAP descriptor.

@@ -48,15 +48,15 @@ class RattleAnalysis(base.ProcessSingleAtom):
     """
 
     model: models.MLModel = zntrack.deps()
-    model_outs = zntrack.dvc.outs(zntrack.nwd / "model/")
+    model_outs = zntrack.outs_path(zntrack.nwd / "model/")
 
-    logspace: bool = zntrack.zn.params(True)
-    stop: float = zntrack.zn.params(3.0)
-    factor: float = zntrack.zn.params(0.001)
-    num: int = zntrack.zn.params(100)
+    logspace: bool = zntrack.params(True)
+    stop: float = zntrack.params(3.0)
+    factor: float = zntrack.params(0.001)
+    num: int = zntrack.params(100)
 
-    seed: int = zntrack.zn.params(1234)
-    energies: pd.DataFrame = zntrack.zn.plots(
+    seed: int = zntrack.params(1234)
+    energies: pd.DataFrame = zntrack.plots(
         # x="x",
         # y="y",
         # x_label="stdev of randomly displaced atoms",
@@ -109,16 +109,16 @@ class BoxScale(base.ProcessSingleAtom):
     """
 
     model: models.MLModel = zntrack.deps()
-    model_outs = zntrack.dvc.outs(zntrack.nwd / "model")
+    model_outs = zntrack.outs_path(zntrack.nwd / "model")
     mapping: base.Mapping = zntrack.deps(None)
 
-    stop: float = zntrack.zn.params(2.0)
-    num: int = zntrack.zn.params(100)
-    start: float = zntrack.zn.params(1)
+    stop: float = zntrack.params(2.0)
+    num: int = zntrack.params(100)
+    start: float = zntrack.params(1)
 
-    plot = zntrack.dvc.outs(zntrack.nwd / "energy.png")
+    plot = zntrack.outs_path(zntrack.nwd / "energy.png")
 
-    energies: pd.DataFrame = zntrack.zn.plots(
+    energies: pd.DataFrame = zntrack.plots(
         x="x",
         y="y",
         x_label="Scale factor of the initial cell",
@@ -192,21 +192,21 @@ class BoxHeatUp(base.ProcessSingleAtom):
 
     """
 
-    start_temperature: float = zntrack.zn.params()
-    stop_temperature: float = zntrack.zn.params()
-    steps: int = zntrack.zn.params()
-    time_step: float = zntrack.zn.params(0.5)
-    friction = zntrack.zn.params()
-    repeat = zntrack.zn.params((1, 1, 1))
+    start_temperature: float = zntrack.params()
+    stop_temperature: float = zntrack.params()
+    steps: int = zntrack.params()
+    time_step: float = zntrack.params(0.5)
+    friction = zntrack.params()
+    repeat = zntrack.params((1, 1, 1))
 
-    max_temperature: float = zntrack.zn.params(None)
+    max_temperature: float = zntrack.params(None)
 
-    flux_data = zntrack.zn.plots()
+    flux_data = zntrack.plots()
 
     model = zntrack.deps()
-    model_outs = zntrack.dvc.outs(zntrack.nwd / "model")
+    model_outs = zntrack.outs_path(zntrack.nwd / "model")
 
-    plots = zntrack.dvc.outs(zntrack.nwd / "temperature.png")
+    plots = zntrack.outs_path(zntrack.nwd / "temperature.png")
 
     def get_atoms(self) -> ase.Atoms:
         atoms: ase.Atoms = self.get_data()
@@ -360,18 +360,18 @@ class MDStability(base.ProcessAtoms):
     """
 
     model = zntrack.deps()
-    model_outs = zntrack.dvc.outs(zntrack.nwd / "model_outs")
-    max_steps: int = zntrack.zn.params()
+    model_outs = zntrack.outs_path(zntrack.nwd / "model_outs")
+    max_steps: int = zntrack.params()
     checks: list[zntrack.Node] = zntrack.deps()
-    time_step: float = zntrack.zn.params(0.5)
-    initial_temperature: float = zntrack.zn.params(300)
-    save_last_n: int = zntrack.zn.params(1)
-    bins: int = zntrack.zn.params(None)
-    seed: int = zntrack.zn.params(0)
+    time_step: float = zntrack.params(0.5)
+    initial_temperature: float = zntrack.params(300)
+    save_last_n: int = zntrack.params(1)
+    bins: int = zntrack.params(None)
+    seed: int = zntrack.params(0)
 
-    traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.h5")
-    plots_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "plots")
-    stable_steps_df: pd.DataFrame = zntrack.zn.plots()
+    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "trajectory.h5")
+    plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
+    stable_steps_df: pd.DataFrame = zntrack.plots()
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:

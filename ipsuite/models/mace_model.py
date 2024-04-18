@@ -34,16 +34,16 @@ def execute(cmd, **kwargs):
 class MACE(MLModel):
     """MACE model."""
 
-    train_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "train-data.extxyz")
+    train_data_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "train-data.extxyz")
 
     test_data = zntrack.deps()
-    test_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "test-data.extxyz")
-    model_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "model")
+    test_data_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "test-data.extxyz")
+    model_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model")
 
-    config: str = zntrack.dvc.params("mace.yaml")
+    config: str = zntrack.params_path("mace.yaml")
     device: str = zntrack.meta.Text(None)
 
-    training: pathlib.Path = zntrack.dvc.plots(
+    training: pathlib.Path = zntrack.plots_path(
         zntrack.nwd / "training.csv",
         template=STATIC_PATH / "y_log.json",
         x="epoch",

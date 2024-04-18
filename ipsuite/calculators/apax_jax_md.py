@@ -8,7 +8,6 @@ import h5py
 import yaml
 import znh5md
 import zntrack.utils
-from zntrack import dvc, zn
 
 from ipsuite.base import ProcessSingleAtom
 from ipsuite.models import Apax
@@ -33,13 +32,15 @@ class ApaxJaxMD(ProcessSingleAtom):
     """
 
     model: Apax = zntrack.deps()
-    repeat = zn.params(None)
+    repeat = zntrack.params(None)
 
-    md_parameter: dict = zn.params(None)
-    md_parameter_file: str = dvc.params(None)
+    md_parameter: dict = zntrack.params(None)
+    md_parameter_file: str = zntrack.params_path(None)
 
-    sim_dir: pathlib.Path = dvc.outs(zntrack.nwd / "md")
-    init_struc_dir: pathlib.Path = dvc.outs(zntrack.nwd / "initial_structure.extxyz")
+    sim_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "md")
+    init_struc_dir: pathlib.Path = zntrack.outs_path(
+        zntrack.nwd / "initial_structure.extxyz"
+    )
 
     def post_init(self):
         if not self.state.loaded:
