@@ -36,7 +36,6 @@ class ProcessAtoms(IPSNode):
 
     data: list[ase.Atoms] = zntrack.deps()
     data_file: str = zntrack.dvc.deps(None)
-    data_id: typing.Optional[int] = None  # zntrack.params(None)
     atoms: list[ase.Atoms] = fields.Atoms()
 
     def _post_init_(self):
@@ -51,21 +50,16 @@ class ProcessAtoms(IPSNode):
     def get_data(self) -> list[ase.Atoms]:
         """Get the atoms data to process."""
         if self.data is not None:
-            data = self.data
+            return self.data
         elif self.data_file is not None:
             try:
                 with self.state.fs.open(pathlib.Path(self.data_file).as_posix()) as f:
-                    data = list(ase.io.iread(f))
+                    return list(ase.io.iread(f))
             except FileNotFoundError:
                 # File can not be opened with DVCFileSystem, try normal open
-                data = list(ase.io.iread(self.data_file))
+                return list(ase.io.iread(self.data_file))
         else:
             raise ValueError("No data given.")
-
-        if self.data_id is not None:
-            return [data[self.data_id]]
-        else:
-            return data
 
 
 class ProcessSingleAtom(IPSNode):
@@ -140,16 +134,10 @@ class AnalyseProcessAtoms(IPSNode):
     """Analyse the output of a ProcessAtoms Node."""
 
     data: ProcessAtoms = zntrack.deps()
-    reference: ProcessAtoms = zntrack.deps(None)
 
     def get_data(self) -> typing.Tuple[list[ase.Atoms], list[ase.Atoms]]:
-
-        if self.reference is None:
-            self.data.update_data()  # otherwise, data might not be available
-            return self.data.data, self.data.atoms
-        else:
-            # TODO: support both, Nodes and Connections
-            return self.reference, self.data
+        self.data.update_data()  # otherwise, data might not be available
+        return self.data.data, self.data.atoms
 
 
 class Mapping(ProcessAtoms):
