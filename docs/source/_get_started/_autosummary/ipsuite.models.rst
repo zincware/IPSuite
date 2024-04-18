@@ -3,21 +3,21 @@
 
 .. automodule:: ipsuite.models
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -33,4 +33,3 @@
    ipsuite.models.gap
    ipsuite.models.mace_model
    ipsuite.models.nequip
-

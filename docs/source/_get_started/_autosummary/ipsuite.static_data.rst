@@ -3,21 +3,18 @@
 
 .. automodule:: ipsuite.static_data
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
+
+
+
+
+
+
+
+
+
 
 
 

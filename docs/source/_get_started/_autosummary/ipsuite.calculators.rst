@@ -3,21 +3,21 @@
 
 .. automodule:: ipsuite.calculators
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -37,4 +37,3 @@
    ipsuite.calculators.orca
    ipsuite.calculators.torch_d3
    ipsuite.calculators.xtb
-

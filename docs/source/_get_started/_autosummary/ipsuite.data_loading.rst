@@ -3,21 +3,21 @@
 
 .. automodule:: ipsuite.data_loading
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29,4 +29,3 @@
 
    ipsuite.data_loading.add_data_ase
    ipsuite.data_loading.add_data_h5md
-

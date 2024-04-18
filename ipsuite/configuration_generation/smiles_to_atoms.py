@@ -11,8 +11,8 @@ from ipsuite import base, fields
 
 
 class SmilesToAtoms(base.IPSNode):
-    """Generate ase.atom object from smiles string
-    """
+    """Generate ase.atom object from smiles string"""
+
     atoms = fields.Atoms()
 
     smiles: str = zntrack.params()
@@ -49,6 +49,7 @@ class SmilesToAtoms(base.IPSNode):
 
 class SmilesToConformers(base.IPSNode):
     """Generate random conformers of molecule from smiles string"""
+
     atoms = fields.Atoms()
 
     smiles: str = zntrack.params()
