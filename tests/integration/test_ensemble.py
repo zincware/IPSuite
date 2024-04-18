@@ -75,6 +75,6 @@ def test_ensemble_model_stress(proj_path, cu_box):
 
     analysis.load()
 
-    assert (len(analysis.stress_df["prediction"])) > 0
-    assert (len(analysis.stress_hydro_df["prediction"])) > 0
-    assert (len(analysis.stress_deviat_df["prediction"])) > 0
+    assert (len(analysis.content["stress_pred"])) > 0
+    assert (len(analysis.content["stress_hydro_pred"])) > 0
+    assert (len(analysis.content["stress_deviat_pred"])) > 0

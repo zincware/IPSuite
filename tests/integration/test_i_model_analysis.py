@@ -70,7 +70,7 @@ def test_AnalysePrediction(trained_model, eager):
     if not eager:
         analysis.load()
 
-    assert not analysis.energy_df.empty
+    assert analysis.energy
     assert analysis.energy["rmse"] > 0.0
 
 
