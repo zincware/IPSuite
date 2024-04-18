@@ -102,11 +102,13 @@ class BoxOscillatingRampModifier(base.IPSNode):
                     [[self.end_cell, 0, 0], [0, self.end_cell, 0], [0, 0, self.end_cell]]
                 )
             elif isinstance(self.end_cell, list):
-                self.end_cell = np.array([
-                    [self.end_cell[0], 0, 0],
-                    [0, self.end_cell[1], 0],
-                    [0, 0, self.end_cell[2]],
-                ])
+                self.end_cell = np.array(
+                    [
+                        [self.end_cell[0], 0, 0],
+                        [0, self.end_cell[1], 0],
+                        [0, 0, self.end_cell[2]],
+                    ]
+                )
 
         percentage = step / (total_steps - 1)
         # if num_ramp_oscillations is set, the cell size is ramped to end_cell within
@@ -314,11 +316,13 @@ class NPTThermostat(base.IPSNode):
 
     def get_thermostat(self, atoms):
         if self.tetragonal_strain:
-            mask = np.array([
-                [True, False, False],
-                [False, True, False],
-                [False, False, True],
-            ])
+            mask = np.array(
+                [
+                    [True, False, False],
+                    [False, True, False],
+                    [False, False, True],
+                ]
+            )
         else:
             mask = None
         self.time_step *= units.fs

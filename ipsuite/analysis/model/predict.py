@@ -115,14 +115,18 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
         """Create a pandas dataframe from the given data."""
         true_data, pred_data = self.get_data()
 
-        self.energy_df = pd.DataFrame({
-            "true": (
-                np.array([x.get_potential_energy() / len(x) for x in true_data]) * 1000
-            ),
-            "prediction": (
-                np.array([x.get_potential_energy() / len(x) for x in pred_data]) * 1000
-            ),
-        })
+        self.energy_df = pd.DataFrame(
+            {
+                "true": (
+                    np.array([x.get_potential_energy() / len(x) for x in true_data])
+                    * 1000
+                ),
+                "prediction": (
+                    np.array([x.get_potential_energy() / len(x) for x in pred_data])
+                    * 1000
+                ),
+            }
+        )
 
         try:
             true_forces = [np.reshape(x.get_forces(), (-1, 3)) for x in true_data]
@@ -131,16 +135,18 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
             pred_forces = [np.reshape(x.get_forces(), (-1, 3)) for x in pred_data]
             pred_forces = np.concatenate(pred_forces, axis=0) * 1000
 
-            self.forces_df = pd.DataFrame({
-                "true": np.linalg.norm(true_forces, axis=-1),
-                "true_x": true_forces[:, 0],
-                "true_y": true_forces[:, 1],
-                "true_z": true_forces[:, 2],
-                "prediction": np.linalg.norm(pred_forces, axis=-1),
-                "prediction_x": pred_forces[:, 0],
-                "prediction_y": pred_forces[:, 1],
-                "prediction_z": pred_forces[:, 2],
-            })
+            self.forces_df = pd.DataFrame(
+                {
+                    "true": np.linalg.norm(true_forces, axis=-1),
+                    "true_x": true_forces[:, 0],
+                    "true_y": true_forces[:, 1],
+                    "true_z": true_forces[:, 2],
+                    "prediction": np.linalg.norm(pred_forces, axis=-1),
+                    "prediction_x": pred_forces[:, 0],
+                    "prediction_y": pred_forces[:, 1],
+                    "prediction_z": pred_forces[:, 2],
+                }
+            )
         except (PropertyNotImplementedError, ValueError):
             self.forces_df = pd.DataFrame({})
 
@@ -157,18 +163,24 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
             hydro_pred = np.reshape(hydro_pred, -1)
             deviat_pred = np.reshape(deviat_pred, -1)
 
-            self.stress_df = pd.DataFrame({
-                "true": true_stress,
-                "prediction": pred_stress,
-            })
-            self.stress_hydro_df = pd.DataFrame({
-                "true": hydro_true,
-                "prediction": hydro_pred,
-            })
-            self.stress_deviat_df = pd.DataFrame({
-                "true": deviat_true,
-                "prediction": deviat_pred,
-            })
+            self.stress_df = pd.DataFrame(
+                {
+                    "true": true_stress,
+                    "prediction": pred_stress,
+                }
+            )
+            self.stress_hydro_df = pd.DataFrame(
+                {
+                    "true": hydro_true,
+                    "prediction": hydro_pred,
+                }
+            )
+            self.stress_deviat_df = pd.DataFrame(
+                {
+                    "true": deviat_true,
+                    "prediction": deviat_pred,
+                }
+            )
         except (PropertyNotImplementedError, ValueError):
             self.stress_df = pd.DataFrame({})
             self.stress_hydro_df = pd.DataFrame({})

@@ -196,9 +196,11 @@ class StressHistogram(base.AnalyseAtoms):
         self.get_plots(counts[0], bin_edges[0], hydrostatic=True)
         self.get_plots(counts[1], bin_edges[1], hydrostatic=False)
 
-        self.labels_df = pd.DataFrame({
-            "hydro_bin_edges": bin_edges[0][1:],
-            "hydro_counts": counts[0],
-            "deviatoric_bin_edges": bin_edges[1][1:],
-            "deviatoric_counts": counts[1],
-        })
+        self.labels_df = pd.DataFrame(
+            {
+                "hydro_bin_edges": bin_edges[0][1:],
+                "hydro_counts": counts[0],
+                "deviatoric_bin_edges": bin_edges[1][1:],
+                "deviatoric_counts": counts[1],
+            }
+        )

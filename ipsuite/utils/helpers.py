@@ -1,10 +1,9 @@
 """ipsuite helper modules."""
 
-import typing_extensions as tyex
-
 import contextlib
 from logging import Logger
 
+import typing_extensions as tyex
 import znflow
 from zntrack import Node
 

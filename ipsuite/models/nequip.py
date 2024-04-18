@@ -132,13 +132,15 @@ class Nequip(MLModel):
 
     def deploy_model(self):
         """Deploy the model using nequip-deploy."""
-        subprocess.check_call([
-            "nequip-deploy",
-            "build",
-            "--train-dir",
-            (self.model_directory / "dvc-run").as_posix(),
-            self.deployed_model.as_posix(),
-        ])
+        subprocess.check_call(
+            [
+                "nequip-deploy",
+                "build",
+                "--train-dir",
+                (self.model_directory / "dvc-run").as_posix(),
+                self.deployed_model.as_posix(),
+            ]
+        )
 
     def run(self):
         """Primary method to run which executes all steps of the model training."""
