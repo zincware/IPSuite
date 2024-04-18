@@ -57,14 +57,14 @@ class ModelEnsembleAnalysis(base.AnalyseAtoms):
 
     models: list = zntrack.deps()
 
-    normal_plot_path = zntrack.dvc.outs(zntrack.nwd / "normal_plot.png")
-    sorted_plot_path = zntrack.dvc.outs(zntrack.nwd / "sorted_plot.png")
-    histogram = zntrack.dvc.outs(zntrack.nwd / "histogram.png")
+    normal_plot_path = zntrack.outs_path(zntrack.nwd / "normal_plot.png")
+    sorted_plot_path = zntrack.outs_path(zntrack.nwd / "sorted_plot.png")
+    histogram = zntrack.outs_path(zntrack.nwd / "histogram.png")
 
-    prediction_list = zntrack.zn.outs()
-    predictions: typing.List[ase.Atoms] = zntrack.zn.outs()
+    prediction_list = zntrack.outs()
+    predictions: typing.List[ase.Atoms] = zntrack.outs()
 
-    bins: int = zntrack.zn.params(100)
+    bins: int = zntrack.params(100)
 
     def _post_init_(self):
         self.data = utils.helpers.get_deps_if_node(self.data, "atoms")

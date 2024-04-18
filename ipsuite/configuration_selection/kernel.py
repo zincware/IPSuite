@@ -27,7 +27,7 @@ class KernelSelection(ConfigurationSelection):
     ----------
     n_configurations: int
         number of configurations to select
-    kernel: ConfigurationComparison = zn.Nodes()
+    kernel: ConfigurationComparison = zntrack.Nodes()
     points_per_cycle: int
         Number of configurations to add before recomputing the MMK
     correlation_time: int
@@ -53,7 +53,7 @@ class KernelSelection(ConfigurationSelection):
 
     # TODO what if the correlation time restricts the number of atoms to
     #  be less than n_configurations?
-    correlation_time: int = zntrack.zn.params(1)
+    correlation_time: int = zntrack.params(1)
 
     def _post_init_(self):
         """Run after the init of the node."""

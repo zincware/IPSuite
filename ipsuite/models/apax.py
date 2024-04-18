@@ -15,7 +15,6 @@ from apax.md.function_transformations import available_transformations
 from apax.train.run import run as apax_run
 from jax import config
 from matplotlib import pyplot as plt
-from zntrack import dvc, zn
 
 from ipsuite import base, utils
 from ipsuite.analysis.ensemble import plot_with_uncertainty
@@ -45,18 +44,18 @@ class Apax(MLModel):
         path to the valdidation data
     """
 
-    config: str = dvc.params("apax.yaml")
+    config: str = zntrack.params_path("apax.yaml")
     validation_data = zntrack.deps()
     model: Optional[MLModel] = zntrack.deps(None)
 
-    model_directory: pathlib.Path = dvc.outs(zntrack.nwd / "apax_model")
+    model_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "apax_model")
 
-    train_data_file: pathlib.Path = dvc.outs(zntrack.nwd / "train_atoms.extxyz")
-    validation_data_file: pathlib.Path = dvc.outs(zntrack.nwd / "val_atoms.extxyz")
+    train_data_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "train_atoms.extxyz")
+    validation_data_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "val_atoms.extxyz")
 
-    jax_enable_x64: bool = zn.params(True)
+    jax_enable_x64: bool = zntrack.params(True)
 
-    metrics_epoch = dvc.plots(
+    metrics_epoch = zntrack.plots_path(
         zntrack.nwd / "log.csv",
         template=STATIC_PATH / "y_log.json",
         x="epoch",
@@ -64,7 +63,7 @@ class Apax(MLModel):
         y="val_loss",
         y_label="validation loss",
     )
-    metrics = zn.metrics()
+    metrics = zntrack.metrics()
 
     _parameter: dict = None
 

@@ -12,11 +12,11 @@ from ipsuite import base, fields
 class SmilesToAtoms(base.IPSNode):
     atoms = fields.Atoms()
 
-    smiles: str = zntrack.zn.params()
-    cell: float = zntrack.zn.params(None)
-    seed: int = zntrack.zn.params(1234)
-    optimizer: str = zntrack.zn.params("UFF")
-    image: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "molecule.png")
+    smiles: str = zntrack.params()
+    cell: float = zntrack.params(None)
+    seed: int = zntrack.params(1234)
+    optimizer: str = zntrack.params("UFF")
+    image: pathlib.Path = zntrack.outs_path(zntrack.nwd / "molecule.png")
 
     def run(self):
         mol = Chem.MolFromSmiles(self.smiles)
@@ -47,11 +47,11 @@ class SmilesToAtoms(base.IPSNode):
 class SmilesToConformers(base.IPSNode):
     atoms = fields.Atoms()
 
-    smiles: str = zntrack.zn.params()
-    numConfs: int = zntrack.zn.params()
-    seed: int = zntrack.zn.params(42)
-    maxAttempts: int = zntrack.zn.params(1000)
-    cell: float = zntrack.zn.params(100)
+    smiles: str = zntrack.params()
+    numConfs: int = zntrack.params()
+    seed: int = zntrack.params(42)
+    maxAttempts: int = zntrack.params(1000)
+    cell: float = zntrack.params(100)
 
     def run(self):
         mol = Chem.MolFromSmiles(self.smiles)
