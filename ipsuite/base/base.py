@@ -194,7 +194,7 @@ class Mapping(ProcessAtoms):
         raise NotImplementedError
 
 
-class CheckBase(IPSNode):
+class Check(IPSNode):
     """Base class for check nodes.
     These are callbacks that can be used to preemptively terminate
     a molecular dynamics simulation if a vertain condition is met.
@@ -225,3 +225,14 @@ class CheckBase(IPSNode):
 
     def __str__(self):
         return self.status
+
+
+class Modifier(IPSNode):
+    """Base class for modifier nodes.
+    These are callbacks that can be used to alter the dynamics of an MD run.
+    This can be achieved by modifiyng the thermostat state or atoms in the system.
+    """
+
+    @abc.abstractmethod
+    def modify(self, thermostat: IPSNode, step: int, total_steps: int) -> None:
+        ...
