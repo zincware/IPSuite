@@ -3,6 +3,7 @@
 import contextlib
 from logging import Logger
 
+import typing_extensions as tyex
 import znflow
 from zntrack import Node
 
@@ -21,6 +22,10 @@ def setup_ase():
             all_properties.append(val)
 
 
+@tyex.deprecated(
+    "It is recommended to pass the attribute directly, instead of giving a 'zntrack.Node'"
+    " instance."
+)
 def get_deps_if_node(obj, attribute: str):
     """Apply getdeps if obj is subclass/instance of a Node.
 

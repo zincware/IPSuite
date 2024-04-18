@@ -16,7 +16,7 @@ from apax.train.run import run as apax_run
 from jax import config
 from matplotlib import pyplot as plt
 
-from ipsuite import base, utils
+from ipsuite import base
 from ipsuite.analysis.ensemble import plot_with_uncertainty
 from ipsuite.configuration_selection.base import BatchConfigurationSelection
 from ipsuite.models.base import MLModel
@@ -68,13 +68,6 @@ class Apax(MLModel):
     metrics = zntrack.metrics()
 
     _parameter: dict = None
-
-    def _post_init_(self):
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
-        self.validation_data = utils.helpers.get_deps_if_node(
-            self.validation_data, "atoms"
-        )
-        self._handle_parameter_file()
 
     def _post_load_(self) -> None:
         self._handle_parameter_file()

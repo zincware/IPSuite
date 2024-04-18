@@ -7,7 +7,6 @@ import zntrack
 from ipsuite import base
 from ipsuite.analysis.model.math import decompose_stress_tensor
 from ipsuite.analysis.model.plots import get_histogram_figure
-from ipsuite.utils.helpers import get_deps_if_node
 
 
 class LabelHistogram(base.AnalyseAtoms):
@@ -32,10 +31,6 @@ class LabelHistogram(base.AnalyseAtoms):
     logy_scale: bool = True
 
     metrics: float = zntrack.metrics()
-
-    def _post_init_(self):
-        """Load metrics - if available."""
-        self.data = get_deps_if_node(self.data, "atoms")
 
     def get_labels(self):
         raise NotImplementedError
@@ -156,10 +151,6 @@ class StressHistogram(base.AnalyseAtoms):
     labels_df: pd.DataFrame = zntrack.plots()
     ylabel: str = "Occurrences"
     logy_scale: bool = True
-
-    def _post_init_(self):
-        """Load metrics - if available."""
-        self.data = get_deps_if_node(self.data, "atoms")
 
     def get_labels(self):
         labels = np.array([x.get_stress(voigt=False) for x in self.data])

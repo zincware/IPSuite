@@ -11,7 +11,6 @@ import yaml
 import zntrack
 from mace.calculators import MACECalculator
 
-from ipsuite import utils
 from ipsuite.models import MLModel
 from ipsuite.static_data import STATIC_PATH
 
@@ -50,10 +49,6 @@ class MACE(MLModel):
         x="epoch",
         y=["loss", "rmse_e_per_atom", "rmse_f"],
     )
-
-    def _post_init_(self):
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
-        self.test_data = utils.helpers.get_deps_if_node(self.test_data, "atoms")
 
     def _post_load_(self) -> None:
         if self.device is None:
