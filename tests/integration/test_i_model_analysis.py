@@ -84,7 +84,7 @@ def test_AnalyseForceAngles(trained_model, eager):
             model=model, data=validation_selection.atoms
         )
         analysis = ipsuite.analysis.ForceAngles(
-            true_data=validation_selection.atoms, pred_data=prediction.atoms
+            x=validation_selection.atoms, y=prediction.atoms
         )
 
     project.run(eager=eager)
