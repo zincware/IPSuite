@@ -212,8 +212,7 @@ class PredictionMetrics(base.ComparePredictions):
 
 
 class CalibrationMetrics(base.ComparePredictions):
-    """Analyse the calibration of a models uncertainty estimate.
-    """
+    """Analyse the calibration of a models uncertainty estimate."""
 
     data_file = zntrack.outs_path(zntrack.nwd / "data.npz")
     energy: dict = zntrack.metrics()
