@@ -58,23 +58,23 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
     - stress: eV/Å^3
     """
 
-    energy_df_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "energy_df.csv")
-    forces_df_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "forces_df.csv")
-    stress_df_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "stress_df.csv")
-    stress_hydrostatic_df_file: pathlib.Path = zntrack.dvc.outs(
+    energy_df_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "energy_df.csv")
+    forces_df_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "forces_df.csv")
+    stress_df_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "stress_df.csv")
+    stress_hydrostatic_df_file: pathlib.Path = zntrack.outs_path(
         zntrack.nwd / "stress_hydrostatic_df.csv"
     )
-    stress_deviatoric_df_file: pathlib.Path = zntrack.dvc.outs(
+    stress_deviatoric_df_file: pathlib.Path = zntrack.outs_path(
         zntrack.nwd / "stress_deviatoric_df.csv"
     )
 
-    energy: dict = zntrack.zn.metrics()
-    forces: dict = zntrack.zn.metrics()
-    stress: dict = zntrack.zn.metrics()
-    hydro_stress: dict = zntrack.zn.metrics()
-    deviat_stress: dict = zntrack.zn.metrics()
+    energy: dict = zntrack.metrics()
+    forces: dict = zntrack.metrics()
+    stress: dict = zntrack.metrics()
+    hydro_stress: dict = zntrack.metrics()
+    deviat_stress: dict = zntrack.metrics()
 
-    plots_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "plots")
+    plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
 
     energy_df: pd.DataFrame
     forces_df: pd.DataFrame
