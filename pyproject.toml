@@ -29,7 +29,6 @@ quippy-ase = { version = "^0.9.12", optional = true }
 xmltodict = "^0.13.0"
 
 nequip = { version = "^0.5.6", optional = true }
-apax = { git = "https://github.com/apax-hub/apax.git", rev = "dev", optional = true}
 rdkit = "^2023"
 lazy-loader = "^0.2"
 znflow = "^0.1.11"
@@ -39,8 +38,10 @@ zntrack = "^0.7.2"
 mir-allegro = { git = "https://github.com/mir-group/allegro.git", optional = true}
 
 # [tool.poetry.group.mace.dependencies]
-mace = { git = "https://github.com/ACEsuit/mace.git", optional = true}
+mace-torch = { version = "^0.3.4", optional = true}
 torch-dftd = { version = "^0.4.0", optional = true }
+# [tool.poetry.group.apax.dependencies]
+apax = { version = "^0.4.0", optional = true }
 
 
 [tool.poetry.group.dev.dependencies]
@@ -66,7 +67,7 @@ gap = ["quippy-ase", "xmltodict"]
 nequip = ["nequip"]
 apax = ["apax"]
 allegro = ["mir-allegro"]
-mace = ["mace"]
+mace = ["mace-torch"]
 d3 = ["torch-dftd"]
 
 [build-system]
