@@ -1,3 +1,4 @@
+""""Use RDKit to convert Smiles stings to atoms"""
 import pathlib
 
 import ase
@@ -10,6 +11,8 @@ from ipsuite import base, fields
 
 
 class SmilesToAtoms(base.IPSNode):
+    """Generate ase.atom object from smiles string
+    """
     atoms = fields.Atoms()
 
     smiles: str = zntrack.params()
@@ -45,6 +48,7 @@ class SmilesToAtoms(base.IPSNode):
 
 
 class SmilesToConformers(base.IPSNode):
+    """Generate random conformers of molecule from smiles string"""
     atoms = fields.Atoms()
 
     smiles: str = zntrack.params()
