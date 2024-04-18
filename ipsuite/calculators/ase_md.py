@@ -623,11 +623,11 @@ def get_desc(temperature: float, total_energy: float, time: float, total_time: f
     )
 
 
-def update_metrics_dict(atoms, metrics_dict, checker_list):
+def update_metrics_dict(atoms, metrics_dict, checks):
     temperature, energy = get_energy(atoms)
     metrics_dict["energy"].append(energy)
     metrics_dict["temperature"].append(temperature)
-    for checker in checker_list:
+    for checker in checks:
         metric = checker.get_value(atoms)
         if metric is not None:
             metrics_dict[checker.get_quantity()].append(metric)
