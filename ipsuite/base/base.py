@@ -234,5 +234,4 @@ class Modifier(IPSNode):
     """
 
     @abc.abstractmethod
-    def modify(self, thermostat: IPSNode, step: int, total_steps: int) -> None:
-        ...
+    def modify(self, thermostat: IPSNode, step: int, total_steps: int) -> None: ...
