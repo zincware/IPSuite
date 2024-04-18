@@ -4,13 +4,17 @@ import numpy as np
 import pandas as pd
 import zntrack
 
-from ipsuite import base
+from ipsuite_core import base
+
+from ipsuite_core.base.base import AnalyseAtoms
+# TODO: for now
+
 from ipsuite.analysis.model.math import decompose_stress_tensor
 from ipsuite.analysis.model.plots import get_histogram_figure
 from ipsuite.utils.helpers import get_deps_if_node
 
 
-class LabelHistogram(base.AnalyseAtoms):
+class LabelHistogram(AnalyseAtoms):
     """Base class for creating histogram of a dataset.
 
     Parameters
@@ -139,7 +143,7 @@ class DipoleHistogram(LabelHistogram):
         return labels
 
 
-class StressHistogram(base.AnalyseAtoms):
+class StressHistogram(AnalyseAtoms):
     """Creates histograms for the hydrostatic and
     deviatoric components of the stress tensor.
 

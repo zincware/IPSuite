@@ -2982,6 +2982,21 @@ files = [
 ]
 
 [[package]]
+name = "ipsuite-core"
+version = "0.1.0"
+description = "core functionality and base classes for IPSuite"
+optional = false
+python-versions = "<4.0,>=3.10"
+files = [
+    {file = "ipsuite_core-0.1.0-py3-none-any.whl", hash = "sha256:ab51a7816b37d8a6d085e21e03ed03612b966cd9f9916204d5610d50c24350bb"},
+    {file = "ipsuite_core-0.1.0.tar.gz", hash = "sha256:05c530a39e21e3f4ced492b76cb2209e7d8c8465f27bf668031f56950c119ec8"},
+]
+
+[package.dependencies]
+znh5md = ">=0.1.9,<0.2.0"
+ZnTrack = ">=0.7.2,<0.8.0"
+
+[[package]]
 name = "ipykernel"
 version = "6.29.4"
 description = "IPython Kernel for Jupyter"
@@ -8430,4 +8445,4 @@ nequip = ["nequip"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "1d6955c5102c8e1bd3c34991855beed4cca58916230e10d919b567c49e1cf9a8"
+content-hash = "8a5aa245fa7ae9a3dc60304495acef89049bdf2b698cb0744893bb31824ed061"

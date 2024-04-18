@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import zntrack
 
-from ipsuite import base, utils
+from ipsuite import utils
+from ipsuite_core.base.base import AnalyseAtoms
 
 
 def plot_with_uncertainty(value, ylabel: str, xlabel: str, x=None, **kwargs) -> dict:
@@ -48,7 +49,7 @@ def plot_with_uncertainty(value, ylabel: str, xlabel: str, x=None, **kwargs) -> 
     return fig, ax, data
 
 
-class ModelEnsembleAnalysis(base.AnalyseAtoms):
+class ModelEnsembleAnalysis(AnalyseAtoms):
     """Attributes
     ----------
         models: list of models to ensemble

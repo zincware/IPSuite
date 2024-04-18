@@ -5,11 +5,11 @@ import numpy as np
 import pandas as pd
 import zntrack
 
-from ipsuite import base
+from ipsuite_core.base.base import AnalyseAtoms
 from ipsuite.utils.ase_sim import get_density_from_atoms
 
 
-class AnalyseDensity(base.AnalyseAtoms):
+class AnalyseDensity(AnalyseAtoms):
     window: int = zntrack.params(1000)
     start: int = zntrack.params(0)
     end: int = zntrack.params(None)

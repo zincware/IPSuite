@@ -6,7 +6,7 @@ from ase.visualize import view
 from rdkit import Chem
 from rdkit.Chem import AllChem, Draw
 
-from ipsuite import base, fields
+from ipsuite_core import base, fields
 
 
 class SmilesToAtoms(base.IPSNode):

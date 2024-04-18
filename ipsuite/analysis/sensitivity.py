@@ -36,8 +36,10 @@ def nonuniform_imshow(ax, x, y, z, aspect=1, cmap=plt.cm.rainbow):
     ax.set_aspect(aspect)
 
 
-class MoveSingleParticle(base.IPSNode):
+class MoveSingleParticle(zntrack.Node):
     """Move a single particle in a given direction."""
+
+    _module_ = "ipsuite.nodes"
 
     atoms_list = zntrack.deps()
     atoms_list_id = zntrack.params(0)  # the atoms object in the atoms list
@@ -65,7 +67,7 @@ class MoveSingleParticle(base.IPSNode):
         return [str(self.atoms_path / f"atoms_{idx}.xyz") for idx in range(self.samples)]
 
 
-class AnalyseGlobalForceSensitivity(base.IPSNode):
+class AnalyseGlobalForceSensitivity(zntrack.Node):
     atoms_list = zntrack.deps()
     plots = zntrack.outs_path(zntrack.nwd / "plots")
 

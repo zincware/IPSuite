@@ -9,7 +9,7 @@ import ase.io
 import tqdm
 import zntrack
 
-from ipsuite import base, fields
+from ipsuite_core import base, fields
 
 log = logging.getLogger(__name__)
 

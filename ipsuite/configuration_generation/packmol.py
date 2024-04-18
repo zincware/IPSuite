@@ -10,7 +10,7 @@ import numpy as np
 import zntrack
 from ase.visualize import view
 
-from ipsuite import base, fields
+from ipsuite_core import base, fields
 from ipsuite.utils.ase_sim import get_box_from_density
 
 log = logging.getLogger(__name__)

@@ -8,11 +8,11 @@ import ase.io
 import tqdm
 import zntrack
 
-from ipsuite import base
+from ipsuite_core.base.base import AnalyseAtoms
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
-class MLModel(base.AnalyseAtoms):
+class MLModel(AnalyseAtoms):
     """Parent class for all MLModel Implementations."""
 
     _name_ = "MLModel"

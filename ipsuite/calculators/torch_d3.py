@@ -14,7 +14,7 @@ from torch import Tensor
 from torch_dftd.functions.edge_extraction import calc_edge_index
 from torch_dftd.torch_dftd3_calculator import TorchDFTD3Calculator
 
-from ipsuite import base, fields
+from ipsuite_core import base, fields
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
