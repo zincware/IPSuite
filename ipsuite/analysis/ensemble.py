@@ -66,9 +66,6 @@ class ModelEnsembleAnalysis(base.AnalyseAtoms):
 
     bins: int = zntrack.zn.params(100)
 
-    def _post_init_(self):
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
-
     def run(self):
         # TODO axis labels
         # TODO save indices
@@ -94,12 +91,9 @@ class ModelEnsembleAnalysis(base.AnalyseAtoms):
         figures[2].savefig(self.histogram)
 
     def get_plots(self):
-        energy = np.stack(
-            [
-                np.stack([x.get_potential_energy() for x in p])
-                for p in self.prediction_list
-            ]
-        )
+        energy = np.stack([
+            np.stack([x.get_potential_energy() for x in p]) for p in self.prediction_list
+        ])
 
         figures = []
         # Plot the energy

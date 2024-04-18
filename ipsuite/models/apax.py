@@ -68,13 +68,6 @@ class Apax(MLModel):
 
     _parameter: dict = None
 
-    def _post_init_(self):
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
-        self.validation_data = utils.helpers.get_deps_if_node(
-            self.validation_data, "atoms"
-        )
-        self._handle_parameter_file()
-
     def _post_load_(self) -> None:
         self._handle_parameter_file()
 

@@ -228,7 +228,6 @@ class GAP(MLModel):
                 self.gap = GapParameter(**self.gap)
             if isinstance(self.distance_nb, dict):
                 self.distance_nb = DistanceNb(**self.distance_nb)
-            self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
 
     def run(self):
         """Create output directory and train the model."""

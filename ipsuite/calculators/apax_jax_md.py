@@ -64,8 +64,6 @@ class ApaxJaxMD(ProcessSingleAtom):
                 "Performing simulations with JaxMD requires a apax model Node"
             )
 
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
-
     def _handle_parameter_file(self):
         if self.md_parameter_file:
             md_parameter_file_content = pathlib.Path(self.md_parameter_file).read_text()

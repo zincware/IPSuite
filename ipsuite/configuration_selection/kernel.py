@@ -55,13 +55,6 @@ class KernelSelection(ConfigurationSelection):
     #  be less than n_configurations?
     correlation_time: int = zntrack.zn.params(1)
 
-    def _post_init_(self):
-        """Run after the init of the node."""
-        super()._post_init_()
-        self.initial_configurations = utils.helpers.get_deps_if_node(
-            self.initial_configurations, "atoms"
-        )
-
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         """Atom Selection method.
 

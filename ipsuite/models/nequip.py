@@ -79,11 +79,6 @@ class Nequip(MLModel):
                     f" params.yaml. Use 'git add {self.config}'."
                 )
 
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
-        self.validation_data = utils.helpers.get_deps_if_node(
-            self.validation_data, "atoms"
-        )
-
     def _handle_parameter_file(self, n_train: int, n_val: int, chemical_symbols: list):
         """Update and rewrite the nequip parameter file."""
         parameter = pathlib.Path(self.config).read_text()
@@ -137,15 +132,13 @@ class Nequip(MLModel):
 
     def deploy_model(self):
         """Deploy the model using nequip-deploy."""
-        subprocess.check_call(
-            [
-                "nequip-deploy",
-                "build",
-                "--train-dir",
-                (self.model_directory / "dvc-run").as_posix(),
-                self.deployed_model.as_posix(),
-            ]
-        )
+        subprocess.check_call([
+            "nequip-deploy",
+            "build",
+            "--train-dir",
+            (self.model_directory / "dvc-run").as_posix(),
+            self.deployed_model.as_posix(),
+        ])
 
     def run(self):
         """Primary method to run which executes all steps of the model training."""

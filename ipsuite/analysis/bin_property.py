@@ -7,7 +7,6 @@ import zntrack
 from ipsuite import base
 from ipsuite.analysis.model.math import decompose_stress_tensor
 from ipsuite.analysis.model.plots import get_histogram_figure
-from ipsuite.utils.helpers import get_deps_if_node
 
 
 class LabelHistogram(base.AnalyseAtoms):
@@ -32,10 +31,6 @@ class LabelHistogram(base.AnalyseAtoms):
     logy_scale: bool = True
 
     metrics: float = zntrack.zn.metrics()
-
-    def _post_init_(self):
-        """Load metrics - if available."""
-        self.data = get_deps_if_node(self.data, "atoms")
 
     def get_labels(self):
         raise NotImplementedError
@@ -157,10 +152,6 @@ class StressHistogram(base.AnalyseAtoms):
     ylabel: str = "Occurrences"
     logy_scale: bool = True
 
-    def _post_init_(self):
-        """Load metrics - if available."""
-        self.data = get_deps_if_node(self.data, "atoms")
-
     def get_labels(self):
         labels = np.array([x.get_stress(voigt=False) for x in self.data])
         return labels
@@ -205,11 +196,9 @@ class StressHistogram(base.AnalyseAtoms):
         self.get_plots(counts[0], bin_edges[0], hydrostatic=True)
         self.get_plots(counts[1], bin_edges[1], hydrostatic=False)
 
-        self.labels_df = pd.DataFrame(
-            {
-                "hydro_bin_edges": bin_edges[0][1:],
-                "hydro_counts": counts[0],
-                "deviatoric_bin_edges": bin_edges[1][1:],
-                "deviatoric_counts": counts[1],
-            }
-        )
+        self.labels_df = pd.DataFrame({
+            "hydro_bin_edges": bin_edges[0][1:],
+            "hydro_counts": counts[0],
+            "deviatoric_bin_edges": bin_edges[1][1:],
+            "deviatoric_counts": counts[1],
+        })

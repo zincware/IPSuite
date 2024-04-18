@@ -180,11 +180,9 @@ class ConfigurationComparison(base.IPSNode):
         super().__init__(**kwargs)
         if soap is None:
             soap = {}
-        if reference is None:
-            self.reference = None
-        else:
-            self.reference = utils.helpers.get_deps_if_node(reference, "atoms")
-        self.analyte = utils.helpers.get_deps_if_node(analyte, "atoms")
+        self.reference = reference
+        self.analyte = analyte
+
         if not self.state.loaded:
             self.soap = SOAPParameter(**soap)
 
