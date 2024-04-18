@@ -82,6 +82,9 @@ def get_figure(
 
 
 def get_cdf_figure(x, y, figsize: tuple = (10, 7)):
+    """Computes the cumulative distribution function of x and y,
+    then creates a calibration curve for the two variables.
+    """
     idxs = np.argsort(x)
     x_sorted = x[idxs]
     y_sorted = y[np.argsort(y)]
