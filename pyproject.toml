@@ -7,6 +7,10 @@ keywords = ["data-version-control", "machine-learning", "reproducibility", "inte
 license = "License :: OSI Approved :: Eclipse Public License 2.0 (EPL-2.0)"
 readme = "README.md"
 
+[tool.poetry.urls]
+documentation = "https://ipsuite.readthedocs.io"
+repository = "https://github.com/zincware/ipsuite"
+
 [tool.poetry.dependencies]
 # tensorflow-io-gcs-filesystem
 python = ">=3.10,<3.11"

@@ -3,6 +3,7 @@
 [![zincware](https://img.shields.io/badge/Powered%20by-zincware-darkcyan)](https://github.com/zincware)
 [![Documentation Status](https://readthedocs.org/projects/ipsuite/badge/?version=latest)](https://ipsuite.readthedocs.io/en/latest/?badge=latest)
 [![DOI](https://img.shields.io/badge/DOI-10.1021/acs.jpcb.3c07187-red)](https://pubs.acs.org/doi/10.1021/acs.jpcb.3c07187)
+[![PyPI version](https://badge.fury.io/py/ipsuite.svg)](https://badge.fury.io/py/ipsuite)
 
 # IPS - The Inter Atomic Potential Suite
 
