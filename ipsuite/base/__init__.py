@@ -5,9 +5,9 @@ from ipsuite.base.base import (
     AnalyseAtoms,
     AnalyseProcessAtoms,
     Check,
-    Modifier,
     IPSNode,
     Mapping,
+    Modifier,
     ProcessAtoms,
     ProcessSingleAtom,
 )
