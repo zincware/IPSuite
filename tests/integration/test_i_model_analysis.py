@@ -17,14 +17,14 @@ def trained_model(proj_path, traj_file) -> tuple:
         data_1 = ipsuite.AddData(file=traj_file, name="data_1")
 
         train_selection = ipsuite.configuration_selection.UniformEnergeticSelection(
-            data=data_1, n_configurations=10, name="train_data"
+            data=data_1.atoms, n_configurations=10, name="train_data"
         )
 
         validation_selection = ipsuite.configuration_selection.UniformEnergeticSelection(
             data=train_selection @ "excluded_atoms", n_configurations=8, name="val_data"
         )
 
-        model = ipsuite.models.GAP(soap={"cutoff": 0.7}, data=train_selection)
+        model = ipsuite.models.GAP(soap={"cutoff": 0.7}, data=train_selection.atoms)
 
     project.run()
 
@@ -36,7 +36,9 @@ def test_PredictWithModel(trained_model, eager):
     project, model, validation_selection = trained_model
 
     with project:
-        analysis = ipsuite.analysis.Prediction(model=model, data=validation_selection)
+        analysis = ipsuite.analysis.Prediction(
+            model=model, data=validation_selection.atoms
+        )
     project.run(eager=eager)
     if not eager:
         analysis.load()
@@ -78,7 +80,9 @@ def test_AnalysePrediction(trained_model, eager):
 def test_AnalyseForceAngles(trained_model, eager):
     project, model, validation_selection = trained_model
     with project:
-        prediction = ipsuite.analysis.Prediction(model=model, data=validation_selection)
+        prediction = ipsuite.analysis.Prediction(
+            model=model, data=validation_selection.atoms
+        )
         analysis = ipsuite.analysis.ForceAngles(data=prediction)
 
     project.run(eager=eager)
@@ -94,7 +98,9 @@ def test_RattleAnalysis(trained_model):
     project, model, validation_selection = trained_model
 
     with project:
-        analysis = ipsuite.analysis.RattleAnalysis(model=model, data=validation_selection)
+        analysis = ipsuite.analysis.RattleAnalysis(
+            model=model, data=validation_selection.atoms
+        )
     project.run()
 
     analysis.load()
@@ -106,7 +112,7 @@ def test_BoxScaleAnalysis(trained_model):
 
     with project:
         analysis = ipsuite.analysis.BoxScale(
-            model=model, data=validation_selection, num=10, stop=1.1
+            model=model, data=validation_selection.atoms, num=10, stop=1.1
         )
     project.run()
     analysis.load()

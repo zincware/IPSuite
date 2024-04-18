@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import zntrack
 
-from ipsuite import base, utils
+from ipsuite import base
 
 
 def plot_with_uncertainty(value, ylabel: str, xlabel: str, x=None, **kwargs) -> dict:
@@ -65,9 +65,6 @@ class ModelEnsembleAnalysis(base.AnalyseAtoms):
     predictions: typing.List[ase.Atoms] = zntrack.outs()
 
     bins: int = zntrack.params(100)
-
-    def _post_init_(self):
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
 
     def run(self):
         # TODO axis labels

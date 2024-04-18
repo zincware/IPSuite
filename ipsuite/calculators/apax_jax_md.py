@@ -9,7 +9,6 @@ import yaml
 import znh5md
 import zntrack.utils
 
-from ipsuite import utils
 from ipsuite.base import ProcessSingleAtom
 from ipsuite.models import Apax
 from ipsuite.utils.helpers import check_duplicate_keys
@@ -64,8 +63,6 @@ class ApaxJaxMD(ProcessSingleAtom):
             raise TypeError(
                 "Performing simulations with JaxMD requires a apax model Node"
             )
-
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
 
     def _handle_parameter_file(self):
         if self.md_parameter_file:

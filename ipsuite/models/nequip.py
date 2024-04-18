@@ -14,7 +14,6 @@ import yaml
 import zntrack
 import zntrack.utils
 
-from ipsuite import utils
 from ipsuite.models import MLModel
 from ipsuite.utils.helpers import check_duplicate_keys
 
@@ -78,11 +77,6 @@ class Nequip(MLModel):
                     "Please keep track of the parameter file with git, just like the"
                     f" params.yaml. Use 'git add {self.config}'."
                 )
-
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
-        self.validation_data = utils.helpers.get_deps_if_node(
-            self.validation_data, "atoms"
-        )
 
     def _handle_parameter_file(self, n_train: int, n_val: int, chemical_symbols: list):
         """Update and rewrite the nequip parameter file."""

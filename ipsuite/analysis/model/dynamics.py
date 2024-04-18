@@ -63,9 +63,6 @@ class RattleAnalysis(base.ProcessSingleAtom):
         # y_label="predicted energy",
     )
 
-    def post_init(self):
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
-
     def run(self):
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
@@ -127,9 +124,6 @@ class BoxScale(base.ProcessSingleAtom):
         x_label="Scale factor of the initial cell",
         y_label="predicted energy",
     )
-
-    def _post_init_(self):
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
 
     def run(self):
         self.model_outs.mkdir(parents=True, exist_ok=True)
