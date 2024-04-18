@@ -13,7 +13,7 @@ repository = "https://github.com/zincware/ipsuite"
 
 [tool.poetry.dependencies]
 # tensorflow-io-gcs-filesystem
-python = ">=3.10,<3.11"
+python = ">=3.10,<3.12"
 
 znh5md = "^0.1.6a0"
 ase = "^3.22.1"
