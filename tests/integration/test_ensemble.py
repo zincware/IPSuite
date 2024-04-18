@@ -48,7 +48,7 @@ def test_ensemble_model(data_repo):
         )
 
         prediction = ips.analysis.Prediction(data=test_data.atoms, model=ensemble_model)
-        prediction_metrics = ips.analysis.PredictionMetrics(data=prediction)
+        prediction_metrics = ips.analysis.PredictionMetrics(true_data=test_data.atoms, pred_data=prediction.atoms)
 
     project.run(environment={"OPENBLAS_NUM_THREADS": "1"})
 
@@ -68,8 +68,8 @@ def test_ensemble_model_stress(proj_path, cu_box):
         model2 = ips.calculators.EMTSinglePoint(data=data.atoms)
         ensemble_model = ips.models.EnsembleModel(models=[model1, model2])
 
-        prediction = ips.analysis.Prediction(model=ensemble_model, data=model1)
-        analysis = ips.analysis.PredictionMetrics(data=prediction)
+        prediction = ips.analysis.Prediction(model=ensemble_model, data=model1.atoms)
+        analysis = ips.analysis.PredictionMetrics(true_data=model1.atoms, pred_data=prediction.atoms)
 
     project.run(eager=False)
 
