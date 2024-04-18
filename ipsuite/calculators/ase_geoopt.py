@@ -92,7 +92,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
             if any(stop):
                 dyn.log()
                 break
-            
+
             if self.maxstep is not None and step >= self.maxstep:
                 break
 
