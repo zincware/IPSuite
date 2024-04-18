@@ -67,8 +67,8 @@ def get_figure(
     sns.set()
     fig, ax = plt.subplots(figsize=figsize)
     ax.plot(true, true, color="grey", zorder=0)  # plot the diagonal in the background
-    bins = 500 if (len(true) / 10) > 500 else int(len(true) * 0.1)
-    if bins < 20:
+    bins = 25
+    if true.shape[0] < 20:
         # don't use density for very small datasets
         ax.scatter(true, prediction, marker="x", s=20.0, label=datalabel)
     else:
