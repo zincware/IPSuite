@@ -16,8 +16,9 @@ Welcome to IPSuite's documentation!
 
    What is IPS? <_get_started/ips>
    Getting Started <_get_started/quickstart>
-   IPSuite <_nodes/ipsuite>
-   Modules <_nodes/modlules>
+   IPSuite <_nodes/modules>
+   Nodes List <_get_started/nodes_list>
+   Modules <_nodes/modules>
 
 
 Indices and tables
