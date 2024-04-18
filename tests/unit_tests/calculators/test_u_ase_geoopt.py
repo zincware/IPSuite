@@ -45,7 +45,7 @@ def test_ase_geoopt(proj_path, cu_box):
             data=data.atoms,
             model=model,
             optimizer="FIRE",
-            checker_list=[check],
+            checks=[check],
             run_kwargs={"fmax": 0.05},
         )
 
