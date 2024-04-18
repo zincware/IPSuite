@@ -68,6 +68,9 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
 
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
 
+    def _post_init_(self):
+        self.content = {}
+
     def _post_load_(self):
         """Load metrics - if available."""
         try:
@@ -223,6 +226,9 @@ class CalibrationMetrics(base.AnalyseProcessAtoms):
     forces: dict = zntrack.metrics()
 
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
+
+    def _post_init_(self):
+        self.content = {}
 
     def _post_load_(self):
         """Load metrics - if available."""
