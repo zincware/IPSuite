@@ -9,7 +9,7 @@ from scipy import stats
 
 from ipsuite import base, models, utils
 from ipsuite.analysis.model.math import decompose_stress_tensor, force_decomposition
-from ipsuite.analysis.model.plots import get_figure, get_hist
+from ipsuite.analysis.model.plots import get_cdf_figure, get_figure, get_hist
 from ipsuite.geometry import BarycenterMapping
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
@@ -291,8 +291,13 @@ class CalibrationMetrics(base.AnalyseProcessAtoms):
             xlabel=r"energy uncertainty $\sigma$ / meV/atom",
             ylabel=r"energy error $\Delta E$ / meV/atom",
         )
+        energy_cdf_plot = get_cdf_figure(
+            self.content["energy_err"],
+            self.content["energy_unc"],
+        )
         if save:
             energy_plot.savefig(self.plots_dir / "energy.png")
+            energy_cdf_plot.savefig(self.plots_dir / "energy_cdf.png")
 
         if "forces_err" in self.content:
             xlabel = r"force uncertainty per atom $\sigma$ / meV$ \cdot \AA^{-1}$"
@@ -306,8 +311,13 @@ class CalibrationMetrics(base.AnalyseProcessAtoms):
                 xlabel=xlabel,
                 ylabel=ylabel,
             )
+            forces_cdf_plot = get_cdf_figure(
+                f_err,
+                f_unc,
+            )
             if save:
                 forces_plot.savefig(self.plots_dir / "forces.png")
+                forces_cdf_plot.savefig(self.plots_dir / "forces_cdf.png")
 
     def run(self):
         self.nwd.mkdir(exist_ok=True, parents=True)
