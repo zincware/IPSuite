@@ -133,8 +133,8 @@ class AnalyseAtoms(IPSNode):
 class ComparePredictions(IPSNode):
     """Compare the predictions of two models."""
 
-    true_data: list[ase.Atoms] = zntrack.deps()
-    pred_data: list[ase.Atoms] = zntrack.deps()
+    x: list[ase.Atoms] = zntrack.deps()
+    y: list[ase.Atoms] = zntrack.deps()
 
 
 class Mapping(ProcessAtoms):

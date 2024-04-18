@@ -67,7 +67,7 @@ def test_AnalysePrediction(trained_model, eager):
 
     with project:
         prediction = ipsuite.analysis.Prediction(model=model, data=validation_selection)
-        analysis = ipsuite.analysis.PredictionMetrics(true_data=validation_selection.atoms, pred_data=prediction.atoms)
+        analysis = ipsuite.analysis.PredictionMetrics(x=validation_selection.atoms, y=prediction.atoms)
     project.run(eager=eager)
     if not eager:
         analysis.load()

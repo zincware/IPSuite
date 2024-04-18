@@ -30,7 +30,7 @@ def test_apax_model_training(proj_path, traj_file):
         )
 
         prediction = ips.analysis.Prediction(model=model, data=val_selection.atoms)
-        analysis = ips.analysis.PredictionMetrics(true_data=val_selection.atoms, pred_data=prediction.atoms)
+        analysis = ips.analysis.PredictionMetrics(x=val_selection.atoms, y=prediction.atoms)
 
     project.run()
 
@@ -112,7 +112,7 @@ def test_apax_ensemble(proj_path, traj_file):
         )
 
         prediction = ips.analysis.Prediction(data=raw_data, model=ensemble_model)
-        analysis = ips.analysis.PredictionMetrics(true_data=raw_data.atoms, pred_data=prediction.atoms)
+        analysis = ips.analysis.PredictionMetrics(x=raw_data.atoms, y=prediction.atoms)
 
     project.run()
 
