@@ -3,27 +3,24 @@
 
 .. automodule:: ipsuite.project
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-   
-      Project
-   
-   
 
-   
-   
-   
+      Project
+
+
+
 
 
 

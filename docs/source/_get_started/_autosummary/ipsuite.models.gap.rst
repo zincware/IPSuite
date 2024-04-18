@@ -3,20 +3,20 @@ ipsuite.models.gap
 
 .. automodule:: ipsuite.models.gap
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-   
+
       DistanceNb
       DistanceNbConverter
       GAP
@@ -24,12 +24,9 @@ ipsuite.models.gap
       GapParameterConverter
       SOAP
       SOAPConverter
-   
-   
 
-   
-   
-   
+
+
 
 
 

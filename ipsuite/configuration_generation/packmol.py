@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 class Packmol(base.IPSNode):
     """
     Pack molecules in defined regions of space
-    
+
     Attributes
     ----------
     data: list[list[ase.Atoms]]
