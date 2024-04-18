@@ -16,7 +16,7 @@ class DebugCheck(base.CheckBase):
         number of iterations before stopping
     """
 
-    n_iterations: int = zntrack.zn.params(10)
+    n_iterations: int = zntrack.params(10)
 
     def _post_init_(self) -> None:
         self.counter = 0

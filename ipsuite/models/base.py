@@ -17,9 +17,9 @@ class MLModel(base.AnalyseAtoms):
 
     _name_ = "MLModel"
 
-    use_energy: bool = zntrack.zn.params(True)
-    use_forces: bool = zntrack.zn.params(True)
-    use_stresses: bool = zntrack.zn.params(False)
+    use_energy: bool = zntrack.params(True)
+    use_forces: bool = zntrack.params(True)
+    use_stresses: bool = zntrack.params(False)
 
     def get_calculator(self, **kwargs) -> ase.calculators.calculator.Calculator:
         """Get a model specific ase calculator object.

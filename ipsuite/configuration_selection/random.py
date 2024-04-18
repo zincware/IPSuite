@@ -12,8 +12,8 @@ from ipsuite.configuration_selection import ConfigurationSelection
 class RandomSelection(ConfigurationSelection):
     """Select atoms randomly."""
 
-    n_configurations = zntrack.zn.params()
-    seed = zntrack.zn.params(1234)
+    n_configurations = zntrack.params()
+    seed = zntrack.params(1234)
 
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         """Select Atoms randomly."""
