@@ -231,7 +231,7 @@ class CalibrationMetrics(base.ComparePredictions):
         except FileNotFoundError:
             self.content = {}
 
-    def get_dataframes(self):
+    def get_data(self):
         """Create dict of all data."""
         true_keys = self.x[0].calc.results.keys()
         pred_keys = self.y[0].calc.results.keys()
@@ -314,7 +314,7 @@ class CalibrationMetrics(base.ComparePredictions):
 
     def run(self):
         self.nwd.mkdir(exist_ok=True, parents=True)
-        self.get_dataframes()
+        self.get_data()
         np.savez(self.data_file, **self.content)
         self.get_metrics()
         self.get_plots(save=True)
