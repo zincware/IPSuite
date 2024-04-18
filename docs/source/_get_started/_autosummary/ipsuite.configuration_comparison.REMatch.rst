@@ -5,14 +5,14 @@ ipsuite.configuration\_comparison.REMatch
 
 .. autoclass:: REMatch
 
-
+   
    .. automethod:: __init__
 
-
+   
    .. rubric:: Methods
 
    .. autosummary::
-
+   
       ~REMatch.__init__
       ~REMatch.compare
       ~REMatch.convert_notebook
@@ -22,15 +22,15 @@ ipsuite.configuration\_comparison.REMatch
       ~REMatch.save
       ~REMatch.save_representation
       ~REMatch.unlink_database
+   
+   
 
-
-
-
-
+   
+   
    .. rubric:: Attributes
 
    .. autosummary::
-
+   
       ~REMatch.alpha
       ~REMatch.analyte
       ~REMatch.init_descriptors
@@ -48,5 +48,5 @@ ipsuite.configuration\_comparison.REMatch
       ~REMatch.use_jit
       ~REMatch.use_repr
       ~REMatch.uuid
-
-
+   
+   

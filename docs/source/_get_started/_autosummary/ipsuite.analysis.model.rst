@@ -3,21 +3,21 @@ ipsuite.analysis.model
 
 .. automodule:: ipsuite.analysis.model
 
+   
+   
+   
 
+   
+   
+   
 
+   
+   
+   
 
-
-
-
-
-
-
-
-
-
-
-
-
+   
+   
+   
 
 
 
@@ -32,3 +32,4 @@ ipsuite.analysis.model
    ipsuite.analysis.model.math
    ipsuite.analysis.model.plots
    ipsuite.analysis.model.predict
+

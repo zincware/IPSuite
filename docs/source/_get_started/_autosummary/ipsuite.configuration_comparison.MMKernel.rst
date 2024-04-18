@@ -5,14 +5,14 @@ ipsuite.configuration\_comparison.MMKernel
 
 .. autoclass:: MMKernel
 
-
+   
    .. automethod:: __init__
 
-
+   
    .. rubric:: Methods
 
    .. autosummary::
-
+   
       ~MMKernel.__init__
       ~MMKernel.compare
       ~MMKernel.convert_notebook
@@ -22,15 +22,15 @@ ipsuite.configuration\_comparison.MMKernel
       ~MMKernel.save
       ~MMKernel.save_representation
       ~MMKernel.unlink_database
+   
+   
 
-
-
-
-
+   
+   
    .. rubric:: Attributes
 
    .. autosummary::
-
+   
       ~MMKernel.analyte
       ~MMKernel.init_descriptors
       ~MMKernel.init_subclass_basecls
@@ -45,5 +45,5 @@ ipsuite.configuration\_comparison.MMKernel
       ~MMKernel.use_jit
       ~MMKernel.use_repr
       ~MMKernel.uuid
-
-
+   
+   

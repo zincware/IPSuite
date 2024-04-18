@@ -3,21 +3,21 @@
 
 .. automodule:: ipsuite.configuration_comparison
 
+   
+   
+   
 
+   
+   
+   
 
+   
+   
+   
 
-
-
-
-
-
-
-
-
-
-
-
-
+   
+   
+   
 
 
 
@@ -30,3 +30,4 @@
    ipsuite.configuration_comparison.MMKernel
    ipsuite.configuration_comparison.REMatch
    ipsuite.configuration_comparison.base
+

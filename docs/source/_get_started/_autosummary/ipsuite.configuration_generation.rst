@@ -3,21 +3,21 @@
 
 .. automodule:: ipsuite.configuration_generation
 
+   
+   
+   
 
+   
+   
+   
 
+   
+   
+   
 
-
-
-
-
-
-
-
-
-
-
-
-
+   
+   
+   
 
 
 
@@ -29,3 +29,4 @@
 
    ipsuite.configuration_generation.packmol
    ipsuite.configuration_generation.smiles_to_atoms
+

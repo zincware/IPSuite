@@ -1,23 +1,23 @@
-ipsuite.geometry
+﻿ipsuite.geometry
 ================
 
 .. automodule:: ipsuite.geometry
 
+   
+   
+   
 
+   
+   
+   
 
+   
+   
+   
 
-
-
-
-
-
-
-
-
-
-
-
-
+   
+   
+   
 
 
 
@@ -31,3 +31,4 @@ ipsuite.geometry
    ipsuite.geometry.graphs
    ipsuite.geometry.mapping
    ipsuite.geometry.unwrap
+

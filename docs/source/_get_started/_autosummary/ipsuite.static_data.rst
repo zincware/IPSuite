@@ -1,20 +1,23 @@
-ipsuite.static\_data
+﻿ipsuite.static\_data
 ====================
 
 .. automodule:: ipsuite.static_data
 
+   
+   
+   
 
+   
+   
+   
 
+   
+   
+   
 
-
-
-
-
-
-
-
-
-
+   
+   
+   
 
 
 
