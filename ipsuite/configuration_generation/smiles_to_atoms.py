@@ -1,4 +1,4 @@
-""""Use RDKit to convert Smiles stings to atoms"""
+"""Use RDKit to convert Smiles stings to atoms"""
 import pathlib
 
 import ase
