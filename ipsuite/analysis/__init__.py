@@ -12,8 +12,8 @@ from ipsuite.analysis.md import AnalyseDensity
 from ipsuite.analysis.model import (
     BoxHeatUp,
     BoxScale,
-    ConnectivityCheck,
     CalibrationMetrics,
+    ConnectivityCheck,
     EnergySpikeCheck,
     ForceAngles,
     ForceDecomposition,
