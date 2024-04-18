@@ -290,7 +290,7 @@ def run_stability_nve(
     time_step: float,
     max_steps: int,
     init_temperature: float,
-    checks: list[base.CheckBase],
+    checks: list[base.Check],
     save_last_n: int,
     rng: typing.Optional[np.random.Generator] = None,
 ) -> typing.Tuple[int, list[ase.Atoms]]:
