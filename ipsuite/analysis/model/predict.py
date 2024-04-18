@@ -2,10 +2,10 @@ import pathlib
 
 import ase
 import numpy as np
-import pandas as pd
 import tqdm
 import zntrack
 from ase.calculators.singlepoint import PropertyNotImplementedError
+from scipy import stats
 
 from ipsuite import base, models, utils
 from ipsuite.analysis.model.math import decompose_stress_tensor, force_decomposition
@@ -73,8 +73,8 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
     def _post_load_(self):
         """Load metrics - if available."""
         try:
-            with self.state.fs.open(self.data_file, "r") as f:
-                self.content = np.load(f)
+            with self.state.fs.open(self.data_file, "rb") as f:
+                self.content = dict(np.load(f))
         except FileNotFoundError:
             self.content = {}
 
@@ -96,11 +96,11 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
         if "forces" in true_keys and "forces" in pred_keys:
             true_forces = [x.get_forces() for x in true_data]
             true_forces = np.concatenate(true_forces, axis=0) * 1000
-            self.content["forces_true"] = true_forces
+            self.content["forces_true"] = np.reshape(true_forces, (-1,))
 
             pred_forces = [x.get_forces() for x in pred_data]
             pred_forces = np.concatenate(pred_forces, axis=0) * 1000
-            self.content["forces_pred"] = pred_forces
+            self.content["forces_pred"] = np.reshape(pred_forces, (-1,))
 
         if "stress" in true_keys and "stress" in pred_keys:
             true_stress = np.array([x.get_stress(voigt=False) for x in true_data])
@@ -108,12 +108,12 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
             hydro_true, deviat_true = decompose_stress_tensor(true_stress)
             hydro_pred, deviat_pred = decompose_stress_tensor(pred_stress)
 
-            self.content["stress_true"] = true_stress
-            self.content["stress_pred"] = pred_stress
-            self.content["stress_hydro_true"] = hydro_true
-            self.content["stress_hydro_pred"] = hydro_pred
-            self.content["stress_deviat_true"] = deviat_true
-            self.content["stress_deviat_pred"] = deviat_pred
+            self.content["stress_true"] = np.reshape(true_stress, (-1,))
+            self.content["stress_pred"] = np.reshape(pred_stress, (-1,))
+            self.content["stress_hydro_true"] = np.reshape(hydro_true, (-1,))
+            self.content["stress_hydro_pred"] = np.reshape(hydro_pred, (-1,))
+            self.content["stress_deviat_true"] = np.reshape(deviat_true, (-1,))
+            self.content["stress_deviat_pred"] = np.reshape(deviat_pred, (-1,))
 
     def get_metrics(self):
         """Update the metrics."""
@@ -123,20 +123,24 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
 
         if "forces_true" in self.content.keys():
             self.forces = utils.metrics.get_full_metrics(
-                self.content["forces_true"], self.content["forces_pred"]
+                self.content["forces_true"],
+                self.content["forces_pred"]
             )
         else:
             self.forces = {}
 
         if "stress_true" in self.content.keys():
             self.stress = utils.metrics.get_full_metrics(
-                self.content["stress_true"], self.content["stress_pred"]
+                self.content["stress_true"],
+                self.content["stress_pred"]
             )
             self.hydro_stress = utils.metrics.get_full_metrics(
-                self.content["stress_hydro_true"], self.content["stress_hydro_pred"]
+                self.content["stress_hydro_true"],
+                self.content["stress_hydro_pred"]
             )
             self.deviat_stress = utils.metrics.get_full_metrics(
-                self.content["stress_deviat_true"], self.content["stress_deviat_pred"]
+                self.content["stress_deviat_true"],
+                self.content["stress_deviat_pred"]
             )
         else:
             self.stress = {}
@@ -157,13 +161,11 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
             energy_plot.savefig(self.plots_dir / "energy.png")
 
         if "forces_true" in self.content:
-            xlabel = r"$ab~initio$ magnitude of force per atom $|F|$ / meV$ \cdot \AA^{-1}$"
-            ylabel = r"predicted magnitude of force per atom $|F|$ / meV$ \cdot \AA^{-1}$"
-            f_true = np.reshape(self.content["forces_true"], (-1,))
-            f_pred = np.reshape(self.content["forces_pred"], (-1,))
+            xlabel = r"$ab~initio$ force components per atom $|F|$ / meV$ \cdot \AA^{-1}$"
+            ylabel = r"predicted force components per atom $|F|$ / meV$ \cdot \AA^{-1}$"
             forces_plot = get_figure(
-                f_true,
-                f_pred,
+                self.content["forces_true"],
+                self.content["forces_pred"],
                 datalabel=rf"MAE: {self.forces['mae']:.2f} meV$ / \AA$",
                 xlabel=xlabel,
                 ylabel=ylabel,
@@ -204,6 +206,108 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
                 stress_plot.savefig(self.plots_dir / "stress.png")
                 hydrostatic_stress_plot.savefig(self.plots_dir / "hydrostatic_stress.png")
                 deviatoric_stress_plot.savefig(self.plots_dir / "deviatoric_stress.png")
+
+    def run(self):
+        self.nwd.mkdir(exist_ok=True, parents=True)
+        self.get_dataframes()
+        np.savez(self.data_file, **self.content)
+        self.get_metrics()
+        self.get_plots(save=True)
+
+
+
+class CalibrationMetrics(base.AnalyseProcessAtoms):
+    """Analyse the Models Prediction on standard metrics.
+
+    Units are given in:
+    - energy: meV/atom
+    - forces: meV/Å
+    - stress: eV/Å^3
+    """
+
+    data_file = zntrack.outs_path(
+        zntrack.nwd / "data.npz"
+    )
+    energy: dict = zntrack.metrics()
+    forces: dict = zntrack.metrics()
+
+    plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
+
+    def _post_load_(self):
+        """Load metrics - if available."""
+        try:
+            with self.state.fs.open(self.data_file, "rb") as f:
+                self.content = dict(np.load(f))
+        except FileNotFoundError:
+            self.content = {}
+
+
+    def get_dataframes(self):
+        """Create a pandas dataframe from the given data."""
+        true_data, pred_data = self.get_data()
+        true_keys = true_data[0].calc.results.keys()
+        pred_keys = pred_data[0].calc.results.keys()
+
+        energy_true = [x.get_potential_energy() / len(x) for x in true_data]
+        energy_true = np.array(energy_true) * 1000
+        energy_pred = [x.get_potential_energy() / len(x) for x in pred_data]
+        energy_pred = np.array(energy_pred) * 1000
+        self.content["energy_err"] = np.abs(energy_true - energy_pred)
+
+        energy_uncertainty = [x.calc.results["energy_uncertainty"] / len(x) for x in pred_data]
+        energy_uncertainty = np.array(energy_uncertainty) * 1000
+        self.content["energy_unc"] = energy_uncertainty
+
+        if "forces" in true_keys and "forces_uncertainty" in pred_keys:
+            true_forces = [x.get_forces() for x in true_data]
+            true_forces = np.concatenate(true_forces, axis=0) * 1000
+            pred_forces = [x.get_forces() for x in pred_data]
+            pred_forces = np.concatenate(pred_forces, axis=0) * 1000
+            forces_uncertainty = [x.calc.results["forces_uncertainty"] for x in pred_data]
+            forces_uncertainty = np.concatenate(forces_uncertainty, axis=0) * 1000
+
+            self.content["forces_err"] = np.abs(true_forces - pred_forces)
+            self.content["forces_unc"] = forces_uncertainty
+
+    def get_metrics(self):
+        """Update the metrics."""
+        self.energy = {"pearsonr": stats.pearsonr(self.content["energy_err"], self.content["energy_unc"])[0]}
+
+        if "forces_err" in self.content.keys():
+            f_err = np.reshape(self.content["forces_err"], (-1,))
+            f_unc = np.reshape(self.content["forces_unc"], (-1,))
+            self.forces = {"pearsonr": stats.pearsonr(f_err, f_unc)[0]}
+        else:
+            self.forces = {}
+
+    def get_plots(self, save=False):
+        """Create figures for all available data."""
+        self.plots_dir.mkdir(exist_ok=True)
+
+        energy_plot = get_figure(
+            self.content["energy_unc"],
+            self.content["energy_err"],
+            datalabel=rf"Pearson: {self.energy['pearsonr']:.4f}",
+            xlabel=r"energy uncertainty $\sigma$ / meV/atom",
+            ylabel=r"energy error $\Delta E$ / meV/atom",
+        )
+        if save:
+            energy_plot.savefig(self.plots_dir / "energy.png")
+
+        if "forces_err" in self.content:
+            xlabel = r"force uncertainty per atom $\sigma$ / meV$ \cdot \AA^{-1}$"
+            ylabel = r"force components error per atom $\Delta F$ / meV$ \cdot \AA^{-1}$"
+            f_err = np.reshape(self.content["forces_err"], (-1,))
+            f_unc = np.reshape(self.content["forces_unc"], (-1,))
+            forces_plot = get_figure(
+                f_unc,
+                f_err,
+                datalabel=rf"Pearson: {self.forces['pearsonr']:.4f}",
+                xlabel=xlabel,
+                ylabel=ylabel,
+            )
+            if save:
+                forces_plot.savefig(self.plots_dir / "forces.png")
 
     def run(self):
         self.nwd.mkdir(exist_ok=True, parents=True)
