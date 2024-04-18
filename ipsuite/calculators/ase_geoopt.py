@@ -8,7 +8,6 @@ import ase.optimize
 import h5py
 import znh5md
 import zntrack
-from ase.io.trajectory import TrajectoryWriter
 
 from ipsuite import base
 from ipsuite.utils.ase_sim import freeze_copy_atoms
