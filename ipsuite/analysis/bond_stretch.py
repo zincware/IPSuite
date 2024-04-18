@@ -34,14 +34,14 @@ class BondStretchAnalyses(ProcessAtoms):
 
     ase_calculator = zntrack.deps()
 
-    idxs = zntrack.zn.params()
-    r_min = zntrack.zn.params()
-    r_max = zntrack.zn.params()
-    n_steps = zntrack.zn.params()
-    data_id: typing.Optional[int] = zntrack.zn.params(0)
-    fig_size = zntrack.zn.params((10, 7))
+    idxs = zntrack.params()
+    r_min = zntrack.params()
+    r_max = zntrack.params()
+    n_steps = zntrack.params()
+    data_id: typing.Optional[int] = zntrack.params(0)
+    fig_size = zntrack.params((10, 7))
 
-    plots_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "plots")
+    plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
 
     def run(self):
         atoms_list = self.get_data()

@@ -26,17 +26,17 @@ class ASEGeoOpt(base.ProcessSingleAtom):
     """
 
     model = zntrack.deps()
-    model_outs = zntrack.dvc.outs(zntrack.nwd / "model_outs")
-    optimizer: str = zntrack.zn.params("FIRE")
+    model_outs = zntrack.outs_path(zntrack.nwd / "model_outs")
+    optimizer: str = zntrack.params("FIRE")
     checker_list: list = zntrack.deps(None)
     constraint_list: list = zntrack.deps(None)
 
-    repeat: list = zntrack.zn.params([1, 1, 1])
-    run_kwargs: dict = zntrack.zn.params({"fmax": 0.05})
-    init_kwargs: dict = zntrack.zn.params({})
-    dump_rate = zntrack.zn.params(1000)
+    repeat: list = zntrack.params([1, 1, 1])
+    run_kwargs: dict = zntrack.params({"fmax": 0.05})
+    init_kwargs: dict = zntrack.params({})
+    dump_rate = zntrack.params(1000)
 
-    traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.h5")
+    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "trajectory.h5")
 
     def run(self):
         if self.checker_list is None:
@@ -125,15 +125,15 @@ class BatchASEGeoOpt(base.ProcessAtoms):
         A node that implements 'get_calculator'.
     """
 
-    model = zntrack.zn.deps()
-    model_outs = zntrack.dvc.outs(zntrack.nwd / "model_outs")
-    optimizer: str = zntrack.zn.params("FIRE")
-    traj: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "optim.traj")
-    optimized_structures: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "final.traj")
+    model = zntrack.deps()
+    model_outs = zntrack.outs_path(zntrack.nwd / "model_outs")
+    optimizer: str = zntrack.params("FIRE")
+    traj: pathlib.Path = zntrack.outs_path(zntrack.nwd / "optim.traj")
+    optimized_structures: pathlib.Path = zntrack.outs_path(zntrack.nwd / "final.traj")
 
-    repeat: list = zntrack.zn.params([1, 1, 1])
-    run_kwargs: dict = zntrack.zn.params({"fmax": 0.05})
-    init_kwargs: dict = zntrack.zn.params({})
+    repeat: list = zntrack.params([1, 1, 1])
+    run_kwargs: dict = zntrack.params({"fmax": 0.05})
+    init_kwargs: dict = zntrack.params({})
 
     def run(self):
         self.model_outs.mkdir(parents=True, exist_ok=True)

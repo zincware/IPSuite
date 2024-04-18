@@ -38,24 +38,24 @@ def _write_xyz_input_files(
 class Nequip(MLModel):
     """The Nequip and allegro model."""
 
-    config: str = zntrack.dvc.params()
+    config: str = zntrack.params_path()
     validation_data = zntrack.deps()
 
-    train_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "train.extxyz")
-    validation_data_file: pathlib.Path = zntrack.dvc.outs(
+    train_data_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "train.extxyz")
+    validation_data_file: pathlib.Path = zntrack.outs_path(
         zntrack.nwd / "validation.extxyz"
     )
 
-    deployed_model: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "deployed_model.pth")
-    model_directory: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "model")
+    deployed_model: pathlib.Path = zntrack.outs_path(zntrack.nwd / "deployed_model.pth")
+    model_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model")
 
-    metrics_batch_train = zntrack.dvc.plots(
+    metrics_batch_train = zntrack.plots_path(
         zntrack.nwd / "metrics_batch_train.csv"  # , y=" loss", y_label="loss"
     )
-    metrics_batch_val = zntrack.dvc.plots(
+    metrics_batch_val = zntrack.plots_path(
         zntrack.nwd / "metrics_batch_val.csv"  # , y=" loss", y_label="loss"
     )
-    metrics_epoch = zntrack.dvc.plots(
+    metrics_epoch = zntrack.plots_path(
         zntrack.nwd / "metrics_epoch.csv",
         # x="epoch",
         # x_label="epochs",
@@ -63,7 +63,7 @@ class Nequip(MLModel):
         # y_label="validation loss",
     )
 
-    metrics = zntrack.zn.metrics()
+    metrics = zntrack.metrics()
 
     device: str = zntrack.meta.Text("cuda" if torch.cuda.is_available() else "cpu")
     remove_processed_dataset = True

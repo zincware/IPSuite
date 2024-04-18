@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 class UniformEnergeticSelection(ConfigurationSelection):
     """A class to perform data selection based on uniform global energy selection."""
 
-    n_configurations = zntrack.zn.params()
+    n_configurations = zntrack.params()
 
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         """Select Atoms uniform in energy space."""
