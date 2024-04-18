@@ -33,12 +33,12 @@ class Bootstrap(base.ProcessSingleAtom):
         label the bootstrapped configurations.
     """
 
-    n_configurations: int = zntrack.zn.params()
-    maximum: float = zntrack.zn.params()
-    include_original: bool = zntrack.zn.params(True)
-    seed: int = zntrack.zn.params(0)
+    n_configurations: int = zntrack.params()
+    maximum: float = zntrack.params()
+    include_original: bool = zntrack.params(True)
+    seed: int = zntrack.params(0)
     model: base.IPSNode = zntrack.deps(None)
-    model_outs = zntrack.dvc.outs(zntrack.nwd / "model_outs")
+    model_outs = zntrack.outs_path(zntrack.nwd / "model_outs")
 
     def run(self) -> None:
         atoms = self.get_data()

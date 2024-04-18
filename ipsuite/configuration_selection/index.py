@@ -16,7 +16,7 @@ class IndexSelection(ConfigurationSelection):
     indices: list[int]|slice|
     """
 
-    indices = zntrack.zn.params()
+    indices = zntrack.params()
 
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         """Select Atoms randomly."""

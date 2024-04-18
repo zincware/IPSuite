@@ -85,11 +85,11 @@ class BoxOscillatingRampModifier(base.IPSNode):
                     "num_ramp_oscillations has to be smaller than num_oscillations."
                 )
 
-    end_cell: int = zntrack.zn.params(None)
-    cell_amplitude: typing.Union[float, list[float]] = zntrack.zn.params()
-    num_oscillations: float = zntrack.zn.params()
-    num_ramp_oscillations: float = zntrack.zn.params(None)
-    interval: int = zntrack.zn.params(1)
+    end_cell: int = zntrack.params(None)
+    cell_amplitude: typing.Union[float, list[float]] = zntrack.params()
+    num_oscillations: float = zntrack.params()
+    num_ramp_oscillations: float = zntrack.params(None)
+    interval: int = zntrack.params(1)
     _initial_cell = None
 
     def modify(self, thermostat, step, total_steps):
@@ -148,9 +148,9 @@ class TemperatureRampModifier(base.IPSNode):
         interval in which the temperature is changed.
     """
 
-    start_temperature: float = zntrack.zn.params(None)
-    temperature: float = zntrack.zn.params()
-    interval: int = zntrack.zn.params(1)
+    start_temperature: float = zntrack.params(None)
+    temperature: float = zntrack.params()
+    interval: int = zntrack.params(1)
 
     def modify(self, thermostat, step, total_steps):
         # we use the thermostat, so we can also modify e.g. temperature
@@ -187,11 +187,11 @@ class TemperatureOscillatingRampModifier(base.IPSNode):
         interval in which the temperature is changed.
     """
 
-    start_temperature: float = zntrack.zn.params(None)
-    end_temperature: float = zntrack.zn.params()
-    temperature_amplitude: float = zntrack.zn.params()
-    num_oscillations: float = zntrack.zn.params()
-    interval: int = zntrack.zn.params(1)
+    start_temperature: float = zntrack.params(None)
+    end_temperature: float = zntrack.params()
+    temperature_amplitude: float = zntrack.params()
+    num_oscillations: float = zntrack.params()
+    interval: int = zntrack.params(1)
 
     def modify(self, thermostat, step, total_steps):
         # we use the thermostat, so we can also modify e.g. temperature
@@ -230,9 +230,9 @@ class PressureRampModifier(base.IPSNode):
         interval in which the pressure is changed.
     """
 
-    start_pressure_au: float = zntrack.zn.params(None)
-    end_pressure_au: float = zntrack.zn.params()
-    interval: int = zntrack.zn.params(1)
+    start_pressure_au: float = zntrack.params(None)
+    end_pressure_au: float = zntrack.params()
+    interval: int = zntrack.params(1)
 
     def modify(self, thermostat, step, total_steps):
         if self.start_pressure_au is None:
@@ -262,9 +262,9 @@ class LangevinThermostat(base.IPSNode):
 
     """
 
-    time_step: int = zntrack.zn.params()
-    temperature: float = zntrack.zn.params()
-    friction: float = zntrack.zn.params()
+    time_step: int = zntrack.params()
+    temperature: float = zntrack.params()
+    friction: float = zntrack.params()
 
     def get_thermostat(self, atoms):
         thermostat = Langevin(
@@ -301,14 +301,18 @@ class NPTThermostat(base.IPSNode):
         if True allows only the diagonal elements of the box to change,
         i.e. box angles are constant
 
+    fraction_traceless: Union[int, float]
+        How much of the traceless part of the virial to keep.
+        If set to 0, the volume of the cell can change, but the shape cannot.
     """
 
-    time_step: float = zntrack.zn.params()
-    temperature: float = zntrack.zn.params()
-    pressure: float = zntrack.zn.params()
-    ttime: float = zntrack.zn.params()
-    pfactor: float = zntrack.zn.params()
-    tetragonal_strain: bool = zntrack.zn.params(True)
+    time_step: float = zntrack.params()
+    temperature: float = zntrack.params()
+    pressure: float = zntrack.params()
+    ttime: float = zntrack.params()
+    pfactor: float = zntrack.params()
+    tetragonal_strain: bool = zntrack.params(True)
+    fraction_traceless: typing.Union[int, float] = zntrack.params(1)
 
     def get_thermostat(self, atoms):
         if self.tetragonal_strain:
@@ -331,6 +335,7 @@ class NPTThermostat(base.IPSNode):
             pfactor=self.pfactor,
             mask=mask,
         )
+        thermostat.set_fraction_traceless(self.fraction_traceless)
         return thermostat
 
 
@@ -348,9 +353,9 @@ class FixedSphereConstraint(base.IPSNode):
     radius: float
     """
 
-    atom_id = zntrack.zn.params(None)
-    atom_type = zntrack.zn.params(None)
-    radius = zntrack.zn.params()
+    atom_id = zntrack.params(None)
+    atom_type = zntrack.params(None)
+    radius = zntrack.params()
 
     def _post_init_(self):
         if self.atom_type is not None and self.atom_id is None:
@@ -447,26 +452,26 @@ class ASEMD(base.ProcessSingleAtom):
 
     model = zntrack.deps()
 
-    model_outs = zntrack.dvc.outs(zntrack.nwd / "model/")
+    model_outs = zntrack.outs_path(zntrack.nwd / "model/")
     checker_list: list = zntrack.deps(None)
     constraint_list: list = zntrack.deps(None)
     modifier: list = zntrack.deps(None)
     thermostat = zntrack.deps()
 
-    steps: int = zntrack.zn.params()
-    sampling_rate = zntrack.zn.params(1)
-    repeat = zntrack.zn.params((1, 1, 1))
-    dump_rate = zntrack.zn.params(1000)
-    pop_last = zntrack.zn.params(False)
-    use_momenta = zntrack.zn.params(False)
+    steps: int = zntrack.params()
+    sampling_rate = zntrack.params(1)
+    repeat = zntrack.params((1, 1, 1))
+    dump_rate = zntrack.params(1000)
+    pop_last = zntrack.params(False)
+    use_momenta = zntrack.params(False)
     seed: int = zntrack.params(42)
     wrap: bool = zntrack.params(False)
 
-    metrics_dict = zntrack.zn.plots()
+    metrics_dict = zntrack.plots()
 
-    steps_before_stopping = zntrack.zn.metrics()
+    steps_before_stopping = zntrack.metrics()
 
-    traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.h5")
+    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "trajectory.h5")
 
     def get_atoms(self) -> ase.Atoms:
         atoms: ase.Atoms = self.get_data()

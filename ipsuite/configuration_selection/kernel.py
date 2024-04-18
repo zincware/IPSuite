@@ -10,7 +10,6 @@ import numpy as np
 import tqdm
 import zntrack
 
-from ipsuite import utils
 from ipsuite.configuration_selection.base import ConfigurationSelection
 
 if typing.TYPE_CHECKING:
@@ -27,7 +26,7 @@ class KernelSelection(ConfigurationSelection):
     ----------
     n_configurations: int
         number of configurations to select
-    kernel: ConfigurationComparison = zn.Nodes()
+    kernel: ConfigurationComparison = zntrack.Nodes()
     points_per_cycle: int
         Number of configurations to add before recomputing the MMK
     correlation_time: int
@@ -53,14 +52,7 @@ class KernelSelection(ConfigurationSelection):
 
     # TODO what if the correlation time restricts the number of atoms to
     #  be less than n_configurations?
-    correlation_time: int = zntrack.zn.params(1)
-
-    def _post_init_(self):
-        """Run after the init of the node."""
-        super()._post_init_()
-        self.initial_configurations = utils.helpers.get_deps_if_node(
-            self.initial_configurations, "atoms"
-        )
+    correlation_time: int = zntrack.params(1)
 
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         """Atom Selection method.

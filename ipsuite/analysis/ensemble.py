@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import zntrack
 
-from ipsuite import base, utils
+from ipsuite import base
 
 
 def plot_with_uncertainty(value, ylabel: str, xlabel: str, x=None, **kwargs) -> dict:
@@ -57,17 +57,14 @@ class ModelEnsembleAnalysis(base.AnalyseAtoms):
 
     models: list = zntrack.deps()
 
-    normal_plot_path = zntrack.dvc.outs(zntrack.nwd / "normal_plot.png")
-    sorted_plot_path = zntrack.dvc.outs(zntrack.nwd / "sorted_plot.png")
-    histogram = zntrack.dvc.outs(zntrack.nwd / "histogram.png")
+    normal_plot_path = zntrack.outs_path(zntrack.nwd / "normal_plot.png")
+    sorted_plot_path = zntrack.outs_path(zntrack.nwd / "sorted_plot.png")
+    histogram = zntrack.outs_path(zntrack.nwd / "histogram.png")
 
-    prediction_list = zntrack.zn.outs()
-    predictions: typing.List[ase.Atoms] = zntrack.zn.outs()
+    prediction_list = zntrack.outs()
+    predictions: typing.List[ase.Atoms] = zntrack.outs()
 
-    bins: int = zntrack.zn.params(100)
-
-    def _post_init_(self):
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
+    bins: int = zntrack.params(100)
 
     def run(self):
         # TODO axis labels
@@ -95,7 +92,10 @@ class ModelEnsembleAnalysis(base.AnalyseAtoms):
 
     def get_plots(self):
         energy = np.stack(
-            [np.stack(x.get_potential_energy() for x in p) for p in self.prediction_list]
+            [
+                np.stack([x.get_potential_energy() for x in p])
+                for p in self.prediction_list
+            ]
         )
 
         figures = []

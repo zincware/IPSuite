@@ -7,7 +7,6 @@ import zntrack
 from ipsuite import base
 from ipsuite.analysis.model.math import decompose_stress_tensor
 from ipsuite.analysis.model.plots import get_histogram_figure
-from ipsuite.utils.helpers import get_deps_if_node
 
 
 class LabelHistogram(base.AnalyseAtoms):
@@ -21,21 +20,17 @@ class LabelHistogram(base.AnalyseAtoms):
         Number of bins in the histogram.
     """
 
-    bins: int = zntrack.zn.params(None)
-    x_lim: tuple = zntrack.zn.params(None)
-    y_lim: tuple = zntrack.zn.params(None)
-    plots_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "plots")
-    labels_df: pd.DataFrame = zntrack.zn.plots()
+    bins: int = zntrack.params(None)
+    x_lim: tuple = zntrack.params(None)
+    y_lim: tuple = zntrack.params(None)
+    plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
+    labels_df: pd.DataFrame = zntrack.plots()
     datalabel: str = None
     xlabel: str = None
     ylabel: str = "Occurrences"
     logy_scale: bool = True
 
-    metrics: float = zntrack.zn.metrics()
-
-    def _post_init_(self):
-        """Load metrics - if available."""
-        self.data = get_deps_if_node(self.data, "atoms")
+    metrics: float = zntrack.metrics()
 
     def get_labels(self):
         raise NotImplementedError
@@ -151,15 +146,11 @@ class StressHistogram(base.AnalyseAtoms):
         Number of bins in the histogram.
     """
 
-    bins: int = zntrack.zn.params(None)
-    plots_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "plots")
-    labels_df: pd.DataFrame = zntrack.zn.plots()
+    bins: int = zntrack.params(None)
+    plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
+    labels_df: pd.DataFrame = zntrack.plots()
     ylabel: str = "Occurrences"
     logy_scale: bool = True
-
-    def _post_init_(self):
-        """Load metrics - if available."""
-        self.data = get_deps_if_node(self.data, "atoms")
 
     def get_labels(self):
         labels = np.array([x.get_stress(voigt=False) for x in self.data])
