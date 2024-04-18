@@ -36,7 +36,7 @@ def test_PredictWithModel(trained_model, eager):
     project, model, validation_selection = trained_model
 
     with project:
-        analysis = ipsuite.analysis.Prediction(model=model, data=validation_selection)
+        analysis = ipsuite.analysis.Prediction(model=model, data=validation_selection.atoms)
     project.run(eager=eager)
     if not eager:
         analysis.load()
@@ -78,7 +78,7 @@ def test_AnalysePrediction(trained_model, eager):
 def test_AnalyseForceAngles(trained_model, eager):
     project, model, validation_selection = trained_model
     with project:
-        prediction = ipsuite.analysis.Prediction(model=model, data=validation_selection)
+        prediction = ipsuite.analysis.Prediction(model=model, data=validation_selection.atoms)
         analysis = ipsuite.analysis.ForceAngles(data=prediction)
 
     project.run(eager=eager)
@@ -94,7 +94,7 @@ def test_RattleAnalysis(trained_model):
     project, model, validation_selection = trained_model
 
     with project:
-        analysis = ipsuite.analysis.RattleAnalysis(model=model, data=validation_selection)
+        analysis = ipsuite.analysis.RattleAnalysis(model=model, data=validation_selection.atoms)
     project.run()
 
     analysis.load()
