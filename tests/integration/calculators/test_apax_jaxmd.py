@@ -38,7 +38,7 @@ def test_apax_jaxmd(proj_path, traj_file):
 
         md = ApaxJaxMD(
             model=model,
-            data=raw_data,
+            data=raw_data.atoms,
             md_parameter_file=md_minimal,
         )
     project.run()
