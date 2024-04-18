@@ -230,7 +230,7 @@ class Check(IPSNode):
 class Modifier(IPSNode):
     """Base class for modifier nodes.
     These are callbacks that can be used to alter the dynamics of an MD run.
-    This can be achieved by modifiyng the thermostat state or atoms in the system.
+    This can be achieved by modifying the thermostat state or atoms in the system.
     """
 
     @abc.abstractmethod
