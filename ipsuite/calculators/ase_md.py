@@ -578,9 +578,7 @@ class ASEMD(base.ProcessSingleAtom):
                     )
                     break
                 else:
-                    metrics_dict = update_metrics_dict(
-                        atoms, metrics_dict, self.checks
-                    )
+                    metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks)
                     atoms_cache.append(freeze_copy_atoms(atoms))
                     if len(atoms_cache) == self.dump_rate:
                         db.add(
