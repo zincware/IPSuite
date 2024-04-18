@@ -3,21 +3,21 @@ ipsuite.bootstrap
 
 .. automodule:: ipsuite.bootstrap
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29,4 +29,3 @@ ipsuite.bootstrap
 
    ipsuite.bootstrap.random_displacements
    ipsuite.bootstrap.surface_mods
-

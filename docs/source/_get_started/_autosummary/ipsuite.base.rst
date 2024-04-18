@@ -3,21 +3,21 @@ ipsuite.base
 
 .. automodule:: ipsuite.base
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29,4 +29,3 @@ ipsuite.base
 
    ipsuite.base.base
    ipsuite.base.protocol
-

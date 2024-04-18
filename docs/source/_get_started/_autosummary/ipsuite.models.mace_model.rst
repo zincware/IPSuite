@@ -3,33 +3,30 @@ ipsuite.models.mace\_model
 
 .. automodule:: ipsuite.models.mace_model
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
    .. rubric:: Functions
 
    .. autosummary::
-   
-      execute
-   
-   
 
-   
-   
+      execute
+
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-   
-      MACE
-   
-   
 
-   
-   
-   
+      MACE
+
+
+
 
 
 

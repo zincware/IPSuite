@@ -3,21 +3,21 @@ ipsuite.fields
 
 .. automodule:: ipsuite.fields
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28,4 +28,3 @@ ipsuite.fields
    :recursive:
 
    ipsuite.fields.atoms
-

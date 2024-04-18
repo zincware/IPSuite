@@ -3,21 +3,21 @@
 
 .. automodule:: ipsuite
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -42,4 +42,3 @@
    ipsuite.project
    ipsuite.static_data
    ipsuite.utils
-

@@ -3,21 +3,21 @@ ipsuite.configuration\_selection
 
 .. automodule:: ipsuite.configuration_selection
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -37,4 +37,3 @@ ipsuite.configuration\_selection
    ipsuite.configuration_selection.uniform_arange
    ipsuite.configuration_selection.uniform_energetic
    ipsuite.configuration_selection.uniform_temporal
-

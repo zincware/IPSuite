@@ -3,20 +3,20 @@ ipsuite.analysis.bin\_property
 
 .. automodule:: ipsuite.analysis.bin_property
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-   
+
       DipoleHistogram
       EnergyHistogram
       EnergyUncertaintyHistogram
@@ -24,12 +24,9 @@ ipsuite.analysis.bin\_property
       ForcesUncertaintyHistogram
       LabelHistogram
       StressHistogram
-   
-   
 
-   
-   
-   
+
+
 
 
 
