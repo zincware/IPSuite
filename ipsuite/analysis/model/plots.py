@@ -85,20 +85,18 @@ def get_cdf_figure(x, y, figsize: tuple = (10, 7)):
     idxs = np.argsort(x)
     x_sorted = x[idxs]
     y_sorted = y[np.argsort(y)]
-    x_scaleshift = (x_sorted - np.min(x_sorted))
+    x_scaleshift = x_sorted - np.min(x_sorted)
     x_scaleshift /= np.max(x_scaleshift)
-    y_scaleshift = (y_sorted - np.min(y_sorted))
+    y_scaleshift = y_sorted - np.min(y_sorted)
     y_scaleshift /= np.max(y_scaleshift)
 
     fig, ax = plt.subplots(figsize=figsize)
-    diag = np.linspace(0,1.0, 2)
+    diag = np.linspace(0, 1.0, 2)
     ax.plot(diag, diag, "grey", alpha=0.5)
     ax.plot(x_scaleshift, y_scaleshift)
     ax.set_xlabel("expected CDF")
     ax.set_ylabel("observed CDF")
     return fig
-
-
 
 
 def get_hist(data, label, xlabel, ylabel) -> typing.Tuple[plt.Figure, plt.Axes]:

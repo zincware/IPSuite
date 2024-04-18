@@ -58,9 +58,7 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
     - stress: eV/Å^3
     """
 
-    data_file = zntrack.outs_path(
-        zntrack.nwd / "data.npz"
-    )
+    data_file = zntrack.outs_path(zntrack.nwd / "data.npz")
 
     energy: dict = zntrack.metrics()
     forces: dict = zntrack.metrics()
@@ -77,7 +75,6 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
                 self.content = dict(np.load(f))
         except FileNotFoundError:
             self.content = {}
-
 
     def get_dataframes(self):
         """Create a pandas dataframe from the given data."""
@@ -123,24 +120,20 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
 
         if "forces_true" in self.content.keys():
             self.forces = utils.metrics.get_full_metrics(
-                self.content["forces_true"],
-                self.content["forces_pred"]
+                self.content["forces_true"], self.content["forces_pred"]
             )
         else:
             self.forces = {}
 
         if "stress_true" in self.content.keys():
             self.stress = utils.metrics.get_full_metrics(
-                self.content["stress_true"],
-                self.content["stress_pred"]
+                self.content["stress_true"], self.content["stress_pred"]
             )
             self.hydro_stress = utils.metrics.get_full_metrics(
-                self.content["stress_hydro_true"],
-                self.content["stress_hydro_pred"]
+                self.content["stress_hydro_true"], self.content["stress_hydro_pred"]
             )
             self.deviat_stress = utils.metrics.get_full_metrics(
-                self.content["stress_deviat_true"],
-                self.content["stress_deviat_pred"]
+                self.content["stress_deviat_true"], self.content["stress_deviat_pred"]
             )
         else:
             self.stress = {}
@@ -152,7 +145,8 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
         self.plots_dir.mkdir(exist_ok=True)
 
         energy_plot = get_figure(
-            self.content["energy_true"], self.content["energy_pred"],
+            self.content["energy_true"],
+            self.content["energy_pred"],
             datalabel=f"MAE: {self.energy['mae']:.2f} meV/atom",
             xlabel=r"$ab~initio$ energy $E$ / meV/atom",
             ylabel=r"predicted energy $E$ / meV/atom",
@@ -180,7 +174,7 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
             shydro_pred = self.content["stress_hydro_pred"]
             sdeviat_true = self.content["stress_deviat_true"]
             sdeviat_pred = self.content["stress_deviat_pred"]
-            
+
             stress_plot = get_figure(
                 s_true,
                 s_pred,
@@ -215,7 +209,6 @@ class PredictionMetrics(base.AnalyseProcessAtoms):
         self.get_plots(save=True)
 
 
-
 class CalibrationMetrics(base.AnalyseProcessAtoms):
     """Analyse the Models Prediction on standard metrics.
 
@@ -225,9 +218,7 @@ class CalibrationMetrics(base.AnalyseProcessAtoms):
     - stress: eV/Å^3
     """
 
-    data_file = zntrack.outs_path(
-        zntrack.nwd / "data.npz"
-    )
+    data_file = zntrack.outs_path(zntrack.nwd / "data.npz")
     energy: dict = zntrack.metrics()
     forces: dict = zntrack.metrics()
 
@@ -241,7 +232,6 @@ class CalibrationMetrics(base.AnalyseProcessAtoms):
         except FileNotFoundError:
             self.content = {}
 
-
     def get_dataframes(self):
         """Create a pandas dataframe from the given data."""
         true_data, pred_data = self.get_data()
@@ -254,8 +244,9 @@ class CalibrationMetrics(base.AnalyseProcessAtoms):
         energy_pred = np.array(energy_pred) * 1000
         self.content["energy_err"] = np.abs(energy_true - energy_pred)
 
-        energy_uncertainty = [x.calc.results["energy_uncertainty"] / len(x)
-                              for x in pred_data]
+        energy_uncertainty = [
+            x.calc.results["energy_uncertainty"] / len(x) for x in pred_data
+        ]
         energy_uncertainty = np.array(energy_uncertainty) * 1000
         self.content["energy_unc"] = energy_uncertainty
 
