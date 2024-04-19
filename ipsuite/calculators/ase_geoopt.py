@@ -29,8 +29,8 @@ class ASEGeoOpt(base.ProcessSingleAtom):
     model = zntrack.deps()
     model_outs = zntrack.outs_path(zntrack.nwd / "model_outs")
     optimizer: str = zntrack.params("FIRE")
-    checker_list: list = zntrack.deps(None)
-    constraint_list: list = zntrack.deps(None)
+    checks: list = zntrack.deps(None)
+    constraints: list = zntrack.deps(None)
 
     repeat: list = zntrack.params([1, 1, 1])
     run_kwargs: dict = zntrack.params({"fmax": 0.05})
@@ -41,10 +41,10 @@ class ASEGeoOpt(base.ProcessSingleAtom):
     traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
 
     def run(self):
-        if self.checker_list is None:
-            self.checker_list = []
-        if self.constraint_list is None:
-            self.constraint_list = []
+        if self.checks is None:
+            self.checks = []
+        if self.constraints is None:
+            self.constraints = []
 
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
@@ -54,7 +54,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
         atoms = atoms.repeat(self.repeat)
         atoms.calc = calculator
 
-        for constraint in self.constraint_list:
+        for constraint in self.constraints:
             atoms.set_constraint(constraint.get_constraint(atoms))
 
         atoms_cache = []
@@ -79,7 +79,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
                 )
                 atoms_cache = []
 
-            for checker in self.checker_list:
+            for checker in self.checks:
                 stop.append(checker.check(atoms))
                 if stop[-1]:
                     log.critical(
