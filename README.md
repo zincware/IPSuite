@@ -26,8 +26,9 @@ Examples can be found at:
 - https://dagshub.com/PythonFZ/IPS-Examples/src/modify_graph/main.ipynb
 
 # Docker Image
-We provide an IPSuite docker image for Linux that includes the `apax`, `mace` and `gap` MLPs.
-You can use IPSuite directly from within the image by calling:
+
+We provide an IPSuite docker image for Linux that includes the `apax`, `mace`
+and `gap` MLPs. You can use IPSuite directly from within the image by calling:
 
 ```sh
 docker run -it -v "$(pwd):/app" --gpus all pythonf/ipsuite dvc repro
