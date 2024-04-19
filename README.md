@@ -35,6 +35,20 @@ docker run -it -v "$(pwd):/app" --gpus all pythonf/ipsuite python
 docker run -it -v "$(pwd):/app" --gpus all pythonf/ipsuite zntrack list
 ```
 
+## Fix Permission Issues
+Running `dvc repro` via the docker container will create files owned by `root:root`.
+If you solely use docker this will not cause any issues. If you switch between docker and a `dvc` version on your host system, you might encounter permission errors.
+You can resolve them, by changing the ownership of the files.
+You can do this via the host `chown "$(id -u):$(id -g)" -R .` or from inside the docker container:
+
+```sh
+echo $(id -u):$(id -g)
+docker run -it -v "$(pwd):/app" pythonf/ipsuite /bin/bash
+addgroup --gid $GROUP_ID user
+adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
+chown $USER_ID:$GROUP_ID -R .
+```
+
 # References
 
 If you use IPSuite in your research and find it helpful please consider citing
