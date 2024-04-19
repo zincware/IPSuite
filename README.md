@@ -38,10 +38,13 @@ docker run -it -v "$(pwd):/app" --gpus all --rm -p 8888:8888 pythonf/ipsuite jup
 ```
 
 ## Fix Permission Issues
-Running `dvc repro` via the docker container will create files owned by `root:root`.
-If you solely use docker this will not cause any issues. If you switch between docker and a `dvc` version on your host system, you might encounter permission errors.
-You can resolve them, by changing the ownership of the files.
-You can do this via the host `chown "$(id -u):$(id -g)" -R .` or from inside the docker container:
+
+Running `dvc repro` via the docker container will create files owned by
+`root:root`. If you solely use docker this will not cause any issues. If you
+switch between docker and a `dvc` version on your host system, you might
+encounter permission errors. You can resolve them, by changing the ownership of
+the files. You can do this via the host `chown "$(id -u):$(id -g)" -R .` or from
+inside the docker container:
 
 ```sh
 echo $(id -u):$(id -g)
