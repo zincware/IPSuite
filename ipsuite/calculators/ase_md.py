@@ -472,7 +472,7 @@ class ASEMD(base.ProcessSingleAtom):
 
     steps_before_stopping = zntrack.metrics()
 
-    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "trajectory.h5")
+    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
 
     def get_atoms(self) -> ase.Atoms:
         atoms: ase.Atoms = self.get_data()

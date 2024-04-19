@@ -36,10 +36,9 @@ class ASEGeoOpt(base.ProcessSingleAtom):
     run_kwargs: dict = zntrack.params({"fmax": 0.05})
     init_kwargs: dict = zntrack.params({})
     dump_rate = zntrack.params(1000)
-
     maxstep: int = zntrack.params(None)
 
-    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "trajectory.h5")
+    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
 
     def run(self):
         if self.checks is None:
