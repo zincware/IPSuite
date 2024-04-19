@@ -22,26 +22,30 @@ class ASEGeoOpt(base.ProcessSingleAtom):
     ----------
     model: zntrack.Node
         A node that implements 'get_calculator'.
+    maxstep: int, optional
+        Maximum number of steps to perform.
     """
 
     model = zntrack.deps()
-    model_outs = zntrack.dvc.outs(zntrack.nwd / "model_outs")
-    optimizer: str = zntrack.zn.params("FIRE")
-    checker_list: list = zntrack.deps(None)
-    constraint_list: list = zntrack.deps(None)
+    model_outs = zntrack.outs_path(zntrack.nwd / "model_outs")
+    optimizer: str = zntrack.params("FIRE")
+    checks: list = zntrack.deps(None)
+    constraints: list = zntrack.deps(None)
 
-    repeat: list = zntrack.zn.params([1, 1, 1])
-    run_kwargs: dict = zntrack.zn.params({"fmax": 0.05})
-    init_kwargs: dict = zntrack.zn.params({})
-    dump_rate = zntrack.zn.params(1000)
+    repeat: list = zntrack.params([1, 1, 1])
+    run_kwargs: dict = zntrack.params({"fmax": 0.05})
+    init_kwargs: dict = zntrack.params({})
+    dump_rate = zntrack.params(1000)
 
-    traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.h5")
+    maxstep: int = zntrack.params(None)
+
+    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "trajectory.h5")
 
     def run(self):
-        if self.checker_list is None:
-            self.checker_list = []
-        if self.constraint_list is None:
-            self.constraint_list = []
+        if self.checks is None:
+            self.checks = []
+        if self.constraints is None:
+            self.constraints = []
 
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
@@ -51,7 +55,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
         atoms = atoms.repeat(self.repeat)
         atoms.calc = calculator
 
-        for constraint in self.constraint_list:
+        for constraint in self.constraints:
             atoms.set_constraint(constraint.get_constraint(atoms))
 
         atoms_cache = []
@@ -62,7 +66,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
         optimizer = getattr(ase.optimize, self.optimizer)
         dyn = optimizer(atoms, **self.init_kwargs)
 
-        for _ in dyn.irun(**self.run_kwargs):
+        for step, _ in enumerate(dyn.irun(**self.run_kwargs)):
             stop = []
             atoms_cache.append(freeze_copy_atoms(atoms))
             if len(atoms_cache) == self.dump_rate:
@@ -76,7 +80,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
                 )
                 atoms_cache = []
 
-            for checker in self.checker_list:
+            for checker in self.checks:
                 stop.append(checker.check(atoms))
                 if stop[-1]:
                     log.critical(
@@ -86,6 +90,9 @@ class ASEGeoOpt(base.ProcessSingleAtom):
 
             if any(stop):
                 dyn.log()
+                break
+
+            if self.maxstep is not None and step >= self.maxstep:
                 break
 
         db.add(

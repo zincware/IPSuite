@@ -88,8 +88,8 @@ class ProcessSingleAtom(IPSNode):
     """
 
     data: typing.Union[ase.Atoms, typing.List[ase.Atoms]] = zntrack.deps()
-    data_file: str = zntrack.dvc.deps(None)
-    data_id: typing.Optional[int] = zntrack.zn.params(0)
+    data_file: str = zntrack.deps_path(None)
+    data_id: typing.Optional[int] = zntrack.params(0)
 
     atoms: typing.List[ase.Atoms] = fields.Atoms()
 
@@ -130,14 +130,11 @@ class AnalyseAtoms(IPSNode):
     data: list[ase.Atoms] = zntrack.deps()
 
 
-class AnalyseProcessAtoms(IPSNode):
-    """Analyse the output of a ProcessAtoms Node."""
+class ComparePredictions(IPSNode):
+    """Compare the predictions of two models."""
 
-    data: ProcessAtoms = zntrack.deps()
-
-    def get_data(self) -> typing.Tuple[list[ase.Atoms], list[ase.Atoms]]:
-        self.data.update_data()  # otherwise, data might not be available
-        return self.data.data, self.data.atoms
+    x: list[ase.Atoms] = zntrack.deps()
+    y: list[ase.Atoms] = zntrack.deps()
 
 
 class Mapping(ProcessAtoms):
@@ -160,8 +157,8 @@ class Mapping(ProcessAtoms):
         The indices of the molecules will be frozen for all configurations.
     """
 
-    molecules: list[ase.Atoms] = zntrack.zn.outs()
-    frozen: bool = zntrack.zn.params(False)
+    molecules: list[ase.Atoms] = zntrack.outs()
+    frozen: bool = zntrack.params(False)
 
     # TODO, should we allow to transfer the frozen mapping to another node?
     #  mapping = Mapping(frozen=True, reference=mapping)
@@ -194,7 +191,7 @@ class Mapping(ProcessAtoms):
         raise NotImplementedError
 
 
-class CheckBase(IPSNode):
+class Check(IPSNode):
     """Base class for check nodes.
     These are callbacks that can be used to preemptively terminate
     a molecular dynamics simulation if a vertain condition is met.
@@ -225,3 +222,13 @@ class CheckBase(IPSNode):
 
     def __str__(self):
         return self.status
+
+
+class Modifier(IPSNode):
+    """Base class for modifier nodes.
+    These are callbacks that can be used to alter the dynamics of an MD run.
+    This can be achieved by modifying the thermostat state or atoms in the system.
+    """
+
+    @abc.abstractmethod
+    def modify(self, thermostat: IPSNode, step: int, total_steps: int) -> None: ...

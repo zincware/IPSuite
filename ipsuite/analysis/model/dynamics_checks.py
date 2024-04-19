@@ -9,7 +9,7 @@ from ipsuite import base
 from ipsuite.utils.ase_sim import get_energy
 
 
-class NaNCheck(base.CheckBase):
+class NaNCheck(base.Check):
     """Check Node to see whether positions, energies or forces become NaN
     during a simulation.
     """
@@ -36,7 +36,7 @@ class NaNCheck(base.CheckBase):
             return False
 
 
-class ConnectivityCheck(base.CheckBase):
+class ConnectivityCheck(base.Check):
     """Check to see whether the covalent connectivity of the system
     changes during a simulation.
     The connectivity is based on ASE's natural cutoffs.
@@ -68,7 +68,7 @@ class ConnectivityCheck(base.CheckBase):
             return False
 
 
-class EnergySpikeCheck(base.CheckBase):
+class EnergySpikeCheck(base.Check):
     """Check to see whether the potential energy of the system has fallen
     below a minimum or above a maximum threshold.
 
@@ -78,8 +78,8 @@ class EnergySpikeCheck(base.CheckBase):
     max_factor: Simulation stops if `E(current) < E(initial) * max_factor`
     """
 
-    min_factor: float = zntrack.zn.params(0.5)
-    max_factor: float = zntrack.zn.params(2.0)
+    min_factor: float = zntrack.params(0.5)
+    max_factor: float = zntrack.params(2.0)
 
     def _post_init_(self) -> None:
         self.max_energy = None
@@ -111,7 +111,7 @@ class EnergySpikeCheck(base.CheckBase):
             return False
 
 
-class TemperatureCheck(base.CheckBase):
+class TemperatureCheck(base.Check):
     """Calculate and check teperature during a MD simulation
 
     Attributes
@@ -120,7 +120,7 @@ class TemperatureCheck(base.CheckBase):
         maximum temperature, when reaching it simulation will be stopped
     """
 
-    max_temperature: float = zntrack.zn.params(10000.0)
+    max_temperature: float = zntrack.params(10000.0)
 
     def initialize(self, atoms: ase.Atoms) -> None:
         self.is_initialized = True
@@ -142,7 +142,7 @@ class TemperatureCheck(base.CheckBase):
             return False
 
 
-class ThresholdCheck(base.CheckBase):
+class ThresholdCheck(base.Check):
     """Calculate and check a given threshold and std during a MD simulation
 
     Compute the standard deviation of the selected property.
@@ -171,12 +171,12 @@ class ThresholdCheck(base.CheckBase):
         E.g. useful for uncertainties, where a lower uncertainty is not a problem.
     """
 
-    value: str = zntrack.zn.params()
-    max_std: float = zntrack.zn.params(None)
-    window_size: int = zntrack.zn.params(500)
-    max_value: float = zntrack.zn.params(None)
-    minimum_window_size: int = zntrack.zn.params(1)
-    larger_only: bool = zntrack.zn.params(False)
+    value: str = zntrack.params()
+    max_std: float = zntrack.params(None)
+    window_size: int = zntrack.params(500)
+    max_value: float = zntrack.params(None)
+    minimum_window_size: int = zntrack.params(1)
+    larger_only: bool = zntrack.params(False)
 
     def _post_init_(self):
         if self.max_std is None and self.max_value is None:

@@ -21,7 +21,7 @@ import zntrack
 from jinja2 import Template
 from znjson import ConverterBase, config
 
-from ipsuite import static_data, utils
+from ipsuite import static_data
 from ipsuite.models import MLModel
 
 log = logging.getLogger(__name__)
@@ -198,16 +198,16 @@ class GAP(MLModel):
     """
 
     # SOAP
-    soap: typing.Union[dict, SOAP] = zntrack.zn.params(SOAP())
+    soap: typing.Union[dict, SOAP] = zntrack.params(SOAP())
     # DistanceNb
-    distance_nb: typing.Union[dict, DistanceNb] = zntrack.zn.params(DistanceNb())
+    distance_nb: typing.Union[dict, DistanceNb] = zntrack.params(DistanceNb())
     # GAP
-    gap: typing.Union[dict, GapParameter] = zntrack.zn.params(GapParameter())
+    gap: typing.Union[dict, GapParameter] = zntrack.params(GapParameter())
     # #
-    model_directory: Path = zntrack.dvc.outs(zntrack.nwd / "model")
-    train_data_file: Path = zntrack.dvc.outs(zntrack.nwd / "train_atoms.extxyz")
-    gap_input_script: Path = zntrack.dvc.outs(zntrack.nwd / "gap.input")
-    _train_idx_file: Path = zntrack.dvc.outs(zntrack.nwd / "train_atoms.extxyz.idx")
+    model_directory: Path = zntrack.outs_path(zntrack.nwd / "model")
+    train_data_file: Path = zntrack.outs_path(zntrack.nwd / "train_atoms.extxyz")
+    gap_input_script: Path = zntrack.outs_path(zntrack.nwd / "gap.input")
+    _train_idx_file: Path = zntrack.outs_path(zntrack.nwd / "train_atoms.extxyz.idx")
 
     #
     OPENBLAS_NUM_THREADS = zntrack.meta.Environment(None)
@@ -228,7 +228,6 @@ class GAP(MLModel):
                 self.gap = GapParameter(**self.gap)
             if isinstance(self.distance_nb, dict):
                 self.distance_nb = DistanceNb(**self.distance_nb)
-            self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
 
     def run(self):
         """Create output directory and train the model."""

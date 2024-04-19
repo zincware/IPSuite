@@ -18,7 +18,7 @@ class xTBSinglePoint(base.ProcessAtoms):
         xTB method to be used. Only "GFN1-xTB" supports PBC.
     """
 
-    method: str = zntrack.zn.params("GFN1-xTB")
+    method: str = zntrack.params("GFN1-xTB")
 
     def run(self):
         self.atoms = []
