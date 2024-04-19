@@ -23,8 +23,8 @@ def test_ase_md(proj_path, cu_box):
         md = ips.calculators.ASEMD(
             data=data.atoms,
             model=model,
-            checker_list=[checker],
-            modifier=[rescale_box, temperature_ramp],
+            checks=[checker],
+            modifiers=[rescale_box, temperature_ramp],
             thermostat=thermostat,
             steps=30,
             sampling_rate=1,
@@ -58,8 +58,8 @@ def test_ase_md_target_density(proj_path, cu_box):
         md = ips.calculators.ASEMD(
             data=data.atoms,
             model=model,
-            checker_list=[checker],
-            modifier=[rescale_box],
+            checks=[checker],
+            modifiers=[rescale_box],
             thermostat=thermostat,
             steps=30,
             sampling_rate=1,
@@ -91,7 +91,7 @@ def test_ase_md_box_ramp(proj_path, cu_box):
         md = ips.calculators.ASEMD(
             data=data.atoms,
             model=model,
-            modifier=[rescale_box],
+            modifiers=[rescale_box],
             thermostat=thermostat,
             steps=20,
             sampling_rate=1,
@@ -131,7 +131,7 @@ def test_ase_npt(proj_path, cu_box):
         md = ips.calculators.ASEMD(
             data=data.atoms,
             model=model,
-            modifier=[temperature_ramp],
+            modifiers=[temperature_ramp],
             thermostat=thermostat,
             steps=30,
             sampling_rate=1,
@@ -172,7 +172,7 @@ def test_ase_md_fixed_sphere(proj_path, cu_box):
             steps=30,
             sampling_rate=1,
             dump_rate=33,
-            constraint_list=[constraint],
+            constraints=[constraint],
         )
 
     project.run()
@@ -221,7 +221,7 @@ def test_locality_test(proj_path, cu_box):
             steps=30,
             sampling_rate=1,
             dump_rate=33,
-            constraint_list=[constraints[0]],
+            constraints=[constraints[0]],
         )
         md2 = ips.calculators.ASEMD(
             data=data.atoms,
@@ -230,7 +230,7 @@ def test_locality_test(proj_path, cu_box):
             steps=30,
             sampling_rate=1,
             dump_rate=33,
-            constraint_list=[constraints[1]],
+            constraints=[constraints[1]],
         )
 
         ips.analysis.AnalyseSingleForceSensitivity(
