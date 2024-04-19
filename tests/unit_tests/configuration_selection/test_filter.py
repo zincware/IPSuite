@@ -2,35 +2,63 @@ import numpy as np
 import pytest
 
 from ipsuite.configuration_selection import PropertyFilter
-
+from ipsuite.configuration_selection.filter import REDUCTIONS
 
 @pytest.mark.parametrize(
-    "key, cutoff_type, direction, cutoffs",
+    "reference, dim_reduction, reduction_axis",
     [
-        ("forces", "direct", "both", [7, 13]),
-        ("forces", "direct", "both", None),
-        ("forces", "around_mean", "both", None),
+        ("energy", None, (1, 2)),
+        ("forces", "max", (1, 2)),
+        ("forces_uncertainty", "mean", (1, 2)),
+        ("forces_uncertainty", None, (1, 2)),
     ],
 )
-def test_get_selected_atoms(atoms_list, key, cutoff_type, direction, cutoffs):
-    for idx, atoms in enumerate(atoms_list):
-        atoms.calc.results[key] = np.array([[idx, 0, 0], [0, 0, 0]])
+@pytest.mark.parametrize(
+    "direction",
+    [
+        "above",
+        "below",
+        "both",
+     ]
+)
+def test_get_selected_atoms(atoms_list, reference, dim_reduction, reduction_axis, direction):
+    values = np.array([atoms.calc.results[reference] for atoms in atoms_list])
+    if dim_reduction is not None:
+        reduction_fn = REDUCTIONS[dim_reduction]
+        values = reduction_fn(values, reduction_axis)
+
+    mean = np.mean(values)
+    std = np.std(values)
+    upper_limit = mean + 0.5 * std
+    lower_limit = mean - 0.5 * std
 
     filter = PropertyFilter(
-        key=key,
-        cutoff_type=cutoff_type,
-        direction=direction,
+        reference=reference,
+        dim_reduction=dim_reduction,
+        reduction_axis=reduction_axis,
         data=None,
-        cutoffs=cutoffs,
-        threshold=0.4,
+        cutoffs=[lower_limit, upper_limit],
+        n_configurations=4,
+        min_distance=1,
+        direction=direction,
     )
 
-    if "direct" in cutoff_type and cutoffs is None:
+    if reference in ["forces", "forces_uncertainty"] and dim_reduction is None:
         with pytest.raises(ValueError):
             selected_atoms = filter.select_atoms(atoms_list)
     else:
-        test_selection = [8, 9, 10, 11, 12]
         selected_atoms = filter.select_atoms(atoms_list)
+        print(selected_atoms)
+
+        assert len(set(selected_atoms)) == 4
         assert isinstance(selected_atoms, list)
-        assert len(set(selected_atoms)) == 5
-        assert selected_atoms == test_selection
+
+        if direction == "above":
+            assert np.argmax(values) in selected_atoms
+
+        elif direction == "below":
+            assert np.argmin(values) in selected_atoms
+            
+        else:
+            assert np.argmin(values) in selected_atoms
+            assert np.argmax(values) in selected_atoms
