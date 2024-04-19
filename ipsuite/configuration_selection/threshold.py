@@ -87,6 +87,8 @@ class ThresholdSelection(ConfigurationSelection):
         selection = []
         for idx in indices:
             # If the value is close to any of the already selected values, skip it.
+            if not selection:
+                selection.append(idx)
             if not any(np.abs(idx - np.array(selection)) < self.min_distance):
                 selection.append(idx)
             if len(selection) == self.n_configurations:
