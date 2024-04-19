@@ -12,6 +12,7 @@ from ipsuite.analysis.md import AnalyseDensity
 from ipsuite.analysis.model import (
     BoxHeatUp,
     BoxScale,
+    CalibrationMetrics,
     ConnectivityCheck,
     EnergySpikeCheck,
     ForceAngles,
@@ -39,6 +40,7 @@ __all__ = [
     "ForceAngles",
     "RattleAnalysis",
     "Prediction",
+    "CalibrationMetrics",
     "BoxScale",
     "BoxHeatUp",
     "NaNCheck",

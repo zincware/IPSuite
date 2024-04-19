@@ -147,10 +147,9 @@ class SurfaceRasterMetrics(analysis.PredictionMetrics):
 
         # get forces
         shape.append(3)
-        true_data_list, pred_data_list = self.get_data()
 
         forces = []
-        for true_data, pred_data in zip(true_data_list, pred_data_list):
+        for true_data, pred_data in zip(self.x, self.y):
             forces.append([true_data.get_forces(), pred_data.get_forces()])
 
         forces = np.array(forces)[:, :, -1, :] * 1000

@@ -23,7 +23,7 @@ from ipsuite.utils.ase_sim import freeze_copy_atoms, get_box_from_density, get_e
 log = logging.getLogger(__name__)
 
 
-class RescaleBoxModifier(base.IPSNode):
+class RescaleBoxModifier(base.Modifier):
     cell: int = zntrack.params(None)
     density: float = zntrack.params(None)
     _initial_cell = None
@@ -56,7 +56,7 @@ class RescaleBoxModifier(base.IPSNode):
         thermostat.atoms.set_cell(new_cell, scale_atoms=True)
 
 
-class BoxOscillatingRampModifier(base.IPSNode):
+class BoxOscillatingRampModifier(base.Modifier):
     """Ramp the simulation cell to a specified end cell with some oscillations.
 
     Attributes
@@ -135,7 +135,7 @@ class BoxOscillatingRampModifier(base.IPSNode):
             thermostat.atoms.set_cell(new_cell, scale_atoms=True)
 
 
-class TemperatureRampModifier(base.IPSNode):
+class TemperatureRampModifier(base.Modifier):
     """Ramp the temperature from start_temperature to temperature.
 
     Attributes
@@ -170,7 +170,7 @@ class TemperatureRampModifier(base.IPSNode):
             thermostat.set_temperature(temperature_K=new_temperature)
 
 
-class TemperatureOscillatingRampModifier(base.IPSNode):
+class TemperatureOscillatingRampModifier(base.Modifier):
     """Ramp the temperature from start_temperature to temperature with some oscillations.
 
     Attributes
@@ -215,7 +215,7 @@ class TemperatureOscillatingRampModifier(base.IPSNode):
             thermostat.set_temperature(temperature_K=new_temperature)
 
 
-class PressureRampModifier(base.IPSNode):
+class PressureRampModifier(base.Modifier):
     """Ramp the temperature from start_temperature to temperature.
     Works only for the NPT thermostat (not NPTBerendsen).
 
@@ -421,11 +421,12 @@ class ASEMD(base.ProcessSingleAtom):
         starting id to pick from list of atoms
     model: zntrack.Node
         A node that implements a 'get_calculation' method
-    checker_list: list[CheckNodes]
-        checker, which tracks various metrics and stops the
-        simulation after a threshold is exceeded.
-    constraint_list: list[ConstraintNodes]
-        constraints the atoms within the md simulation
+    checks: list[Check]
+        checks, which track various metrics and stop the
+        simulation if some criterion is met.
+    constraints: list[Constraint]
+        constrains the atoms within the md simulation
+    modifiers: list[Modifier]
     thermostat: ase dynamics
         dynamics method used for simulation
     init_temperature: float
@@ -453,9 +454,9 @@ class ASEMD(base.ProcessSingleAtom):
     model = zntrack.deps()
 
     model_outs = zntrack.outs_path(zntrack.nwd / "model/")
-    checker_list: list = zntrack.deps(None)
-    constraint_list: list = zntrack.deps(None)
-    modifier: list = zntrack.deps(None)
+    checks: list = zntrack.deps(None)
+    constraints: list = zntrack.deps(None)
+    modifiers: list = zntrack.deps(None)
     thermostat = zntrack.deps()
 
     steps: int = zntrack.params()
@@ -471,7 +472,7 @@ class ASEMD(base.ProcessSingleAtom):
 
     steps_before_stopping = zntrack.metrics()
 
-    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "trajectory.h5")
+    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
 
     def get_atoms(self) -> ase.Atoms:
         atoms: ase.Atoms = self.get_data()
@@ -494,12 +495,12 @@ class ASEMD(base.ProcessSingleAtom):
         """Run the simulation."""
         np.random.seed(self.seed)
 
-        if self.checker_list is None:
-            self.checker_list = []
-        if self.modifier is None:
-            self.modifier = []
-        if self.constraint_list is None:
-            self.constraint_list = []
+        if self.checks is None:
+            self.checks = []
+        if self.modifiers is None:
+            self.modifiers = []
+        if self.constraints is None:
+            self.constraints = []
 
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
@@ -516,7 +517,7 @@ class ASEMD(base.ProcessSingleAtom):
 
         # initialize Atoms calculator and metrics_dict
         metrics_dict = {"energy": [], "temperature": []}
-        for checker in self.checker_list:
+        for checker in self.checks:
             checker.initialize(atoms)
             if checker.get_quantity() is not None:
                 metrics_dict[checker.get_quantity()] = []
@@ -533,7 +534,7 @@ class ASEMD(base.ProcessSingleAtom):
         sampling_iterations = int(sampling_iterations)
         total_fs = self.steps * time_step
 
-        for constraint in self.constraint_list:
+        for constraint in self.constraints:
             atoms.set_constraint(constraint.get_constraint(atoms))
 
         atoms_cache = []
@@ -553,7 +554,7 @@ class ASEMD(base.ProcessSingleAtom):
 
                 # run MD for sampling_rate steps
                 for idx_inner in range(self.sampling_rate):
-                    for modifier in self.modifier:
+                    for modifier in self.modifiers:
                         modifier.modify(
                             thermostat,
                             step=idx_outer * self.sampling_rate + idx_inner,
@@ -563,7 +564,7 @@ class ASEMD(base.ProcessSingleAtom):
                         atoms.wrap()
                     thermostat.run(1)
 
-                    for checker in self.checker_list:
+                    for checker in self.checks:
                         stop.append(checker.check(atoms))
                         if stop[-1]:
                             log.critical(str(checker))
@@ -577,9 +578,7 @@ class ASEMD(base.ProcessSingleAtom):
                     )
                     break
                 else:
-                    metrics_dict = update_metrics_dict(
-                        atoms, metrics_dict, self.checker_list
-                    )
+                    metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks)
                     atoms_cache.append(freeze_copy_atoms(atoms))
                     if len(atoms_cache) == self.dump_rate:
                         db.add(
@@ -600,7 +599,7 @@ class ASEMD(base.ProcessSingleAtom):
                     pbar.update(self.sampling_rate)
 
         if not self.pop_last and self.steps_before_stopping != -1:
-            metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checker_list)
+            metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks)
             atoms_cache.append(freeze_copy_atoms(atoms))
 
         db.add(
@@ -624,11 +623,11 @@ def get_desc(temperature: float, total_energy: float, time: float, total_time: f
     )
 
 
-def update_metrics_dict(atoms, metrics_dict, checker_list):
+def update_metrics_dict(atoms, metrics_dict, checks):
     temperature, energy = get_energy(atoms)
     metrics_dict["energy"].append(energy)
     metrics_dict["temperature"].append(temperature)
-    for checker in checker_list:
+    for checker in checks:
         metric = checker.get_value(atoms)
         if metric is not None:
             metrics_dict[checker.get_quantity()].append(metric)

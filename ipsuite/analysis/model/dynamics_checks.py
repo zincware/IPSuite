@@ -9,7 +9,7 @@ from ipsuite import base
 from ipsuite.utils.ase_sim import get_energy
 
 
-class NaNCheck(base.CheckBase):
+class NaNCheck(base.Check):
     """Check Node to see whether positions, energies or forces become NaN
     during a simulation.
     """
@@ -36,7 +36,7 @@ class NaNCheck(base.CheckBase):
             return False
 
 
-class ConnectivityCheck(base.CheckBase):
+class ConnectivityCheck(base.Check):
     """Check to see whether the covalent connectivity of the system
     changes during a simulation.
     The connectivity is based on ASE's natural cutoffs.
@@ -68,7 +68,7 @@ class ConnectivityCheck(base.CheckBase):
             return False
 
 
-class EnergySpikeCheck(base.CheckBase):
+class EnergySpikeCheck(base.Check):
     """Check to see whether the potential energy of the system has fallen
     below a minimum or above a maximum threshold.
 
@@ -111,7 +111,7 @@ class EnergySpikeCheck(base.CheckBase):
             return False
 
 
-class TemperatureCheck(base.CheckBase):
+class TemperatureCheck(base.Check):
     """Calculate and check teperature during a MD simulation
 
     Attributes
@@ -142,7 +142,7 @@ class TemperatureCheck(base.CheckBase):
             return False
 
 
-class ThresholdCheck(base.CheckBase):
+class ThresholdCheck(base.Check):
     """Calculate and check a given threshold and std during a MD simulation
 
     Compute the standard deviation of the selected property.
