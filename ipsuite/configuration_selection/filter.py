@@ -8,104 +8,106 @@ import zntrack
 from ipsuite.configuration_selection import ConfigurationSelection
 
 
-def direct_cutoff(values, threshold, cutoffs):
-    # Filtering the direct cutoff values
-    if cutoffs is None:
+def mean_reduction(values, axis):
+    return np.mean(values, axis=axis)
+
+
+def max_reduction(values, axis):
+    return np.max(values, axis=axis)
+
+
+def check_dimension(values):
+    if values.ndim > 1:
         raise ValueError(
-            "cutoffs have to be specified for using the direct cutoff filter."
+            f"Value dimension is {values.ndim} != 1. "
+            "Reduce the dimension by defining dim_reduction, "
+            "use mean or max to get (n_structures,) shape."
         )
-    return (cutoffs[0], cutoffs[1])
 
 
-def cutoff_around_mean(values, threshold, cutoffs):
-    # Filtering in multiples of the standard deviation around the mean.
-    mean = np.mean(values)
-    std = np.std(values)
-
-    upper_cutoff = mean + threshold * std
-    lower_cutoff = mean - threshold * std
-    return (lower_cutoff, upper_cutoff)
-
-
-CUTOFF = {"direct": direct_cutoff, "around_mean": cutoff_around_mean}
-
+REDUCTIONS = {
+    "mean": mean_reduction,
+    "max": max_reduction,
+}
 
 class PropertyFilter(ConfigurationSelection):
-    """Filter structures from the dataset based on a given property.
 
-    Attributes
-    ----------
-    key : str, default="energy"
-        The property to filter on.
-    cutoff_type : {"direct", "around_mean"}, default="around_mean"
-        Defines the cutoff type.
-    direction : {"above", "below", "both"}, default="both"
-        The direction to filter in.
-    threshold : float, default=3
-        The threshold for filtering in units of standard deviations.
-    cutoffs : list(float), default=None
-        Lower and upper cutoff.
-    """
-
-    key: str = zntrack.params("energy")
-    cutoff_type: t.Literal["direct", "around_mean"] = zntrack.params("around_mean")
+    reference = zntrack.params("energy")
+    cutoffs: t.Union[t.List[float]] = zntrack.params()
     direction: t.Literal["above", "below", "both"] = zntrack.params("both")
-    threshold: float = zntrack.params(3)
-    cutoffs: t.Union[t.List[float], None] = zntrack.params(None)
+    n_configurations = zntrack.params(None)
+    min_distance: int = zntrack.params(1)
+    dim_reduction: str = zntrack.params(None)
+    reduction_axis = zntrack.params((1, 2))
 
-    def select_atoms(self, atoms_lst: t.List[ase.Atoms]) -> t.List[int]:
-        values = [atoms.calc.results[self.key] for atoms in atoms_lst]
+    def _post_init_(self):
+        if self.direction not in ["above", "below", "both"]:
+            raise ValueError("'direction' should be set to 'above', 'below', or 'both'.")
 
-        # get maximal atomic value per struckture
-        if isinstance(values[0], np.ndarray):
-            if values[0].ndim == 2:
-                # calculates the maximal magnetude of atomic cartesian property
-                values = [
-                    np.max(np.linalg.norm(value, axis=1), axis=0) for value in values
-                ]
-            elif values[0].ndim == 1:
-                # calculates the maximal atomic property
-                values = [np.max(value, axis=0) for value in values]
+        return super()._post_init_()
+    
+    def select_atoms(
+            self, atoms_lst: t.List[ase.Atoms]) -> t.List[int]:
+        self.reduction_axis = tuple(self.reduction_axis)
+        values = np.array([atoms.calc.results[self.reference] for atoms in atoms_lst])
 
-        lower_limit, upper_limit = CUTOFF[self.cutoff_type](
-            values,
-            self.threshold,
-            self.cutoffs,
-        )
+        if self.dim_reduction is not None:
+            reduction_fn = REDUCTIONS[self.dim_reduction]
+            values = reduction_fn(values, self.reduction_axis)
+
+        check_dimension(values)
+
+        lower_limit, upper_limit = self.cutoffs[0], self.cutoffs[1]
 
         if self.direction == "above":
-            selection = [i for i, x in enumerate(values) if x > upper_limit]
+            pre_selection = np.array([i for i, x in enumerate(values) if x > upper_limit])
+            sorting_idx = np.argsort(values[pre_selection])[::-1]
         elif self.direction == "below":
-            selection = [i for i, x in enumerate(values) if x < lower_limit]
+            pre_selection = np.array([i for i, x in enumerate(values) if x < lower_limit])
+            sorting_idx = np.argsort(values[pre_selection])
         else:
-            selection = [
-                i for i, x in enumerate(values) if x > lower_limit and x < upper_limit
-            ]
+            pre_selection = np.array([
+                i for i, x in enumerate(values) if x < lower_limit or x > upper_limit
+            ])
+            mean = (lower_limit+upper_limit)/2
+            dist_to_mean = abs(values[pre_selection]-mean)
+            sorting_idx = np.argsort(dist_to_mean)[::-1]
+
+        selection = self.get_selection(pre_selection[sorting_idx])
+
+        return selection
+
+    def get_selection(self, indices):
+        selection = []
+        for idx in indices:
+            # If the value is close to any of the already selected values, skip it.
+            if not any(np.abs(idx - np.array(selection)) < self.min_distance):
+                selection.append(idx)
+            if len(selection) == self.n_configurations:
+                break
 
         return selection
 
     def _get_plot(self, atoms_lst: t.List[ase.Atoms], indices: t.List[int]):
-        values = [atoms.calc.results[self.key] for atoms in atoms_lst]
+        indices = np.array(indices)
+        values = np.array([atoms.calc.results[self.reference] for atoms in atoms_lst])
 
-        # get maximal atomic value per struckture
-        if isinstance(values[0], np.ndarray):
-            if values[0].ndim == 2:
-                # calculates the maximal magnetude of atomic cartesian property
-                values = [
-                    np.max(np.linalg.norm(value, axis=1), axis=0) for value in values
-                ]
-            elif values[0].ndim == 1:
-                # calculates the maximal atomic property
-                values = [np.max(value, axis=0) for value in values]
+        if self.dim_reduction is not None:
+            reduction_fn = REDUCTIONS[self.dim_reduction]
+            values = reduction_fn(values, self.reduction_axis)
 
-        fig, ax = plt.subplots(3, figsize=(10, 10))
-        ax[0].hist(values, bins=100)
-        ax[0].set_title("All")
-        ax[1].hist([values[i] for i in indices], bins=100)
-        ax[1].set_title("Selected")
-        ax[2].hist(
-            [values[i] for i in range(len(values)) if i not in indices],
-            bins=100,
-        )
-        ax[2].set_title("Excluded")
+        fig, ax = plt.subplots()
+        ax.plot(values, label=self.reference)
+        ax.plot(indices, values[indices], "x", color="red")
+        ax.fill_between(
+                np.arange(len(values)),
+                self.cutoffs[0],
+                self.cutoffs[1],
+                color="black",
+                alpha=0.2,
+                label=f"{self.reference} +- std",
+            )
+        ax.set_ylabel(self.reference)
+        ax.set_xlabel("configuration")
+
         fig.savefig(self.img_selection, bbox_inches="tight")
