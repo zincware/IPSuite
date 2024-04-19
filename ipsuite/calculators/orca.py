@@ -12,7 +12,7 @@ class OrcaSinglePoint(base.ProcessAtoms):
     ASE_ORCA_COMMAND: str = zntrack.meta.Environment("orca")
 
     orca_directory: str = zntrack.outs_path(zntrack.nwd / "orca")
-    output_file: str = zntrack.outs_path(zntrack.nwd / "atoms.h5")
+    output_file: str = zntrack.outs_path(zntrack.nwd / "structures.h5")
 
     def run(self):
         db = znh5md.io.DataWriter(self.output_file)

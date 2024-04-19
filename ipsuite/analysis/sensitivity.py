@@ -139,8 +139,8 @@ class AnalyseSingleForceSensitivity(base.IPSNode):
         self.data = [x.atoms if isinstance(x, zntrack.Node) else x for x in self.data]
 
         for atoms, sim in zip(self.data, self.sim_list):
-            radius = sim.constraint_list[0].radius
-            atom_id = sim.constraint_list[0].get_selected_atom_id(atoms[0])
+            radius = sim.constraints[0].radius
+            atom_id = sim.constraints[0].get_selected_atom_id(atoms[0])
 
             value = self.get_values(atoms, atom_id)
             values.append({"radius": radius, "std": value[0], "ci": value[1]})

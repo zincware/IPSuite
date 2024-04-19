@@ -6,7 +6,7 @@ import ipsuite as ips
 from ipsuite import base
 
 
-class DebugCheck(base.CheckBase):
+class DebugCheck(base.Check):
     """A check that interrupts the dynamics after a fixed amount of iterations.
     For testing purposes.
 
@@ -45,7 +45,7 @@ def test_ase_geoopt(proj_path, cu_box):
             data=data.atoms,
             model=model,
             optimizer="FIRE",
-            checker_list=[check],
+            checks=[check],
             run_kwargs={"fmax": 0.05},
         )
 
@@ -53,7 +53,7 @@ def test_ase_geoopt(proj_path, cu_box):
             data=data.atoms,
             model=model,
             optimizer="FIRE",
-            checker_list=[check],
+            checks=[check],
             run_kwargs={"fmax": 0.05},
             maxstep=2,
             name="opt_max_step",
