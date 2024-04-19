@@ -11,5 +11,6 @@ RUN pip install --upgrade torch torchvision torchaudio
 RUN pip install --upgrade "jax[cuda12_pip]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 RUN pip install git+https://github.com/PythonFZ/torch-dftd.git@patch-2
 RUN pip install dvc-s3
+RUN pip install --no-cache-dir notebook jupyterlab
 
 WORKDIR /app

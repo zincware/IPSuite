@@ -34,6 +34,7 @@ and `gap` MLPs. You can use IPSuite directly from within the image by calling:
 docker run -it -v "$(pwd):/app" --gpus all pythonf/ipsuite dvc repro
 docker run -it -v "$(pwd):/app" --gpus all pythonf/ipsuite python
 docker run -it -v "$(pwd):/app" --gpus all pythonf/ipsuite zntrack list
+docker run -it -v "$(pwd):/app" --gpus all --rm -p 8888:8888 pythonf/ipsuite jupyter lab --ip=0.0.0.0 --port=8888 --allow-root
 ```
 
 ## Fix Permission Issues
@@ -47,7 +48,7 @@ echo $(id -u):$(id -g)
 docker run -it -v "$(pwd):/app" pythonf/ipsuite /bin/bash
 addgroup --gid $GROUP_ID user
 adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
-chown $USER_ID:$GROUP_ID -R .
+chown user:user -R .
 ```
 
 # References
