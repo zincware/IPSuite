@@ -130,14 +130,11 @@ class AnalyseAtoms(IPSNode):
     data: list[ase.Atoms] = zntrack.deps()
 
 
-class AnalyseProcessAtoms(IPSNode):
-    """Analyse the output of a ProcessAtoms Node."""
+class ComparePredictions(IPSNode):
+    """Compare the predictions of two models."""
 
-    data: ProcessAtoms = zntrack.deps()
-
-    def get_data(self) -> typing.Tuple[list[ase.Atoms], list[ase.Atoms]]:
-        self.data.update_data()  # otherwise, data might not be available
-        return self.data.data, self.data.atoms
+    x: list[ase.Atoms] = zntrack.deps()
+    y: list[ase.Atoms] = zntrack.deps()
 
 
 class Mapping(ProcessAtoms):

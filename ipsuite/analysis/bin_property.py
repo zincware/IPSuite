@@ -98,7 +98,7 @@ class ForcesHistogram(LabelHistogram):
 
 
 class ForcesUncertaintyHistogram(LabelHistogram):
-    """Creates a histogram of all force labels contained in a dataset."""
+    """Creates a histogram of all force uncertainties in a prediction."""
 
     datalabel = "forces-uncertainty"
     xlabel = r"$F$ / eV/Ang"
@@ -112,7 +112,7 @@ class ForcesUncertaintyHistogram(LabelHistogram):
 
 
 class EnergyUncertaintyHistogram(LabelHistogram):
-    """Creates a histogram of all force labels contained in a dataset."""
+    """Creates a histogram of all energy uncertainties in a prediction."""
 
     datalabel = "energy-uncertainty"
     xlabel = r"$F$ / eV/Ang"

@@ -21,6 +21,7 @@ from ipsuite.analysis.model.dynamics_checks import (
     ThresholdCheck,
 )
 from ipsuite.analysis.model.predict import (
+    CalibrationMetrics,
     ForceAngles,
     ForceDecomposition,
     Prediction,
@@ -29,6 +30,7 @@ from ipsuite.analysis.model.predict import (
 
 __all__ = [
     "Prediction",
+    "CalibrationMetrics",
     "ForceAngles",
     "PredictionMetrics",
     "ForceDecomposition",
