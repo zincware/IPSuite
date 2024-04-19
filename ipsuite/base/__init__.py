@@ -3,8 +3,8 @@
 from ipsuite.base import protocol
 from ipsuite.base.base import (
     AnalyseAtoms,
-    AnalyseProcessAtoms,
     CheckBase,
+    ComparePredictions,
     IPSNode,
     Mapping,
     ProcessAtoms,
@@ -14,8 +14,8 @@ from ipsuite.base.base import (
 __all__ = [
     "ProcessAtoms",
     "ProcessSingleAtom",
+    "ComparePredictions",
     "AnalyseAtoms",
-    "AnalyseProcessAtoms",
     "protocol",
     "Mapping",
     "CheckBase",
