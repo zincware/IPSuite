@@ -34,67 +34,25 @@ REDUCTIONS = {
 
 
 class ThresholdSelection(ConfigurationSelection):
-    """Select atoms based on a given threshold.
 
-    Select atoms above a given threshold or the n_configurations with the
-    highest / lowest value. Typically useful for uncertainty based selection.
-
-    Attributes
-    ----------
-    key: str
-        The key in 'calc.results' to select from
-    threshold: float, optional
-        All values above (or below if negative) this threshold will be selected.
-        If n_configurations is given, 'self.threshold' will be prioritized,
-        but a maximum of n_configurations will be selected.
-    reference: str, optional
-        For visualizing the selection a reference value can be given.
-        For 'energy_uncertainty' this would typically be 'energy'.
-    n_configurations: int, optional
-        Number of configurations to select.
-    min_distance: int, optional
-        Minimum distance between selected configurations.
-    dim_reduction: str, optional
-        Reduces the dimensionality of the chosen uncertainty along the specified axis
-        by calculating either the maximum or mean value.
-
-        Choose from ["max", "mean"]
-    reduction_axis: tuple(int), optional
-        Specifies the axis along which the reduction occurs.
-    """
-
-    key = zntrack.params("energy_uncertainty")
     reference = zntrack.params("energy")
-    threshold = zntrack.params(None)
+    threshold = zntrack.params(2)
+    direction: typing.Literal["above", "below", "both"] = zntrack.params("both")
     n_configurations = zntrack.params(None)
     min_distance: int = zntrack.params(1)
     dim_reduction: str = zntrack.params(None)
     reduction_axis = zntrack.params((1, 2))
 
     def _post_init_(self):
-        if self.threshold is None and self.n_configurations is None:
-            raise ValueError("Either 'threshold' or 'n_configurations' must not be None.")
+        if self.direction not in ["above", "below", "both"]:
+            raise ValueError("'direction' should be set to 'above', 'below', or 'both'.")
 
         return super()._post_init_()
 
     def select_atoms(
-        self, atoms_lst: typing.List[ase.Atoms], save_fig: bool = True
-    ) -> typing.List[int]:
-        """Take every nth (step) object of a given atoms list.
-
-        Parameters
-        ----------
-        atoms_lst: typing.List[ase.Atoms]
-            list of atoms objects to arange
-
-        Returns
-        -------
-        typing.List[int]:
-            list containing the taken indices
-        """
-
+            self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         self.reduction_axis = tuple(self.reduction_axis)
-        values = np.array([atoms.calc.results[self.key] for atoms in atoms_lst])
+        values = np.array([atoms.calc.results[self.reference] for atoms in atoms_lst])
 
         if self.dim_reduction is not None:
             reduction_fn = REDUCTIONS[self.dim_reduction]
@@ -102,48 +60,60 @@ class ThresholdSelection(ConfigurationSelection):
 
         check_dimension(values)
 
-        if self.threshold is not None:
-            if self.threshold < 0:
-                indices = np.where(values < self.threshold)[0]
-                if self.n_configurations is not None:
-                    indices = np.argsort(values)[indices]
-            else:
-                indices = np.where(values > self.threshold)[0]
-                if self.n_configurations is not None:
-                    indices = np.argsort(values)[::-1][indices]
-        else:
-            if np.mean(values) > 0:
-                indices = np.argsort(values)[::-1]
-            else:
-                indices = np.argsort(values)
+        mean = np.mean(values)
+        std = np.std(values)
+        upper_limit = mean + self.threshold * std
+        lower_limit = mean - self.threshold * std
 
-        selection = self.get_selection(indices)
+        if self.direction == "above":
+            pre_selection = np.array([i for i, x in enumerate(values) if x > upper_limit])
+            sorting_idx = np.argsort(values[pre_selection])[::-1]
+        elif self.direction == "below":
+            pre_selection = np.array([i for i, x in enumerate(values) if x < lower_limit])
+            sorting_idx = np.argsort(values[pre_selection])
+        else:
+            pre_selection = np.array([
+                i for i, x in enumerate(values) if x < lower_limit or x > upper_limit
+            ])
+            limit_mean = (lower_limit+upper_limit)/2
+            dist_to_mean = abs(values[pre_selection]-limit_mean)
+            sorting_idx = np.argsort(dist_to_mean)[::-1]
+
+        selection = self.get_selection(pre_selection[sorting_idx])
 
         return selection
 
     def get_selection(self, indices):
-        selected = []
-        for val in indices:
+        selection = []
+        for idx in indices:
             # If the value is close to any of the already selected values, skip it.
-            if not any(np.abs(val - np.array(selected)) < self.min_distance):
-                selected.append(val)
-            if len(selected) == self.n_configurations:
+            if not any(np.abs(idx - np.array(selection)) < self.min_distance):
+                selection.append(idx)
+            if len(selection) == self.n_configurations:
                 break
 
-        return selected
+        return selection
 
     def _get_plot(self, atoms_lst: typing.List[ase.Atoms], indices: typing.List[int]):
         indices = np.array(indices)
-        values = np.array([atoms.calc.results[self.key] for atoms in atoms_lst])
+        values = np.array([atoms.calc.results[self.reference] for atoms in atoms_lst])
 
         if self.dim_reduction is not None:
             reduction_fn = REDUCTIONS[self.dim_reduction]
             values = reduction_fn(values, self.reduction_axis)
 
         fig, ax = plt.subplots()
-        ax.plot(values, label=self.key)
+        ax.plot(values, label=self.reference)
         ax.plot(indices, values[indices], "x", color="red")
-        ax.set_ylabel(self.key)
+        ax.fill_between(
+                np.arange(len(values)),
+                np.mean(values) + self.threshold * np.std(values),
+                np.mean(values) - self.threshold * np.std(values),
+                color="black",
+                alpha=0.2,
+                label=f"{self.reference} +- std",
+            )
+        ax.set_ylabel(self.reference)
         ax.set_xlabel("configuration")
 
         fig.savefig(self.img_selection, bbox_inches="tight")
