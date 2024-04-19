@@ -67,12 +67,14 @@ def test_AnalysePrediction(trained_model, eager):
 
     with project:
         prediction = ipsuite.analysis.Prediction(model=model, data=validation_selection)
-        analysis = ipsuite.analysis.PredictionMetrics(data=prediction)
+        analysis = ipsuite.analysis.PredictionMetrics(
+            x=validation_selection.atoms, y=prediction.atoms
+        )
     project.run(eager=eager)
     if not eager:
         analysis.load()
 
-    assert not analysis.energy_df.empty
+    assert analysis.energy
     assert analysis.energy["rmse"] > 0.0
 
 
@@ -83,7 +85,9 @@ def test_AnalyseForceAngles(trained_model, eager):
         prediction = ipsuite.analysis.Prediction(
             model=model, data=validation_selection.atoms
         )
-        analysis = ipsuite.analysis.ForceAngles(data=prediction)
+        analysis = ipsuite.analysis.ForceAngles(
+            x=validation_selection.atoms, y=prediction.atoms
+        )
 
     project.run(eager=eager)
     if not eager:
