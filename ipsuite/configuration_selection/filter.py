@@ -1,4 +1,4 @@
-import typing as t
+import typing
 
 import ase
 import matplotlib.pyplot as plt
@@ -33,8 +33,8 @@ REDUCTIONS = {
 class PropertyFilter(ConfigurationSelection):
 
     reference = zntrack.params("energy")
-    cutoffs: t.Union[t.List[float]] = zntrack.params()
-    direction: t.Literal["above", "below", "both"] = zntrack.params("both")
+    cutoffs: typing.Union[typing.List[float]] = zntrack.params()
+    direction: typing.Literal["above", "below", "both"] = zntrack.params("both")
     n_configurations = zntrack.params(None)
     min_distance: int = zntrack.params(1)
     dim_reduction: str = zntrack.params(None)
@@ -47,7 +47,7 @@ class PropertyFilter(ConfigurationSelection):
         return super()._post_init_()
     
     def select_atoms(
-            self, atoms_lst: t.List[ase.Atoms]) -> t.List[int]:
+            self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         self.reduction_axis = tuple(self.reduction_axis)
         values = np.array([atoms.calc.results[self.reference] for atoms in atoms_lst])
 
@@ -90,7 +90,7 @@ class PropertyFilter(ConfigurationSelection):
 
         return selection
 
-    def _get_plot(self, atoms_lst: t.List[ase.Atoms], indices: t.List[int]):
+    def _get_plot(self, atoms_lst: typing.List[ase.Atoms], indices: typing.List[int]):
         indices = np.array(indices)
         values = np.array([atoms.calc.results[self.reference] for atoms in atoms_lst])
 
