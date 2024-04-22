@@ -3,6 +3,7 @@
 [![zincware](https://img.shields.io/badge/Powered%20by-zincware-darkcyan)](https://github.com/zincware)
 [![Documentation Status](https://readthedocs.org/projects/ipsuite/badge/?version=latest)](https://ipsuite.readthedocs.io/en/latest/?badge=latest)
 [![DOI](https://img.shields.io/badge/DOI-10.1021/acs.jpcb.3c07187-red)](https://pubs.acs.org/doi/10.1021/acs.jpcb.3c07187)
+[![PyPI version](https://badge.fury.io/py/ipsuite.svg)](https://badge.fury.io/py/ipsuite)
 
 # IPS - The Inter Atomic Potential Suite
 
@@ -26,12 +27,31 @@ Examples can be found at:
 
 # Docker Image
 
-You can use IPSuite directly from within docker by calling it e.g. like:
+We provide an IPSuite docker image for Linux that includes the `apax`, `mace`
+and `gap` MLPs. You can use IPSuite directly from within the image by calling:
 
 ```sh
 docker run -it -v "$(pwd):/app" --gpus all pythonf/ipsuite dvc repro
 docker run -it -v "$(pwd):/app" --gpus all pythonf/ipsuite python
 docker run -it -v "$(pwd):/app" --gpus all pythonf/ipsuite zntrack list
+docker run -it -v "$(pwd):/app" --gpus all --rm -p 8888:8888 pythonf/ipsuite jupyter lab --ip=0.0.0.0 --port=8888 --allow-root
+```
+
+## Fix Permission Issues
+
+Running `dvc repro` via the docker container will create files owned by
+`root:root`. If you solely use docker this will not cause any issues. If you
+switch between docker and a `dvc` version on your host system, you might
+encounter permission errors. You can resolve them, by changing the ownership of
+the files. You can do this via the host `chown "$(id -u):$(id -g)" -R .` or from
+inside the docker container:
+
+```sh
+echo $(id -u):$(id -g)
+docker run -it -v "$(pwd):/app" pythonf/ipsuite /bin/bash
+addgroup --gid $GROUP_ID user
+adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
+chown user:user -R .
 ```
 
 # References
