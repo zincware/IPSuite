@@ -4,6 +4,7 @@ import pytest
 from ipsuite.configuration_selection import PropertyFilter
 from ipsuite.configuration_selection.filter import REDUCTIONS
 
+
 @pytest.mark.parametrize(
     "reference, dim_reduction, reduction_axis",
     [
@@ -19,9 +20,11 @@ from ipsuite.configuration_selection.filter import REDUCTIONS
         "above",
         "below",
         "both",
-     ]
+    ],
 )
-def test_get_selected_atoms(atoms_list, reference, dim_reduction, reduction_axis, direction):
+def test_get_selected_atoms(
+    atoms_list, reference, dim_reduction, reduction_axis, direction
+):
     values = np.array([atoms.calc.results[reference] for atoms in atoms_list])
     if dim_reduction is not None:
         reduction_fn = REDUCTIONS[dim_reduction]
@@ -58,7 +61,7 @@ def test_get_selected_atoms(atoms_list, reference, dim_reduction, reduction_axis
 
         elif direction == "below":
             assert np.argmin(values) in selected_atoms
-            
+
         else:
             assert np.argmin(values) in selected_atoms
             assert np.argmax(values) in selected_atoms

@@ -30,8 +30,8 @@ REDUCTIONS = {
     "max": max_reduction,
 }
 
-class PropertyFilter(ConfigurationSelection):
 
+class PropertyFilter(ConfigurationSelection):
     reference = zntrack.params("energy")
     cutoffs: typing.Union[typing.List[float]] = zntrack.params()
     direction: typing.Literal["above", "below", "both"] = zntrack.params("both")
@@ -45,9 +45,8 @@ class PropertyFilter(ConfigurationSelection):
             raise ValueError("'direction' should be set to 'above', 'below', or 'both'.")
 
         return super()._post_init_()
-    
-    def select_atoms(
-            self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
+
+    def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         self.reduction_axis = tuple(self.reduction_axis)
         values = np.array([atoms.calc.results[self.reference] for atoms in atoms_lst])
 
@@ -66,11 +65,11 @@ class PropertyFilter(ConfigurationSelection):
             pre_selection = np.array([i for i, x in enumerate(values) if x < lower_limit])
             sorting_idx = np.argsort(values[pre_selection])
         else:
-            pre_selection = np.array([
-                i for i, x in enumerate(values) if x < lower_limit or x > upper_limit
-            ])
-            mean = (lower_limit+upper_limit)/2
-            dist_to_mean = abs(values[pre_selection]-mean)
+            pre_selection = np.array(
+                [i for i, x in enumerate(values) if x < lower_limit or x > upper_limit]
+            )
+            mean = (lower_limit + upper_limit) / 2
+            dist_to_mean = abs(values[pre_selection] - mean)
             sorting_idx = np.argsort(dist_to_mean)[::-1]
 
         selection = self.get_selection(pre_selection[sorting_idx])
@@ -102,13 +101,13 @@ class PropertyFilter(ConfigurationSelection):
         ax.plot(values, label=self.reference)
         ax.plot(indices, values[indices], "x", color="red")
         ax.fill_between(
-                np.arange(len(values)),
-                self.cutoffs[0],
-                self.cutoffs[1],
-                color="black",
-                alpha=0.2,
-                label=f"{self.reference} +- std",
-            )
+            np.arange(len(values)),
+            self.cutoffs[0],
+            self.cutoffs[1],
+            color="black",
+            alpha=0.2,
+            label=f"{self.reference} +- std",
+        )
         ax.set_ylabel(self.reference)
         ax.set_xlabel("configuration")
 

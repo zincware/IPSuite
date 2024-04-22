@@ -20,9 +20,11 @@ from ipsuite.configuration_selection.threshold import REDUCTIONS
         "above",
         "below",
         "both",
-     ]
+    ],
 )
-def test_get_selected_atoms(atoms_list, reference, dim_reduction, reduction_axis, direction):
+def test_get_selected_atoms(
+    atoms_list, reference, dim_reduction, reduction_axis, direction
+):
     threshold = ThresholdSelection(
         reference=reference,
         dim_reduction=dim_reduction,
@@ -40,7 +42,7 @@ def test_get_selected_atoms(atoms_list, reference, dim_reduction, reduction_axis
     else:
         selected_atoms = threshold.select_atoms(atoms_list)
         # test_selection = np.linspace(20, 0, 5, dtype=int).tolist()
-        
+
         assert len(set(selected_atoms)) == 4
         assert isinstance(selected_atoms, list)
 
@@ -57,7 +59,7 @@ def test_get_selected_atoms(atoms_list, reference, dim_reduction, reduction_axis
 
         elif direction == "below":
             assert np.argmin(values) in selected_atoms
-            
+
         else:
             assert np.argmin(values) in selected_atoms
             assert np.argmax(values) in selected_atoms

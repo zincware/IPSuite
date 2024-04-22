@@ -34,7 +34,6 @@ REDUCTIONS = {
 
 
 class ThresholdSelection(ConfigurationSelection):
-
     reference = zntrack.params("energy")
     threshold = zntrack.params(2)
     direction: typing.Literal["above", "below", "both"] = zntrack.params("both")
@@ -49,8 +48,7 @@ class ThresholdSelection(ConfigurationSelection):
 
         return super()._post_init_()
 
-    def select_atoms(
-            self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
+    def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         self.reduction_axis = tuple(self.reduction_axis)
         values = np.array([atoms.calc.results[self.reference] for atoms in atoms_lst])
 
@@ -72,11 +70,11 @@ class ThresholdSelection(ConfigurationSelection):
             pre_selection = np.array([i for i, x in enumerate(values) if x < lower_limit])
             sorting_idx = np.argsort(values[pre_selection])
         else:
-            pre_selection = np.array([
-                i for i, x in enumerate(values) if x < lower_limit or x > upper_limit
-            ])
-            limit_mean = (lower_limit+upper_limit)/2
-            dist_to_mean = abs(values[pre_selection]-limit_mean)
+            pre_selection = np.array(
+                [i for i, x in enumerate(values) if x < lower_limit or x > upper_limit]
+            )
+            limit_mean = (lower_limit + upper_limit) / 2
+            dist_to_mean = abs(values[pre_selection] - limit_mean)
             sorting_idx = np.argsort(dist_to_mean)[::-1]
 
         selection = self.get_selection(pre_selection[sorting_idx])
@@ -108,13 +106,13 @@ class ThresholdSelection(ConfigurationSelection):
         ax.plot(values, label=self.reference)
         ax.plot(indices, values[indices], "x", color="red")
         ax.fill_between(
-                np.arange(len(values)),
-                np.mean(values) + self.threshold * np.std(values),
-                np.mean(values) - self.threshold * np.std(values),
-                color="black",
-                alpha=0.2,
-                label=f"{self.reference} +- std",
-            )
+            np.arange(len(values)),
+            np.mean(values) + self.threshold * np.std(values),
+            np.mean(values) - self.threshold * np.std(values),
+            color="black",
+            alpha=0.2,
+            label=f"{self.reference} +- std",
+        )
         ax.set_ylabel(self.reference)
         ax.set_xlabel("configuration")
 
