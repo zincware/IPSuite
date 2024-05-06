@@ -241,7 +241,7 @@ def test_locality_test(proj_path, cu_box):
     project.run()
 
 
-def test_ase_md_FixedBondLengthConstraint():
+def test_ase_md_FixedBondLengthConstraint(proj_path):
     constraint = ips.calculators.FixedBondLengthConstraint(0, 1)
     thermostat = ips.calculators.LangevinThermostat(
         time_step=1,
@@ -264,10 +264,10 @@ def test_ase_md_FixedBondLengthConstraint():
             constraints=[constraint],
         )
 
-        project.run()
+    project.run()
+    
+    md.load()
 
-        md.load()
-
-        d1 = np.linalg.norm(md.atoms[0][0].position - md.atoms[0][1].position)
-        d2 = np.linalg.norm(md.atoms[-1][0].position - md.atoms[-1][1].position)
-        assert np.abs(d2 - d1) < 1e-6
+    d1 = np.linalg.norm(md.atoms[0][0].position - md.atoms[0][1].position)
+    d2 = np.linalg.norm(md.atoms[-1][0].position - md.atoms[-1][1].position)
+    assert np.abs(d2 - d1) < 1e-6
