@@ -265,7 +265,7 @@ def test_ase_md_FixedBondLengthConstraint(proj_path):
         )
 
     project.run()
-    
+
     md.load()
 
     d1 = np.linalg.norm(md.atoms[0][0].position - md.atoms[0][1].position)
