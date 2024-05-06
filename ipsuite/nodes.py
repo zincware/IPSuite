@@ -79,6 +79,7 @@ class _Nodes:
     FixedSphereConstraint = "ipsuite.calculators.FixedSphereConstraint"
     FixedLayerConstraint = "ipsuite.calculators.FixedLayerConstraint"
     FixedBondLengthConstraint = "ipsuite.calculators.FixedBondLengthConstraint"
+    HookeanConstraint = "ipsuite.calculators.HookeanConstraint"
     AnalyseDensity = "ipsuite.analysis.AnalyseDensity"
 
     # calculators

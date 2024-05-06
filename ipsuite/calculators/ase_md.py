@@ -426,11 +426,42 @@ class FixedBondLengthConstraint(base.IPSNode):
         Constraint that fixes the bond Length between atom_id_1 and atom_id_2
     """
 
-    atom_id_1 = zntrack.params(None)
-    atom_id_2 = zntrack.params(None)
+    atom_id_1 = zntrack.params()
+    atom_id_2 = zntrack.params()
 
     def get_constraint(self, atoms: ase.Atoms):
         return ase.constraints.FixBondLength(self.atom_id_1, self.atom_id_2)
+    
+
+class HookeanConstraint(base.IPSNode):
+    """Applies a Hookean (spring) force between a pair of atoms.
+
+    Attributes
+    ----------
+    atom_id_1: int
+        index of atom 1.
+    atom_id_2: int
+        index of atom 2.
+    k: float
+        Hookes law (spring) constant to apply when distance exceeds threshold_length. 
+        Units of eV A^-2.
+    rt: float
+        The threshold length below which there is no force. 
+
+
+    Returns
+    -------
+    ase.constraints.Hookean
+        Constraint that fixes the bond Length between atom_id_1 and atom_id_2
+    """
+
+    atom_id_1 = zntrack.params()
+    atom_id_2 = zntrack.params()
+    k = zntrack.params()
+    rt = zntrack.params(None)
+
+    def get_constraint(self, atoms: ase.Atoms):
+        return ase.constraints.Hookean(self.atom_id_1, self.atom_id_2, self.k, self.rt)
 
 
 class ASEMD(base.ProcessSingleAtom):

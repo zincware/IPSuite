@@ -6,6 +6,7 @@ from .ase_md import (
     FixedBondLengthConstraint,
     FixedLayerConstraint,
     FixedSphereConstraint,
+    HookeanConstraint,
     LangevinThermostat,
     NPTThermostat,
     PressureRampModifier,
@@ -44,4 +45,5 @@ __all__ = [
     "FixedLayerConstraint",
     "MixCalculator",
     "FixedBondLengthConstraint",
+    "HookeanConstraint",
 ]
