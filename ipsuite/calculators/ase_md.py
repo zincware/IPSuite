@@ -409,6 +409,7 @@ class FixedLayerConstraint(base.IPSNode):
 
         return ase.constraints.FixAtoms(indices=self.indices)
 
+
 class FixedBondLengthConstraint(base.IPSNode):
     """Fix the Bondlength between two atom
 
@@ -416,8 +417,10 @@ class FixedBondLengthConstraint(base.IPSNode):
     ----------
 
     """
+
     def get_constraint(self):
         pass
+
 
 class ASEMD(base.ProcessSingleAtom):
     """Class to run a MD simulation with ASE.
