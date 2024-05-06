@@ -453,7 +453,8 @@ class HookeanConstraint(base.IPSNode):
     Returns
     -------
     list[ase.constraints.Hookean]
-        List of constraints that fixes the bond Length between the molecules in the atom_id tuples.
+        List of constraints that fixes the bond Length between the 
+        molecules in the atom_id tuples.
     """
 
     atom_id = zntrack.params()
