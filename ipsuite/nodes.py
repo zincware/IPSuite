@@ -78,6 +78,7 @@ class _Nodes:
     TemperatureCheck = "ipsuite.analysis.TemperatureCheck"
     FixedSphereConstraint = "ipsuite.calculators.FixedSphereConstraint"
     FixedLayerConstraint = "ipsuite.calculators.FixedLayerConstraint"
+    FixedBondLengthConstraint = "ipsuite.calculators.FixedBondLengthConstraint"
     AnalyseDensity = "ipsuite.analysis.AnalyseDensity"
 
     # calculators
