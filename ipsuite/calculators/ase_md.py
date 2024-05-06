@@ -431,7 +431,7 @@ class FixedBondLengthConstraint(base.IPSNode):
 
     def get_constraint(self, atoms: ase.Atoms):
         return ase.constraints.FixBondLength(self.atom_id_1, self.atom_id_2)
-    
+
 
 class HookeanConstraint(base.IPSNode):
     """Applies a Hookean (spring) force between a pair of atoms.
@@ -443,10 +443,10 @@ class HookeanConstraint(base.IPSNode):
     atom_id_2: int
         index of atom 2.
     k: float
-        Hookes law (spring) constant to apply when distance exceeds threshold_length. 
+        Hookes law (spring) constant to apply when distance exceeds threshold_length.
         Units of eV A^-2.
     rt: float
-        The threshold length below which there is no force. 
+        The threshold length below which there is no force.
 
 
     Returns
