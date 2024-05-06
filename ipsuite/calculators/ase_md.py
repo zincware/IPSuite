@@ -466,17 +466,17 @@ class HookeanConstraint(base.IPSNode):
         return pairs
 
     def get_constraint(self, atoms: ase.Atoms):
-        contraints = []
+        constraints = []
         for molecule in self.atom_id:
             pairs = self.get_pairs(molecule)
             for pair in pairs:
-                contraints.append(
+                constraints.append(
                     ase.constraints.Hookean(
                         int(molecule[pair[0]]), int(molecule[pair[1]]), self.k, self.rt
                     )
                 )
 
-        return contraints
+        return constraints
 
 
 class ASEMD(base.ProcessSingleAtom):
