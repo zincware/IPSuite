@@ -419,19 +419,18 @@ class FixedBondLengthConstraint(base.IPSNode):
         index of atom 1
     atom_id_2: int
         index of atom 2
-        
+
     Returns
     -------
     ase.constraints.FixBondLengths
         Constraint that fixes the bond Length between atom_id_1 and atom_id_2
     """
+
     atom_id_1 = zntrack.params(None)
     atom_id_2 = zntrack.params(None)
 
     def get_constraint(self, atoms: ase.Atoms):
         return ase.constraints.FixBondLength(self.atom_id_1, self.atom_id_2)
-
-
 
 
 class ASEMD(base.ProcessSingleAtom):
