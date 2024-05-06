@@ -3,9 +3,9 @@ from .ase_geoopt import ASEGeoOpt
 from .ase_md import (
     ASEMD,
     BoxOscillatingRampModifier,
+    FixedBondLengthConstraint,
     FixedLayerConstraint,
     FixedSphereConstraint,
-    FixedBondLengthConstraint,
     LangevinThermostat,
     NPTThermostat,
     PressureRampModifier,
