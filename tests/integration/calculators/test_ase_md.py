@@ -239,3 +239,35 @@ def test_locality_test(proj_path, cu_box):
         )
 
     project.run()
+
+def test_ase_md_FixedBondLengthConstraint():
+    constraint = ips.calculators.FixedBondLengthConstraint(0, 1)
+    thermostat = ips.calculators.LangevinThermostat(
+        time_step=1,
+        temperature=100,
+        friction=1,
+    )
+    model = ips.calculators.EMTSinglePoint(data=None)
+    with ips.Project() as project:
+        hydroxide = ips.configuration_generation.SmilesToAtoms(
+            smiles="[OH-]", name="Hydroxide"
+        )
+
+        md = ips.calculators.ASEMD(
+            data=hydroxide.atoms,
+            model=model,
+            steps=5,
+            thermostat=thermostat,
+            sampling_rate=1,
+            dump_rate=33,
+            constraints=[constraint],
+        )
+
+        project.run()
+
+        md.load()
+        
+        d1 = np.linalg.norm(md.atoms[0][0].position- md.atoms[0][1].position)
+        d2 = np.linalg.norm(md.atoms[-1][0].position- md.atoms[-1][1].position)
+        assert np.abs(d2-d1) < 1e-6
+
