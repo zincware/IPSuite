@@ -440,14 +440,14 @@ class HookeanConstraint(base.IPSNode):
     ----------
     atom_id: list[tuple]
         list of atom indices that need to be contraind.
-        example: Fix all Atoms in H20: [(0, 1, 2)] 
+        example: Fix all Atoms in H20: [(0, 1, 2)]
     k: float
         Hookes law (spring) constant to apply when distance exceeds threshold_length.
         Units of eV A^-2.
-        # TODO: Allow different k for each pair 
+        # TODO: Allow different k for each pair
     rt: float
         The threshold length below which there is no force.
-        # TODO: Allow different rt for each pair 
+        # TODO: Allow different rt for each pair
 
 
     Returns
@@ -455,6 +455,7 @@ class HookeanConstraint(base.IPSNode):
     list[ase.constraints.Hookean]
         List of constraints that fixes the bond Length between the molecules in the atom_id tuples.
     """
+
     atom_id = zntrack.params()
     k = zntrack.params()
     rt = zntrack.params(None)
@@ -463,7 +464,7 @@ class HookeanConstraint(base.IPSNode):
         atoms = len(molecule)
         pairs = [(i, j) for i in range(0, atoms) for j in range(i + 1, atoms)]
         return pairs
-        
+
     def get_constraint(self, atoms: ase.Atoms):
         contraints = []
         for molecule in self.atom_id:
@@ -474,7 +475,7 @@ class HookeanConstraint(base.IPSNode):
                         int(molecule[pair[0]]), int(molecule[pair[1]]), self.k, self.rt
                     )
                 )
-        
+
         return contraints
 
 
