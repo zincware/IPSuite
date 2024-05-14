@@ -287,7 +287,7 @@ class VelocityVerletDynamic(base.IPSNode):
     """
 
     time_step: int = zntrack.params()
-    
+
     def get_thermostat(self, atoms):
         dyn = VelocityVerlet(
             atoms=atoms,
