@@ -284,16 +284,10 @@ class VelocityVerletDynamic(base.IPSNode):
     ----------
     time_step: float
         time step of simulation
-
-    append_trajectory: bool
-        Defaults to True, which causes the trajectory file to be
-        overwriten each time the dynamics is restarted from scratch.
-        If True, the new structures are appended to the trajectory file instead.
-
     """
 
     time_step: int = zntrack.params()
-    append_trajectory: bool = zntrack.params(True)
+    append_trajectory: bool = zntrack.params(False)
     
     def get_thermostat(self, atoms):
         dyn = VelocityVerlet(
