@@ -13,6 +13,7 @@ import znh5md
 import zntrack
 from ase import units
 from ase.md.langevin import Langevin
+from ase.md.verlet import VelocityVerlet
 from ase.md.npt import NPT
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from tqdm import trange
@@ -274,6 +275,32 @@ class LangevinThermostat(base.IPSNode):
             friction=self.friction,
         )
         return thermostat
+    
+    
+class VelocityVerletDynamic(base.IPSNode):
+    """Initialize the Velocity Verlet dynamics
+
+    Attributes
+    ----------
+    time_step: float
+        time step of simulation
+
+    append_trajectory: bool
+        Defaults to True, which causes the trajectory file to be
+        overwriten each time the dynamics is restarted from scratch.
+        If True, the new structures are appended to the trajectory file instead.
+
+    """
+
+    time_step: int = zntrack.params()
+    append_trajectory: bool = zntrack.params(True)
+    
+    def get_thermostat(self, atoms):
+        dyn = VelocityVerlet(
+            atoms=atoms,
+            timestep=self.time_step * units.fs,
+        )
+        return dyn
 
 
 class NPTThermostat(base.IPSNode):
