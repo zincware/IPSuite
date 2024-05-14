@@ -6,12 +6,12 @@ from .ase_md import (
     FixedLayerConstraint,
     FixedSphereConstraint,
     LangevinThermostat,
-    VelocityVerletDynamic,
     NPTThermostat,
     PressureRampModifier,
     RescaleBoxModifier,
     TemperatureOscillatingRampModifier,
     TemperatureRampModifier,
+    VelocityVerletDynamic,
 )
 from .ase_standard import EMTSinglePoint, LJSinglePoint
 from .cp2k import CP2KSinglePoint, CP2KYaml
