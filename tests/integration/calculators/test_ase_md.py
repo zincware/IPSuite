@@ -2,13 +2,18 @@ import ase.io
 import numpy as np
 import numpy.testing as npt
 from ase import units
+import zntrack as zn
 
 import ipsuite as ips
 from ipsuite.utils.ase_sim import get_density_from_atoms
 
 
 def test_ase_md(proj_path, cu_box):
-    ase.io.write("cu_box.xyz", cu_box)
+    atoms = []
+    for _ in range(5):
+        atoms.extend(cu_box)
+        
+    ase.io.write("cu_box.xyz", atoms)
     checker = ips.analysis.TemperatureCheck()
     thermostat = ips.calculators.LangevinThermostat(
         time_step=1,
@@ -30,7 +35,18 @@ def test_ase_md(proj_path, cu_box):
             sampling_rate=1,
             dump_rate=33,
         )
-
+        mapped_md = zn.apply(ips.calculators.ASEMD, method="map")(
+            data=data.atoms,
+            data_ids=[0, 1, 2],
+            model=model,
+            checks=[checker],
+            modifiers=[rescale_box, temperature_ramp],
+            thermostat=thermostat,
+            steps=30,
+            sampling_rate=1,
+            dump_rate=33,
+        )
+        
     project.run()
 
     md.load()
@@ -41,6 +57,10 @@ def test_ase_md(proj_path, cu_box):
     assert md.atoms[1].cell[0, 0] < 10
     assert md.atoms[-1].cell[0, 0] == 10
 
+    mapped_md.load()
+    
+    assert len(mapped_md.atoms) == 30*3
+    assert len(mapped_md.structures) == 3
 
 def test_ase_md_target_density(proj_path, cu_box):
     ase.io.write("cu_box.xyz", cu_box)
