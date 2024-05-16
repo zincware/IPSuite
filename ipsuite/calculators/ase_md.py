@@ -665,7 +665,7 @@ class ASEMD(base.IPSNode):
         self.db.initialize_database_groups()
         
         atoms = self.get_atoms()
-        metrics_dict = self.run_md(atoms=atoms)
+        metrics_dict, _ = self.run_md(atoms=atoms)
         
         self.metrics_dict = pd.DataFrame(metrics_dict)
         
