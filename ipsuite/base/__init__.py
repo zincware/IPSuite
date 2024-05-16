@@ -10,6 +10,7 @@ from ipsuite.base.base import (
     Modifier,
     ProcessAtoms,
     ProcessSingleAtom,
+    Flatten,
 )
 
 __all__ = [
@@ -22,4 +23,5 @@ __all__ = [
     "Modifier",
     "Check",
     "IPSNode",
+    "Flatten",
 ]
