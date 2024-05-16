@@ -235,8 +235,8 @@ class Modifier(IPSNode):
 
 
 class Flatten(ProcessAtoms):
-    """Flattens list[list[ase.Atoms]] to list[ase.Atoms]
-    """
+    """Flattens list[list[ase.Atoms]] to list[ase.Atoms]"""
+
     def run(self):
         atoms = sum(self.data, [])
         self.atoms = atoms
