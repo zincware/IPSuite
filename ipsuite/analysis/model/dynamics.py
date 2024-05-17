@@ -362,7 +362,7 @@ class MDStability(base.ProcessAtoms):
     model = zntrack.deps()
     model_outs = zntrack.outs_path(zntrack.nwd / "model_outs")
     max_steps: int = zntrack.params()
-    checks: list[zntrack.Node] = zntrack.deps()
+    checks: list[zntrack.Node] = zntrack.deps(None)
     time_step: float = zntrack.params(0.5)
     initial_temperature: float = zntrack.params(300)
     save_last_n: int = zntrack.params(1)

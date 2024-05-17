@@ -73,7 +73,7 @@ class ConnectivityCheck(base.Check):
     def initialize(self, atoms):
         from ase.neighborlist import natural_cutoffs
 
-        cutoffs = natural_cutoffs(atoms, mult=1.5)
+        cutoffs = natural_cutoffs(atoms, mult=1.2)
         nl = build_neighbor_list(
             atoms, cutoffs=cutoffs, skin=0.0, self_interaction=False, bothways=False
         )
