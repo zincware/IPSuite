@@ -15,6 +15,7 @@ from ase import units
 from ase.md.langevin import Langevin
 from ase.md.npt import NPT
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
+from ase.md.verlet import VelocityVerlet
 from tqdm import trange
 
 from ipsuite import base
@@ -276,6 +277,25 @@ class LangevinThermostat(base.IPSNode):
         return thermostat
 
 
+class VelocityVerletDynamic(base.IPSNode):
+    """Initialize the Velocity Verlet dynamics
+
+    Attributes
+    ----------
+    time_step: float
+        time step of simulation
+    """
+
+    time_step: int = zntrack.params()
+
+    def get_thermostat(self, atoms):
+        dyn = VelocityVerlet(
+            atoms=atoms,
+            timestep=self.time_step * units.fs,
+        )
+        return dyn
+
+
 class NPTThermostat(base.IPSNode):
     """Initialize the ASE NPT barostat
     (Nose Hoover temperature coupling + Parrinello Rahman pressure coupling).
@@ -472,7 +492,7 @@ class ASEMD(base.ProcessSingleAtom):
 
     steps_before_stopping = zntrack.metrics()
 
-    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "trajectory.h5")
+    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
 
     def get_atoms(self) -> ase.Atoms:
         atoms: ase.Atoms = self.get_data()

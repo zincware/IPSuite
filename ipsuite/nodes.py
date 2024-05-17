@@ -97,6 +97,7 @@ class _Nodes:
     MixCalculator = "ipsuite.calculators.MixCalculator"
 
     LangevinThermostat = "ipsuite.calculators.LangevinThermostat"
+    VelocityVerletDynamic = "ipsuite.calculators.VelocityVerletDynamic"
     NPTThermostat = "ipsuite.calculators.NPTThermostat"
     RescaleBoxModifier = "ipsuite.calculators.RescaleBoxModifier"
     BoxOscillatingRampModifier = "ipsuite.calculators.BoxOscillatingRampModifier"

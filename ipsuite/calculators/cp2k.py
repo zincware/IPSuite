@@ -190,7 +190,7 @@ class CP2KSinglePoint(base.ProcessAtoms):
 
     wfn_restart_file: str = zntrack.deps_path(None)
     wfn_restart_node = zntrack.deps(None)
-    output_file = zntrack.outs_path(zntrack.nwd / "atoms.h5")
+    output_file = zntrack.outs_path(zntrack.nwd / "structures.h5")
     cp2k_directory = zntrack.outs_path(zntrack.nwd / "cp2k")
 
     def run(self):
