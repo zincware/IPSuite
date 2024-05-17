@@ -37,67 +37,6 @@ class NaNCheck(base.Check):
             return False
 
 
-class NaNCheck(base.Check):
-    """Check Node to see whether positions, energies or forces become NaN
-    during a simulation.
-    """
-
-    def initialize(self, atoms: ase.Atoms) -> None:
-        self.is_initialized = True
-
-    def check(self, atoms: ase.Atoms) -> bool:
-        positions = atoms.positions
-        epot = atoms.get_potential_energy()
-        forces = atoms.get_forces()
-
-        positions_is_none = np.any(positions is None)
-        epot_is_none = epot is None
-        forces_is_none = np.any(forces is None)
-
-        if any([positions_is_none, epot_is_none, forces_is_none]):
-            self.status = (
-                "NaN check failed: last iterationpositions energy or forces = NaN"
-            )
-            return True
-        else:
-            self.status = "No NaN occurred"
-            return False
-
-
-class NaNCheck(base.CheckBase):
-    """Check Node to see whether positions, energies or forces become NaN
-    during a simulation.
-    """
-
-    def check(self, atoms: ase.Atoms) -> bool:
-        positions = atoms.positions
-        epot = atoms.get_potential_energy()
-        forces = atoms.get_forces()
-
-        positions_is_none = np.any(positions is None)
-        epot_is_none = epot is None
-        forces_is_none = np.any(forces is None)
-
-        return any([positions_is_none, epot_is_none, forces_is_none])
-
-
-def setdiff2d(arr1, arr2):
-    idx = (arr1[:, None] != arr2).any(-1).all(1)
-    return arr1[idx]
-
-
-def check_distances(a, idx_i, idx_j, d_min=None, d_max=None):
-    p1 = a.positions[idx_i]
-    p2 = a.positions[idx_j]
-    _, dists = conditional_find_mic(p1 - p2, a.cell, a.pbc)
-    unstable = False
-    if d_min:
-        unstable = unstable or np.min(dists) < d_min
-    if d_max:
-        unstable = unstable or np.max(dists) > d_max
-    return unstable
-
-
 def setdiff2d(arr1, arr2):
     idx = (arr1[:, None] != arr2).any(-1).all(1)
     return arr1[idx]
