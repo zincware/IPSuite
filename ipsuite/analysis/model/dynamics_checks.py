@@ -122,17 +122,17 @@ class ConnectivityCheck(base.Check):
 
     """
 
-    bonded_min_dist: float = zntrack.zn.params(0.6)
-    bonded_max_dist: float = zntrack.zn.params(2.0)
-    nonbonded_H_min_dist: float = zntrack.zn.params(1.1)
-    nonbonded_other_min_dist: float = zntrack.zn.params(1.6)
+    bonded_min_dist: float = zntrack.params(0.6)
+    bonded_max_dist: float = zntrack.params(2.0)
+    nonbonded_H_min_dist: float = zntrack.params(1.1)
+    nonbonded_other_min_dist: float = zntrack.params(1.6)
 
     def _post_init_(self) -> None:
         self.nl = None
         self.first_cm = None
 
     def initialize(self, atoms):
-        from ase.neighborlist import NeighborList, natural_cutoffs
+        from ase.neighborlist import natural_cutoffs
 
         cutoffs = natural_cutoffs(atoms, mult=1.5)
         nl = build_neighbor_list(
@@ -189,7 +189,15 @@ class ConnectivityCheck(base.Check):
                 )
                 unstable = unstable or not_both_H_check
 
-        return unstable
+        if unstable:
+            self.status = (
+                "Connectivity check failed: last iteration"
+                "covalent connectivity of the system changed"
+            )
+            return True
+        else:
+            self.status = "covalent connectivity of the system is intact"
+            return False
 
 
 class EnergySpikeCheck(base.Check):
