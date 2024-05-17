@@ -1,4 +1,5 @@
 import pathlib
+from typing import List, Optional
 
 import ase
 import numpy as np
@@ -9,7 +10,7 @@ from scipy import stats
 
 from ipsuite import base, models, utils
 from ipsuite.analysis.model.math import decompose_stress_tensor, force_decomposition
-from ipsuite.analysis.model.plots import get_cdf_figure, get_figure, get_hist
+from ipsuite.analysis.model.plots import get_cdf_figure, get_figure, get_hist, get_calibration_figure, get_gaussianicity_figure
 from ipsuite.geometry import BarycenterMapping
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
@@ -214,6 +215,8 @@ class PredictionMetrics(base.ComparePredictions):
 class CalibrationMetrics(base.ComparePredictions):
     """Analyse the calibration of a models uncertainty estimate."""
 
+    force_dist_slices: List[tuple] = zntrack.params([])
+
     data_file = zntrack.outs_path(zntrack.nwd / "data.npz")
     energy: dict = zntrack.metrics()
     forces: dict = zntrack.metrics()
@@ -238,26 +241,30 @@ class CalibrationMetrics(base.ComparePredictions):
 
         energy_true = [a.get_potential_energy() / len(a) for a in self.x]
         energy_true = np.array(energy_true) * 1000
+        self.content["energy_true"] = energy_true
         energy_pred = [a.get_potential_energy() / len(a) for a in self.y]
         energy_pred = np.array(energy_pred) * 1000
         self.content["energy_err"] = np.abs(energy_true - energy_pred)
 
         energy_uncertainty = [
-            a.calc.results["energy_uncertainty"] / len(a) for a in self.y
+            np.sqrt(a.calc.results["energy_uncertainty"]) / len(a) for a in self.y
         ]
         energy_uncertainty = np.array(energy_uncertainty) * 1000
         self.content["energy_unc"] = energy_uncertainty
 
         if "forces" in true_keys and "forces_uncertainty" in pred_keys:
             true_forces = [a.get_forces() for a in self.x]
-            true_forces = np.concatenate(true_forces, axis=0) * 1000
+            true_forces = np.array(true_forces) * 1000
             pred_forces = [a.get_forces() for a in self.y]
-            pred_forces = np.concatenate(pred_forces, axis=0) * 1000
+            pred_forces = np.array(pred_forces) * 1000
             forces_uncertainty = [x.calc.results["forces_uncertainty"] for x in self.y]
-            forces_uncertainty = np.concatenate(forces_uncertainty, axis=0) * 1000
+            forces_uncertainty = np.array(forces_uncertainty)
+            forces_ensemble = [x.calc.results["forces_ensemble"] for x in self.y]
 
+            self.content["forces_true"] = true_forces
             self.content["forces_err"] = np.abs(true_forces - pred_forces)
-            self.content["forces_unc"] = forces_uncertainty
+            self.content["forces_unc"] = np.sqrt(forces_uncertainty) * 1000
+            self.content["forces_ensemble"] = np.array(forces_ensemble) * 1000
 
     def get_metrics(self):
         """Update the metrics."""
@@ -277,12 +284,9 @@ class CalibrationMetrics(base.ComparePredictions):
         """Create figures for all available data."""
         self.plots_dir.mkdir(exist_ok=True)
 
-        energy_plot = get_figure(
-            self.content["energy_unc"],
+        energy_plot = get_calibration_figure(
             self.content["energy_err"],
-            datalabel=rf"Pearson: {self.energy['pearsonr']:.4f}",
-            xlabel=r"energy uncertainty $\sigma$ / meV/atom",
-            ylabel=r"energy error $\Delta E$ / meV/atom",
+            self.content["energy_unc"],
         )
         energy_cdf_plot = get_cdf_figure(
             self.content["energy_err"],
@@ -297,20 +301,33 @@ class CalibrationMetrics(base.ComparePredictions):
             ylabel = r"force components error per atom $\Delta F$ / meV$ \cdot \AA^{-1}$"
             f_err = np.reshape(self.content["forces_err"], (-1,))
             f_unc = np.reshape(self.content["forces_unc"], (-1,))
-            forces_plot = get_figure(
-                f_unc,
-                f_err,
+
+            forces_plot = get_calibration_figure(
+                self.content["forces_err"],
+                self.content["forces_unc"],
                 datalabel=rf"Pearson: {self.forces['pearsonr']:.4f}",
-                xlabel=xlabel,
-                ylabel=ylabel,
             )
             forces_cdf_plot = get_cdf_figure(
-                f_err,
                 f_unc,
+                f_err,
             )
+
+            gaussianicy_figures = []
+            for (start, end) in self.force_dist_slices:
+                fig = get_gaussianicity_figure(
+                    self.content["forces_true"],
+                    self.content["forces_ensemble"],
+                    start,
+                    end,
+                )
+                gaussianicy_figures.append(fig)
             if save:
                 forces_plot.savefig(self.plots_dir / "forces.png")
                 forces_cdf_plot.savefig(self.plots_dir / "forces_cdf.png")
+                
+                for ii, fig in enumerate(gaussianicy_figures):
+                    fig.savefig(self.plots_dir / f"forces_gaussianicity_{ii}.png")
+
 
     def run(self):
         self.nwd.mkdir(exist_ok=True, parents=True)
