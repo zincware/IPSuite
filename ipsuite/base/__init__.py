@@ -5,12 +5,12 @@ from ipsuite.base.base import (
     AnalyseAtoms,
     Check,
     ComparePredictions,
+    Flatten,
     IPSNode,
     Mapping,
     Modifier,
     ProcessAtoms,
     ProcessSingleAtom,
-    Flatten,
 )
 
 __all__ = [

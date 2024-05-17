@@ -109,7 +109,8 @@ class _Nodes:
 
     # Data manipulation
     Flatten = "ipsuite.base.Flatten"
-    
+
+
 def __getattr__(name):
     """Overwrite the default __getattr__ to import the nodes lazily."""
     import importlib

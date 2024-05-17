@@ -1,10 +1,8 @@
+import collections.abc
 import functools
 import logging
 import pathlib
 import typing
-from ipsuite import fields
-import znflow
-import collections.abc
 
 import ase
 import ase.constraints
@@ -12,6 +10,7 @@ import ase.geometry
 import h5py
 import numpy as np
 import pandas as pd
+import znflow
 import znh5md
 import zntrack
 from ase import units
@@ -20,7 +19,7 @@ from ase.md.npt import NPT
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from tqdm import trange
 
-from ipsuite import base
+from ipsuite import base, fields
 from ipsuite.utils.ase_sim import freeze_copy_atoms, get_box_from_density, get_energy
 
 log = logging.getLogger(__name__)
@@ -419,7 +418,7 @@ class ASEMD(base.IPSNode):
     Attributes
     ----------
     model: zntrack.Node
-        A node that implements a 'get_calculation' method   
+        A node that implements a 'get_calculation' method
     data: ase.Atoms | list[ase.Atoms]
         The atoms data to process. This must be an input to the Node.
         It can either a single atoms object or a list of atoms objects
@@ -463,13 +462,13 @@ class ASEMD(base.IPSNode):
     """
 
     model = zntrack.deps()
-    
+
     data: list[ase.Atoms] = zntrack.deps()
     data_file: str = zntrack.deps(None)
-    
+
     data_id: typing.Optional[int] = zntrack.params(-1)
     data_ids: typing.Optional[int] = zntrack.params(None)
-    
+
     model_outs = zntrack.outs_path(zntrack.nwd / "model/")
     checks: list = zntrack.deps(None)
     constraints: list = zntrack.deps(None)
@@ -513,10 +512,10 @@ class ASEMD(base.IPSNode):
             except FileNotFoundError:
                 # File can not be opened with DVCFileSystem, try normal open
                 atoms = list(ase.io.iread(self.data_file))
-                
+
         else:
             raise ValueError("No data given.")
-        
+
         if method is "run":
             return atoms[self.data_id]
         else:
@@ -534,22 +533,25 @@ class ASEMD(base.IPSNode):
                 znh5md.FormatHandler, file_handle=file_handle
             ),
         ).get_atoms_list()
-        
-    
+
     def run_md(self, atoms):
         atoms.repeat(self.repeat)
         atoms.calc = self.model.get_calculator(directory=self.model_outs)
-        
+
         if not self.use_momenta:
             init_temperature = self.thermostat.temperature
             MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
-            
+
         # initialize thermostat
         time_step = self.thermostat.time_step
         thermostat = self.thermostat.get_thermostat(atoms=atoms)
 
         # initialize Atoms calculator and metrics_dict
-        metrics_dict = {"energy": [], "temperature": [], "step": [],}
+        metrics_dict = {
+            "energy": [],
+            "temperature": [],
+            "step": [],
+        }
         for checker in self.checks:
             checker.initialize(atoms)
             if checker.get_quantity() is not None:
@@ -566,7 +568,7 @@ class ASEMD(base.IPSNode):
             )
         sampling_iterations = int(sampling_iterations)
         total_fs = self.steps * time_step
-        
+
         for constraint in self.constraints:
             atoms.set_constraint(constraint.get_constraint(atoms))
 
@@ -594,7 +596,7 @@ class ASEMD(base.IPSNode):
                         atoms.wrap()
 
                     thermostat.run(1)
-                    
+
                     for checker in self.checks:
                         stop.append(checker.check(atoms))
                         if stop[-1]:
@@ -631,7 +633,7 @@ class ASEMD(base.IPSNode):
                     pbar.set_description(desc)
                     pbar.update(self.sampling_rate)
                     current_step += 1
-                    
+
         if not self.pop_last and self.steps_before_stopping != -1:
             metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks)
             atoms_cache.append(freeze_copy_atoms(atoms))
@@ -644,59 +646,59 @@ class ASEMD(base.IPSNode):
                 step=1,
                 time=self.sampling_rate,
             )
-        )      
+        )
         return metrics_dict, current_step
-         
+
     def run(self):  # noqa: C901
         """Run the simulation."""
         np.random.seed(self.seed)
-        
+
         if self.checks is None:
             self.checks = []
         if self.modifiers is None:
             self.modifiers = []
         if self.constraints is None:
             self.constraints = []
-        
+
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
-        
+
         self.db = znh5md.io.DataWriter(self.traj_file)
         self.db.initialize_database_groups()
-        
+
         atoms = self.get_atoms()
         metrics_dict, _ = self.run_md(atoms=atoms)
-        
+
         self.metrics_dict = pd.DataFrame(metrics_dict)
-        
+
     def map(self):
         np.random.seed(self.seed)
-        
+
         if self.checks is None:
             self.checks = []
         if self.modifiers is None:
             self.modifiers = []
         if self.constraints is None:
             self.constraints = []
-        
+
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
-        
+
         self.db = znh5md.io.DataWriter(self.traj_file)
         self.db.initialize_database_groups()
-        
+
         structures = self.get_atoms(method="map")
-        
+
         metrics_list = []
         if self.data_ids is not None:
             structures = [self.get_atoms(method="map")[idx] for idx in self.data_ids]
-        
-        self.structures = [] 
+
+        self.structures = []
         for atoms in structures:
             metrics, current_step = self.run_md(atoms=atoms)
             metrics_list.append(metrics)
             self.structures.append(self.atoms[-current_step:])
-                    
+
         # Flatten metrics dictionary
         flattened_metrics = {}
         for key in metrics_list[0].keys():
@@ -707,8 +709,8 @@ class ASEMD(base.IPSNode):
                 flattened_metrics[key].extend(value)
 
         self.metrics_dict = pd.DataFrame(flattened_metrics)
-        
-        
+
+
 def get_desc(temperature: float, total_energy: float, time: float, total_time: float):
     """TQDM description."""
     return (
