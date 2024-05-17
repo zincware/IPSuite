@@ -170,8 +170,8 @@ def get_gaussianicity_figure(true, pred_ens, slice_start, slice_end):
     ax.set_ylim(1e-6,1e-2)
     ax.set_yscale("log")
 
-    ax.set_xlabel(r"$\Delta (S)$")
-    ax.set_xlabel(r"$p(\Delta | S)$")
+    ax.set_xlabel(r"$\Delta (S)$ / meV/Ang")
+    ax.set_ylabel(r"$p(\Delta | S)$")
     return fig
 
 
