@@ -5,13 +5,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import zntrack
 
-from ipsuite import base, utils
+from ipsuite import base
 
 
-def plot_with_uncertainty(value, ylabel: str, xlabel: str, **kwargs) -> dict:
+def plot_with_uncertainty(value, ylabel: str, xlabel: str, x=None, **kwargs) -> dict:
     """Parameters
     ----------
     value: data of shape (n, m) where n is the number of ensembles.
+    x: optional x values of shape (m,)
 
     Returns
     -------
@@ -28,17 +29,19 @@ def plot_with_uncertainty(value, ylabel: str, xlabel: str, **kwargs) -> dict:
         }
 
     fig, ax = plt.subplots(**kwargs)
+    if x is None:
+        x = np.arange(len(data["mean"]))
     ax.fill_between(
-        np.arange(len(data["mean"])),
+        x,
         data["mean"] + data["std"],
         data["mean"] - data["std"],
         facecolor="lightblue",
     )
     if "max" in data:
-        ax.plot(data["max"], linestyle="--", color="darkcyan")
+        ax.plot(x, data["max"], linestyle="--", color="darkcyan")
     if "min" in data:
-        ax.plot(data["min"], linestyle="--", color="darkcyan")
-    ax.plot(data["mean"], color="black")
+        ax.plot(x, data["min"], linestyle="--", color="darkcyan")
+    ax.plot(x, data["mean"], color="black")
     ax.set_ylabel(ylabel)
     ax.set_xlabel(xlabel)
 
@@ -52,19 +55,16 @@ class ModelEnsembleAnalysis(base.AnalyseAtoms):
         data: list of ASE Atoms objects to evaluate against.
     """
 
-    models: list = zntrack.zn.deps()
+    models: list = zntrack.deps()
 
-    normal_plot_path = zntrack.dvc.outs(zntrack.nwd / "normal_plot.png")
-    sorted_plot_path = zntrack.dvc.outs(zntrack.nwd / "sorted_plot.png")
-    histogram = zntrack.dvc.outs(zntrack.nwd / "histogram.png")
+    normal_plot_path = zntrack.outs_path(zntrack.nwd / "normal_plot.png")
+    sorted_plot_path = zntrack.outs_path(zntrack.nwd / "sorted_plot.png")
+    histogram = zntrack.outs_path(zntrack.nwd / "histogram.png")
 
-    prediction_list = zntrack.zn.outs()
-    predictions: typing.List[ase.Atoms] = zntrack.zn.outs()
+    prediction_list = zntrack.outs()
+    predictions: typing.List[ase.Atoms] = zntrack.outs()
 
-    bins: int = zntrack.zn.params(100)
-
-    def _post_init_(self):
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
+    bins: int = zntrack.params(100)
 
     def run(self):
         # TODO axis labels
@@ -92,7 +92,10 @@ class ModelEnsembleAnalysis(base.AnalyseAtoms):
 
     def get_plots(self):
         energy = np.stack(
-            [np.stack(x.get_potential_energy() for x in p) for p in self.prediction_list]
+            [
+                np.stack([x.get_potential_energy() for x in p])
+                for p in self.prediction_list
+            ]
         )
 
         figures = []

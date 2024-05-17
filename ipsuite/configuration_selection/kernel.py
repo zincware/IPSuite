@@ -1,6 +1,8 @@
 """Use a Kernel and some initial configuration to select further configurations."""
+
 from __future__ import annotations
 
+import logging
 import typing
 
 import ase
@@ -8,11 +10,13 @@ import numpy as np
 import tqdm
 import zntrack
 
-from ipsuite import utils
 from ipsuite.configuration_selection.base import ConfigurationSelection
 
 if typing.TYPE_CHECKING:
     import ipsuite
+
+
+log = logging.getLogger(__name__)
 
 
 class KernelSelection(ConfigurationSelection):
@@ -22,7 +26,7 @@ class KernelSelection(ConfigurationSelection):
     ----------
     n_configurations: int
         number of configurations to select
-    kernel: ConfigurationComparison = zn.Nodes()
+    kernel: ConfigurationComparison = zntrack.Nodes()
     points_per_cycle: int
         Number of configurations to add before recomputing the MMK
     correlation_time: int
@@ -32,27 +36,23 @@ class KernelSelection(ConfigurationSelection):
         configuration is larger giving potentially better results.
     seed: int
         seed selection in case of random picking initial configuration
+    threshold: float
+        threshold to stop the selection. The maximum number of configurations
+        is still n_configurations. If the threshold is reached before, the
+        selection stops. Typical values can be 0.995
     """
 
-    n_configurations: int = zntrack.zn.params()
-    kernel: "ipsuite.configuration_comparison.ConfigurationComparison" = (
-        zntrack.zn.nodes()
-    )
-    initial_configurations: typing.List[ase.Atoms] = zntrack.zn.deps()
-    points_per_cycle: int = zntrack.zn.params(1)
-    kernel_results: typing.List[typing.List[float]] = zntrack.zn.outs()
-    seed = zntrack.zn.params(1234)
+    n_configurations: int = zntrack.params()
+    kernel: "ipsuite.configuration_comparison.ConfigurationComparison" = zntrack.deps()
+    initial_configurations: typing.List[ase.Atoms] = zntrack.deps(None)
+    points_per_cycle: int = zntrack.params(1)
+    kernel_results: typing.List[typing.List[float]] = zntrack.outs()
+    seed = zntrack.params(1234)
+    threshold: float = zntrack.params(None)
 
     # TODO what if the correlation time restricts the number of atoms to
     #  be less than n_configurations?
-    correlation_time: int = zntrack.zn.params(1)
-
-    def _post_init_(self):
-        """Run after the init of the node."""
-        super()._post_init_()
-        self.initial_configurations = utils.helpers.get_deps_if_node(
-            self.initial_configurations, "atoms"
-        )
+    correlation_time: int = zntrack.params(1)
 
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         """Atom Selection method.
@@ -69,7 +69,10 @@ class KernelSelection(ConfigurationSelection):
         """
         if self.initial_configurations is None:
             np.random.seed(self.seed)
-            self.initial_configurations = [atoms_lst[np.random.randint(len(atoms_lst))]]
+            initial_configurations = [atoms_lst[np.random.randint(len(atoms_lst))]]
+            self.n_configurations -= 1
+        else:
+            initial_configurations = self.initial_configurations
         selected_atoms = []
         # we don't change the analyte, so we don't want to recompute the
         # SOAP vector every time.
@@ -79,33 +82,57 @@ class KernelSelection(ConfigurationSelection):
         self.kernel.disable_tqdm = True
 
         self.kernel_results = []
+        hist_results = []
+
         # TODO do not use the atoms in atoms_list but store the ids directly
-        for _ in tqdm.trange(self.n_configurations):
-            self.kernel.reference = self.initial_configurations + selected_atoms
-            self.kernel.run()
+        try:
+            for idx in tqdm.trange(self.n_configurations, ncols=70):
+                self.kernel.reference = initial_configurations + selected_atoms
+                self.kernel.run()
 
-            minimum_indices = np.argsort(self.kernel.result)[: self.points_per_cycle]
-            selected_atoms += [self.kernel.analyte[x.item()] for x in minimum_indices]
-            # There is currently no check in place to ensure that an atom is only
-            # selected once. This should inherently be ensured by the way the
-            # MMK selects configurations.
-            self.kernel.load_analyte = True
-            self.kernel_results.append(self.kernel.result)
+                minimum_indices = np.argsort(self.kernel.result)[: self.points_per_cycle]
+                selected_atoms += [self.kernel.analyte[x.item()] for x in minimum_indices]
+                # There is currently no check in place to ensure that an atom is only
+                # selected once. This should inherently be ensured by the way the
+                # MMK selects configurations.
+                self.kernel.load_analyte = True
+                self.kernel_results.append(self.kernel.result)
+                if self.threshold is not None:
+                    hist, bins = np.histogram(
+                        self.kernel.result, bins=np.linspace(0, 1, 10000), density=True
+                    )
+                    bins = bins[:-1]
+                    hist[bins > self.threshold] = 0
+                    hist_results.append(np.trapz(hist, bins))
+                    if hist_results[-1] == 0:
+                        log.warning(
+                            f"Threshold {self.threshold} reached before"
+                            f" {self.n_configurations} configurations were selected -"
+                            f" stopping after selecting {idx + 1} configurations."
+                        )
+                        break
+        finally:
+            self.kernel.unlink_database()
 
-        self.kernel.unlink_database()
+        if self.initial_configurations is None:
+            # include the randomly selected configuration
+            selected_atoms += initial_configurations
+            self.n_configurations += 1
 
         selected_ids = [
             idx for idx, atom in enumerate(atoms_lst) if atom in selected_atoms
         ]
-        if len(selected_ids) != self.n_configurations:
-            raise ValueError(
-                f"Unable to select {self.n_configurations}. Could only select"
-                f" {len(selected_ids)}"
-            )
+        if self.threshold is None:
+            if len(selected_ids) != self.n_configurations:
+                print(f"{self.initial_configurations = }")
+                raise ValueError(
+                    f"Unable to select {self.n_configurations}. Could only select"
+                    f" {len(selected_ids)}"
+                )
 
         return selected_ids
 
-    def plot_kernel(self, fps: int = 2, remove: bool = True):
+    def plot_kernel(self, duration: int = 1000, remove: bool = True):
         """Generate an animation of the Kernel change while extending the reference.
 
         Raises
@@ -135,7 +162,9 @@ class KernelSelection(ConfigurationSelection):
             plt.savefig(img_dir / f"{str(idx).zfill(4)}.png")
             plt.close()
 
-        with imageio.get_writer("kernel_selection.gif", mode="I", fps=fps) as writer:
+        with imageio.get_writer(
+            "kernel_selection.gif", mode="I", duration=duration, loop=0
+        ) as writer:
             for filename in sorted(img_dir.glob("*.png")):
                 image = imageio.v2.imread(filename)
                 writer.append_data(image)

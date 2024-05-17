@@ -6,9 +6,10 @@ data:
   valid_batch_size: 2
 
 model:
-  nn: [512,512]
+  nn: [256,256]
   n_basis: 7
   n_radial: 5
+  calc_stress: true
 
 metrics:
   - name: energy

@@ -10,7 +10,7 @@ from ipsuite.models import Apax
 TEST_PATH = pathlib.Path(__file__).parent.resolve()
 
 
-def test_model_training(proj_path, traj_file):
+def test_apax_jaxmd(proj_path, traj_file):
     minmal_path = pathlib.Path(os.path.dirname(TEST_PATH))
 
     model_minimal = shutil.copy(
@@ -31,14 +31,14 @@ def test_model_training(proj_path, traj_file):
         )
 
         model = Apax(
-            parameter_file=model_minimal,
+            config=model_minimal,
             data=train_selection.atoms,
             validation_data=val_selection.atoms,
         )
 
         md = ApaxJaxMD(
             model=model,
-            data=raw_data,
+            data=raw_data.atoms,
             md_parameter_file=md_minimal,
         )
     project.run()

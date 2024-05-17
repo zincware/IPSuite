@@ -1,5 +1,4 @@
 import typing
-from uuid import uuid4
 
 import ase
 import numpy as np
@@ -7,16 +6,16 @@ import zntrack
 from ase.calculators.calculator import Calculator, all_changes
 from tqdm import tqdm
 
+from ipsuite import base
 from ipsuite.models.base import MLModel
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
 class EnsembleCalculator(Calculator):
-    implemented_properties = ["energy", "forces"]
-
     def __init__(self, calculators: typing.List[Calculator], **kwargs):
         Calculator.__init__(self, **kwargs)
         self.calculators = calculators
+        self.implemented_properties = self.calculators[0].implemented_properties
 
     def calculate(
         self,
@@ -44,14 +43,18 @@ class EnsembleCalculator(Calculator):
             [x.get_forces() for x in results], axis=0
         )
 
+        if "stress" in self.implemented_properties:
+            self.results["stress"] = np.mean([x.get_stress() for x in results], axis=0)
+            self.results["stress_uncertainty"] = np.std(
+                [x.get_stress() for x in results], axis=0
+            )
 
-class EnsembleModel(zntrack.Node):
-    models: typing.List[MLModel] = zntrack.zn.deps()
 
-    uuid = zntrack.zn.outs()  # to connect this Node to other Nodes it requires an output.
+class EnsembleModel(base.IPSNode):
+    models: typing.List[MLModel] = zntrack.deps()
 
     def run(self) -> None:
-        self.uuid = str(uuid4())
+        pass
 
     def get_calculator(self, **kwargs) -> ase.calculators.calculator.Calculator:
         """Property to return a model specific ase calculator object.

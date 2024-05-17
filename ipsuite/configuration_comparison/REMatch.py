@@ -1,4 +1,5 @@
 """REMatch kernel Node."""
+
 import numpy as np
 import tensorflow as tf
 import zntrack
@@ -27,9 +28,9 @@ class REMatch(ConfigurationComparison):
 
     """
 
-    metric: str = zntrack.zn.params("linear")
-    alpha: float = zntrack.zn.params(1.0)
-    threshold: float = zntrack.zn.params(1e-6)
+    metric: str = zntrack.params("linear")
+    alpha: float = zntrack.params(1.0)
+    threshold: float = zntrack.params(1e-6)
 
     def _post_init_(self):
         """Initialise the REMatchKernel instance."""

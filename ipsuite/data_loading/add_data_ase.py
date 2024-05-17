@@ -1,4 +1,6 @@
 """ipsuite data loading with ASE."""
+
+import functools
 import logging
 import pathlib
 import typing
@@ -7,7 +9,7 @@ import ase.io
 import tqdm
 import zntrack
 
-from ipsuite import fields
+from ipsuite import base, fields
 
 log = logging.getLogger(__name__)
 
@@ -32,7 +34,7 @@ def load_data(
 
     atoms = []
     for config, atom in enumerate(
-        tqdm.tqdm(ase.io.iread(file.as_posix()), desc="Reading File")
+        tqdm.tqdm(ase.io.iread(file.as_posix()), desc="Reading File", ncols=70)
     ):
         if lines_to_read is not None and config >= lines_to_read:
             break
@@ -40,7 +42,33 @@ def load_data(
     return atoms
 
 
-class AddData(zntrack.Node):
+class ReadData(base.IPSNode):
+    """Read data without converting it to H5MD.
+
+    This Node can be used instead of `AddData` to avoid
+    initial conversion to H5MD. Later Nodes might still
+    convert the data to H5MD.
+
+    Attributes
+    ----------
+    file: str|Path
+        path to the file that should be read.
+    lines_to_read: int, optional
+        maximal number of lines/configurations to read, None for read all
+    """
+
+    file: typing.Union[str, pathlib.Path] = zntrack.deps_path()
+    lines_to_read: int = zntrack.params(None)
+
+    def run(self):
+        pass
+
+    @functools.cached_property
+    def atoms(self) -> typing.List[ase.Atoms]:
+        return load_data(self.file, self.lines_to_read)
+
+
+class AddData(base.IPSNode):
     """Add data using ASE.
 
     Attributes
@@ -52,7 +80,7 @@ class AddData(zntrack.Node):
 
     atoms: typing.List[ase.Atoms] = fields.Atoms()
     file: typing.Union[str, pathlib.Path] = zntrack.dvc.deps()
-    lines_to_read: int = zntrack.zn.params(None)
+    lines_to_read: int = zntrack.params(None)
 
     def _post_init_(self):
         if not pathlib.Path(pathlib.Path(self.file).name + ".dvc").exists():

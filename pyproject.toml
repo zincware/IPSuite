@@ -1,73 +1,78 @@
 [tool.poetry]
 name = "ipsuite"
-version = "0.1.0a2"
+version = "0.1.2"
 description = "A suite of tools for machine learned interatomic potentials."
 authors = ["zincwarecode <zincwarecode@gmail.com>"]
 keywords = ["data-version-control", "machine-learning", "reproducibility", "interatomic potentials"]
 license = "License :: OSI Approved :: Eclipse Public License 2.0 (EPL-2.0)"
 readme = "README.md"
 
+[tool.poetry.urls]
+documentation = "https://ipsuite.readthedocs.io"
+repository = "https://github.com/zincware/ipsuite"
+
 [tool.poetry.dependencies]
 # tensorflow-io-gcs-filesystem
 python = ">=3.10,<3.12"
-# temporary version constraints
-libclang = "^15"
 
 znh5md = "^0.1.6a0"
-zntrack = "^0.6.0a5"
-
 ase = "^3.22.1"
 
-
 seaborn = "^0.12.2"
-cp2k-input-tools = "^0.8.2"
+cp2k-input-tools = {git = "https://github.com/cp2k/cp2k-input-tools.git"}
 cp2k-output-tools = "^0.5.0"
 
 
 #[tool.poetry.group.comparison.dependencies]
 h5py = { version = "^3.8.0", optional = true }
 tensorflow = { version = "^2.11.0", optional = true }
-llvmlite = { version="^0.39.1", optional = true }
-numba = { version = "^0.56.4", optional = true }
-dscribe = { version = "^1.2.2", optional = true }
-
+dscribe = { version = "^2.1.0", optional = true }
 
 #[tool.poetry.group.GAP.dependencies]
 quippy-ase = { version = "^0.9.12", optional = true }
 xmltodict = "^0.13.0"
 
-
-
 nequip = { version = "^0.5.6", optional = true }
-apax = { git = "https://github.com/apax-hub/apax.git", rev = "dev", optional = true}
-rdkit = "^2022.9.5"
+rdkit = "^2023"
 lazy-loader = "^0.2"
 znflow = "^0.1.11"
+zntrack = "^0.7.2"
 
-[tool.poetry.group.allegro.dependencies]
-mir-allegro = { git = "https://github.com/mir-group/allegro.git" }
+# [tool.poetry.group.allegro.dependencies]
+mir-allegro = { git = "https://github.com/mir-group/allegro.git", optional = true}
+
+# [tool.poetry.group.mace.dependencies]
+mace-torch = { version = "^0.3.4", optional = true}
+torch-dftd = { version = "^0.4.0", optional = true }
+# [tool.poetry.group.apax.dependencies]
+apax = { version = "^0.4.0", optional = true }
 
 
-[tool.poetry.group.mace.dependencies]
-mace = { git = "https://github.com/ACEsuit/mace.git" }
-
-
-[tool.poetry.group.lint.dependencies]
-black = "^23.1.0"
-ruff = "^0.0.252"
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.4.0"
+pytest = "^7.2.1"
+coverage = "^7.2.1"
+imageio = "^2.28.1"
+dvc-s3 = "^3.0.1"
 
 [tool.poetry.group.notebook.dependencies]
 jupyterlab = "^3.6.1"
+ipywidgets = "^8.0.6"
 
-[tool.poetry.group.test.dependencies]
-pytest = "^7.2.1"
-coverage = "^7.2.1"
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "^7.2.6"
+furo = "^2024.1.29"
+sphinx-copybutton = "^0.5.2"
 
 [tool.poetry.extras]
-comparison = ["h5py", "tensorflow", "llvmlite", "numba", "dscribe"]
+comparison = ["h5py", "tensorflow", "dscribe"]
 gap = ["quippy-ase", "xmltodict"]
 nequip = ["nequip"]
 apax = ["apax"]
+allegro = ["mir-allegro"]
+mace = ["mace-torch"]
+d3 = ["torch-dftd"]
 
 [build-system]
 requires = ["poetry-core"]
@@ -123,4 +128,5 @@ line-length = 90
 target-version = "py310"
 
 [tool.codespell]
-skip = "poetry.lock"
+ignore-words-list = "dscribe"
+skip = "poetry.lock,ipsuite/static_data/*,docs/source/examples/06_Bootstrapping_Datasets.ipynb"

@@ -11,9 +11,6 @@ import ipsuite as ips
 def test_direct_selection(proj_w_data, eager, data_style):
     proj, data = proj_w_data
 
-    if eager:
-        for node in data:
-            node.load()
     with proj:
         if data_style == "lst":
             _data = data
@@ -38,6 +35,10 @@ def test_direct_selection(proj_w_data, eager, data_style):
             name="selection2",
         )
 
+    if eager:
+        for node in data:
+            node.load()
+
     proj.run(eager=eager)
     if not eager:
         selection.load()
@@ -54,13 +55,13 @@ def test_index_chained(proj_path, traj_file):
     with ips.Project(automatic_node_names=True, remove_existing_graph=True) as project:
         data = ips.AddData(file=traj_file)
         pre_selection = ips.configuration_selection.IndexSelection(
-            data=data, indices=slice(0, 5, None)
+            data=data.atoms, indices=slice(0, 5, None)
         )  # we use this to "change" the data
         selection = ips.configuration_selection.IndexSelection(
-            data=pre_selection, indices=[0, 1, 2], name="selection"
+            data=pre_selection.atoms, indices=[0, 1, 2], name="selection"
         )
 
-        histogram = ips.analysis.EnergyHistogram(data=selection)
+        histogram = ips.analysis.EnergyHistogram(data=selection.atoms)
 
     project.run()
 
@@ -75,10 +76,10 @@ def test_index_chained(proj_path, traj_file):
             data=data, indices=slice(5, 10, None)
         )  # we use this to "change" the data
         selection = ips.configuration_selection.IndexSelection(
-            data=pre_selection, indices=[0, 1, 2], name="selection"
+            data=pre_selection.atoms, indices=[0, 1, 2], name="selection"
         )
 
-        histogram = ips.analysis.EnergyHistogram(data=selection)
+        histogram = ips.analysis.EnergyHistogram(data=selection.atoms)
 
     project.run()
     histogram.load()
@@ -136,3 +137,16 @@ def test_exclude_configurations_list(proj_path, traj_file):
     assert train_data[0].selected_configurations == {"AddData": [5, 6, 7, 8, 9]}
     assert test_data[0].selected_configurations == {"AddData": [0, 1, 2, 3, 4]}
     assert validation_data.selected_configurations == {"AddData": [10, 11, 12, 13, 14]}
+
+
+def test_filter_outlier(proj_path, traj_file):
+    with ips.Project() as project:
+        data = ips.AddData(file=traj_file)
+        filtered_data = ips.configuration_selection.FilterOutlier(
+            data=data.atoms, key="energy", threshold=1, direction="both"
+        )
+
+    project.run()
+
+    filtered_data.load()
+    assert len(filtered_data.atoms) == 13

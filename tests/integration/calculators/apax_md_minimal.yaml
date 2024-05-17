@@ -1,3 +1,8 @@
-temperature: 1
-duration: 2.5
-n_inner: 1
+ensemble:
+  name: nvt
+  dt: 0.5 # fs time step
+  temperature: 1 # K
+
+duration: 3 # fs
+n_inner: 1 # compiled inner loop steps
+sampling_rate: 1

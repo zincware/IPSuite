@@ -1,4 +1,5 @@
 """Selecting atoms with a given step between them."""
+
 import typing
 
 import ase
@@ -17,7 +18,7 @@ class UniformArangeSelection(ConfigurationSelection):
         setting the step, every nth (step) object will be taken
     """
 
-    step = zntrack.zn.params()
+    step = zntrack.params()
 
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         """Take every nth (step) object of a given atoms list.

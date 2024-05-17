@@ -11,7 +11,6 @@ import yaml
 import zntrack
 from mace.calculators import MACECalculator
 
-from ipsuite import utils
 from ipsuite.models import MLModel
 from ipsuite.static_data import STATIC_PATH
 
@@ -35,26 +34,25 @@ def execute(cmd, **kwargs):
 class MACE(MLModel):
     """MACE model."""
 
-    train_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "train-data.extxyz")
+    train_data_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "train-data.extxyz")
 
-    test_data = zntrack.zn.deps()
-    test_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "test-data.extxyz")
-    model_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "model")
+    test_data = zntrack.deps()
+    test_data_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "test-data.extxyz")
+    model_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model")
 
-    config: str = zntrack.dvc.deps("mace.yaml")
-    config_kwargs: dict = zntrack.zn.params(None)
-    device: str = zntrack.meta.Text("cuda" if torch.cuda.is_available() else "cpu")
+    config: str = zntrack.params_path("mace.yaml")
+    device: str = zntrack.meta.Text(None)
 
-    training: pathlib.Path = zntrack.dvc.plots(
+    training: pathlib.Path = zntrack.plots_path(
         zntrack.nwd / "training.csv",
         template=STATIC_PATH / "y_log.json",
         x="epoch",
         y=["loss", "rmse_e_per_atom", "rmse_f"],
     )
 
-    def _post_init_(self):
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
-        self.test_data = utils.helpers.get_deps_if_node(self.test_data, "atoms")
+    def _post_load_(self) -> None:
+        if self.device is None:
+            self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
     @classmethod
     def generate_config_file(self, file: str = "mace.yaml"):
@@ -79,35 +77,28 @@ class MACE(MLModel):
     def run(self):
         """Train a MACE model."""
         self.model_dir.mkdir(parents=True, exist_ok=True)
-        cmd = """curl -sSL https://raw.githubusercontent.com/ACEsuit/mace/main/scripts/run_train.py | python - """  # noqa E501
-        cmd += '--name="MACE_model" '
-        cmd += f'--train_file="{self.train_data_file.resolve().as_posix()}" '
-        cmd += "--valid_fraction=0.05 "
-        cmd += f'--test_file="{self.test_data_file.resolve().as_posix()}" '
-        cmd += f"--device={self.device} "
+        cmd = ["mace_run_train"]
+        cmd.append("--name=MACE_model")
+        cmd.append(f"--train_file={self.train_data_file.resolve().as_posix()}")
+        cmd.append("--valid_fraction=0.05")
+        cmd.append(f"--test_file={self.test_data_file.resolve().as_posix()}")
+        cmd.append(f"--device={self.device}")
 
         config = yaml.safe_load(pathlib.Path(self.config).read_text())
-        if self.config_kwargs:
-            log.warning(
-                f"Overwriting '{self.config}' with values from 'params.yaml':"
-                f" {self.config_kwargs}"
-            )
-            config.update(self.config_kwargs)
-
         for key, val in config.items():
             if val is True:
-                cmd += f"--{key} "
+                cmd.append(f"--{key}")
             elif val is False:
                 pass
             else:
-                cmd += f'--{key}="{val}" '
+                cmd.append(f"--{key}={val}")
 
         self.write_data_to_file(file=self.train_data_file, atoms_list=self.data)
         self.write_data_to_file(file=self.test_data_file, atoms_list=self.test_data)
 
         log.debug(f"Running: {cmd}")
 
-        for path in execute(cmd, shell=True, cwd=self.model_dir):
+        for path in execute(cmd, cwd=self.model_dir):
             print(path, end="")
             file = list((self.model_dir / "results").glob("*.*"))
             if len(file) == 1:
@@ -123,7 +114,22 @@ class MACE(MLModel):
 
     def get_calculator(self, device=None, **kwargs):
         """Return the ASE calculator."""
-        device = device or self.device
-        return MACECalculator(
-            model_path=self.model_dir / "MACE_model.model", device=self.device
-        )
+        import unittest.mock
+
+        with self.state.fs.open(self.config) as f:
+            config = yaml.safe_load(f)
+            default_dtype = config.get("default_dtype", "float64")
+
+        if self.state.fs.exists(self.model_dir / "MACE_model_swa.model"):
+            model_name = "MACE_model_swa.model"
+        else:
+            model_name = "MACE_model.model"
+
+        with unittest.mock.patch(
+            "torch.serialization._open_file_like", self.state.fs.open
+        ):
+            return MACECalculator(
+                model_paths=self.model_dir / model_name,
+                device=device or self.device,
+                default_dtype=default_dtype,
+            )

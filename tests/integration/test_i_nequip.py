@@ -15,18 +15,18 @@ def test_model_training(proj_path, traj_file):
         data_1 = ipsuite.AddData(file=traj_file, name="data_1")
 
         train_selection = ipsuite.configuration_selection.UniformEnergeticSelection(
-            data=data_1, n_configurations=10, name="train_data"
+            data=data_1.atoms, n_configurations=10, name="train_data"
         )
 
         validation_selection = ipsuite.configuration_selection.UniformEnergeticSelection(
-            data=train_selection @ "excluded_atoms", n_configurations=8, name="val_data"
+            data=train_selection.excluded_atoms, n_configurations=8, name="val_data"
         )
 
         model = ipsuite.models.Nequip(
-            parameter="allegro_minimal.yaml",
-            data=train_selection,
-            validation_data=validation_selection,
+            config="allegro_minimal.yaml",
             device="cpu",
+            data=train_selection.atoms,
+            validation_data=validation_selection.atoms,
         )
 
     project.run()
