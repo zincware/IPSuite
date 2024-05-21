@@ -10,7 +10,6 @@ import ase.geometry
 import h5py
 import numpy as np
 import pandas as pd
-import znflow
 import znh5md
 import zntrack
 from ase import units
@@ -19,7 +18,7 @@ from ase.md.npt import NPT
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from tqdm import trange
 
-from ipsuite import base, fields
+from ipsuite import base
 from ipsuite.utils.ase_sim import freeze_copy_atoms, get_box_from_density, get_energy
 
 log = logging.getLogger(__name__)
@@ -516,7 +515,7 @@ class ASEMD(base.IPSNode):
         else:
             raise ValueError("No data given.")
 
-        if method is "run":
+        if method == "run":
             return atoms[self.data_id]
         else:
             return atoms
@@ -534,7 +533,7 @@ class ASEMD(base.IPSNode):
             ),
         ).get_atoms_list()
 
-    def run_md(self, atoms):
+    def run_md(self, atoms):  # noqa: C901
         atoms.repeat(self.repeat)
         atoms.calc = self.model.get_calculator(directory=self.model_outs)
 
@@ -649,7 +648,7 @@ class ASEMD(base.IPSNode):
         )
         return metrics_dict, current_step
 
-    def run(self):  # noqa: C901
+    def run(self):
         """Run the simulation."""
         np.random.seed(self.seed)
 
@@ -671,7 +670,7 @@ class ASEMD(base.IPSNode):
 
         self.metrics_dict = pd.DataFrame(metrics_dict)
 
-    def map(self):
+    def map(self):  # noqa: A003
         np.random.seed(self.seed)
 
         if self.checks is None:
