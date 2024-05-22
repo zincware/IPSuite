@@ -489,9 +489,9 @@ class ASEMD(base.IPSNode):
     data_ids: typing.Optional[int] = zntrack.params(None)
 
     model_outs = zntrack.outs_path(zntrack.nwd / "model/")
-    checks: list = zntrack.deps([])
-    constraints: list = zntrack.deps([])
-    modifiers: list = zntrack.deps([])
+    checks: list = zntrack.deps(None)
+    constraints: list = zntrack.deps(None)
+    modifiers: list = zntrack.deps(None)
     thermostat = zntrack.deps()
 
     steps: int = zntrack.params()
@@ -557,6 +557,13 @@ class ASEMD(base.IPSNode):
     def initialize_md(self):
         np.random.seed(self.seed)
 
+        if self.checks is None:
+            self.checks = []
+        if self.modifiers is None:
+            self.modifiers = []
+        if self.constraints is None:
+            self.constraints = []
+            
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
 
