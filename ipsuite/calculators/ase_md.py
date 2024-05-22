@@ -533,6 +533,24 @@ class ASEMD(base.IPSNode):
             ),
         ).get_atoms_list()
 
+
+    def initialize_md(self):
+        np.random.seed(self.seed)
+
+        if self.checks is None:
+            self.checks = []
+        if self.modifiers is None:
+            self.modifiers = []
+        if self.constraints is None:
+            self.constraints = []
+
+        self.model_outs.mkdir(parents=True, exist_ok=True)
+        (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
+
+        self.db = znh5md.io.DataWriter(self.traj_file)
+        self.db.initialize_database_groups()
+        
+                
     def run_md(self, atoms):  # noqa: C901
         atoms.repeat(self.repeat)
         atoms.calc = self.model.get_calculator(directory=self.model_outs)
@@ -540,7 +558,7 @@ class ASEMD(base.IPSNode):
         if not self.use_momenta:
             init_temperature = self.thermostat.temperature
             MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
-
+        
         # initialize thermostat
         time_step = self.thermostat.time_step
         thermostat = self.thermostat.get_thermostat(atoms=atoms)
@@ -650,20 +668,7 @@ class ASEMD(base.IPSNode):
 
     def run(self):
         """Run the simulation."""
-        np.random.seed(self.seed)
-
-        if self.checks is None:
-            self.checks = []
-        if self.modifiers is None:
-            self.modifiers = []
-        if self.constraints is None:
-            self.constraints = []
-
-        self.model_outs.mkdir(parents=True, exist_ok=True)
-        (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
-
-        self.db = znh5md.io.DataWriter(self.traj_file)
-        self.db.initialize_database_groups()
+        self.initialize_md()
 
         atoms = self.get_atoms()
         metrics_dict, _ = self.run_md(atoms=atoms)
@@ -671,20 +676,7 @@ class ASEMD(base.IPSNode):
         self.metrics_dict = pd.DataFrame(metrics_dict)
 
     def map(self):  # noqa: A003
-        np.random.seed(self.seed)
-
-        if self.checks is None:
-            self.checks = []
-        if self.modifiers is None:
-            self.modifiers = []
-        if self.constraints is None:
-            self.constraints = []
-
-        self.model_outs.mkdir(parents=True, exist_ok=True)
-        (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
-
-        self.db = znh5md.io.DataWriter(self.traj_file)
-        self.db.initialize_database_groups()
+        self.initialize_md()
 
         structures = self.get_atoms(method="map")
 
