@@ -205,6 +205,7 @@ class Check(IPSNode):
         Derived classes do not need to override this if they consider
         absolute values and not comparisons.
         """
+        self.status = False
         pass
 
     @abc.abstractmethod
