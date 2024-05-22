@@ -553,7 +553,6 @@ class ASEMD(base.IPSNode):
             ),
         ).get_atoms_list()
 
-
     def initialize_md(self):
         np.random.seed(self.seed)
 
@@ -569,8 +568,7 @@ class ASEMD(base.IPSNode):
 
         self.db = znh5md.io.DataWriter(self.traj_file)
         self.db.initialize_database_groups()
-        
-                
+
     def run_md(self, atoms):  # noqa: C901
         atoms.repeat(self.repeat)
         atoms.calc = self.model.get_calculator(directory=self.model_outs)
@@ -578,7 +576,7 @@ class ASEMD(base.IPSNode):
         if not self.use_momenta:
             init_temperature = self.thermostat.temperature
             MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
-        
+
         # initialize thermostat
         time_step = self.thermostat.time_step
         thermostat = self.thermostat.get_thermostat(atoms=atoms)
@@ -703,7 +701,7 @@ class ASEMD(base.IPSNode):
             structures = [self.get_atoms(method="map")[idx] for idx in self.data_ids]
         else:
             structures = self.get_atoms(method="map")
-            
+
         self.structures = []
         for atoms in structures:
             metrics, current_step = self.run_md(atoms=atoms)
