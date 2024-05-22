@@ -45,7 +45,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
             self.checks = []
         if self.constraints is None:
             self.constraints = []
-            
+
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
         calculator = self.model.get_calculator(directory=self.model_outs)
