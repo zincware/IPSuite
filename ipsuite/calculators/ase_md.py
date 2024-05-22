@@ -418,7 +418,7 @@ class ASEMD(base.IPSNode):
     ----------
     model: zntrack.Node
         A node that implements a 'get_calculation' method
-    data: ase.Atoms | list[ase.Atoms]
+    data: list[ase.Atoms]
         The atoms data to process. This must be an input to the Node.
         It can either a single atoms object or a list of atoms objects
         with a given 'data_id'.
@@ -490,12 +490,12 @@ class ASEMD(base.IPSNode):
     structures = zntrack.outs()
     traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
 
-    def get_atoms(self, method="run") -> ase.Atoms:
+    def get_atoms(self, method="run") -> ase.Atoms | typing.List[ase.Atoms]:
         """Get the atoms object to process given the 'data' and 'data_id'.
 
         Returns
         -------
-        ase.Atoms
+        ase.Atoms | list[ase.Atoms]
             The atoms object to process
         """
         if self.data is not None:
@@ -671,12 +671,12 @@ class ASEMD(base.IPSNode):
     def map(self):  # noqa: A003
         self.initialize_md()
 
-        structures = self.get_atoms(method="map")
-
         metrics_list = []
         if self.data_ids is not None:
             structures = [self.get_atoms(method="map")[idx] for idx in self.data_ids]
-
+        else:
+            structures = self.get_atoms(method="map")
+            
         self.structures = []
         for atoms in structures:
             metrics, current_step = self.run_md(atoms=atoms)
