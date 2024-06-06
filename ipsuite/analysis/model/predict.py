@@ -238,6 +238,7 @@ class CalibrationMetrics(base.ComparePredictions):
         """Create dict of all data."""
         true_keys = self.x[0].calc.results.keys()
         pred_keys = self.y[0].calc.results.keys()
+        # TODO unify usage of std vs variance!!!!! also in apax
 
         energy_true = [a.get_potential_energy() / len(a) for a in self.x]
         energy_true = np.array(energy_true) * 1000
@@ -287,6 +288,8 @@ class CalibrationMetrics(base.ComparePredictions):
         energy_plot = get_calibration_figure(
             self.content["energy_err"],
             self.content["energy_unc"],
+            markersize=10,
+            datalabel=rf"Pearson: {self.energy['pearsonr']:.4f}",
         )
         energy_cdf_plot = get_cdf_figure(
             self.content["energy_err"],

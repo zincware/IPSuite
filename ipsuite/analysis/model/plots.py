@@ -104,7 +104,7 @@ def get_cdf_figure(x, y, figsize: tuple = (10, 7)):
     return fig
 
 
-def get_calibration_figure(error, std, datalabel="", figsize: tuple = (10, 7)):
+def get_calibration_figure(error, std, markersize:float = 3.0, datalabel="", figsize: tuple = (10, 7)):
     fig, ax = plt.subplots(1,1,figsize=figsize, dpi=300)
 
     x = np.linspace(1e-6, 5e3, 5)
@@ -117,7 +117,7 @@ def get_calibration_figure(error, std, datalabel="", figsize: tuple = (10, 7)):
     quantiles_lower_005 = [foldnorm.ppf(0.005, 0.,0.,i) for i in noise_level_2]
     quantiles_upper_005 = [foldnorm.ppf(0.995, 0.,0.,i) for i in noise_level_2]
 
-    ax.scatter(std, error,  s=3., alpha=0.3, color="tab:blue", rasterized=True, linewidth=0., label=datalabel)
+    ax.scatter(std, error,  s=markersize, alpha=0.3, color="tab:blue", rasterized=True, linewidth=0., label=datalabel)
     ax.loglog()
     ax.plot(x, quantiles_upper_05, color='gray', alpha=0.5)
     ax.plot(x, quantiles_lower_05, color='gray', alpha=0.5)
