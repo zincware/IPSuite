@@ -563,7 +563,7 @@ class ASEMD(base.IPSNode):
             self.modifiers = []
         if self.constraints is None:
             self.constraints = []
-            
+
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
 
