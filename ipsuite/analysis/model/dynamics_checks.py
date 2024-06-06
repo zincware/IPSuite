@@ -5,6 +5,7 @@ import numpy as np
 import zntrack
 from ase.geometry import conditional_find_mic
 from ase.neighborlist import build_neighbor_list
+from ase.neighborlist import natural_cutoffs
 
 from ipsuite import base
 from ipsuite.utils.ase_sim import get_energy
@@ -37,23 +38,6 @@ class NaNCheck(base.Check):
             return False
 
 
-def setdiff2d(arr1, arr2):
-    idx = (arr1[:, None] != arr2).any(-1).all(1)
-    return arr1[idx]
-
-
-def check_distances(a, idx_i, idx_j, d_min=None, d_max=None):
-    p1 = a.positions[idx_i]
-    p2 = a.positions[idx_j]
-    _, dists = conditional_find_mic(p1 - p2, a.cell, a.pbc)
-    unstable = False
-    if d_min:
-        unstable = unstable or np.min(dists) < d_min
-    if d_max:
-        unstable = unstable or np.max(dists) > d_max
-    return unstable
-
-
 class ConnectivityCheck(base.Check):
     """Check to see whether the covalent connectivity of the system
     changes during a simulation.
@@ -61,19 +45,12 @@ class ConnectivityCheck(base.Check):
 
     """
 
-    bonded_min_dist: float = zntrack.params(0.6)
-    bonded_max_dist: float = zntrack.params(2.0)
-    nonbonded_H_min_dist: float = zntrack.params(1.1)
-    nonbonded_other_min_dist: float = zntrack.params(1.6)
-
     def _post_init_(self) -> None:
         self.nl = None
         self.first_cm = None
 
     def initialize(self, atoms):
-        from ase.neighborlist import natural_cutoffs
-
-        cutoffs = natural_cutoffs(atoms, mult=1.2)
+        cutoffs = natural_cutoffs(atoms, mult=1.0)
         nl = build_neighbor_list(
             atoms, cutoffs=cutoffs, skin=0.0, self_interaction=False, bothways=False
         )
@@ -81,52 +58,41 @@ class ConnectivityCheck(base.Check):
         self.indices = np.vstack(first_cm.nonzero()).T
         self.idx_i, self.idx_j = self.indices.T
 
-        cutoffs = natural_cutoffs(atoms, mult=0.7)
-        self.contact_nl = build_neighbor_list(
-            atoms, cutoffs=cutoffs, skin=0.5, self_interaction=False, bothways=False
-        )
         self.is_initialized = True
 
     def check(self, atoms: ase.Atoms) -> bool:
+
+        p1 = atoms.positions[self.idx_i]
+        p2 = atoms.positions[self.idx_j]
+        _, dists = conditional_find_mic(p1 - p2, atoms.cell, atoms.pbc)
+
         unstable = False
-        bonded_check = check_distances(
-            atoms,
-            self.idx_i,
-            self.idx_j,
-            d_min=self.bonded_min_dist,
-            d_max=self.bonded_max_dist,
-        )
-        unstable = unstable or bonded_check
+        if self.bonded_min_dist:
+            min_dist = np.min(dists)
+            too_close = min_dist < self.bonded_min_dist
+            unstable = unstable or too_close
 
-        self.contact_nl.update(atoms)
-        nearest_cm = self.contact_nl.get_connectivity_matrix(sparse=True)
-        nearest_indices = np.vstack(nearest_cm.nonzero()).T
-        diff_indices = setdiff2d(nearest_indices, self.indices)
+            if too_close:
+                min_idx = np.argmin(dists)
+                first_atom = self.idx_i[min_idx]
+                second_atom = self.idx_j[min_idx]
 
-        if len(diff_indices) > 0:
-            diff_idx_i, diff_idx_j = diff_indices.T
-            Zij = np.stack([atoms.numbers[diff_idx_i], atoms.numbers[diff_idx_j]]).T
+                atoms.numbers[first_atom] = 3
+                atoms.numbers[second_atom] = 3
 
-            both_H = np.any((Zij - 1) == 0, axis=1)
-            if np.any(both_H):
-                H_idx_i, H_idx_j = diff_indices[both_H].T
-                H_check = check_distances(
-                    atoms, H_idx_i, H_idx_j, d_min=self.nonbonded_H_min_dist, d_max=None
-                )
-                unstable = unstable or H_check
 
-            not_both_H = np.ones_like(both_H).astype(bool)
-            not_both_H[both_H] = False
-            if np.any(not_both_H):
-                other_idx_i, other_idx_j = diff_indices[not_both_H].T
-                not_both_H_check = check_distances(
-                    atoms,
-                    other_idx_i,
-                    other_idx_j,
-                    d_min=self.nonbonded_other_min_dist,
-                    d_max=None,
-                )
-                unstable = unstable or not_both_H_check
+        if self.bonded_max_dist:
+            max_dist = np.max(dists)
+            too_far = max_dist > self.bonded_max_dist
+            unstable = unstable or too_far
+
+            if too_far:
+                max_idx = np.argmax(dists)
+                first_atom = self.idx_i[max_idx]
+                second_atom = self.idx_j[max_idx]
+
+                atoms.numbers[first_atom] = 3
+                atoms.numbers[second_atom] = 3
 
         if unstable:
             self.status = (
