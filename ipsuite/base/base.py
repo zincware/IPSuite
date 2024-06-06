@@ -57,7 +57,8 @@ class ProcessAtoms(IPSNode):
                     return list(ase.io.iread(f))
             except FileNotFoundError:
                 # File can not be opened with DVCFileSystem, try normal open
-                return list(ase.io.iread(self.data_file))
+                # return list(ase.io.iread(self.data_file))
+                raise FileNotFoundError("you want circumvent DVCFileSystem") #TEST
         else:
             raise ValueError("No data given.")
 
@@ -112,7 +113,8 @@ class ProcessSingleAtom(IPSNode):
                     atoms = list(ase.io.iread(f))[self.data_id]
             except FileNotFoundError:
                 # File can not be opened with DVCFileSystem, try normal open
-                atoms = list(ase.io.iread(self.data_file))[self.data_id]
+                # atoms = list(ase.io.iread(self.data_file))[self.data_id]/
+                raise FileNotFoundError("you want circumvent DVCFileSystem") #TEST
         else:
             raise ValueError("No data given.")
         return atoms

@@ -530,7 +530,8 @@ class ASEMD(base.IPSNode):
                     atoms = list(ase.io.iread(f))
             except FileNotFoundError:
                 # File can not be opened with DVCFileSystem, try normal open
-                atoms = list(ase.io.iread(self.data_file))
+                # atoms = list(ase.io.iread(self.data_file))
+                raise FileNotFoundError("you want circumvent DVCFileSystem") #TEST
 
         else:
             raise ValueError("No data given.")
