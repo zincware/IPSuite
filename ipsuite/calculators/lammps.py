@@ -1,3 +1,6 @@
+"""LAMMPS interface for MD Simulations using LAMMPS
+"""
+
 import importlib.resources as pkg_resources
 import pathlib
 import subprocess
@@ -12,7 +15,7 @@ from ipsuite import base, static_data
 
 
 class LammpsSimulator(base.ProcessSingleAtom):
-    """Can perform LAMMPS Simulations.
+    """Perform LAMMPS Simulations.
 
     Parameters
     ----------
