@@ -93,9 +93,8 @@ class Packmol(base.IPSNode):
         subprocess.check_call("packmol < packmole.inp", shell=True, cwd=self.structures)
 
         atoms = ase.io.read(self.structures / "mixture.xyz")
-        if self.pbc:
-            atoms.cell = self.box
-            atoms.pbc = True
+        atoms.cell = self.box
+        atoms.pbc = self.pbc
         self.atoms = [atoms]
 
     def _get_box_from_molar_volume(self):

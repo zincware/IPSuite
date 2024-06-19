@@ -192,6 +192,7 @@ class CP2KSinglePoint(base.ProcessAtoms):
     wfn_restart_node = zntrack.deps(None)
     output_file = zntrack.outs_path(zntrack.nwd / "structures.h5")
     cp2k_directory = zntrack.outs_path(zntrack.nwd / "cp2k")
+    compute_stress_tensor: bool = zntrack.params(True)
 
     def run(self):
         """ZnTrack run method.
@@ -283,7 +284,7 @@ class CP2KSinglePoint(base.ProcessAtoms):
             potential_file=None,
             poisson_solver=None,
             pseudo_potential=None,
-            stress_tensor=True,
+            stress_tensor=self.compute_stress_tensor,
             xc=None,
             print_level=None,
             label="cp2k",
