@@ -529,9 +529,8 @@ class ASEMD(base.IPSNode):
                 with self.state.fs.open(pathlib.Path(self.data_file).as_posix()) as f:
                     atoms = list(ase.io.iread(f))
             except FileNotFoundError:
-                # File can not be opened with DVCFileSystem, try normal open
-                # atoms = list(ase.io.iread(self.data_file))
-                raise FileNotFoundError("you want circumvent DVCFileSystem") #TEST
+                # File can not be opened with DVCFileSystem, print error
+                raise FileNotFoundError("you want circumvent DVCFileSystem")
 
         else:
             raise ValueError("No data given.")
