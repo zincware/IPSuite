@@ -57,7 +57,7 @@ class ProcessAtoms(IPSNode):
                     return list(ase.io.iread(f))
             except FileNotFoundError:
                 # File can not be opened with DVCFileSystem, print error
-                raise FileNotFoundError("you want circumvent DVCFileSystem")T
+                raise FileNotFoundError("you want circumvent DVCFileSystem")
         else:
             raise ValueError("No data given.")
 
