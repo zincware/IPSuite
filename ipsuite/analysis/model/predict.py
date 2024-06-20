@@ -10,7 +10,7 @@ from scipy import stats
 
 from ipsuite import base, models, utils
 from ipsuite.analysis.model.math import decompose_stress_tensor, force_decomposition
-from ipsuite.analysis.model.plots import get_cdf_figure, get_figure, get_hist, get_calibration_figure, get_gaussianicity_figure
+from ipsuite.analysis.model.plots import get_cdf_figure, get_figure, get_hist, get_calibration_figure, get_gaussianicity_figure, slice_ensemble_uncertainty
 from ipsuite.geometry import BarycenterMapping
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
@@ -248,7 +248,7 @@ class CalibrationMetrics(base.ComparePredictions):
         self.content["energy_err"] = np.abs(energy_true - energy_pred)
 
         energy_uncertainty = [
-            np.sqrt(a.calc.results["energy_uncertainty"]) / len(a) for a in self.y
+            a.calc.results["energy_uncertainty"] / len(a) for a in self.y
         ]
         energy_uncertainty = np.array(energy_uncertainty) * 1000
         self.content["energy_unc"] = energy_uncertainty
@@ -264,7 +264,7 @@ class CalibrationMetrics(base.ComparePredictions):
 
             self.content["forces_true"] = true_forces
             self.content["forces_err"] = np.abs(true_forces - pred_forces)
-            self.content["forces_unc"] = np.sqrt(forces_uncertainty) * 1000
+            self.content["forces_unc"] = forces_uncertainty * 1000
             self.content["forces_ensemble"] = np.array(forces_ensemble) * 1000
 
     def get_metrics(self):
@@ -317,11 +317,9 @@ class CalibrationMetrics(base.ComparePredictions):
 
             gaussianicy_figures = []
             for (start, end) in self.force_dist_slices:
+                error_true, error_pred = slice_ensemble_uncertainty(self.content["forces_true"], self.content["forces_ensemble"], start, end)
                 fig = get_gaussianicity_figure(
-                    self.content["forces_true"],
-                    self.content["forces_ensemble"],
-                    start,
-                    end,
+                    error_true, error_pred
                 )
                 gaussianicy_figures.append(fig)
             if save:
