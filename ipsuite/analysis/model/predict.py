@@ -10,7 +10,14 @@ from scipy import stats
 
 from ipsuite import base, models, utils
 from ipsuite.analysis.model.math import decompose_stress_tensor, force_decomposition
-from ipsuite.analysis.model.plots import get_cdf_figure, get_figure, get_hist, get_calibration_figure, get_gaussianicity_figure, slice_ensemble_uncertainty
+from ipsuite.analysis.model.plots import (
+    get_calibration_figure,
+    get_cdf_figure,
+    get_figure,
+    get_gaussianicity_figure,
+    get_hist,
+    slice_ensemble_uncertainty,
+)
 from ipsuite.geometry import BarycenterMapping
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
@@ -316,19 +323,21 @@ class CalibrationMetrics(base.ComparePredictions):
             )
 
             gaussianicy_figures = []
-            for (start, end) in self.force_dist_slices:
-                error_true, error_pred = slice_ensemble_uncertainty(self.content["forces_true"], self.content["forces_ensemble"], start, end)
-                fig = get_gaussianicity_figure(
-                    error_true, error_pred
+            for start, end in self.force_dist_slices:
+                error_true, error_pred = slice_ensemble_uncertainty(
+                    self.content["forces_true"],
+                    self.content["forces_ensemble"],
+                    start,
+                    end,
                 )
+                fig = get_gaussianicity_figure(error_true, error_pred)
                 gaussianicy_figures.append(fig)
             if save:
                 forces_plot.savefig(self.plots_dir / "forces.png")
                 forces_cdf_plot.savefig(self.plots_dir / "forces_cdf.png")
-                
+
                 for ii, fig in enumerate(gaussianicy_figures):
                     fig.savefig(self.plots_dir / f"forces_gaussianicity_{ii}.png")
-
 
     def run(self):
         self.nwd.mkdir(exist_ok=True, parents=True)
