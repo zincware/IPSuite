@@ -58,11 +58,11 @@ class ApaxJaxMD(ProcessSingleAtom):
                     "Please keep track of the parameter file with git, just like the"
                     " params.yaml"
                 )
-
-        if not isinstance(self.model, Apax):
-            raise TypeError(
-                "Performing simulations with JaxMD requires a apax model Node"
-            )
+        # TODO introduce apax base class
+        # if not isinstance(self.model, Apax):
+        #     raise TypeError(
+        #         "Performing simulations with JaxMD requires a apax model Node"
+        #     )
 
     def _handle_parameter_file(self):
         if self.md_parameter_file:
