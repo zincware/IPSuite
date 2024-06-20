@@ -141,20 +141,31 @@ def gauss(x, *p):
     return np.exp(-((x-m)/s)**2*0.5)/np.sqrt(2*np.pi*s**2)
 
 
-def get_gaussianicity_figure(true, pred_ens, slice_start, slice_end):
+def slice_ensemble_uncertainty(true, pred_ens, slice_start, slice_end):
     pred_mean = np.mean(pred_ens, axis=1)
     pred_std = np.std(pred_ens, axis=1)
     
     isel = np.where((slice_start<pred_std) & (pred_std<slice_end))[0]
     
-
     error_true = np.reshape(true[isel,0]-pred_mean[isel,0], -1)
     error_pred = np.reshape(pred_ens[isel,:,0]-pred_mean[isel,np.newaxis,0], -1)
+    return error_true, error_pred
 
+def slice_uncertainty(true, pred_mean, pred_std, slice_start, slice_end):    
+    isel = np.where((slice_start<pred_std) & (pred_std<slice_end))[0]
+    
+    error_true = np.reshape(true[isel]-pred_mean[isel], -1)
+    error_pred = pred_std[isel]
+    return error_true, error_pred
+
+
+def get_gaussianicity_figure(error_true, error_pred):
     true_kde_sel = gaussian_kde(error_true)
     ens_kde_sel =  gaussian_kde(error_pred)
 
-    xgrid = np.linspace(-1500,1500,400)
+    bounds = 1.5 * max(np.max(np.abs(error_true)), np.max(np.abs(error_pred)))
+
+    xgrid = np.linspace(-bounds,bounds,400)
 
     ens_sel = ens_kde_sel(xgrid)
     true_sel = true_kde_sel(xgrid)
@@ -165,13 +176,15 @@ def get_gaussianicity_figure(true, pred_ens, slice_start, slice_end):
     fig, ax = plt.subplots()
 
     ax.semilogy(xgrid,gauss(xgrid,0,std), 'k--', label="Gaussian")
-    ax.semilogy(xgrid,true_sel, 'r-', label="empirical")
+    ax.semilogy(xgrid, true_sel, 'r-', label="empirical")
     ax.semilogy(xgrid, ens_sel, 'b-', label="predicted")
-    ax.set_ylim(1e-6,1e-2)
+    ymax = 5 * max(np.max(true_sel), np.max(ens_sel))
+    ax.set_ylim(1e-6,ymax)
     ax.set_yscale("log")
 
     ax.set_xlabel(r"$\Delta (S)$ / meV/Ang")
     ax.set_ylabel(r"$p(\Delta | S)$")
+    ax.legend()
     return fig
 
 
