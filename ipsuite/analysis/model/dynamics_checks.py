@@ -4,8 +4,7 @@ import ase
 import numpy as np
 import zntrack
 from ase.geometry import conditional_find_mic
-from ase.neighborlist import build_neighbor_list
-from ase.neighborlist import natural_cutoffs
+from ase.neighborlist import build_neighbor_list, natural_cutoffs
 
 from ipsuite import base
 from ipsuite.utils.ase_sim import get_energy
@@ -61,7 +60,6 @@ class ConnectivityCheck(base.Check):
         self.is_initialized = True
 
     def check(self, atoms: ase.Atoms) -> bool:
-
         p1 = atoms.positions[self.idx_i]
         p2 = atoms.positions[self.idx_j]
         _, dists = conditional_find_mic(p1 - p2, atoms.cell, atoms.pbc)
@@ -79,7 +77,6 @@ class ConnectivityCheck(base.Check):
 
                 atoms.numbers[first_atom] = 3
                 atoms.numbers[second_atom] = 3
-
 
         if self.bonded_max_dist:
             max_dist = np.max(dists)

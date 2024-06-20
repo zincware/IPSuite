@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 from scipy.interpolate import interpn
-from scipy.stats import gaussian_kde, foldnorm
 from scipy.optimize import curve_fit
+from scipy.stats import foldnorm, gaussian_kde
 
 
 def density_scatter(ax, x, y, bins, **kwargs) -> None:
@@ -48,7 +48,13 @@ def density_scatter(ax, x, y, bins, **kwargs) -> None:
 
 
 def get_figure(
-    true, prediction, datalabel: str, xlabel: str, ylabel: str, figsize: tuple = (10, 7), density=True,
+    true,
+    prediction,
+    datalabel: str,
+    xlabel: str,
+    ylabel: str,
+    figsize: tuple = (10, 7),
+    density=True,
 ) -> plt.Figure:
     """Create a correlation plot for true, prediction values.
 
@@ -104,31 +110,42 @@ def get_cdf_figure(x, y, figsize: tuple = (10, 7)):
     return fig
 
 
-def get_calibration_figure(error, std, markersize:float = 3.0, datalabel="", figsize: tuple = (10, 7)):
-    fig, ax = plt.subplots(1,1,figsize=figsize, dpi=300)
+def get_calibration_figure(
+    error, std, markersize: float = 3.0, datalabel="", figsize: tuple = (10, 7)
+):
+    fig, ax = plt.subplots(1, 1, figsize=figsize, dpi=300)
 
     x = np.linspace(1e-6, 5e3, 5)
     noise_level_2 = x
 
-    quantiles_lower_01 = [foldnorm.ppf(0.15, 0.,0.,i) for i in noise_level_2]
-    quantiles_upper_01 = [foldnorm.ppf(0.85, 0.,0.,i) for i in noise_level_2]
-    quantiles_lower_05 = [foldnorm.ppf(0.05, 0.,0.,i) for i in noise_level_2]
-    quantiles_upper_05 = [foldnorm.ppf(0.95, 0.,0.,i) for i in noise_level_2]
-    quantiles_lower_005 = [foldnorm.ppf(0.005, 0.,0.,i) for i in noise_level_2]
-    quantiles_upper_005 = [foldnorm.ppf(0.995, 0.,0.,i) for i in noise_level_2]
+    quantiles_lower_01 = [foldnorm.ppf(0.15, 0.0, 0.0, i) for i in noise_level_2]
+    quantiles_upper_01 = [foldnorm.ppf(0.85, 0.0, 0.0, i) for i in noise_level_2]
+    quantiles_lower_05 = [foldnorm.ppf(0.05, 0.0, 0.0, i) for i in noise_level_2]
+    quantiles_upper_05 = [foldnorm.ppf(0.95, 0.0, 0.0, i) for i in noise_level_2]
+    quantiles_lower_005 = [foldnorm.ppf(0.005, 0.0, 0.0, i) for i in noise_level_2]
+    quantiles_upper_005 = [foldnorm.ppf(0.995, 0.0, 0.0, i) for i in noise_level_2]
 
-    ax.scatter(std, error,  s=markersize, alpha=0.3, color="tab:blue", rasterized=True, linewidth=0., label=datalabel)
+    ax.scatter(
+        std,
+        error,
+        s=markersize,
+        alpha=0.3,
+        color="tab:blue",
+        rasterized=True,
+        linewidth=0.0,
+        label=datalabel,
+    )
     ax.loglog()
-    ax.plot(x, quantiles_upper_05, color='gray', alpha=0.5)
-    ax.plot(x, quantiles_lower_05, color='gray', alpha=0.5)
-    ax.plot(x, quantiles_upper_01, color='gray', alpha=0.5)
-    ax.plot(x, quantiles_lower_01, color='gray', alpha=0.5)
-    ax.plot(x, quantiles_upper_005, color='gray', alpha=0.5)
-    ax.plot(x, quantiles_lower_005, color='gray', alpha=0.5)
+    ax.plot(x, quantiles_upper_05, color="gray", alpha=0.5)
+    ax.plot(x, quantiles_lower_05, color="gray", alpha=0.5)
+    ax.plot(x, quantiles_upper_01, color="gray", alpha=0.5)
+    ax.plot(x, quantiles_lower_01, color="gray", alpha=0.5)
+    ax.plot(x, quantiles_upper_005, color="gray", alpha=0.5)
+    ax.plot(x, quantiles_lower_005, color="gray", alpha=0.5)
 
-    ax.plot(np.logspace(-3,100.0),np.logspace(-3,100.0),linestyle="--", color="grey")
-    ax.set_xlim(np.min(std)/1.5, np.max(std)*1.5)
-    ax.set_ylim(np.min(error)/1.5, np.max(error)*1.5)
+    ax.plot(np.logspace(-3, 100.0), np.logspace(-3, 100.0), linestyle="--", color="grey")
+    ax.set_xlim(np.min(std) / 1.5, np.max(std) * 1.5)
+    ax.set_ylim(np.min(error) / 1.5, np.max(error) * 1.5)
 
     ax.set_xlabel(r"$\sigma_{f_{i\alpha}}(A)$ [eV/$\AA$] ")
     ax.set_ylabel(r"$|\Delta f_{i\alpha}(A)|$ [eV/$\AA$] ")
@@ -138,34 +155,35 @@ def get_calibration_figure(error, std, markersize:float = 3.0, datalabel="", fig
 
 def gauss(x, *p):
     m, s = p
-    return np.exp(-((x-m)/s)**2*0.5)/np.sqrt(2*np.pi*s**2)
+    return np.exp(-(((x - m) / s) ** 2) * 0.5) / np.sqrt(2 * np.pi * s**2)
 
 
 def slice_ensemble_uncertainty(true, pred_ens, slice_start, slice_end):
     pred_mean = np.mean(pred_ens, axis=1)
     pred_std = np.std(pred_ens, axis=1)
-    
-    isel = np.where((slice_start<pred_std) & (pred_std<slice_end))[0]
-    
-    error_true = np.reshape(true[isel,0]-pred_mean[isel,0], -1)
-    error_pred = np.reshape(pred_ens[isel,:,0]-pred_mean[isel,np.newaxis,0], -1)
+
+    isel = np.where((slice_start < pred_std) & (pred_std < slice_end))[0]
+
+    error_true = np.reshape(true[isel, 0] - pred_mean[isel, 0], -1)
+    error_pred = np.reshape(pred_ens[isel, :, 0] - pred_mean[isel, np.newaxis, 0], -1)
     return error_true, error_pred
 
-def slice_uncertainty(true, pred_mean, pred_std, slice_start, slice_end):    
-    isel = np.where((slice_start<pred_std) & (pred_std<slice_end))[0]
-    
-    error_true = np.reshape(true[isel]-pred_mean[isel], -1)
+
+def slice_uncertainty(true, pred_mean, pred_std, slice_start, slice_end):
+    isel = np.where((slice_start < pred_std) & (pred_std < slice_end))[0]
+
+    error_true = np.reshape(true[isel] - pred_mean[isel], -1)
     error_pred = pred_std[isel]
     return error_true, error_pred
 
 
 def get_gaussianicity_figure(error_true, error_pred):
     true_kde_sel = gaussian_kde(error_true)
-    ens_kde_sel =  gaussian_kde(error_pred)
+    ens_kde_sel = gaussian_kde(error_pred)
 
     bounds = 1.5 * max(np.max(np.abs(error_true)), np.max(np.abs(error_pred)))
 
-    xgrid = np.linspace(-bounds,bounds,400)
+    xgrid = np.linspace(-bounds, bounds, 400)
 
     ens_sel = ens_kde_sel(xgrid)
     true_sel = true_kde_sel(xgrid)
@@ -175,11 +193,11 @@ def get_gaussianicity_figure(error_true, error_pred):
 
     fig, ax = plt.subplots()
 
-    ax.semilogy(xgrid,gauss(xgrid,0,std), 'k--', label="Gaussian")
-    ax.semilogy(xgrid, true_sel, 'r-', label="empirical")
-    ax.semilogy(xgrid, ens_sel, 'b-', label="predicted")
+    ax.semilogy(xgrid, gauss(xgrid, 0, std), "k--", label="Gaussian")
+    ax.semilogy(xgrid, true_sel, "r-", label="empirical")
+    ax.semilogy(xgrid, ens_sel, "b-", label="predicted")
     ymax = 5 * max(np.max(true_sel), np.max(ens_sel))
-    ax.set_ylim(1e-6,ymax)
+    ax.set_ylim(1e-6, ymax)
     ax.set_yscale("log")
 
     ax.set_xlabel(r"$\Delta (S)$ / meV/Ang")
