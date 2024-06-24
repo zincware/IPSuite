@@ -430,6 +430,77 @@ class FixedLayerConstraint(base.IPSNode):
         return ase.constraints.FixAtoms(indices=self.indices)
 
 
+class FixedBondLengthConstraint(base.IPSNode):
+    """Fix the Bondlength between two atoms
+
+    Attributes
+    ----------
+    atom_id_1: int
+        index of atom 1
+    atom_id_2: int
+        index of atom 2
+
+    Returns
+    -------
+    ase.constraints.FixBondLengths
+        Constraint that fixes the bond Length between atom_id_1 and atom_id_2
+    """
+
+    atom_id_1 = zntrack.params()
+    atom_id_2 = zntrack.params()
+
+    def get_constraint(self, atoms: ase.Atoms):
+        return ase.constraints.FixBondLength(self.atom_id_1, self.atom_id_2)
+
+
+class HookeanConstraint(base.IPSNode):
+    """Applies a Hookean (spring) force between a pair of atoms.
+
+    Attributes
+    ----------
+    atom_ids: list[tuple]
+        list of atom indices that need to be contraind.
+        example: Fix only atoms with bonds if the IDs are as followed:  H=0, H=1, O=2
+        then the following atom_ids list is needed: [(0, 2), (1, 2)]
+    k: float
+        Hookes law (spring) constant to apply when distance exceeds threshold_length.
+        Units of eV A^-2.
+        # TODO: Allow different k for each pair
+    rt: float
+        The threshold length below which there is no force.
+        # TODO: Allow different rt for each pair
+
+
+    Returns
+    -------
+    list[ase.constraints.Hookean]
+        List of constraints that fixes the bond Length between the
+        molecules in the atom_id tuples.
+    """
+
+    atom_ids = zntrack.params()
+    k = zntrack.params()
+    rt = zntrack.params(None)
+
+    def get_pairs(self, molecule: tuple):
+        atoms = len(molecule)
+        pairs = [(i, j) for i in range(0, atoms) for j in range(i + 1, atoms)]
+        return pairs
+
+    def get_constraint(self, atoms: ase.Atoms):
+        constraints = []
+        for molecule in self.atom_ids:
+            pairs = self.get_pairs(molecule)
+            for pair in pairs:
+                constraints.append(
+                    ase.constraints.Hookean(
+                        int(molecule[pair[0]]), int(molecule[pair[1]]), self.k, self.rt
+                    )
+                )
+
+        return constraints
+
+
 class ASEMD(base.ProcessSingleAtom):
     """Class to run a MD simulation with ASE.
 

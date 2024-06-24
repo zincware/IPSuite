@@ -3,8 +3,10 @@ from .ase_geoopt import ASEGeoOpt
 from .ase_md import (
     ASEMD,
     BoxOscillatingRampModifier,
+    FixedBondLengthConstraint,
     FixedLayerConstraint,
     FixedSphereConstraint,
+    HookeanConstraint,
     LangevinThermostat,
     NPTThermostat,
     PressureRampModifier,
@@ -44,4 +46,6 @@ __all__ = [
     "TorchD3",
     "FixedLayerConstraint",
     "MixCalculator",
+    "FixedBondLengthConstraint",
+    "HookeanConstraint",
 ]
