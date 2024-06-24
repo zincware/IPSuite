@@ -10,8 +10,6 @@ import zntrack
 
 from ipsuite import fields
 
-# TODO raise error if both data and data_file are given
-
 
 class IPSNode(zntrack.Node):
     _module_ = "ipsuite.nodes"
@@ -24,18 +22,12 @@ class ProcessAtoms(IPSNode):
     ----------
     data: list[ase.Atoms]
         The atoms data to process. This must be an input to the Node
-    data_file: str | None
-        The path to the file containing the atoms data. This is an
-        alternative to 'data' and can be used to load the data from
-        a file. If both are given, 'data' is used. Set 'data' to None
-        if you want to use 'data_file'.
     atoms: list[ase.Atoms]
         The processed atoms data. This is an output of the Node.
         It does not have to be 'field.Atoms' but can also be e.g. a 'property'.
     """
 
     data: list[ase.Atoms] = zntrack.deps()
-    data_file: str = zntrack.dvc.deps(None)
     atoms: list[ase.Atoms] = fields.Atoms()
 
     def _post_init_(self):
@@ -51,13 +43,6 @@ class ProcessAtoms(IPSNode):
         """Get the atoms data to process."""
         if self.data is not None:
             return self.data
-        elif self.data_file is not None:
-            try:
-                with self.state.fs.open(pathlib.Path(self.data_file).as_posix()) as f:
-                    return list(ase.io.iread(f))
-            except FileNotFoundError:
-                # File can not be opened with DVCFileSystem, print error
-                raise FileNotFoundError("you want circumvent DVCFileSystem")
         else:
             raise ValueError("No data given.")
 
@@ -74,11 +59,6 @@ class ProcessSingleAtom(IPSNode):
     data_id: int | None
         The id of the atoms object to process. If None, the first
         atoms object is used. Only relevant if 'data' is a list.
-    data_file: str | None
-        The path to the file containing the atoms data. This is an
-        alternative to 'data' and can be used to load the data from
-        a file. If both are given, 'data' is used. Set 'data' to None
-        if you want to use 'data_file'.
     atoms: list[ase.Atoms]
         The processed atoms data. This is an output of the Node.
         It does not have to be 'field.Atoms' but can also be e.g. a 'property'.
@@ -88,7 +68,6 @@ class ProcessSingleAtom(IPSNode):
     """
 
     data: typing.Union[ase.Atoms, typing.List[ase.Atoms]] = zntrack.deps()
-    data_file: str = zntrack.deps_path(None)
     data_id: typing.Optional[int] = zntrack.params(0)
 
     atoms: typing.List[ase.Atoms] = fields.Atoms()
@@ -106,13 +85,6 @@ class ProcessSingleAtom(IPSNode):
                 atoms = self.data[self.data_id].copy()
             else:
                 atoms = self.data.copy()
-        elif self.data_file is not None:
-            try:
-                with self.state.fs.open(pathlib.Path(self.data_file).as_posix()) as f:
-                    atoms = list(ase.io.iread(f))[self.data_id]
-            except FileNotFoundError:
-                # File can not be opened with DVCFileSystem, print error
-                raise FileNotFoundError("you want circumvent DVCFileSystem")
         else:
             raise ValueError("No data given.")
         return atoms

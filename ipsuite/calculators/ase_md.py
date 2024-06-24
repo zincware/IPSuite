@@ -483,7 +483,6 @@ class ASEMD(base.IPSNode):
     model = zntrack.deps()
 
     data: list[ase.Atoms] = zntrack.deps()
-    data_file: str = zntrack.deps(None)
 
     data_id: typing.Optional[int] = zntrack.params(-1)
     data_ids: typing.Optional[int] = zntrack.params(None)
@@ -523,15 +522,6 @@ class ASEMD(base.IPSNode):
                 atoms = self.data.copy()
             else:
                 atoms = list(self.data.copy())
-
-        elif self.data_file is not None:
-            try:
-                with self.state.fs.open(pathlib.Path(self.data_file).as_posix()) as f:
-                    atoms = list(ase.io.iread(f))
-            except FileNotFoundError:
-                # File can not be opened with DVCFileSystem, print error
-                raise FileNotFoundError("you want circumvent DVCFileSystem")
-
         else:
             raise ValueError("No data given.")
 
