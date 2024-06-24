@@ -1,6 +1,5 @@
 import abc
 import collections.abc
-import pathlib
 import typing
 
 import ase
