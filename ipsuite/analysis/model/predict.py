@@ -1,5 +1,4 @@
 import pathlib
-from typing import Optional
 
 import ase
 import numpy as np
