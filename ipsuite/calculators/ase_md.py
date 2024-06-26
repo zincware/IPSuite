@@ -457,7 +457,7 @@ class ASEMD(base.IPSNode):
     constraints: list[Constraint]
         constrains the atoms within the md simulation.
     modifiers: list[Modifier]
-        modifies temperature or cell during the simulation.
+        modifies e.g. temperature or cell during the simulation.
     thermostat: ase dynamics
         dynamics method used for simulation
     steps: int
