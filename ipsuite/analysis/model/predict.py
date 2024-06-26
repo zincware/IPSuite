@@ -64,6 +64,7 @@ class PredictionMetrics(base.ComparePredictions):
         Should be set when trying to compare different models.
 
     """
+
     # TODO ADD OPTIONAL YMAX PARAMETER
 
     figure_ymax: dict[str, float] = zntrack.params({})
@@ -111,7 +112,9 @@ class PredictionMetrics(base.ComparePredictions):
             pred_forces = [x.get_forces() for x in self.y]
             pred_forces = np.concatenate(pred_forces, axis=0) * 1000
             self.content["forces_pred"] = np.reshape(pred_forces, (-1,))
-            self.content["forces_error"] = self.content["forces_true"] - self.content["forces_pred"]
+            self.content["forces_error"] = (
+                self.content["forces_true"] - self.content["forces_pred"]
+            )
 
         if "stress" in true_keys and "stress" in pred_keys:
             true_stress = np.array([x.get_stress(voigt=False) for x in self.x])
@@ -121,13 +124,19 @@ class PredictionMetrics(base.ComparePredictions):
 
             self.content["stress_true"] = np.reshape(true_stress, (-1,))
             self.content["stress_pred"] = np.reshape(pred_stress, (-1,))
-            self.content["stress_error"] = self.content["stress_true"] - self.content["stress_pred"]
+            self.content["stress_error"] = (
+                self.content["stress_true"] - self.content["stress_pred"]
+            )
             self.content["stress_hydro_true"] = np.reshape(hydro_true, (-1,))
             self.content["stress_hydro_pred"] = np.reshape(hydro_pred, (-1,))
-            self.content["stress_hydro_error"] = self.content["stress_hydro_true"] - self.content["stress_hydro_pred"]
+            self.content["stress_hydro_error"] = (
+                self.content["stress_hydro_true"] - self.content["stress_hydro_pred"]
+            )
             self.content["stress_deviat_true"] = np.reshape(deviat_true, (-1,))
             self.content["stress_deviat_pred"] = np.reshape(deviat_pred, (-1,))
-            self.content["stress_deviat_error"] = self.content["stress_deviat_true"] - self.content["stress_deviat_pred"]
+            self.content["stress_deviat_error"] = (
+                self.content["stress_deviat_true"] - self.content["stress_deviat_pred"]
+            )
 
     def get_metrics(self):
         """Update the metrics."""
@@ -174,7 +183,10 @@ class PredictionMetrics(base.ComparePredictions):
             energy_plot.savefig(self.plots_dir / "energy.png")
 
         if "forces_true" in self.content:
-            xlabel = r"$ab~initio$ force components per atom $F_{alpha,i}$ / meV$ \cdot \AA^{-1}$"
+            xlabel = (
+                r"$ab~initio$ force components per atom $F_{alpha,i}$ / meV$ \cdot"
+                r" \AA^{-1}$"
+            )
             ylabel = r"$\Delta F_{alpha,i}$ / meV$ \cdot \AA^{-1}$"
             f_ymax = self.figure_ymax.get("forces", None)
             forces_plot = get_figure(

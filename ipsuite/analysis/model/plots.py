@@ -46,7 +46,13 @@ def density_scatter(ax, x, y, bins, **kwargs) -> None:
 
 
 def get_figure(
-    true, prediction, datalabel: str, xlabel: str, ylabel: str, ymax: typing.Optional[float]=None, figsize: tuple = (10, 7)
+    true,
+    prediction,
+    datalabel: str,
+    xlabel: str,
+    ylabel: str,
+    ymax: typing.Optional[float] = None,
+    figsize: tuple = (10, 7),
 ) -> plt.Figure:
     """Create a correlation plot for true, prediction values.
 
