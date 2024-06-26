@@ -56,7 +56,17 @@ class PredictionMetrics(base.ComparePredictions):
     - energy: meV/atom
     - forces: meV/Å
     - stress: eV/Å^3
+
+    Attributes
+    ----------
+    ymax: dict of label key, and figure ylim values.
+        Should be set when trying to compare different models.
+
     """
+
+    # TODO ADD OPTIONAL YMAX PARAMETER
+
+    figure_ymax: dict[str, float] = zntrack.params({})
 
     data_file = zntrack.outs_path(zntrack.nwd / "data.npz")
 
@@ -91,6 +101,7 @@ class PredictionMetrics(base.ComparePredictions):
         energy_prediction = [x.get_potential_energy() / len(x) for x in self.y]
         energy_prediction = np.array(energy_prediction) * 1000
         self.content["energy_pred"] = energy_prediction
+        self.content["energy_error"] = energy_true - energy_prediction
 
         if "forces" in true_keys and "forces" in pred_keys:
             true_forces = [x.get_forces() for x in self.x]
@@ -100,6 +111,9 @@ class PredictionMetrics(base.ComparePredictions):
             pred_forces = [x.get_forces() for x in self.y]
             pred_forces = np.concatenate(pred_forces, axis=0) * 1000
             self.content["forces_pred"] = np.reshape(pred_forces, (-1,))
+            self.content["forces_error"] = (
+                self.content["forces_true"] - self.content["forces_pred"]
+            )
 
         if "stress" in true_keys and "stress" in pred_keys:
             true_stress = np.array([x.get_stress(voigt=False) for x in self.x])
@@ -109,10 +123,19 @@ class PredictionMetrics(base.ComparePredictions):
 
             self.content["stress_true"] = np.reshape(true_stress, (-1,))
             self.content["stress_pred"] = np.reshape(pred_stress, (-1,))
+            self.content["stress_error"] = (
+                self.content["stress_true"] - self.content["stress_pred"]
+            )
             self.content["stress_hydro_true"] = np.reshape(hydro_true, (-1,))
             self.content["stress_hydro_pred"] = np.reshape(hydro_pred, (-1,))
+            self.content["stress_hydro_error"] = (
+                self.content["stress_hydro_true"] - self.content["stress_hydro_pred"]
+            )
             self.content["stress_deviat_true"] = np.reshape(deviat_true, (-1,))
             self.content["stress_deviat_pred"] = np.reshape(deviat_pred, (-1,))
+            self.content["stress_deviat_error"] = (
+                self.content["stress_deviat_true"] - self.content["stress_deviat_pred"]
+            )
 
     def get_metrics(self):
         """Update the metrics."""
@@ -146,57 +169,71 @@ class PredictionMetrics(base.ComparePredictions):
         """Create figures for all available data."""
         self.plots_dir.mkdir(exist_ok=True)
 
+        e_ymax = self.figure_ymax.get("energy", None)
         energy_plot = get_figure(
             self.content["energy_true"],
-            self.content["energy_pred"],
+            self.content["energy_error"],
             datalabel=f"MAE: {self.energy['mae']:.2f} meV/atom",
             xlabel=r"$ab~initio$ energy $E$ / meV/atom",
-            ylabel=r"predicted energy $E$ / meV/atom",
+            ylabel=r"$\Delta E$ / meV/atom",
+            ymax=e_ymax,
         )
         if save:
             energy_plot.savefig(self.plots_dir / "energy.png")
 
         if "forces_true" in self.content:
-            xlabel = r"$ab~initio$ force components per atom $|F|$ / meV$ \cdot \AA^{-1}$"
-            ylabel = r"predicted force components per atom $|F|$ / meV$ \cdot \AA^{-1}$"
+            xlabel = (
+                r"$ab~initio$ force components per atom $F_{alpha,i}$ / meV$ \cdot"
+                r" \AA^{-1}$"
+            )
+            ylabel = r"$\Delta F_{alpha,i}$ / meV$ \cdot \AA^{-1}$"
+            f_ymax = self.figure_ymax.get("forces", None)
             forces_plot = get_figure(
                 self.content["forces_true"],
-                self.content["forces_pred"],
+                self.content["forces_error"],
                 datalabel=rf"MAE: {self.forces['mae']:.2f} meV$ / \AA$",
                 xlabel=xlabel,
                 ylabel=ylabel,
+                ymax=f_ymax,
             )
             if save:
                 forces_plot.savefig(self.plots_dir / "forces.png")
 
         if "stress_true" in self.content:
             s_true = self.content["stress_true"]
-            s_pred = self.content["stress_pred"]
+            s_error = self.content["stress_error"]
             shydro_true = self.content["stress_hydro_true"]
-            shydro_pred = self.content["stress_hydro_pred"]
+            shydro_error = self.content["stress_hydro_error"]
             sdeviat_true = self.content["stress_deviat_true"]
-            sdeviat_pred = self.content["stress_deviat_pred"]
+            sdeviat_error = self.content["stress_deviat_error"]
+
+            s_ymax = self.figure_ymax.get("stress", None)
+            hs_ymax = self.figure_ymax.get("stress_hydro", None)
+            ds_ymax = self.figure_ymax.get("stress_deviat", None)
 
             stress_plot = get_figure(
                 s_true,
-                s_pred,
+                s_error,
                 datalabel=rf"Max: {self.stress['max']:.4f}",
                 xlabel=r"$ab~initio$ stress",
-                ylabel=r"predicted stress",
+                ylabel=r"$\Delta$ stress",
+                ymax=s_ymax,
             )
             hydrostatic_stress_plot = get_figure(
                 shydro_true,
-                shydro_pred,
+                shydro_error,
                 datalabel=rf"Max: {self.stress_hydro['max']:.4f}",
                 xlabel=r"$ab~initio$ hydrostatic stress",
-                ylabel=r"predicted hydrostatic stress",
+                ylabel=r"$\Delta$ hydrostatic stress",
+                ymax=hs_ymax,
             )
             deviatoric_stress_plot = get_figure(
                 sdeviat_true,
-                sdeviat_pred,
+                sdeviat_error,
                 datalabel=rf"Max: {self.stress_deviat['max']:.4f}",
                 xlabel=r"$ab~initio$ deviatoric stress",
-                ylabel=r"predicted deviatoric stress",
+                ylabel=r"$\Delta$ deviatoric stress",
+                ymax=ds_ymax,
             )
             if save:
                 stress_plot.savefig(self.plots_dir / "stress.png")
