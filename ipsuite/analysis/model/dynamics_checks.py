@@ -43,6 +43,8 @@ class ConnectivityCheck(base.Check):
     The connectivity is based on ASE's natural cutoffs.
 
     """
+    bonded_min_dist: float = zntrack.params(0.6)
+    bonded_max_dist: float = zntrack.params(2.0)
 
     def _post_init_(self) -> None:
         self.nl = None
