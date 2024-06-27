@@ -281,13 +281,6 @@ class CalibrationMetrics(base.ComparePredictions):
         pearsonr = stats.pearsonr(e_err, e_unc)[0]
         self.energy = {"pearsonr": pearsonr}
 
-        if "forces_err" in self.content.keys():
-            f_err = np.reshape(self.content["forces_err"], (-1,))
-            f_unc = np.reshape(self.content["forces_unc"], (-1,))
-            self.forces = {"pearsonr": stats.pearsonr(f_err, f_unc)[0]}
-        else:
-            self.forces = {}
-
     def get_plots(self, save=False):
         """Create figures for all available data."""
         self.plots_dir.mkdir(exist_ok=True)
@@ -297,14 +290,18 @@ class CalibrationMetrics(base.ComparePredictions):
             self.content["energy_unc"],
             markersize=10,
             datalabel=rf"Pearson: {self.energy['pearsonr']:.4f}",
+            forces=False,
         )
+        energy_gauss = get_gaussianicity_figure(self.content["energy_err"], self.content["energy_unc"], forces=True)
         energy_cdf_plot = get_cdf_figure(
             self.content["energy_err"],
             self.content["energy_unc"],
         )
         if save:
             energy_plot.savefig(self.plots_dir / "energy.png")
+            energy_gauss.savefig(self.plots_dir / "energy_gaussianicity.png")
             energy_cdf_plot.savefig(self.plots_dir / "energy_cdf.png")
+
 
         if "forces_err" in self.content:
             xlabel = r"force uncertainty per atom $\sigma$ / meV$ \cdot \AA^{-1}$"
@@ -315,7 +312,7 @@ class CalibrationMetrics(base.ComparePredictions):
             forces_plot = get_calibration_figure(
                 self.content["forces_err"],
                 self.content["forces_unc"],
-                datalabel=rf"Pearson: {self.forces['pearsonr']:.4f}",
+                forces=True,
             )
             forces_cdf_plot = get_cdf_figure(
                 f_unc,
@@ -330,7 +327,7 @@ class CalibrationMetrics(base.ComparePredictions):
                     start,
                     end,
                 )
-                fig = get_gaussianicity_figure(error_true, error_pred)
+                fig = get_gaussianicity_figure(error_true, error_pred, forces=True)
                 gaussianicy_figures.append(fig)
             if save:
                 forces_plot.savefig(self.plots_dir / "forces.png")

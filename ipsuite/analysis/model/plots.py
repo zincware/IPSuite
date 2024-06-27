@@ -111,7 +111,7 @@ def get_cdf_figure(x, y, figsize: tuple = (10, 7)):
 
 
 def get_calibration_figure(
-    error, std, markersize: float = 3.0, datalabel="", figsize: tuple = (10, 7)
+    error, std, markersize: float = 3.0, datalabel="", forces=False, figsize: tuple = (10, 7)
 ):
     fig, ax = plt.subplots(1, 1, figsize=figsize, dpi=300)
 
@@ -147,8 +147,15 @@ def get_calibration_figure(
     ax.set_xlim(np.min(std) / 1.5, np.max(std) * 1.5)
     ax.set_ylim(np.min(error) / 1.5, np.max(error) * 1.5)
 
-    ax.set_xlabel(r"$\sigma_{f_{i\alpha}}(A)$ [eV/$\AA$] ")
-    ax.set_ylabel(r"$|\Delta f_{i\alpha}(A)|$ [eV/$\AA$] ")
+    if forces:
+        xlabel = r"$\sigma_{f_{i\alpha}}(A)$ [eV/$\AA$] "
+        ylabel = r"$|\Delta f_{i\alpha}(A)|$ [eV/$\AA$] "
+    else:
+        xlabel = r"$\sigma_{E_{i}}(A)$ [meV/atom] "
+        ylabel = r"$|\Delta E_{i}(A)|$ [meV/atom] "
+
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
     ax.legend()
     return fig
 
@@ -177,7 +184,7 @@ def slice_uncertainty(true, pred_mean, pred_std, slice_start, slice_end):
     return error_true, error_pred
 
 
-def get_gaussianicity_figure(error_true, error_pred):
+def get_gaussianicity_figure(error_true, error_pred, forces=True):
     true_kde_sel = gaussian_kde(error_true)
     ens_kde_sel = gaussian_kde(error_pred)
 
@@ -188,20 +195,29 @@ def get_gaussianicity_figure(error_true, error_pred):
     ens_sel = ens_kde_sel(xgrid)
     true_sel = true_kde_sel(xgrid)
 
-    coeff, _ = curve_fit(gauss, xgrid, true_sel, p0=[0.0, 100])
-    std = coeff[1]
-
     fig, ax = plt.subplots()
 
-    ax.semilogy(xgrid, gauss(xgrid, 0, std), "k--", label="Gaussian")
+    try:
+        coeff, _ = curve_fit(gauss, xgrid, true_sel, p0=[0.0, 100])
+        std = coeff[1]
+        ax.semilogy(xgrid, gauss(xgrid, 0, std), "k--", label="Gaussian")
+    except:
+        pass
     ax.semilogy(xgrid, true_sel, "r-", label="empirical")
     ax.semilogy(xgrid, ens_sel, "b-", label="predicted")
     ymax = 5 * max(np.max(true_sel), np.max(ens_sel))
     ax.set_ylim(1e-6, ymax)
     ax.set_yscale("log")
 
-    ax.set_xlabel(r"$\Delta (S)$ / meV/Ang")
-    ax.set_ylabel(r"$p(\Delta | S)$")
+    if forces:
+        xlabel = r"$\Delta (S)$ / meV/Ang"
+        ylabel = r"$p(\Delta | S)$"
+    else:
+        xlabel = r"$\Delta (S)$ / meV/atom"
+        ylabel = r"$p(\Delta | S)$"
+
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
     ax.legend()
     return fig
 
