@@ -79,6 +79,4 @@ def get_full_metrics(true: np.ndarray, prediction: np.ndarray) -> dict:
         "rrmse": relative_rmse(true, prediction),
     }
 
-    if len(true) > 2:
-        metrics["pearsonr"] = stats.pearsonr(true, prediction)[0]
     return metrics
