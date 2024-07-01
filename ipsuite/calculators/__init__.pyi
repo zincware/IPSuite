@@ -11,6 +11,7 @@ from .ase_md import (
     RescaleBoxModifier,
     TemperatureOscillatingRampModifier,
     TemperatureRampModifier,
+    VelocityVerletDynamic,
 )
 from .ase_standard import EMTSinglePoint, LJSinglePoint
 from .cp2k import CP2KSinglePoint, CP2KYaml
@@ -29,6 +30,7 @@ __all__ = [
     "xTBSinglePoint",
     "LJSinglePoint",
     "LangevinThermostat",
+    "VelocityVerletDynamic",
     "ApaxJaxMD",
     "RescaleBoxModifier",
     "BoxOscillatingRampModifier",

@@ -44,6 +44,9 @@ class _Nodes:
     AddDataH5MD = "ipsuite.data_loading.AddDataH5MD"
     ReadData = "ipsuite.data_loading.ReadData"
 
+    # Datasets
+    MD22Dataset = "ipsuite.datasets.MD22Dataset"
+
     # Bootstrap
     RattleAtoms = "ipsuite.bootstrap.RattleAtoms"
     TranslateMolecules = "ipsuite.bootstrap.TranslateMolecules"
@@ -94,6 +97,7 @@ class _Nodes:
     MixCalculator = "ipsuite.calculators.MixCalculator"
 
     LangevinThermostat = "ipsuite.calculators.LangevinThermostat"
+    VelocityVerletDynamic = "ipsuite.calculators.VelocityVerletDynamic"
     NPTThermostat = "ipsuite.calculators.NPTThermostat"
     RescaleBoxModifier = "ipsuite.calculators.RescaleBoxModifier"
     BoxOscillatingRampModifier = "ipsuite.calculators.BoxOscillatingRampModifier"
@@ -106,6 +110,9 @@ class _Nodes:
 
     # Geometry
     BarycenterMapping = "ipsuite.geometry.BarycenterMapping"
+
+    # Data manipulation
+    Flatten = "ipsuite.base.Flatten"
 
 
 def __getattr__(name):
