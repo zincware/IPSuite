@@ -5,6 +5,7 @@ from ipsuite.base.base import (
     AnalyseAtoms,
     Check,
     ComparePredictions,
+    Flatten,
     IPSNode,
     Mapping,
     Modifier,
@@ -22,4 +23,5 @@ __all__ = [
     "Modifier",
     "Check",
     "IPSNode",
+    "Flatten",
 ]

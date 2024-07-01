@@ -53,6 +53,7 @@ def get_figure(
     datalabel: str,
     xlabel: str,
     ylabel: str,
+    ymax: typing.Optional[float] = None,
     figsize: tuple = (10, 7),
     density=True,
 ) -> plt.Figure:
@@ -74,7 +75,7 @@ def get_figure(
     """
     sns.set()
     fig, ax = plt.subplots(figsize=figsize)
-    ax.plot(true, true, color="grey", zorder=0)  # plot the diagonal in the background
+    ax.plot(true, np.zeros_like(true), color="grey", zorder=0)
     bins = 25
     if true.shape[0] < 20 or not density:
         # don't use density for very small datasets
@@ -85,6 +86,8 @@ def get_figure(
         )
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
+    if ymax:
+        ax.set_ylim([-ymax, ymax])
     ax.legend()
     return fig
 

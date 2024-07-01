@@ -111,6 +111,9 @@ class _Nodes:
     # Geometry
     BarycenterMapping = "ipsuite.geometry.BarycenterMapping"
 
+    # Data manipulation
+    Flatten = "ipsuite.base.Flatten"
+
 
 def __getattr__(name):
     """Overwrite the default __getattr__ to import the nodes lazily."""
