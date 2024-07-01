@@ -1,16 +1,18 @@
 import pathlib
-from typing import List, Optional
+from typing import List
 
 import ase
-from ipsuite.analysis.model.math import comptue_rll
 import numpy as np
 import tqdm
 import zntrack
 from ase.calculators.singlepoint import PropertyNotImplementedError
-from scipy import stats
 
 from ipsuite import base, models, utils
-from ipsuite.analysis.model.math import decompose_stress_tensor, force_decomposition
+from ipsuite.analysis.model.math import (
+    comptue_rll,
+    decompose_stress_tensor,
+    force_decomposition,
+)
 from ipsuite.analysis.model.plots import (
     get_calibration_figure,
     get_cdf_figure,
@@ -324,7 +326,6 @@ class CalibrationMetrics(base.ComparePredictions):
             rll = comptue_rll(f_err, f_unc)
             self.forces = {"rll": rll}
 
-
     def get_plots(self, save=False):
         """Create figures for all available data."""
         self.plots_dir.mkdir(exist_ok=True)
@@ -336,7 +337,9 @@ class CalibrationMetrics(base.ComparePredictions):
             datalabel=rf"RLL={self.energy['rll']:.1f}",
             forces=False,
         )
-        energy_gauss = get_gaussianicity_figure(self.content["energy_err"], self.content["energy_unc"], forces=False)
+        energy_gauss = get_gaussianicity_figure(
+            self.content["energy_err"], self.content["energy_unc"], forces=False
+        )
         energy_cdf_plot = get_cdf_figure(
             self.content["energy_err"],
             self.content["energy_unc"],
@@ -345,7 +348,6 @@ class CalibrationMetrics(base.ComparePredictions):
             energy_plot.savefig(self.plots_dir / "energy.png")
             energy_gauss.savefig(self.plots_dir / "energy_gaussianicity.png")
             energy_cdf_plot.savefig(self.plots_dir / "energy_cdf.png")
-
 
         if "forces_err" in self.content:
             f_err = np.reshape(self.content["forces_err"], (-1,))
