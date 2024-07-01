@@ -111,7 +111,7 @@ def get_cdf_figure(x, y, figsize: tuple = (10, 7)):
 
 
 def get_calibration_figure(
-    error, std, markersize: float = 3.0, datalabel="", forces=False, figsize: tuple = (10, 7)
+    error, std, markersize: float = 3.0, datalabel=None, forces=False, figsize: tuple = (10, 7)
 ):
     fig, ax = plt.subplots(1, 1, figsize=figsize, dpi=300)
 
@@ -148,15 +148,16 @@ def get_calibration_figure(
     ax.set_ylim(np.min(error) / 1.5, np.max(error) * 1.5)
 
     if forces:
-        xlabel = r"$\sigma_{f_{i\alpha}}(A)$ [eV/$\AA$] "
-        ylabel = r"$|\Delta f_{i\alpha}(A)|$ [eV/$\AA$] "
+        xlabel = r"$\sigma_{f_{i\alpha}}(A)$ [meV/$\AA$] "
+        ylabel = r"$|\Delta f_{i\alpha}(A)|$ [meV/$\AA$] "
     else:
         xlabel = r"$\sigma_{E_{i}}(A)$ [meV/atom] "
         ylabel = r"$|\Delta E_{i}(A)|$ [meV/atom] "
 
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    ax.legend()
+    if datalabel:
+        ax.legend()
     return fig
 
 

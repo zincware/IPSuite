@@ -74,3 +74,19 @@ def decompose_stress_tensor(stresses):
     hydrostatic_stresses = np.array(hydrostatic_stresses)
     deviatoric_stresses = np.array(deviatoric_stresses)
     return hydrostatic_stresses, deviatoric_stresses
+
+
+def compute_rmse(errors):
+    rmse = np.sqrt(np.mean(errors**2))
+    return rmse
+
+def nlls(errors, sigmas):
+    nll = 0.5 * ((errors/sigmas)**2 + np.log(sigmas))
+    return nll
+
+def comptue_rll(errors, sigmas):
+    rmse = compute_rmse(errors)
+    numerator = np.sum( nlls(errors, sigmas) - nlls(errors, rmse) )
+    demoninator = np.sum( nlls(errors, np.abs(errors)) - nlls(errors, rmse) )
+    rll = numerator / demoninator * 100
+    return rll

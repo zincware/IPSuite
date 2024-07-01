@@ -2,6 +2,7 @@ import pathlib
 from typing import List, Optional
 
 import ase
+from ipsuite.analysis.model.math import comptue_rll
 import numpy as np
 import tqdm
 import zntrack
@@ -245,7 +246,6 @@ class CalibrationMetrics(base.ComparePredictions):
         """Create dict of all data."""
         true_keys = self.x[0].calc.results.keys()
         pred_keys = self.y[0].calc.results.keys()
-        # TODO unify usage of std vs variance!!!!! also in apax
 
         energy_true = [a.get_potential_energy() / len(a) for a in self.x]
         energy_true = np.array(energy_true) * 1000
@@ -278,8 +278,15 @@ class CalibrationMetrics(base.ComparePredictions):
         """Update the metrics."""
         e_err = self.content["energy_err"]
         e_unc = self.content["energy_unc"]
-        pearsonr = stats.pearsonr(e_err, e_unc)[0]
-        self.energy = {"pearsonr": pearsonr}
+        rll = comptue_rll(e_err, e_unc)
+        self.energy = {"rll": rll}
+
+        if "forces_unc" in self.content:
+            f_err = self.content["forces_err"]
+            f_unc = self.content["forces_unc"]
+            rll = comptue_rll(f_err, f_unc)
+            self.forces = {"rll": rll}
+
 
     def get_plots(self, save=False):
         """Create figures for all available data."""
@@ -289,10 +296,10 @@ class CalibrationMetrics(base.ComparePredictions):
             self.content["energy_err"],
             self.content["energy_unc"],
             markersize=10,
-            datalabel=rf"Pearson: {self.energy['pearsonr']:.4f}",
+            datalabel=rf"RLL={self.energy['rll']:.1f}",
             forces=False,
         )
-        energy_gauss = get_gaussianicity_figure(self.content["energy_err"], self.content["energy_unc"], forces=True)
+        energy_gauss = get_gaussianicity_figure(self.content["energy_err"], self.content["energy_unc"], forces=False)
         energy_cdf_plot = get_cdf_figure(
             self.content["energy_err"],
             self.content["energy_unc"],
@@ -304,14 +311,13 @@ class CalibrationMetrics(base.ComparePredictions):
 
 
         if "forces_err" in self.content:
-            xlabel = r"force uncertainty per atom $\sigma$ / meV$ \cdot \AA^{-1}$"
-            ylabel = r"force components error per atom $\Delta F$ / meV$ \cdot \AA^{-1}$"
             f_err = np.reshape(self.content["forces_err"], (-1,))
             f_unc = np.reshape(self.content["forces_unc"], (-1,))
 
             forces_plot = get_calibration_figure(
                 self.content["forces_err"],
                 self.content["forces_unc"],
+                datalabel=rf"RLL={self.forces['rll']:.1f}",
                 forces=True,
             )
             forces_cdf_plot = get_cdf_figure(
@@ -348,7 +354,7 @@ class ForceAngles(base.ComparePredictions):
     plot: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "angle.png")
     log_plot: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "angle_ylog.png")
 
-    angles: dict = zntrack.zn.metrics()
+    angles: dict = zntrack.metrics()
 
     def run(self):
         true_forces = np.reshape([a.get_forces() for a in self.x], (-1, 3))
