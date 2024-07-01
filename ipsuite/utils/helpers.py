@@ -16,6 +16,8 @@ def setup_ase():
         "forces_uncertainty",
         "energy_uncertainty",
         "stress_uncertainty",
+        "energy_ensemble",
+        "forces_ensemble",
         "node_energy",
     ]:
         if val not in all_properties:
