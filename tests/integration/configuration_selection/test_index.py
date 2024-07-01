@@ -142,11 +142,14 @@ def test_exclude_configurations_list(proj_path, traj_file):
 def test_filter_outlier(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
-        filtered_data = ips.configuration_selection.FilterOutlier(
-            data=data.atoms, key="energy", threshold=1, direction="both"
+        filtered_data = ips.configuration_selection.ThresholdSelection(
+            data=data.atoms,
+            reference="energy",
+            threshold=1,
+            direction="both",
         )
 
     project.run()
 
     filtered_data.load()
-    assert len(filtered_data.atoms) == 13
+    assert len(filtered_data.atoms) == 8
