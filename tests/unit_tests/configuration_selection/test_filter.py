@@ -41,7 +41,7 @@ def test_get_selected_atoms(
         reduction_axis=reduction_axis,
         data=None,
         cutoffs=[lower_limit, upper_limit],
-        n_configurations=4,
+        n_configurations=3,
         min_distance=1,
         direction=direction,
     )
@@ -51,9 +51,8 @@ def test_get_selected_atoms(
             selected_atoms = filter.select_atoms(atoms_list)
     else:
         selected_atoms = filter.select_atoms(atoms_list)
-        print(selected_atoms)
 
-        assert len(set(selected_atoms)) == 4
+        assert len(set(selected_atoms)) == 3
         assert isinstance(selected_atoms, list)
 
         if direction == "above":
