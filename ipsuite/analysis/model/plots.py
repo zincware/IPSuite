@@ -168,6 +168,12 @@ def gauss(x, *p):
     m, s = p
     return np.exp(-(((x - m) / s) ** 2) * 0.5) / np.sqrt(2 * np.pi * s**2)
 
+def fold_gauss(x, *p):
+    m, s = p
+    gg = gauss(x, m,s) + gauss(x, -m,s)
+    gg[x<0.0] = 0.0
+    return gg
+
 
 def slice_ensemble_uncertainty(true, pred_ens, slice_start, slice_end):
     pred_mean = np.mean(pred_ens, axis=1)
@@ -188,25 +194,44 @@ def slice_uncertainty(true, pred_mean, pred_std, slice_start, slice_end):
     return error_true, error_pred
 
 
-def get_gaussianicity_figure(error_true, error_pred, forces=True):
+def get_gaussianicity_figure(error_true, error_pred, forces=True, fold = False):
+    # if forces:
+    #     error_true = np.abs(error_true)
     true_kde_sel = gaussian_kde(error_true)
     ens_kde_sel = gaussian_kde(error_pred)
 
     bounds = 1.5 * max(np.max(np.abs(error_true)), np.max(np.abs(error_pred)))
 
-    xgrid = np.linspace(-bounds, bounds, 400)
+    fig, ax = plt.subplots()
 
+    xgrid = np.linspace(-bounds, bounds, 400)
+    ax.set_xlim([-bounds, bounds])
+    if fold:
+        xgrid = np.linspace(-0.01 *bounds, bounds, 400)
+        ax.set_xlim([-0.01 *bounds, bounds])
+    
     ens_sel = ens_kde_sel(xgrid)
     true_sel = true_kde_sel(xgrid)
 
-    fig, ax = plt.subplots()
-
     try:
-        coeff, _ = curve_fit(gauss, xgrid, true_sel, p0=[0.0, 100])
-        std = coeff[1]
-        ax.semilogy(xgrid, gauss(xgrid, 0, std), "k--", label="Gaussian")
+        if not fold:
+            guess = [0.0, 100]
+            coeff, _ = curve_fit(gauss, xgrid, true_sel, p0=guess)
+            std = coeff[1]
+            ax.semilogy(xgrid, gauss(xgrid, 0, std), "k--", label="Gaussian")
+        else:
+            guess = [100, 200]
+            coeff, _ = curve_fit(fold_gauss, xgrid, true_sel, p0=guess)
+            std = coeff[1]
+            ax.semilogy(xgrid, fold_gauss(xgrid, 0, std), "k--", label="Folded Gaussian")
+            true_sel[xgrid < 0] = 0.0
+            ens_sel[xgrid < 0] = 0.0
+        
+        
     except:
         pass
+
+
     ax.semilogy(xgrid, true_sel, "r-", label="empirical")
     ax.semilogy(xgrid, ens_sel, "b-", label="predicted")
     ymax = 5 * max(np.max(true_sel), np.max(ens_sel))
