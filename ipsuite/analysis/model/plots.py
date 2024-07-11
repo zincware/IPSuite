@@ -173,10 +173,11 @@ def gauss(x, *p):
     m, s = p
     return np.exp(-(((x - m) / s) ** 2) * 0.5) / np.sqrt(2 * np.pi * s**2)
 
+
 def fold_gauss(x, *p):
     m, s = p
-    gg = gauss(x, m,s) + gauss(x, -m,s)
-    gg[x<0.0] = 0.0
+    gg = gauss(x, m, s) + gauss(x, -m, s)
+    gg[x < 0.0] = 0.0
     return gg
 
 
@@ -199,7 +200,7 @@ def slice_uncertainty(true, pred_mean, pred_std, slice_start, slice_end):
     return error_true, error_pred
 
 
-def get_gaussianicity_figure(error_true, error_pred, forces=True, fold = False):
+def get_gaussianicity_figure(error_true, error_pred, forces=True, fold=False):
     # if forces:
     #     error_true = np.abs(error_true)
     true_kde_sel = gaussian_kde(error_true)
@@ -212,9 +213,9 @@ def get_gaussianicity_figure(error_true, error_pred, forces=True, fold = False):
     xgrid = np.linspace(-bounds, bounds, 400)
     ax.set_xlim([-bounds, bounds])
     if fold:
-        xgrid = np.linspace(-0.01 *bounds, bounds, 400)
-        ax.set_xlim([-0.01 *bounds, bounds])
-    
+        xgrid = np.linspace(-0.01 * bounds, bounds, 400)
+        ax.set_xlim([-0.01 * bounds, bounds])
+
     ens_sel = ens_kde_sel(xgrid)
     true_sel = true_kde_sel(xgrid)
 
@@ -231,11 +232,9 @@ def get_gaussianicity_figure(error_true, error_pred, forces=True, fold = False):
             ax.semilogy(xgrid, fold_gauss(xgrid, 0, std), "k--", label="Folded Gaussian")
             true_sel[xgrid < 0] = 0.0
             ens_sel[xgrid < 0] = 0.0
-        
-        
+
     except:
         pass
-
 
     ax.semilogy(xgrid, true_sel, "r-", label="empirical")
     ax.semilogy(xgrid, ens_sel, "b-", label="predicted")
