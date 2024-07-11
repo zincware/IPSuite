@@ -1,7 +1,6 @@
 """Utils for computing metrics."""
 
 import numpy as np
-from scipy import stats
 
 
 def calculate_l_p_norm(y_true: np.ndarray, y_pred: np.ndarray, p: int = 2):

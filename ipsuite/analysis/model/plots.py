@@ -114,7 +114,12 @@ def get_cdf_figure(x, y, figsize: tuple = (10, 7)):
 
 
 def get_calibration_figure(
-    error, std, markersize: float = 3.0, datalabel=None, forces=False, figsize: tuple = (10, 7)
+    error,
+    std,
+    markersize: float = 3.0,
+    datalabel=None,
+    forces=False,
+    figsize: tuple = (10, 7),
 ):
     fig, ax = plt.subplots(1, 1, figsize=figsize, dpi=300)
 
