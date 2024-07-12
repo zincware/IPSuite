@@ -19,7 +19,7 @@ znh5md = "^0.1.6a0"
 ase = "^3.22.1"
 
 seaborn = "^0.12.2"
-cp2k-input-tools = {git = "https://github.com/cp2k/cp2k-input-tools.git"}
+cp2k-input-tools = "^0.9"
 cp2k-output-tools = "^0.5.0"
 
 
