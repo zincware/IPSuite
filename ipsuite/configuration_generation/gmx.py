@@ -1,15 +1,14 @@
-import zntrack
-import subprocess
 import pathlib
-import shutil
 import re
+import shutil
+import subprocess
 
-from rdkit import Chem
-from rdkit.Chem import AllChem
-from rdkit.Chem import rdMolDescriptors
-from ipsuite import base
-
+import zntrack
 from pint import UnitRegistry
+from rdkit import Chem
+from rdkit.Chem import AllChem, rdMolDescriptors
+
+from ipsuite import base
 
 # Initialize pint unit registry
 ureg = UnitRegistry()
@@ -19,7 +18,7 @@ def smiles_to_pdb(
     smiles: str,
     file: str,
     identifier: str | None = None,
-    cwd: pathlib.Path = pathlib.Path("."),
+    cwd: pathlib.Path = pathlib.Path(),
 ) -> Chem.Mol:
     """Convert a SMILES string to a PDB file and return the RDKit molecule object."""
     m = Chem.MolFromSmiles(smiles)
@@ -67,9 +66,7 @@ def get_box(density: float, molecules: list[Chem.Mol], counts: list[int]) -> flo
 
     volume_cm3 = total_mass_g / density_g_per_cm3  # volume in cm^3
     volume_angstrom3 = volume_cm3.to(ureg.angstrom**3)  # convert cm^3 to angstrom^3
-    side_length = volume_angstrom3 ** (
-        1 / 3
-    )  # side length of the cubic box in angstroms
+    side_length = volume_angstrom3 ** (1 / 3)  # side length of the cubic box in angstroms
 
     return side_length.magnitude
 
@@ -78,7 +75,7 @@ def create_pack_script(
     files: list[str],
     counts: list[int],
     box_size: float,
-    cwd: pathlib.Path = pathlib.Path("."),
+    cwd: pathlib.Path = pathlib.Path(),
 ):
     """
     Create a PACKMOL input script to pack molecules into a box.
@@ -153,9 +150,9 @@ class Smiles2Gromacs(base.IPSNode):
     Installation
     ------------
     To install the required software, run the following commands:
-    
+
     .. code-block:: bash
-    
+
             pip install acpype
 
     """
@@ -174,7 +171,6 @@ class Smiles2Gromacs(base.IPSNode):
             raise ValueError("The number of smiles must match the number of counts")
         if len(self.smiles) != len(self.labels):
             raise ValueError("The number of smiles must match the number of labels")
-        
 
         if isinstance(self.output_dir, str):
             self.output_dir = pathlib.Path(self.output_dir)
@@ -270,9 +266,7 @@ class Smiles2Gromacs(base.IPSNode):
         mols = []
         charges = []
         for smiles, label in zip(self.smiles, self.labels):
-            mols.append(
-                smiles_to_pdb(smiles, f"{label}.pdb", label, cwd=self.output_dir)
-            )
+            mols.append(smiles_to_pdb(smiles, f"{label}.pdb", label, cwd=self.output_dir))
             # get the charge of the molecule
             charges.append(Chem.GetFormalCharge(mols[-1]))
         self.charges = charges
