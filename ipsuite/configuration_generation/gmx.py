@@ -130,6 +130,7 @@ def extract_atomtypes(input_file: pathlib.Path, output_file: pathlib.Path):
         # Write the modified content back to the input file
         input_file.write_text(modified_content)
 
+
 def combine_atomtype_files(files: list[pathlib.Path], output_file: pathlib.Path):
     """Read all the files and write a single output file. Removes duplicates."""
     header = []
@@ -143,11 +144,12 @@ def combine_atomtype_files(files: list[pathlib.Path], output_file: pathlib.Path)
                         header.append(line)
                 else:
                     atomtypes.append(line)
-    
+
     atomtypes = list(set(atomtypes))
     with open(output_file, "w") as f:
         f.writelines(header)
         f.writelines(atomtypes)
+
 
 class Smiles2Gromacs(base.IPSNode):
     """Gromacs Node.
@@ -214,7 +216,6 @@ class Smiles2Gromacs(base.IPSNode):
             "box.gro",
             "-box",
             str((self.box_size * ureg.angstrom).to(ureg.nanometer).magnitude),
-
         ]
         subprocess.run(" ".join(cmd), shell=True, check=True, cwd=self.output_dir)
 
@@ -227,10 +228,10 @@ class Smiles2Gromacs(base.IPSNode):
                 self.output_dir / f"{label}.itp",
                 self.output_dir / f"{label}_atomtypes.itp",
             )
-        
+
         combine_atomtype_files(
             [self.output_dir / f"{label}_atomtypes.itp" for label in self.labels],
-            self.output_dir / "atomtypes.itp"
+            self.output_dir / "atomtypes.itp",
         )
 
     def _create_box_top(self):
@@ -243,7 +244,7 @@ class Smiles2Gromacs(base.IPSNode):
             )
             f.write("\n")
             f.write("; Include atomtypes\n")
-            f.write("#include \"atomtypes.itp\"\n")
+            f.write('#include "atomtypes.itp"\n')
             f.write("\n")
             f.write("; Include topology\n")
             for label in self.labels:
