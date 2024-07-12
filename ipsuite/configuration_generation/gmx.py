@@ -184,7 +184,23 @@ class Smiles2Gromacs(base.IPSNode):
             subprocess.run(cmd, check=True, cwd=self.output_dir)
 
     def _create_box_gro(self):
-        cmd = ["echo", "0", "|", "gmx", "editconf", "-f", self.box, "-o", "box.gro", "-box", str((self.box_size / 10) * 2), "-c", "-princ", "-bt", "cubic"]
+        cmd = [
+            "echo",
+            "0",
+            "|",
+            "gmx",
+            "editconf",
+            "-f",
+            self.box,
+            "-o",
+            "box.gro",
+            "-box",
+            str((self.box_size / 10) * 2),
+            "-c",
+            "-princ",
+            "-bt",
+            "cubic",
+        ]
         subprocess.run(" ".join(cmd), shell=True, check=True, cwd=self.output_dir)
 
     def _create_species_top_atomtypes(self):
