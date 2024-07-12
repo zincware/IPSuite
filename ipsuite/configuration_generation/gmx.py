@@ -184,23 +184,7 @@ class Smiles2Gromacs(base.IPSNode):
             subprocess.run(cmd, check=True, cwd=self.output_dir)
 
     def _create_box_gro(self):
-        cmd = [
-            "echo",
-            "0",
-            "|",
-            "gmx",
-            "editconf",
-            "-f",
-            self.box,
-            "-bt",
-            "cubic",
-            "-d",
-            "1",
-            "-c",
-            "-princ",
-            "-o",
-            "box.gro",
-        ]
+        cmd = ["echo", "0", "|", "gmx", "editconf", "-f", self.box, "-o", "box.gro", "-box", str((self.box_size / 10) * 2), "-c", "-princ", "-bt", "cubic"]
         subprocess.run(" ".join(cmd), shell=True, check=True, cwd=self.output_dir)
 
     def _create_species_top_atomtypes(self):
@@ -258,8 +242,7 @@ class Smiles2Gromacs(base.IPSNode):
             ]
             print(f"Running {' '.join(cmd)}")
             subprocess.run(cmd, check=True, cwd=self.output_dir)
-
-            cmd = ["gmx", "mdrun", "-v", "-deffnm", "box"]
+            cmd = ["gmx", "mdrun", "-ntmpi", "1", "-v", "-deffnm", "box"]
             subprocess.run(cmd, check=True, cwd=self.output_dir)
 
     def _pack_box(self):
@@ -270,11 +253,11 @@ class Smiles2Gromacs(base.IPSNode):
             # get the charge of the molecule
             charges.append(Chem.GetFormalCharge(mols[-1]))
         self.charges = charges
-        box_size = get_box(self.density, mols, self.count)
+        self.box_size = get_box(self.density, mols, self.count)
         create_pack_script(
             [f"{label}.pdb" for label in self.labels],
             self.count,
-            box_size,
+            self.box_size,
             cwd=self.output_dir,
         )
         cmd = ["packmol < packmol.inp"]
