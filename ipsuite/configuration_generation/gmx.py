@@ -5,10 +5,17 @@ import subprocess
 
 import zntrack
 from pint import UnitRegistry
+import numpy as np
 from rdkit import Chem
 from rdkit.Chem import AllChem, rdMolDescriptors
+from ase.io import read
+from ase.calculators.singlepoint import SinglePointCalculator
+import MDAnalysis as mda
+from ase import Atoms
+import pandas as pd
+from ase import units
 
-from ipsuite import base
+from ipsuite import base, fields
 
 # Initialize pint unit registry
 ureg = UnitRegistry()
@@ -151,6 +158,16 @@ def combine_atomtype_files(files: list[pathlib.Path], output_file: pathlib.Path)
         f.writelines(atomtypes)
 
 
+def validate_mdp(path):
+    necessary_keys = ["nstxout", "nstfout"]
+    path = pathlib.Path(path)
+    with path.open("r") as f:
+        content = f.read()
+        for key in necessary_keys:
+            if key not in content:
+                raise ValueError(f"Key '{key}' is required in {path.name} for writing a trajectory")
+
+
 class Smiles2Gromacs(base.IPSNode):
     """Gromacs Node.
 
@@ -185,6 +202,8 @@ class Smiles2Gromacs(base.IPSNode):
     fudgeQQ: float = zntrack.params(1.0)
 
     mdp_files: list[str | pathlib.Path] = zntrack.deps_path()
+
+    atoms = fields.Atoms()
 
     output_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "gromacs")
 
@@ -300,11 +319,48 @@ class Smiles2Gromacs(base.IPSNode):
         subprocess.run(cmd, check=True, shell=True, cwd=self.output_dir)
         self.box = "box.pdb"
 
+    # def _extract_energies(self):
+    #     cmd = ["gmx", "energy", "-f", "box.edr", "8"]
+    #     subprocess.run(cmd, check=True, shell=True, cwd=self.output_dir)
+    #     lineNumber = 1
+    #     with open("energy.xvg", "r") as in_file:
+    #         for i, line in enumerate(in_file, 1):
+    #             if line.startswith(" "):
+    #                 lineNumber = i
+    #                 break
+    #     df = pd.read_csv("energy.xvg", skiprows=lineNumber, header=None, names=['time', "energy"], sep="\s+")
+    #     energies = df["energy"].iloc[:] * units.kcal / units.mol
+    #     return energies
+
+    def _convert_trajectory(self):
+        atoms_template = read((self.output_dir / "box.gro").as_posix())
+        trr = mda.coordinates.TRR.TRRReader((self.output_dir / "box.trr").as_posix())
+        
+        # energies = self._extract_energies()
+        energies = np.zeros(len(trr))
+
+        traj = []
+        Z =atoms_template.numbers
+        for frame, energy in zip(trr, energies):
+            pos = frame.positions
+            forces = frame.forces * units.kcal / units.mol / 10
+            cell = frame.dimensions
+
+            new_atoms = Atoms(numbers=Z, positions=pos, cell=cell)
+            calc = SinglePointCalculator(new_atoms, energy=energy, forces=forces)
+            new_atoms.calc = calc
+            traj.append(new_atoms)
+
+        self.atoms = traj
+
+
     def run(self):
         self.output_dir.mkdir(exist_ok=True, parents=True)
+        validate_mdp(self.mdp_files[-1])
         self._pack_box()
         self._run_acpype()
         self._create_box_gro()
         self._create_species_top_atomtypes()
         self._create_box_top()
         self._run_gmx()
+        self._convert_trajectory()
