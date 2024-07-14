@@ -319,18 +319,19 @@ class Smiles2Gromacs(base.IPSNode):
         subprocess.run(cmd, check=True, shell=True, cwd=self.output_dir)
         self.box = "box.pdb"
 
-    # def _extract_energies(self):
-    #     cmd = ["gmx", "energy", "-f", "box.edr", "8"]
-    #     subprocess.run(cmd, check=True, shell=True, cwd=self.output_dir)
-    #     lineNumber = 1
-    #     with open("energy.xvg", "r") as in_file:
-    #         for i, line in enumerate(in_file, 1):
-    #             if line.startswith(" "):
-    #                 lineNumber = i
-    #                 break
-    #     df = pd.read_csv("energy.xvg", skiprows=lineNumber, header=None, names=['time', "energy"], sep="\s+")
-    #     energies = df["energy"].iloc[:] * units.kcal / units.mol
-    #     return energies
+    def _extract_energies(self):
+        cmd = ["echo", "8", "|","gmx", "energy", "-f", "box.edr"]
+        subprocess.run(cmd, check=True, cwd=self.output_dir)
+
+        lineNumber = 1
+        with (self.output_dir/"energy.xvg").open("r") as in_file:
+            for i, line in enumerate(in_file, 1):
+                if line.startswith(" "):
+                    lineNumber = i
+                    break
+        df = pd.read_csv("energy.xvg", skiprows=lineNumber, header=None, names=['time', "energy"], sep="\s+")
+        energies = df["energy"].iloc[:] * units.kcal / units.mol
+        return energies
 
     def _convert_trajectory(self):
         atoms_template = read((self.output_dir / "box.gro").as_posix())
