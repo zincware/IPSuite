@@ -3,17 +3,16 @@ import re
 import shutil
 import subprocess
 
-import zntrack
-from pint import UnitRegistry
+import MDAnalysis as mda
 import numpy as np
+import pandas as pd
+import zntrack
+from ase import Atoms, units
+from ase.calculators.singlepoint import SinglePointCalculator
+from ase.io import read
+from pint import UnitRegistry
 from rdkit import Chem
 from rdkit.Chem import AllChem, rdMolDescriptors
-from ase.io import read
-from ase.calculators.singlepoint import SinglePointCalculator
-import MDAnalysis as mda
-from ase import Atoms
-import pandas as pd
-from ase import units
 
 from ipsuite import base, fields
 
@@ -165,7 +164,9 @@ def validate_mdp(path):
         content = f.read()
         for key in necessary_keys:
             if key not in content:
-                raise ValueError(f"Key '{key}' is required in {path.name} for writing a trajectory")
+                raise ValueError(
+                    f"Key '{key}' is required in {path.name} for writing a trajectory"
+                )
 
 
 class Smiles2Gromacs(base.IPSNode):
@@ -261,7 +262,8 @@ class Smiles2Gromacs(base.IPSNode):
             f.write("\n")
             f.write("; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ\n")
             f.write(
-                f"1               2               yes             {self.fudgeLJ}     {self.fudgeQQ}\n"
+                f"1               2               yes             {self.fudgeLJ}    "
+                f" {self.fudgeQQ}\n"
             )
             f.write("\n")
             f.write("; Include atomtypes\n")
@@ -320,28 +322,34 @@ class Smiles2Gromacs(base.IPSNode):
         self.box = "box.pdb"
 
     def _extract_energies(self):
-        cmd = ["echo", "8", "|","gmx", "energy", "-f", "box.edr"]
+        cmd = ["echo", "8", "|", "gmx", "energy", "-f", "box.edr"]
         subprocess.run(cmd, check=True, cwd=self.output_dir)
 
         lineNumber = 1
-        with (self.output_dir/"energy.xvg").open("r") as in_file:
+        with (self.output_dir / "energy.xvg").open("r") as in_file:
             for i, line in enumerate(in_file, 1):
                 if line.startswith(" "):
                     lineNumber = i
                     break
-        df = pd.read_csv("energy.xvg", skiprows=lineNumber, header=None, names=['time', "energy"], sep="\s+")
+        df = pd.read_csv(
+            "energy.xvg",
+            skiprows=lineNumber,
+            header=None,
+            names=["time", "energy"],
+            sep="\s+",
+        )
         energies = df["energy"].iloc[:] * units.kcal / units.mol
         return energies
 
     def _convert_trajectory(self):
         atoms_template = read((self.output_dir / "box.gro").as_posix())
         trr = mda.coordinates.TRR.TRRReader((self.output_dir / "box.trr").as_posix())
-        
+
         # energies = self._extract_energies()
         energies = np.zeros(len(trr))
 
         traj = []
-        Z =atoms_template.numbers
+        Z = atoms_template.numbers
         for frame, energy in zip(trr, energies):
             pos = frame.positions
             forces = frame.forces * units.kcal / units.mol / 10
@@ -353,7 +361,6 @@ class Smiles2Gromacs(base.IPSNode):
             traj.append(new_atoms)
 
         self.atoms = traj
-
 
     def run(self):
         self.output_dir.mkdir(exist_ok=True, parents=True)
