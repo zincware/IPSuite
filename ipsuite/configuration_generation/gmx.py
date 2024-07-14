@@ -181,6 +181,8 @@ class Smiles2Gromacs(base.IPSNode):
     count: list[int] = zntrack.params()
     labels: list[str] = zntrack.params()
     density: float = zntrack.params()
+    fudgeLJ: float = zntrack.params(1.0)
+    fudgeQQ: float = zntrack.params(1.0)
 
     mdp_files: list[str | pathlib.Path] = zntrack.deps_path()
 
@@ -240,7 +242,7 @@ class Smiles2Gromacs(base.IPSNode):
             f.write("\n")
             f.write("; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ\n")
             f.write(
-                "1               2               yes             0.5     0.8333333333\n"
+                f"1               2               yes             {self.fudgeLJ}     {self.fudgeQQ}\n"
             )
             f.write("\n")
             f.write("; Include atomtypes\n")
