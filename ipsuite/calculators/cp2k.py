@@ -204,15 +204,13 @@ class CP2KSinglePoint(base.ProcessAtoms):
 
         self.cp2k_shell = _update_cmd(self.cp2k_shell)
 
-        db = znh5md.io.DataWriter(self.output_file)
-        db.initialize_database_groups()
-
+        db = znh5md.IO(self.output_file)
         calc = self.get_calculator()
 
         for atoms in tqdm.tqdm(self.get_data(), ncols=70):
             atoms.calc = calc
             atoms.get_potential_energy()
-            db.add(znh5md.io.AtomsReader([atoms]))
+            db.append(atoms)
 
         for file in self.cp2k_directory.glob("cp2k-RESTART.wfn.*"):
             # we don't need all restart files

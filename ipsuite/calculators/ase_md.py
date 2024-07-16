@@ -556,8 +556,7 @@ class ASEMD(base.IPSNode):
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
 
-        self.db = znh5md.io.DataWriter(self.traj_file)
-        self.db.initialize_database_groups()
+        self.db = znh5md.IO(self.traj_file)
 
     def run_md(self, atoms):  # noqa: C901
         atoms.repeat(self.repeat)
@@ -641,14 +640,7 @@ class ASEMD(base.IPSNode):
                     )
                     atoms_cache.append(freeze_copy_atoms(atoms))
                     if len(atoms_cache) == self.dump_rate:
-                        self.db.add(
-                            znh5md.io.AtomsReader(
-                                atoms_cache,
-                                frames_per_chunk=self.dump_rate,
-                                step=1,
-                                time=self.sampling_rate,
-                            )
-                        )
+                        self.db.extend(atoms_cache)
                         atoms_cache = []
 
                     time = (idx_outer + 1) * self.sampling_rate * time_step
@@ -664,14 +656,7 @@ class ASEMD(base.IPSNode):
             atoms_cache.append(freeze_copy_atoms(atoms))
             current_step += 1
 
-        self.db.add(
-            znh5md.io.AtomsReader(
-                atoms_cache,
-                frames_per_chunk=self.dump_rate,
-                step=1,
-                time=self.sampling_rate,
-            )
-        )
+        self.db.extend(atoms_cache)
         return metrics_dict, current_step
 
     def run(self):

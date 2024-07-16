@@ -15,14 +15,14 @@ class OrcaSinglePoint(base.ProcessAtoms):
     output_file: str = zntrack.outs_path(zntrack.nwd / "structures.h5")
 
     def run(self):
-        db = znh5md.io.DataWriter(self.output_file)
+        db = znh5md.IO(self.output_file)
         db.initialize_database_groups()
 
         calc = self.get_calculator()
         for atoms in tqdm.tqdm(self.get_data(), ncols=70):
             atoms.calc = calc
             atoms.get_potential_energy()
-            db.add(znh5md.io.AtomsReader([atoms]))
+            db.append(atoms)
 
     @property
     def atoms(self):

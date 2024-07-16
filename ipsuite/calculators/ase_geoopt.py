@@ -59,7 +59,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
 
         atoms_cache = []
 
-        db = znh5md.io.DataWriter(self.traj_file)
+        db = znh5md.IO(self.traj_file)
         db.initialize_database_groups()
 
         optimizer = getattr(ase.optimize, self.optimizer)
@@ -69,14 +69,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
             stop = []
             atoms_cache.append(freeze_copy_atoms(atoms))
             if len(atoms_cache) == self.dump_rate:
-                db.add(
-                    znh5md.io.AtomsReader(
-                        atoms_cache,
-                        frames_per_chunk=self.dump_rate,
-                        step=1,
-                        time=1,
-                    )
-                )
+                db.extend(atoms_cache)
                 atoms_cache = []
 
             for checker in self.checks:
@@ -94,14 +87,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
             if self.maxstep is not None and step >= self.maxstep:
                 break
 
-        db.add(
-            znh5md.io.AtomsReader(
-                atoms_cache,
-                frames_per_chunk=self.dump_rate,
-                step=1,
-                time=1,
-            )
-        )
+        db.extend(atoms_cache)
 
     def get_atoms(self) -> ase.Atoms:
         atoms: ase.Atoms = self.get_data()

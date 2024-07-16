@@ -31,9 +31,9 @@ class Atoms(zntrack.Field):
         instance.nwd.mkdir(exist_ok=True, parents=True)
         file = self.get_files(instance)[0]
 
-        db = znh5md.io.DataWriter(filename=file)
+        db = znh5md.IO(filename=file)
         db.initialize_database_groups()
-        db.add(znh5md.io.AtomsReader(atoms, frames_per_chunk=100000, use_pbc_group=True))
+        db.extend(atoms)
 
     def get_data(self, instance: zntrack.Node) -> base.protocol.ATOMS_LST:
         """Get data from znh5md File."""
