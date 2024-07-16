@@ -2,6 +2,7 @@ import tqdm
 from ase.calculators.calculator import all_changes
 from ase.calculators.emt import EMT
 from ase.calculators.lj import LennardJones
+from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 from ipsuite import base
 
@@ -44,6 +45,8 @@ class EMTSinglePoint(base.ProcessAtoms):
         for atom in tqdm.tqdm(self.atoms, ncols=70):
             atom.calc = calculator
             atom.get_potential_energy()
+        
+        self.atoms = [freeze_copy_atoms(x) for x in self.atoms]
 
     def get_calculator(self, **kwargs):
         """Get an EMT ase calculator."""
