@@ -185,7 +185,7 @@ class Smiles2Gromacs(base.IPSNode):
     mdp_files: list[str | pathlib.Path]
         List of paths to the Gromacs MDP files.
     itp_files: list[str | None]|None
-        if given, for each label either the path to the 
+        if given, for each label either the path to the
         ITP file or None.  The order must match the order
         of the labels.
     pdb_files: list[str | pathlib.Path]|None
@@ -213,7 +213,7 @@ class Smiles2Gromacs(base.IPSNode):
     fudgeQQ: float = zntrack.params(1.0)
 
     mdp_files: list[str | pathlib.Path] = zntrack.deps_path()
-    itp_files: list[str|None] = zntrack.deps_path(None)
+    itp_files: list[str | None] = zntrack.deps_path(None)
     pdb_files: list[str | pathlib.Path] = zntrack.deps_path(None)
 
     atoms = fields.Atoms()
@@ -232,7 +232,7 @@ class Smiles2Gromacs(base.IPSNode):
             shutil.rmtree(self.output_dir)
         self.mdp_files = [pathlib.Path(mdp_file) for mdp_file in self.mdp_files]
 
-    def _run_acpype(self): 
+    def _run_acpype(self):
         for idx, (label, charge) in enumerate(zip(self.labels, self.charges)):
             if self.itp_files is not None and self.itp_files[idx] is not None:
                 path = self.output_dir / f"{label}.acpype"
@@ -334,7 +334,9 @@ class Smiles2Gromacs(base.IPSNode):
                 AllChem.UFFOptimizeMolecule(m)
                 mols.append(m)
             else:
-                mols.append(smiles_to_pdb(smiles, f"{label}.pdb", label, cwd=self.output_dir))
+                mols.append(
+                    smiles_to_pdb(smiles, f"{label}.pdb", label, cwd=self.output_dir)
+                )
             # get the charge of the molecule
             charges.append(Chem.GetFormalCharge(mols[-1]))
         self.charges = charges
