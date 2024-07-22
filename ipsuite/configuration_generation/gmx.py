@@ -328,7 +328,11 @@ class Smiles2Gromacs(base.IPSNode):
         for idx, (smiles, label) in enumerate(zip(self.smiles, self.labels)):
             if self.pdb_files is not None and self.pdb_files[idx] is not None:
                 shutil.copy(self.pdb_files[idx], self.output_dir / f"{label}.pdb")
-                mols.append(Chem.MolFromPDBFile((self.output_dir / f"{label}.pdb").resolve().as_posix()))
+                m = Chem.MolFromSmiles(smiles)
+                m = Chem.AddHs(m)
+                AllChem.EmbedMolecule(m)
+                AllChem.UFFOptimizeMolecule(m)
+                mols.append(m)
             else:
                 mols.append(smiles_to_pdb(smiles, f"{label}.pdb", label, cwd=self.output_dir))
             # get the charge of the molecule
