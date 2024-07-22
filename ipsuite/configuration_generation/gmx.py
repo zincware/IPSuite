@@ -184,6 +184,10 @@ class Smiles2Gromacs(base.IPSNode):
         Density of the packed box in g/cm^3.
     mdp_files: list[str | pathlib.Path]
         List of paths to the Gromacs MDP files.
+    itp_files: list[str | None]|None
+        if given, for each label either the path to the 
+        ITP file or None.  The order must match the order
+        of the labels.
 
     Installation
     ------------
@@ -205,6 +209,7 @@ class Smiles2Gromacs(base.IPSNode):
     fudgeQQ: float = zntrack.params(1.0)
 
     mdp_files: list[str | pathlib.Path] = zntrack.deps_path()
+    itp_files: list[str|None] = zntrack.deps_path(None)
 
     atoms = fields.Atoms()
 
@@ -222,10 +227,15 @@ class Smiles2Gromacs(base.IPSNode):
             shutil.rmtree(self.output_dir)
         self.mdp_files = [pathlib.Path(mdp_file) for mdp_file in self.mdp_files]
 
-    def _run_acpype(self):
-        for label, charge in zip(self.labels, self.charges):
-            cmd = ["acpype", "-i", f"{label}.pdb", "-n", str(charge), "-b", label]
-            subprocess.run(cmd, check=True, cwd=self.output_dir)
+    def _run_acpype(self): 
+        for idx, (label, charge) in enumerate(zip(self.labels, self.charges)):
+            if self.itp_files is not None and self.itp_files[idx] is not None:
+                path = self.output_dir / f"{label}.acpype"
+                path.mkdir(exist_ok=True)
+                shutil.copy(self.itp_files[idx], path / f"{label}_GMX.itp")
+            else:
+                cmd = ["acpype", "-i", f"{label}.pdb", "-n", str(charge), "-b", label]
+                subprocess.run(cmd, check=True, cwd=self.output_dir)
 
     def _create_box_gro(self):
         cmd = [
@@ -244,10 +254,13 @@ class Smiles2Gromacs(base.IPSNode):
         subprocess.run(" ".join(cmd), shell=True, check=True, cwd=self.output_dir)
 
     def _create_species_top_atomtypes(self):
-        for label in self.labels:
-            file = self.output_dir / f"{label}.acpype/{label}_GMX.itp"
+        for idx, label in enumerate(self.labels):
+            if self.itp_files is not None and self.itp_files[idx] is not None:
+                file = self.itp_files[idx]
+            else:
+                file = self.output_dir / f"{label}.acpype/{label}_GMX.itp"
             shutil.copy(file, self.output_dir / f"{label}.itp")
-            shutil.copy(file.with_suffix(".top"), self.output_dir / f"{label}.top")
+            # shutil.copy(file.with_suffix(".top"), self.output_dir / f"{label}.top")
             extract_atomtypes(
                 self.output_dir / f"{label}.itp",
                 self.output_dir / f"{label}_atomtypes.itp",
@@ -367,9 +380,12 @@ class Smiles2Gromacs(base.IPSNode):
     def run(self):
         self.output_dir.mkdir(exist_ok=True, parents=True)
         validate_mdp(self.mdp_files[-1])
+
         self._pack_box()
-        self._run_acpype()
         self._create_box_gro()
+
+        self._run_acpype()
+
         self._create_species_top_atomtypes()
         self._create_box_top()
         self._run_gmx()
