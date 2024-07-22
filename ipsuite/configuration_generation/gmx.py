@@ -191,7 +191,8 @@ class Smiles2Gromacs(base.IPSNode):
 
     .. code-block:: bash
 
-            pip install acpype
+            conda install conda-forge::gromacs
+            pip install acpype MDAnalysis
 
     """
 
