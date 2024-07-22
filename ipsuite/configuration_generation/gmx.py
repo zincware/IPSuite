@@ -188,6 +188,10 @@ class Smiles2Gromacs(base.IPSNode):
         if given, for each label either the path to the 
         ITP file or None.  The order must match the order
         of the labels.
+    pdb_files: list[str | pathlib.Path]|None
+        if given, for each label either the path to the
+        PDB file or None.  The order must match the order
+        of the labels.
 
     Installation
     ------------
@@ -210,6 +214,7 @@ class Smiles2Gromacs(base.IPSNode):
 
     mdp_files: list[str | pathlib.Path] = zntrack.deps_path()
     itp_files: list[str|None] = zntrack.deps_path(None)
+    pdb_files: list[str | pathlib.Path] = zntrack.deps_path(None)
 
     atoms = fields.Atoms()
 
@@ -320,8 +325,12 @@ class Smiles2Gromacs(base.IPSNode):
     def _pack_box(self):
         mols = []
         charges = []
-        for smiles, label in zip(self.smiles, self.labels):
-            mols.append(smiles_to_pdb(smiles, f"{label}.pdb", label, cwd=self.output_dir))
+        for idx, (smiles, label) in enumerate(zip(self.smiles, self.labels)):
+            if self.pdb_files is not None and self.pdb_files[idx] is not None:
+                shutil.copy(self.pdb_files[idx], self.output_dir / f"{label}.pdb")
+                mols.append(Chem.MolFromPDBFile((self.output_dir / f"{label}.pdb").resolve().as_posix()))
+            else:
+                mols.append(smiles_to_pdb(smiles, f"{label}.pdb", label, cwd=self.output_dir))
             # get the charge of the molecule
             charges.append(Chem.GetFormalCharge(mols[-1]))
         self.charges = charges
