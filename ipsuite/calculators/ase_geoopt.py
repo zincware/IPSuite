@@ -1,4 +1,3 @@
-import functools
 import logging
 import pathlib
 import typing
@@ -97,4 +96,3 @@ class ASEGeoOpt(base.ProcessSingleAtom):
         with self.state.fs.open(self.traj_file, "rb") as f:
             with h5py.File(f) as file:
                 return znh5md.IO(file_handle=file)[:]
-

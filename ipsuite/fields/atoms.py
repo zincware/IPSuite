@@ -40,4 +40,3 @@ class Atoms(zntrack.Field):
         with instance.state.fs.open(file_name, "rb") as f:
             with h5py.File(f) as file:
                 return znh5md.IO(file_handle=file)[:]
-

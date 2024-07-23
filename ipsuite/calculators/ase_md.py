@@ -1,5 +1,4 @@
 import collections.abc
-import functools
 import logging
 import pathlib
 import typing
