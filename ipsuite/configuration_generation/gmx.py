@@ -391,6 +391,7 @@ class Smiles2Gromacs(base.IPSNode):
             cell = frame.dimensions
 
             new_atoms = Atoms(numbers=Z, positions=pos, cell=cell)
+            new_atoms.pbc = True
             calc = SinglePointCalculator(new_atoms, energy=energy, forces=forces)
             new_atoms.calc = calc
             traj.append(new_atoms)
