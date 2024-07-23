@@ -32,7 +32,6 @@ class Atoms(zntrack.Field):
         file = self.get_files(instance)[0]
 
         db = znh5md.IO(filename=file)
-        db.initialize_database_groups()
         db.extend(atoms)
 
     def get_data(self, instance: zntrack.Node) -> base.protocol.ATOMS_LST:

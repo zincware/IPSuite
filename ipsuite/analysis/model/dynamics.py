@@ -412,8 +412,7 @@ class MDStability(base.ProcessAtoms):
 
         stable_steps = []
 
-        db = znh5md.io.DataWriter(self.traj_file)
-        db.initialize_database_groups()
+        db = znh5md.IO(self.traj_file)
         unstable_atoms = []
 
         for ii in tqdm.trange(
@@ -432,13 +431,7 @@ class MDStability(base.ProcessAtoms):
             )
             unstable_atoms.extend(last_n_atoms)
             stable_steps.append(n_steps)
-        db.add(
-            znh5md.io.AtomsReader(
-                unstable_atoms,
-                frames_per_chunk=self.save_last_n,
-                step=1,
-            )
-        )
-
+        db.extend(unstable_atoms)
+        
         self.get_plots(stable_steps)
         self.stable_steps_df = pd.DataFrame({"stable_steps": np.array(stable_steps)})

@@ -16,7 +16,6 @@ class OrcaSinglePoint(base.ProcessAtoms):
 
     def run(self):
         db = znh5md.IO(self.output_file)
-        db.initialize_database_groups()
 
         calc = self.get_calculator()
         for atoms in tqdm.tqdm(self.get_data(), ncols=70):

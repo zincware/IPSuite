@@ -60,7 +60,6 @@ class ASEGeoOpt(base.ProcessSingleAtom):
         atoms_cache = []
 
         db = znh5md.IO(self.traj_file)
-        db.initialize_database_groups()
 
         optimizer = getattr(ase.optimize, self.optimizer)
         dyn = optimizer(atoms, **self.init_kwargs)
