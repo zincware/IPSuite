@@ -3,12 +3,18 @@ import re
 import shutil
 import subprocess
 
+import MDAnalysis as mda
+import numpy as np
+import pandas as pd
 import zntrack
+from ase import Atoms, units
+from ase.calculators.singlepoint import SinglePointCalculator
+from ase.io import read
 from pint import UnitRegistry
 from rdkit import Chem
 from rdkit.Chem import AllChem, rdMolDescriptors
 
-from ipsuite import base
+from ipsuite import base, fields
 
 # Initialize pint unit registry
 ureg = UnitRegistry()
@@ -151,6 +157,18 @@ def combine_atomtype_files(files: list[pathlib.Path], output_file: pathlib.Path)
         f.writelines(atomtypes)
 
 
+def validate_mdp(path):
+    necessary_keys = ["nstxout", "nstfout"]
+    path = pathlib.Path(path)
+    with path.open("r") as f:
+        content = f.read()
+        for key in necessary_keys:
+            if key not in content:
+                raise ValueError(
+                    f"Key '{key}' is required in {path.name} for writing a trajectory"
+                )
+
+
 class Smiles2Gromacs(base.IPSNode):
     """Gromacs Node.
 
@@ -166,6 +184,14 @@ class Smiles2Gromacs(base.IPSNode):
         Density of the packed box in g/cm^3.
     mdp_files: list[str | pathlib.Path]
         List of paths to the Gromacs MDP files.
+    itp_files: list[str | None]|None
+        if given, for each label either the path to the
+        ITP file or None.  The order must match the order
+        of the labels.
+    pdb_files: list[str | pathlib.Path]|None
+        if given, for each label either the path to the
+        PDB file or None.  The order must match the order
+        of the labels.
 
     Installation
     ------------
@@ -173,7 +199,9 @@ class Smiles2Gromacs(base.IPSNode):
 
     .. code-block:: bash
 
-            pip install acpype
+            conda install conda-forge::gromacs
+            conda install conda-forge::acpype
+            pip install MDAnalysis
 
     """
 
@@ -181,8 +209,14 @@ class Smiles2Gromacs(base.IPSNode):
     count: list[int] = zntrack.params()
     labels: list[str] = zntrack.params()
     density: float = zntrack.params()
+    fudgeLJ: float = zntrack.params(1.0)
+    fudgeQQ: float = zntrack.params(1.0)
 
     mdp_files: list[str | pathlib.Path] = zntrack.deps_path()
+    itp_files: list[str | None] = zntrack.deps_path(None)
+    pdb_files: list[str | pathlib.Path] = zntrack.deps_path(None)
+
+    atoms = fields.Atoms()
 
     output_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "gromacs")
 
@@ -199,9 +233,14 @@ class Smiles2Gromacs(base.IPSNode):
         self.mdp_files = [pathlib.Path(mdp_file) for mdp_file in self.mdp_files]
 
     def _run_acpype(self):
-        for label, charge in zip(self.labels, self.charges):
-            cmd = ["acpype", "-i", f"{label}.pdb", "-n", str(charge), "-b", label]
-            subprocess.run(cmd, check=True, cwd=self.output_dir)
+        for idx, (label, charge) in enumerate(zip(self.labels, self.charges)):
+            if self.itp_files is not None and self.itp_files[idx] is not None:
+                path = self.output_dir / f"{label}.acpype"
+                path.mkdir(exist_ok=True)
+                shutil.copy(self.itp_files[idx], path / f"{label}_GMX.itp")
+            else:
+                cmd = ["acpype", "-i", f"{label}.pdb", "-n", str(charge), "-b", label]
+                subprocess.run(cmd, check=True, cwd=self.output_dir)
 
     def _create_box_gro(self):
         cmd = [
@@ -220,10 +259,13 @@ class Smiles2Gromacs(base.IPSNode):
         subprocess.run(" ".join(cmd), shell=True, check=True, cwd=self.output_dir)
 
     def _create_species_top_atomtypes(self):
-        for label in self.labels:
-            file = self.output_dir / f"{label}.acpype/{label}_GMX.itp"
+        for idx, label in enumerate(self.labels):
+            if self.itp_files is not None and self.itp_files[idx] is not None:
+                file = self.itp_files[idx]
+            else:
+                file = self.output_dir / f"{label}.acpype/{label}_GMX.itp"
             shutil.copy(file, self.output_dir / f"{label}.itp")
-            shutil.copy(file.with_suffix(".top"), self.output_dir / f"{label}.top")
+            # shutil.copy(file.with_suffix(".top"), self.output_dir / f"{label}.top")
             extract_atomtypes(
                 self.output_dir / f"{label}.itp",
                 self.output_dir / f"{label}_atomtypes.itp",
@@ -240,7 +282,8 @@ class Smiles2Gromacs(base.IPSNode):
             f.write("\n")
             f.write("; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ\n")
             f.write(
-                "1               2               yes             0.5     0.8333333333\n"
+                f"1               2               yes             {self.fudgeLJ}    "
+                f" {self.fudgeQQ}\n"
             )
             f.write("\n")
             f.write("; Include atomtypes\n")
@@ -282,8 +325,18 @@ class Smiles2Gromacs(base.IPSNode):
     def _pack_box(self):
         mols = []
         charges = []
-        for smiles, label in zip(self.smiles, self.labels):
-            mols.append(smiles_to_pdb(smiles, f"{label}.pdb", label, cwd=self.output_dir))
+        for idx, (smiles, label) in enumerate(zip(self.smiles, self.labels)):
+            if self.pdb_files is not None and self.pdb_files[idx] is not None:
+                shutil.copy(self.pdb_files[idx], self.output_dir / f"{label}.pdb")
+                m = Chem.MolFromSmiles(smiles)
+                m = Chem.AddHs(m)
+                AllChem.EmbedMolecule(m)
+                AllChem.UFFOptimizeMolecule(m)
+                mols.append(m)
+            else:
+                mols.append(
+                    smiles_to_pdb(smiles, f"{label}.pdb", label, cwd=self.output_dir)
+                )
             # get the charge of the molecule
             charges.append(Chem.GetFormalCharge(mols[-1]))
         self.charges = charges
@@ -298,11 +351,57 @@ class Smiles2Gromacs(base.IPSNode):
         subprocess.run(cmd, check=True, shell=True, cwd=self.output_dir)
         self.box = "box.pdb"
 
+    def _extract_energies(self):
+        cmd = ["echo", "8", "|", "gmx", "energy", "-f", "box.edr"]
+        subprocess.run(cmd, check=True, cwd=self.output_dir)
+
+        lineNumber = 1
+        with (self.output_dir / "energy.xvg").open("r") as in_file:
+            for i, line in enumerate(in_file, 1):
+                if line.startswith(" "):
+                    lineNumber = i
+                    break
+        df = pd.read_csv(
+            "energy.xvg",
+            skiprows=lineNumber,
+            header=None,
+            names=["time", "energy"],
+            sep="\s+",
+        )
+        energies = df["energy"].iloc[:] * units.kcal / units.mol
+        return energies
+
+    def _convert_trajectory(self):
+        atoms_template = read((self.output_dir / "box.gro").as_posix())
+        trr = mda.coordinates.TRR.TRRReader((self.output_dir / "box.trr").as_posix())
+
+        # energies = self._extract_energies()
+        energies = np.zeros(len(trr))
+
+        traj = []
+        Z = atoms_template.numbers
+        for frame, energy in zip(trr, energies):
+            pos = frame.positions
+            forces = frame.forces * units.kcal / units.mol / 10
+            cell = frame.dimensions
+
+            new_atoms = Atoms(numbers=Z, positions=pos, cell=cell)
+            calc = SinglePointCalculator(new_atoms, energy=energy, forces=forces)
+            new_atoms.calc = calc
+            traj.append(new_atoms)
+
+        self.atoms = traj
+
     def run(self):
         self.output_dir.mkdir(exist_ok=True, parents=True)
+        validate_mdp(self.mdp_files[-1])
+
         self._pack_box()
-        self._run_acpype()
         self._create_box_gro()
+
+        self._run_acpype()
+
         self._create_species_top_atomtypes()
         self._create_box_top()
         self._run_gmx()
+        self._convert_trajectory()
