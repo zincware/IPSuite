@@ -81,6 +81,7 @@ def create_pack_script(
     files: list[str],
     counts: list[int],
     box_size: float,
+    tolerance: float,
     cwd: pathlib.Path = pathlib.Path(),
 ):
     """
@@ -98,7 +99,9 @@ def create_pack_script(
     if len(files) != len(counts):
         raise ValueError("The number of files must match the number of counts")
 
-    script = """tolerance 2.0
+    box_size -= tolerance
+
+    script = f"""tolerance {tolerance}
 output box.pdb
 filetype pdb
 """
@@ -211,6 +214,7 @@ class Smiles2Gromacs(base.IPSNode):
     density: float = zntrack.params()
     fudgeLJ: float = zntrack.params(1.0)
     fudgeQQ: float = zntrack.params(1.0)
+    tolerance: float = zntrack.params(1.0)
 
     mdp_files: list[str | pathlib.Path] = zntrack.deps_path()
     itp_files: list[str | None] = zntrack.deps_path(None)
@@ -345,6 +349,7 @@ class Smiles2Gromacs(base.IPSNode):
             [f"{label}.pdb" for label in self.labels],
             self.count,
             self.box_size,
+            self.tolerance,
             cwd=self.output_dir,
         )
         cmd = ["packmol < packmol.inp"]
