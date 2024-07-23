@@ -432,6 +432,6 @@ class MDStability(base.ProcessAtoms):
             unstable_atoms.extend(last_n_atoms)
             stable_steps.append(n_steps)
         db.extend(unstable_atoms)
-        
+
         self.get_plots(stable_steps)
         self.stable_steps_df = pd.DataFrame({"stable_steps": np.array(stable_steps)})
