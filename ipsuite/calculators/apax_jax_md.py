@@ -91,14 +91,7 @@ class ApaxJaxMD(ProcessSingleAtom):
 
     @functools.cached_property
     def atoms(self) -> typing.List[ase.Atoms]:
-        # filename should be changeable
-        def file_handle(filename):
-            file = self.state.fs.open(filename, "rb")
-            return h5py.File(file)
+        with self.state.fs.open(self.sim_dir / "md.h5", "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
 
-        return znh5md.ASEH5MD(
-            self.sim_dir / "md.h5",
-            format_handler=functools.partial(
-                znh5md.FormatHandler, file_handle=file_handle
-            ),
-        ).get_atoms_list()

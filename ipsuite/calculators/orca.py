@@ -1,6 +1,7 @@
 import tqdm
 import znh5md
 import zntrack
+import h5py
 from ase.calculators.orca import ORCA
 
 from ipsuite import base
@@ -25,7 +26,9 @@ class OrcaSinglePoint(base.ProcessAtoms):
 
     @property
     def atoms(self):
-        return znh5md.ASEH5MD(self.output_file).get_atoms_list()
+        with self.state.fs.open(self.output_file, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
 
     def get_calculator(self, directory: str = None):
         if directory is None:
