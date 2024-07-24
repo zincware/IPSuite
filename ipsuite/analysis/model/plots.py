@@ -151,7 +151,9 @@ def get_calibration_figure(
     ax.plot(x, quantiles_upper_005, color="gray", alpha=0.5)
     ax.plot(x, quantiles_lower_005, color="gray", alpha=0.5)
 
-    ax.plot(np.logspace(-10, 100.0), np.logspace(-10, 100.0), linestyle="--", color="grey")
+    ax.plot(
+        np.logspace(-10, 100.0), np.logspace(-10, 100.0), linestyle="--", color="grey"
+    )
     ax.set_xlim(np.min(std) / 1.5, np.max(std) * 1.5)
     ax.set_ylim(np.min(error) / 1.5, np.max(error) * 1.5)
 

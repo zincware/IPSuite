@@ -4,8 +4,8 @@ from typing import List
 import ase
 import matplotlib.pyplot as plt
 import numpy as np
-import uncertainty_toolbox as uct
 import tqdm
+import uncertainty_toolbox as uct
 import zntrack
 from ase.calculators.singlepoint import PropertyNotImplementedError
 
@@ -15,9 +15,8 @@ from ipsuite.analysis.model.math import (
     decompose_stress_tensor,
     force_decomposition,
 )
-from ipsuite.analysis.model.plots import (
+from ipsuite.analysis.model.plots import (  # get_cdf_figure,
     get_calibration_figure,
-    # get_cdf_figure,
     get_figure,
     get_gaussianicity_figure,
     get_hist,
@@ -345,7 +344,7 @@ class CalibrationMetrics(base.ComparePredictions):
         energy_gauss = get_gaussianicity_figure(
             e_err, self.content["energy_unc"], forces=False
         )
-        
+
         energy_cdf_plot, e_cdf_ax = plt.subplots()
         e_cdf_ax = uct.plot_calibration(
             self.content["energy_pred"],

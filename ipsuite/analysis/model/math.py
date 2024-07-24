@@ -1,6 +1,7 @@
 import numpy as np
 import uncertainty_toolbox as uct
 
+
 def compute_trans_forces(mol):
     """Compute translational forces of a molecule."""
 
@@ -83,7 +84,7 @@ def compute_rmse(errors):
 
 def nlls(pred, std, true):
     errors = np.abs(pred - true)
-    nll = 0.5 * ((errors / std) ** 2 + np.log(2* np.pi* std**2))
+    nll = 0.5 * ((errors / std) ** 2 + np.log(2 * np.pi * std**2))
     return nll
 
 
@@ -111,4 +112,3 @@ def compute_uncertainty_metrics(pred, std, true):
         "rll": rll,
     }
     return metrics
-
