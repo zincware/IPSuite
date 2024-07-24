@@ -94,4 +94,3 @@ class ApaxJaxMD(ProcessSingleAtom):
         with self.state.fs.open(self.sim_dir / "md.h5", "rb") as f:
             with h5py.File(f) as file:
                 return znh5md.IO(file_handle=file)[:]
-

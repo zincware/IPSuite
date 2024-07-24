@@ -1,7 +1,7 @@
+import h5py
 import tqdm
 import znh5md
 import zntrack
-import h5py
 from ase.calculators.orca import ORCA
 
 from ipsuite import base

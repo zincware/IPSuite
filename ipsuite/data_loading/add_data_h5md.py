@@ -1,6 +1,5 @@
 """Load Data directly from a H5MD trajectory file."""
 
-import functools
 import typing
 
 import ase
