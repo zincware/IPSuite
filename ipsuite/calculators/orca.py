@@ -1,8 +1,9 @@
+import pathlib
+
 import tqdm
 import znh5md
 import zntrack
 from ase.calculators.orca import ORCA, OrcaProfile
-import pathlib
 
 from ipsuite import base
 
@@ -32,9 +33,9 @@ class OrcaSinglePoint(base.ProcessAtoms):
     def get_calculator(self, directory: str = None):
         if directory is None:
             directory = self.orca_directory
-            
+
         profile = OrcaProfile(command=self.ASE_ORCA_COMMAND)
-        
+
         calc = ORCA(
             profile=profile,
             orcasimpleinput=self.orcasimpleinput,
