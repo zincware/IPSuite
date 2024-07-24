@@ -175,7 +175,7 @@ class TorchD3(base.ProcessAtoms):
                 _atoms.calc.results["energy"] += energy
             except KeyError:
                 _atoms.calc.results["energy"] = energy
-            
+
             try:
                 _atoms.calc.results["forces"] += forces
             except KeyError:

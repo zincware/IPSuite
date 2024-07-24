@@ -11,7 +11,7 @@ model:
     n_basis: 4
     r_max: 5.0
     r_min: 0.5
-  
+
   nn: [256,256]
   calc_stress: true
 
