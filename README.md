@@ -19,6 +19,12 @@ Install the package to get started or check out an interactive notebook
 pip install ipsuite
 ```
 
+IPSuite relies on third-party ML packages. As these often come with different,
+sometimes incompatible requirements, an `ipsuite` installation is barebones. If
+you want to run your favorite ML code but are encountered with an import error,
+please install the package manually. You can look at the `pyproject.toml` to
+find the packages `ipsuite` is tested against.
+
 Examples can be found at:
 
 - https://dagshub.com/PythonFZ/IPS-Examples/src/intro/main.ipynb
