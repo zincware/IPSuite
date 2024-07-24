@@ -8120,4 +8120,4 @@ nequip = []
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "08456b587c3e68b549349d800164a53f9c668f5584a15bc7ab3c71002bd125d5"
+content-hash = "3132165cf287f77d94c5b898bcbc7c78234e9fd8a4f8ab02e98c4d7fab2b0e03"
