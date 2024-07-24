@@ -2,20 +2,22 @@ import pathlib
 from typing import List
 
 import ase
+import matplotlib.pyplot as plt
 import numpy as np
+import uncertainty_toolbox as uct
 import tqdm
 import zntrack
 from ase.calculators.singlepoint import PropertyNotImplementedError
 
 from ipsuite import base, models, utils
 from ipsuite.analysis.model.math import (
-    comptue_rll,
+    compute_uncertainty_metrics,
     decompose_stress_tensor,
     force_decomposition,
 )
 from ipsuite.analysis.model.plots import (
     get_calibration_figure,
-    get_cdf_figure,
+    # get_cdf_figure,
     get_figure,
     get_gaussianicity_figure,
     get_hist,
@@ -291,7 +293,7 @@ class CalibrationMetrics(base.ComparePredictions):
         self.content["energy_true"] = energy_true
         energy_pred = [a.get_potential_energy() / len(a) for a in self.y]
         energy_pred = np.array(energy_pred) * 1000
-        self.content["energy_err"] = np.abs(energy_true - energy_pred)
+        self.content["energy_pred"] = energy_pred
 
         energy_uncertainty = [
             a.calc.results["energy_uncertainty"] / len(a) for a in self.y
@@ -309,59 +311,75 @@ class CalibrationMetrics(base.ComparePredictions):
             forces_ensemble = [x.calc.results["forces_ensemble"] for x in self.y]
 
             self.content["forces_true"] = true_forces
-            self.content["forces_err"] = np.abs(true_forces - pred_forces)
+            self.content["forces_pred"] = pred_forces
             self.content["forces_unc"] = forces_uncertainty * 1000
             self.content["forces_ensemble"] = np.array(forces_ensemble) * 1000
 
     def get_metrics(self):
         """Update the metrics."""
-        e_err = self.content["energy_err"]
-        e_unc = self.content["energy_unc"]
-        rll = comptue_rll(e_err, e_unc)
-        self.energy = {"rll": rll}
+        e_pred = self.content["energy_pred"]
+        e_std = self.content["energy_unc"]
+        e_true = self.content["energy_true"]
+        metrics = compute_uncertainty_metrics(e_pred, e_std, e_true)
+        self.energy = metrics
 
         if "forces_unc" in self.content:
-            f_err = self.content["forces_err"]
-            f_unc = self.content["forces_unc"]
-            rll = comptue_rll(f_err, f_unc)
-            self.forces = {"rll": rll}
+            f_pred = self.content["forces_pred"]
+            f_std = self.content["forces_unc"]
+            f_true = self.content["forces_true"]
+            metrics = compute_uncertainty_metrics(f_pred, f_std, f_true)
+            self.forces = metrics
 
     def get_plots(self, save=False):
         """Create figures for all available data."""
         self.plots_dir.mkdir(exist_ok=True)
+        e_err = np.abs(self.content["energy_pred"] - self.content["energy_true"])
 
         energy_plot = get_calibration_figure(
-            self.content["energy_err"],
+            e_err,
             self.content["energy_unc"],
             markersize=10,
             datalabel=rf"RLL={self.energy['rll']:.1f}",
             forces=False,
         )
         energy_gauss = get_gaussianicity_figure(
-            self.content["energy_err"], self.content["energy_unc"], forces=False
+            e_err, self.content["energy_unc"], forces=False
         )
-        energy_cdf_plot = get_cdf_figure(
-            self.content["energy_err"],
+        
+        energy_cdf_plot, e_cdf_ax = plt.subplots()
+        e_cdf_ax = uct.plot_calibration(
+            self.content["energy_pred"],
             self.content["energy_unc"],
+            self.content["energy_true"],
+            ax=e_cdf_ax,
         )
+
         if save:
             energy_plot.savefig(self.plots_dir / "energy.png")
             energy_gauss.savefig(self.plots_dir / "energy_gaussianicity.png")
             energy_cdf_plot.savefig(self.plots_dir / "energy_cdf.png")
 
         if "forces_err" in self.content:
-            f_err = np.reshape(self.content["forces_err"], (-1,))
+            f_err = np.abs(self.content["forces_pred"] - self.content["forces_true"])
+            f_err = np.reshape(f_err, (-1,))
             f_unc = np.reshape(self.content["forces_unc"], (-1,))
 
             forces_plot = get_calibration_figure(
-                self.content["forces_err"],
+                f_err,
                 self.content["forces_unc"],
                 datalabel=rf"RLL={self.forces['rll']:.1f}",
                 forces=True,
             )
-            forces_cdf_plot = get_cdf_figure(
-                f_unc,
-                f_err,
+            # forces_cdf_plot = get_cdf_figure(
+            #     f_unc,
+            #     f_err,
+            # )
+            forces_cdf_plot, f_cdf_ax = plt.subplots()
+            f_cdf_ax = uct.plot_calibration(
+                self.content["forces_pred"],
+                self.content["forces_unc"],
+                self.content["forces_true"],
+                ax=f_cdf_ax,
             )
 
             gaussianicy_figures = []
@@ -434,16 +452,16 @@ class ForceDecomposition(base.ComparePredictions):
         prediced and true forces for each trans, rot, vib component.
     """
 
-    trans_forces: dict = zntrack.zn.metrics()
-    rot_forces: dict = zntrack.zn.metrics()
-    vib_forces: dict = zntrack.zn.metrics()
-    wasserstein_distance = zntrack.zn.metrics()
+    trans_forces: dict = zntrack.metrics()
+    rot_forces: dict = zntrack.metrics()
+    vib_forces: dict = zntrack.metrics()
+    wasserstein_distance = zntrack.metrics()
 
-    rot_force_plt = zntrack.dvc.outs(zntrack.nwd / "rot_force.png")
-    trans_force_plt = zntrack.dvc.outs(zntrack.nwd / "trans_force.png")
-    vib_force_plt = zntrack.dvc.outs(zntrack.nwd / "vib_force.png")
+    rot_force_plt = zntrack.outs_path(zntrack.nwd / "rot_force.png")
+    trans_force_plt = zntrack.outs_path(zntrack.nwd / "trans_force.png")
+    vib_force_plt = zntrack.outs_path(zntrack.nwd / "vib_force.png")
 
-    histogram_plt = zntrack.dvc.outs(zntrack.nwd / "histogram.png")
+    histogram_plt = zntrack.outs_path(zntrack.nwd / "histogram.png")
 
     def get_plots(self):
         fig = get_figure(

@@ -1,5 +1,5 @@
 import numpy as np
-
+import uncertainty_toolbox as uct
 
 def compute_trans_forces(mol):
     """Compute translational forces of a molecule."""
@@ -81,14 +81,34 @@ def compute_rmse(errors):
     return rmse
 
 
-def nlls(errors, sigmas):
-    nll = 0.5 * ((errors / sigmas) ** 2 + np.log(sigmas))
+def nlls(pred, std, true):
+    errors = np.abs(pred - true)
+    nll = 0.5 * ((errors / std) ** 2 + np.log(2* np.pi* std**2))
     return nll
 
 
-def comptue_rll(errors, sigmas):
+def comptue_rll(pred, std, true):
+    errors = np.abs(pred - true)
     rmse = compute_rmse(errors)
-    numerator = np.sum(nlls(errors, sigmas) - nlls(errors, rmse))
-    demoninator = np.sum(nlls(errors, np.abs(errors)) - nlls(errors, rmse))
+    numerator = np.sum(nlls(errors, std) - nlls(errors, rmse))
+    demoninator = np.sum(nlls(errors, errors) - nlls(errors, rmse))
     rll = numerator / demoninator * 100
     return rll
+
+
+def compute_uncertainty_metrics(pred, std, true):
+    mace = uct.mean_absolute_calibration_error(pred, std, true)
+    rmsce = uct.root_mean_squared_calibration_error(pred, std, true)
+    miscal = uct.miscalibration_area(pred, std, true)
+    nll = np.mean(nlls(pred, std, true))
+    rll = comptue_rll(pred, std, true)
+
+    metrics = {
+        "mace": mace,
+        "rmsce": rmsce,
+        "miscal": miscal,
+        "nll": nll,
+        "rll": rll,
+    }
+    return metrics
+
