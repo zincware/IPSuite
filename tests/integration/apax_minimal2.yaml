@@ -6,9 +6,13 @@ data:
   valid_batch_size: 2
 
 model:
+  basis:
+    name: gaussian
+    n_basis: 4
+    r_max: 5.0
+    r_min: 0.5
+
   nn: [256,256]
-  n_basis: 7
-  n_radial: 5
   calc_stress: true
 
 metrics:
