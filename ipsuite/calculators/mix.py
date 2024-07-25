@@ -3,9 +3,7 @@ import typing
 import tqdm
 import zntrack
 from ase.calculators import mixing
-from ase.calculators.calculator import (
-    Calculator,
-)
+from ase.calculators.calculator import Calculator
 
 from ipsuite import base
 from ipsuite.utils.ase_sim import freeze_copy_atoms
