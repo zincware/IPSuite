@@ -27,7 +27,9 @@ def test_mix_calculators(proj_path, traj_file):
     mean_calc.load()
 
     for a, b in zip(lj1.atoms, mean_calc.atoms):
-        npt.assert_almost_equal(a.get_potential_energy(), b.get_potential_energy(), decimal=2)
+        npt.assert_almost_equal(
+            a.get_potential_energy(), b.get_potential_energy(), decimal=2
+        )
         npt.assert_almost_equal(a.get_forces(), b.get_forces())
 
     lj2.load()
@@ -35,7 +37,9 @@ def test_mix_calculators(proj_path, traj_file):
 
     for a, b, c in zip(lj1.atoms, lj2.atoms, sum_calc.atoms):
         npt.assert_almost_equal(
-            a.get_potential_energy() + b.get_potential_energy(), c.get_potential_energy(), decimal=2
+            a.get_potential_energy() + b.get_potential_energy(),
+            c.get_potential_energy(),
+            decimal=2,
         )
         npt.assert_almost_equal(a.get_forces() + b.get_forces(), c.get_forces())
 
@@ -66,7 +70,9 @@ def test_mix_calculator_external(proj_path, traj_file):
     mean_calc.load()
 
     for a, b in zip(lj3.atoms, mean_calc.atoms):
-        npt.assert_almost_equal(a.get_potential_energy(), b.get_potential_energy(), decimal=2)
+        npt.assert_almost_equal(
+            a.get_potential_energy(), b.get_potential_energy(), decimal=2
+        )
         npt.assert_almost_equal(a.get_forces(), b.get_forces())
 
     lj3.load()
@@ -74,6 +80,8 @@ def test_mix_calculator_external(proj_path, traj_file):
 
     for a, b, c in zip(lj3.atoms, lj3.atoms, sum_calc.atoms):
         npt.assert_almost_equal(
-            a.get_potential_energy() + b.get_potential_energy(), c.get_potential_energy(), decimal=2
+            a.get_potential_energy() + b.get_potential_energy(),
+            c.get_potential_energy(),
+            decimal=2,
         )
         npt.assert_almost_equal(a.get_forces() + b.get_forces(), c.get_forces())

@@ -1,17 +1,14 @@
-import contextlib
 import typing
 
 import tqdm
 import zntrack
+from ase.calculators import mixing
 from ase.calculators.calculator import (
     Calculator,
-    PropertyNotImplementedError,
-    all_changes,
 )
 
 from ipsuite import base
 from ipsuite.utils.ase_sim import freeze_copy_atoms
-from ase.calculators import mixing
 
 
 class CalculatorNode(typing.Protocol):
@@ -48,9 +45,12 @@ class MixCalculator(base.ProcessAtoms):
             ase calculator object
         """
         if self.method == "mean":
-            return mixing.AverageCalculator([calc.get_calculator() for calc in self.calculators])
+            return mixing.AverageCalculator(
+                [calc.get_calculator() for calc in self.calculators]
+            )
         elif self.method == "sum":
-            return mixing.SumCalculator([calc.get_calculator() for calc in self.calculators])
+            return mixing.SumCalculator(
+                [calc.get_calculator() for calc in self.calculators]
+            )
         else:
             raise ValueError(f"method {self.method} not supported")
-
