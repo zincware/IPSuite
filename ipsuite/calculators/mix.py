@@ -11,70 +11,7 @@ from ase.calculators.calculator import (
 
 from ipsuite import base
 from ipsuite.utils.ase_sim import freeze_copy_atoms
-
-
-def _update_if_exists(results, key, atoms_list, func, mean: bool):
-    with contextlib.suppress(PropertyNotImplementedError):
-        value = sum(func(x) for x in atoms_list)
-        if mean and len(atoms_list) > 0:
-            value /= len(atoms_list)
-
-        if key in results:
-            results[key] += value
-        else:
-            results[key] = value
-
-
-class _MixCalculator(Calculator):
-    def __init__(self, calculators: typing.List[Calculator], methods: list, **kwargs):
-        Calculator.__init__(self, **kwargs)
-        self.calculators = calculators
-        self.implemented_properties = self.calculators[0].implemented_properties
-        self.methods = methods
-
-    def calculate(
-        self,
-        atoms=None,
-        properties=None,
-        system_changes=all_changes,
-    ):
-        if properties is None:
-            properties = self.implemented_properties
-
-        Calculator.calculate(self, atoms, properties, system_changes)
-
-        mean_results = []
-        sum_results = []
-
-        for i, calc in enumerate(self.calculators):
-            _atoms = atoms.copy()
-            _atoms.calc = calc
-            if self.methods[i] == "mean":
-                mean_results.append(_atoms)
-            elif self.methods[i] == "sum":
-                sum_results.append(_atoms)
-            else:
-                raise NotImplementedError
-
-        _update_if_exists(
-            self.results, "energy", mean_results, lambda x: x.get_potential_energy(), True
-        )
-        _update_if_exists(
-            self.results, "forces", mean_results, lambda x: x.get_forces(), True
-        )
-        _update_if_exists(
-            self.results, "stress", mean_results, lambda x: x.get_stress(), True
-        )
-
-        _update_if_exists(
-            self.results, "energy", sum_results, lambda x: x.get_potential_energy(), False
-        )
-        _update_if_exists(
-            self.results, "forces", sum_results, lambda x: x.get_forces(), False
-        )
-        _update_if_exists(
-            self.results, "stress", sum_results, lambda x: x.get_stress(), False
-        )
+from ase.calculators import mixing
 
 
 class CalculatorNode(typing.Protocol):
@@ -87,17 +24,12 @@ class MixCalculator(base.ProcessAtoms):
     Attributes:
         calculators: list[CalculatorNode]
             List of calculators to combine.
-        methods: str|list[str]
-            choose from ['mean', 'sum'] either for all calculators
-            as a string or for each calculator individually as a list.
-            All calculators that are assigned with 'mean' will be
-            computed first, then the calculators assigned with 'sum'
-            will be added.
+        method: str
+            choose from "mean" or "sum" to combine the calculators.
     """
 
     calculators: typing.List[CalculatorNode] = zntrack.deps()
-    methods: str | typing.List[str] = zntrack.params("sum")
-    # weights: list = zntrack.params(None) ?
+    method: str = zntrack.params("sum")
 
     def run(self) -> None:
         calc = self.get_calculator()
@@ -115,11 +47,10 @@ class MixCalculator(base.ProcessAtoms):
         calc:
             ase calculator object
         """
-        if isinstance(self.methods, str):
-            methods = [self.methods] * len(self.calculators)
+        if self.method == "mean":
+            return mixing.AverageCalculator([calc.get_calculator() for calc in self.calculators])
+        elif self.method == "sum":
+            return mixing.SumCalculator([calc.get_calculator() for calc in self.calculators])
         else:
-            methods = self.methods
-        return _MixCalculator(
-            calculators=[x.get_calculator(**kwargs) for x in self.calculators],
-            methods=methods,
-        )
+            raise ValueError(f"method {self.method} not supported")
+
