@@ -77,7 +77,7 @@ def _update_paths(cp2k_input_dict) -> dict:
         )
 
 
-def _update_cmd(cp2k_cmd: str, env="IPSUITE_CP2K_SHELL") -> str:
+def _update_cmd(cp2k_cmd: str|None, env="IPSUITE_CP2K_SHELL") -> str:
     """Update the shell command to run cp2k."""
     if cp2k_cmd is None:
         # Load from environment variable IPSUITE_CP2K_SHELL
@@ -259,7 +259,7 @@ class CP2KSinglePoint(base.ProcessAtoms):
                 shutil.copy(restart_wfn, directory / "cp2k-RESTART.wfn")
 
         patch(
-            "ase.calculators.cp2k.Popen",
+            "ase.calculators.cp2k.subprocess.Popen",
             wraps=functools.partial(subprocess.Popen, cwd=directory),
         ).start()
 
