@@ -77,7 +77,7 @@ def _update_paths(cp2k_input_dict) -> dict:
         )
 
 
-def _update_cmd(cp2k_cmd: str|None, env="IPSUITE_CP2K_SHELL") -> str:
+def _update_cmd(cp2k_cmd: str | None, env="IPSUITE_CP2K_SHELL") -> str:
     """Update the shell command to run cp2k."""
     if cp2k_cmd is None:
         # Load from environment variable IPSUITE_CP2K_SHELL
