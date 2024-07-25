@@ -1,5 +1,4 @@
-"""LAMMPS interface for MD Simulations using LAMMPS
-"""
+"""LAMMPS interface for MD Simulations using LAMMPS"""
 
 import importlib.resources as pkg_resources
 import pathlib
