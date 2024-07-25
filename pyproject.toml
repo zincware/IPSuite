@@ -88,12 +88,6 @@ preview = true
 
 
 [tool.ruff]
-# Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
-select = ["A", "B", "C", "E", "F", "I", "C90", "C4", "TID", "PTH"] #  "D", "S"
-# ignore = ["D203", "D213", "D104", "D102", "D100", ]
-ignore = [
-    "B905", # not supported in older python versions
-]
 
 # Exclude a variety of commonly ignored directories.
 exclude = [
@@ -119,13 +113,20 @@ exclude = [
     "venv",
     "tests",
 ]
-per-file-ignores = { }
 
 # Same as Black.
 line-length = 90
 
 # Assume Python 3.10.
 target-version = "py310"
+
+[tool.ruff.lint]
+# Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
+select = ["A", "B", "C", "E", "F", "I", "C90", "C4", "TID", "PTH"] #  "D", "S"
+# ignore = ["D203", "D213", "D104", "D102", "D100", ]
+ignore = [
+    "B905", # not supported in older python versions
+]
 
 [tool.codespell]
 ignore-words-list = "dscribe"

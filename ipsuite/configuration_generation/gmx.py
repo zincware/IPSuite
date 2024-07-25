@@ -44,7 +44,7 @@ def smiles_to_pdb(
 
     working_directory = pathlib.Path(cwd)
 
-    with open(working_directory / file, "w") as f:
+    with (working_directory / file).open("w") as f:
         f.write(pdb_block)
     return m
 
@@ -114,7 +114,7 @@ end structure
 """
         script += structure_block
 
-    with open(cwd / "packmol.inp", "w") as f:
+    with (cwd / "packmol.inp").open("w") as f:
         f.write(script)
 
 
@@ -145,7 +145,7 @@ def combine_atomtype_files(files: list[pathlib.Path], output_file: pathlib.Path)
     header = []
     atomtypes = []
     for file in files:
-        with open(file, "r") as f:
+        with file.open("r") as f:
             lines = f.readlines()
             for idx, line in enumerate(lines):
                 if idx in [0, 1]:
@@ -155,7 +155,7 @@ def combine_atomtype_files(files: list[pathlib.Path], output_file: pathlib.Path)
                     atomtypes.append(line)
 
     atomtypes = list(set(atomtypes))
-    with open(output_file, "w") as f:
+    with output_file.open("w") as f:
         f.writelines(header)
         f.writelines(atomtypes)
 
@@ -281,7 +281,7 @@ class Smiles2Gromacs(base.IPSNode):
         )
 
     def _create_box_top(self):
-        with open(self.output_dir / "box.top", "w") as f:
+        with (self.output_dir / "box.top").open("w") as f:
             f.write("[ defaults ]")
             f.write("\n")
             f.write("; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ\n")
