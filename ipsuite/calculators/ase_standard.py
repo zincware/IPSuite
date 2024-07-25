@@ -2,6 +2,7 @@ import tqdm
 from ase.calculators.calculator import all_changes
 from ase.calculators.emt import EMT
 from ase.calculators.lj import LennardJones
+from ase.calculators.singlepoint import PropertyNotImplementedError
 
 from ipsuite import base
 
@@ -16,12 +17,13 @@ class LJSinglePoint(base.ProcessAtoms):
     def run(self):
         self.atoms = self.get_data()
 
-        calculator = self.get_calculator()
-
         for atom in tqdm.tqdm(self.atoms, ncols=70):
-            atom.calc = calculator
+            atom.calc = self.get_calculator()
             atom.get_potential_energy()
-            atom.get_stress()
+            try:
+                atom.get_stress()
+            except PropertyNotImplementedError:
+                pass
 
     def get_calculator(self, **kwargs):
         """Get an LJ ase calculator."""

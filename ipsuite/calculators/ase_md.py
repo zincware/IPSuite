@@ -1,5 +1,4 @@
 import collections.abc
-import functools
 import logging
 import pathlib
 import typing
@@ -532,16 +531,9 @@ class ASEMD(base.IPSNode):
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
-        def file_handle(filename):
-            file = self.state.fs.open(filename, "rb")
-            return h5py.File(file)
-
-        return znh5md.ASEH5MD(
-            self.traj_file,
-            format_handler=functools.partial(
-                znh5md.FormatHandler, file_handle=file_handle
-            ),
-        ).get_atoms_list()
+        with self.state.fs.open(self.traj_file, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
 
     def initialize_md(self):
         np.random.seed(self.seed)
@@ -556,8 +548,7 @@ class ASEMD(base.IPSNode):
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
 
-        self.db = znh5md.io.DataWriter(self.traj_file)
-        self.db.initialize_database_groups()
+        self.db = znh5md.IO(self.traj_file)
 
     def run_md(self, atoms):  # noqa: C901
         atoms.repeat(self.repeat)
@@ -641,14 +632,7 @@ class ASEMD(base.IPSNode):
                     )
                     atoms_cache.append(freeze_copy_atoms(atoms))
                     if len(atoms_cache) == self.dump_rate:
-                        self.db.add(
-                            znh5md.io.AtomsReader(
-                                atoms_cache,
-                                frames_per_chunk=self.dump_rate,
-                                step=1,
-                                time=self.sampling_rate,
-                            )
-                        )
+                        self.db.extend(atoms_cache)
                         atoms_cache = []
 
                     time = (idx_outer + 1) * self.sampling_rate * time_step
@@ -664,14 +648,7 @@ class ASEMD(base.IPSNode):
             atoms_cache.append(freeze_copy_atoms(atoms))
             current_step += 1
 
-        self.db.add(
-            znh5md.io.AtomsReader(
-                atoms_cache,
-                frames_per_chunk=self.dump_rate,
-                step=1,
-                time=self.sampling_rate,
-            )
-        )
+        self.db.extend(atoms_cache)
         return metrics_dict, current_step
 
     def run(self):
