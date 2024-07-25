@@ -15,8 +15,8 @@ repository = "https://github.com/zincware/ipsuite"
 # tensorflow-io-gcs-filesystem
 python = ">=3.10,<3.12"
 
-znh5md = "^0.1.6a0"
-ase = "^3.22.1"
+znh5md = "^0.3.1"
+ase = "^3.23"
 
 seaborn = "^0.12.2"
 cp2k-input-tools = "^0.9"
@@ -46,7 +46,7 @@ mace-torch = "^0.3.4"
 torch-dftd = "^0.4.0"
 
 [tool.poetry.group.apax.dependencies]
-apax = "^0.4.0"
+apax = "^0.5.0"
 
 
 [tool.poetry.group.dev.dependencies]

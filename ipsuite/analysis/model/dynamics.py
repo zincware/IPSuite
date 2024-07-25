@@ -1,4 +1,3 @@
-import functools
 import logging
 import pathlib
 import typing
@@ -375,16 +374,9 @@ class MDStability(base.ProcessAtoms):
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
-        def file_handle(filename):
-            file = self.state.fs.open(filename, "rb")
-            return h5py.File(file)
-
-        return znh5md.ASEH5MD(
-            self.traj_file,
-            format_handler=functools.partial(
-                znh5md.FormatHandler, file_handle=file_handle
-            ),
-        ).get_atoms_list()
+        with self.state.fs.open(self.traj_file, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
 
     def get_plots(self, stable_steps: int) -> None:
         """Create figures for all available data."""
@@ -412,8 +404,8 @@ class MDStability(base.ProcessAtoms):
 
         stable_steps = []
 
-        db = znh5md.io.DataWriter(self.traj_file)
-        db.initialize_database_groups()
+        db = znh5md.IO(self.traj_file)
+        unstable_atoms = []
 
         for ii in tqdm.trange(
             0, len(data_lst), desc="Atoms", leave=True, ncols=120, position=0
@@ -429,14 +421,9 @@ class MDStability(base.ProcessAtoms):
                 save_last_n=self.save_last_n,
                 rng=rng,
             )
+            unstable_atoms.extend(last_n_atoms)
             stable_steps.append(n_steps)
-            db.add(
-                znh5md.io.AtomsReader(
-                    last_n_atoms,
-                    frames_per_chunk=10_000,
-                    step=1,
-                )
-            )
+        db.extend(unstable_atoms)
 
         self.get_plots(stable_steps)
         self.stable_steps_df = pd.DataFrame({"stable_steps": np.array(stable_steps)})

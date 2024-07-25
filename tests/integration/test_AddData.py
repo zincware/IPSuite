@@ -44,9 +44,8 @@ def test_AddData(proj_path, traj_file, atoms_list, eager):
 
 def test_AddDataH5MD(proj_path, atoms_list):
     # file would be external otherwise
-    db = znh5md.io.DataWriter("data.h5")
-    db.initialize_database_groups()
-    db.add(znh5md.io.AtomsReader(atoms_list))
+    db = znh5md.IO("data.h5")
+    db.extend(atoms_list)
     # shutil.copy(traj_file, ".")
 
     # subprocess.check_call(["dvc", "add", traj_file.name])

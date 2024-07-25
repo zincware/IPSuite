@@ -171,16 +171,23 @@ class TorchD3(base.ProcessAtoms):
             energy = atoms.get_potential_energy()
             forces = atoms.get_forces()
 
-            with contextlib.suppress(KeyError):
+            try:
                 _atoms.calc.results["energy"] += energy
-            with contextlib.suppress(KeyError):
+            except KeyError:
+                _atoms.calc.results["energy"] = energy
+
+            try:
                 _atoms.calc.results["forces"] += forces
+            except KeyError:
+                _atoms.calc.results["forces"] = forces
 
             with contextlib.suppress(PropertyNotImplementedError):
                 # non periodic systems
                 stress = atoms.get_stress()
-                with contextlib.suppress(KeyError):
+                try:
                     _atoms.calc.results["stress"] += stress
+                except KeyError:
+                    _atoms.calc.results["stress"] = stress
 
             self.atoms.append(_atoms)
 
