@@ -9,7 +9,6 @@ import yaml
 import znh5md
 import zntrack.utils
 
-from ipsuite import utils
 from ipsuite.base import ProcessSingleAtom
 from ipsuite.models import Apax
 from ipsuite.utils.helpers import check_duplicate_keys
@@ -65,8 +64,6 @@ class ApaxJaxMD(ProcessSingleAtom):
                 "Performing simulations with JaxMD requires a apax model Node"
             )
 
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
-
     def _handle_parameter_file(self):
         if self.md_parameter_file:
             md_parameter_file_content = pathlib.Path(self.md_parameter_file).read_text()
@@ -94,14 +91,6 @@ class ApaxJaxMD(ProcessSingleAtom):
 
     @functools.cached_property
     def atoms(self) -> typing.List[ase.Atoms]:
-        # filename should be changeable
-        def file_handle(filename):
-            file = self.state.fs.open(filename, "rb")
-            return h5py.File(file)
-
-        return znh5md.ASEH5MD(
-            self.sim_dir / "md.h5",
-            format_handler=functools.partial(
-                znh5md.FormatHandler, file_handle=file_handle
-            ),
-        ).get_atoms_list()
+        with self.state.fs.open(self.sim_dir / "md.h5", "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]

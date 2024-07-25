@@ -46,7 +46,13 @@ def density_scatter(ax, x, y, bins, **kwargs) -> None:
 
 
 def get_figure(
-    true, prediction, datalabel: str, xlabel: str, ylabel: str, figsize: tuple = (10, 7)
+    true,
+    prediction,
+    datalabel: str,
+    xlabel: str,
+    ylabel: str,
+    ymax: typing.Optional[float] = None,
+    figsize: tuple = (10, 7),
 ) -> plt.Figure:
     """Create a correlation plot for true, prediction values.
 
@@ -66,9 +72,9 @@ def get_figure(
     """
     sns.set()
     fig, ax = plt.subplots(figsize=figsize)
-    ax.plot(true, true, color="grey", zorder=0)  # plot the diagonal in the background
-    bins = 500 if (len(true) / 10) > 500 else int(len(true) * 0.1)
-    if bins < 20:
+    ax.plot(true, np.zeros_like(true), color="grey", zorder=0)
+    bins = 25
+    if true.shape[0] < 20:
         # don't use density for very small datasets
         ax.scatter(true, prediction, marker="x", s=20.0, label=datalabel)
     else:
@@ -77,7 +83,30 @@ def get_figure(
         )
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
+    if ymax:
+        ax.set_ylim([-ymax, ymax])
     ax.legend()
+    return fig
+
+
+def get_cdf_figure(x, y, figsize: tuple = (10, 7)):
+    """Computes the cumulative distribution function of x and y,
+    then creates a calibration curve for the two variables.
+    """
+    idxs = np.argsort(x)
+    x_sorted = x[idxs]
+    y_sorted = y[np.argsort(y)]
+    x_scaleshift = x_sorted - np.min(x_sorted)
+    x_scaleshift /= np.max(x_scaleshift)
+    y_scaleshift = y_sorted - np.min(y_sorted)
+    y_scaleshift /= np.max(y_scaleshift)
+
+    fig, ax = plt.subplots(figsize=figsize)
+    diag = np.linspace(0, 1.0, 2)
+    ax.plot(diag, diag, "grey", alpha=0.5)
+    ax.plot(x_scaleshift, y_scaleshift)
+    ax.set_xlabel("expected CDF")
+    ax.set_ylabel("observed CDF")
     return fig
 
 

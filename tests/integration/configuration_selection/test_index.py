@@ -55,13 +55,13 @@ def test_index_chained(proj_path, traj_file):
     with ips.Project(automatic_node_names=True, remove_existing_graph=True) as project:
         data = ips.AddData(file=traj_file)
         pre_selection = ips.configuration_selection.IndexSelection(
-            data=data, indices=slice(0, 5, None)
+            data=data.atoms, indices=slice(0, 5, None)
         )  # we use this to "change" the data
         selection = ips.configuration_selection.IndexSelection(
-            data=pre_selection, indices=[0, 1, 2], name="selection"
+            data=pre_selection.atoms, indices=[0, 1, 2], name="selection"
         )
 
-        histogram = ips.analysis.EnergyHistogram(data=selection)
+        histogram = ips.analysis.EnergyHistogram(data=selection.atoms)
 
     project.run()
 
@@ -76,10 +76,10 @@ def test_index_chained(proj_path, traj_file):
             data=data, indices=slice(5, 10, None)
         )  # we use this to "change" the data
         selection = ips.configuration_selection.IndexSelection(
-            data=pre_selection, indices=[0, 1, 2], name="selection"
+            data=pre_selection.atoms, indices=[0, 1, 2], name="selection"
         )
 
-        histogram = ips.analysis.EnergyHistogram(data=selection)
+        histogram = ips.analysis.EnergyHistogram(data=selection.atoms)
 
     project.run()
     histogram.load()

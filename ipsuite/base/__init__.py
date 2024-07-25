@@ -3,10 +3,12 @@
 from ipsuite.base import protocol
 from ipsuite.base.base import (
     AnalyseAtoms,
-    AnalyseProcessAtoms,
-    CheckBase,
+    Check,
+    ComparePredictions,
+    Flatten,
     IPSNode,
     Mapping,
+    Modifier,
     ProcessAtoms,
     ProcessSingleAtom,
 )
@@ -14,10 +16,12 @@ from ipsuite.base.base import (
 __all__ = [
     "ProcessAtoms",
     "ProcessSingleAtom",
+    "ComparePredictions",
     "AnalyseAtoms",
-    "AnalyseProcessAtoms",
     "protocol",
     "Mapping",
-    "CheckBase",
+    "Modifier",
+    "Check",
     "IPSNode",
+    "Flatten",
 ]

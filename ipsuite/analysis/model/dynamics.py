@@ -1,4 +1,3 @@
-import functools
 import logging
 import pathlib
 import typing
@@ -63,9 +62,6 @@ class RattleAnalysis(base.ProcessSingleAtom):
         # y_label="predicted energy",
     )
 
-    def post_init(self):
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
-
     def run(self):
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
@@ -127,9 +123,6 @@ class BoxScale(base.ProcessSingleAtom):
         x_label="Scale factor of the initial cell",
         y_label="predicted energy",
     )
-
-    def _post_init_(self):
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
 
     def run(self):
         self.model_outs.mkdir(parents=True, exist_ok=True)
@@ -296,7 +289,7 @@ def run_stability_nve(
     time_step: float,
     max_steps: int,
     init_temperature: float,
-    checks: list[base.CheckBase],
+    checks: list[base.Check],
     save_last_n: int,
     rng: typing.Optional[np.random.Generator] = None,
 ) -> typing.Tuple[int, list[ase.Atoms]]:
@@ -375,22 +368,15 @@ class MDStability(base.ProcessAtoms):
     bins: int = zntrack.params(None)
     seed: int = zntrack.params(0)
 
-    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "trajectory.h5")
+    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
     stable_steps_df: pd.DataFrame = zntrack.plots()
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
-        def file_handle(filename):
-            file = self.state.fs.open(filename, "rb")
-            return h5py.File(file)
-
-        return znh5md.ASEH5MD(
-            self.traj_file,
-            format_handler=functools.partial(
-                znh5md.FormatHandler, file_handle=file_handle
-            ),
-        ).get_atoms_list()
+        with self.state.fs.open(self.traj_file, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
 
     def get_plots(self, stable_steps: int) -> None:
         """Create figures for all available data."""
@@ -418,8 +404,7 @@ class MDStability(base.ProcessAtoms):
 
         stable_steps = []
 
-        db = znh5md.io.DataWriter(self.traj_file)
-        db.initialize_database_groups()
+        db = znh5md.IO(self.traj_file)
         unstable_atoms = []
 
         for ii in tqdm.trange(
@@ -438,13 +423,7 @@ class MDStability(base.ProcessAtoms):
             )
             unstable_atoms.extend(last_n_atoms)
             stable_steps.append(n_steps)
-        db.add(
-            znh5md.io.AtomsReader(
-                unstable_atoms,
-                frames_per_chunk=self.save_last_n,
-                step=1,
-            )
-        )
+        db.extend(unstable_atoms)
 
         self.get_plots(stable_steps)
         self.stable_steps_df = pd.DataFrame({"stable_steps": np.array(stable_steps)})

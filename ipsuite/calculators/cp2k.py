@@ -77,7 +77,7 @@ def _update_paths(cp2k_input_dict) -> dict:
         )
 
 
-def _update_cmd(cp2k_cmd: str, env="IPSUITE_CP2K_SHELL") -> str:
+def _update_cmd(cp2k_cmd: str | None, env="IPSUITE_CP2K_SHELL") -> str:
     """Update the shell command to run cp2k."""
     if cp2k_cmd is None:
         # Load from environment variable IPSUITE_CP2K_SHELL
@@ -190,7 +190,7 @@ class CP2KSinglePoint(base.ProcessAtoms):
 
     wfn_restart_file: str = zntrack.deps_path(None)
     wfn_restart_node = zntrack.deps(None)
-    output_file = zntrack.outs_path(zntrack.nwd / "atoms.h5")
+    output_file = zntrack.outs_path(zntrack.nwd / "structures.h5")
     cp2k_directory = zntrack.outs_path(zntrack.nwd / "cp2k")
 
     def run(self):
@@ -204,15 +204,13 @@ class CP2KSinglePoint(base.ProcessAtoms):
 
         self.cp2k_shell = _update_cmd(self.cp2k_shell)
 
-        db = znh5md.io.DataWriter(self.output_file)
-        db.initialize_database_groups()
-
+        db = znh5md.IO(self.output_file)
         calc = self.get_calculator()
 
         for atoms in tqdm.tqdm(self.get_data(), ncols=70):
             atoms.calc = calc
             atoms.get_potential_energy()
-            db.add(znh5md.io.AtomsReader([atoms]))
+            db.append(atoms)
 
         for file in self.cp2k_directory.glob("cp2k-RESTART.wfn.*"):
             # we don't need all restart files
@@ -220,16 +218,9 @@ class CP2KSinglePoint(base.ProcessAtoms):
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
-        def file_handle(filename):
-            file = self.state.fs.open(filename, "rb")
-            return h5py.File(file)
-
-        return znh5md.ASEH5MD(
-            self.output_file,
-            format_handler=functools.partial(
-                znh5md.FormatHandler, file_handle=file_handle
-            ),
-        ).get_atoms_list()
+        with self.state.fs.open(self.output_file, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
 
     def get_input_script(self):
         """Return the input script.
@@ -268,7 +259,7 @@ class CP2KSinglePoint(base.ProcessAtoms):
                 shutil.copy(restart_wfn, directory / "cp2k-RESTART.wfn")
 
         patch(
-            "ase.calculators.cp2k.Popen",
+            "ase.calculators.cp2k.subprocess.Popen",
             wraps=functools.partial(subprocess.Popen, cwd=directory),
         ).start()
 
