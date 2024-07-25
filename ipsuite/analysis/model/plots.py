@@ -31,6 +31,10 @@ def density_scatter(ax, x, y, bins, **kwargs) -> None:
     # convert e.g. DataFrame to numpy array values
     x = np.array(x)
     y = np.array(y)
+    # print(x)
+    # print(y)
+    # print(bins)
+    # quit()
 
     if "cmap" not in kwargs:
         kwargs["cmap"] = "viridis"
@@ -90,28 +94,6 @@ def get_figure(
         ax.set_ylim([-ymax, ymax])
     ax.legend()
     return fig
-
-
-# def get_cdf_figure(x, y, figsize: tuple = (10, 7)):
-#     """Computes the cumulative distribution function of x and y,
-#     then creates a calibration curve for the two variables.
-#     """
-#     idxs = np.argsort(x)
-#     x_sorted = x[idxs]
-#     y_sorted = y[np.argsort(y)]
-#     x_scaleshift = x_sorted - np.min(x_sorted)
-#     x_scaleshift /= np.max(x_scaleshift)
-#     y_scaleshift = y_sorted - np.min(y_sorted)
-#     y_scaleshift /= np.max(y_scaleshift)
-
-#     fig, ax = plt.subplots(figsize=figsize)
-#     diag = np.linspace(0, 1.0, 2)
-#     ax.plot(diag, diag, "grey", alpha=0.5)
-#     ax.plot(x_scaleshift, y_scaleshift)
-#     ax.set_xlabel("expected CDF")
-#     ax.set_ylabel("observed CDF")
-#     return fig
-
 
 def get_calibration_figure(
     error,
@@ -182,8 +164,8 @@ def slice_ensemble_uncertainty(true, pred_ens, slice_start, slice_end):
 
     isel = np.where((slice_start < pred_std) & (pred_std < slice_end))[0]
 
-    error_true = np.reshape(true[isel, 0] - pred_mean[isel, 0], -1)
-    error_pred = np.reshape(pred_ens[isel, :, 0] - pred_mean[isel, np.newaxis, 0], -1)
+    error_true = np.reshape(true[isel] - pred_mean[isel], -1)
+    error_pred = np.reshape(pred_ens[isel, :] - pred_mean[isel, np.newaxis], -1)
     return error_true, error_pred
 
 

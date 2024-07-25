@@ -300,19 +300,23 @@ class CalibrationMetrics(base.ComparePredictions):
         energy_uncertainty = np.array(energy_uncertainty) * 1000
         self.content["energy_unc"] = energy_uncertainty
 
-        if "forces" in true_keys and "forces_uncertainty" in pred_keys:
+        if "forces" in pred_keys:
             true_forces = [a.get_forces() for a in self.x]
             true_forces = np.array(true_forces) * 1000
             pred_forces = [a.get_forces() for a in self.y]
             pred_forces = np.array(pred_forces) * 1000
             forces_uncertainty = [x.calc.results["forces_uncertainty"] for x in self.y]
-            forces_uncertainty = np.array(forces_uncertainty)
-            forces_ensemble = [x.calc.results["forces_ensemble"] for x in self.y]
+            forces_uncertainty = np.array(forces_uncertainty) * 1000
+            n_ens = self.y[0].calc.results["forces_ensemble"].shape[0]
+            forces_ensemble = [np.reshape(x.calc.results["forces_ensemble"], (n_ens,-1)) for x in self.y]
+            forces_ensemble = np.array(forces_ensemble) * 1000
+            forces_ensemble = np.transpose(forces_ensemble, (0,2,1))
+            forces_ensemble = np.reshape(forces_ensemble, (-1, n_ens)) 
 
-            self.content["forces_true"] = true_forces
-            self.content["forces_pred"] = pred_forces
-            self.content["forces_unc"] = forces_uncertainty * 1000
-            self.content["forces_ensemble"] = np.array(forces_ensemble) * 1000
+            self.content["forces_true"] = np.reshape(true_forces, (-1,))
+            self.content["forces_pred"] = np.reshape(pred_forces, (-1,))
+            self.content["forces_unc"] = np.reshape(forces_uncertainty, (-1,))
+            self.content["forces_ensemble"] = forces_ensemble 
 
     def get_metrics(self):
         """Update the metrics."""
@@ -358,10 +362,9 @@ class CalibrationMetrics(base.ComparePredictions):
             energy_gauss.savefig(self.plots_dir / "energy_gaussianicity.png")
             energy_cdf_plot.savefig(self.plots_dir / "energy_cdf.png")
 
-        if "forces_err" in self.content:
+        if "forces_unc" in self.content:
             f_err = np.abs(self.content["forces_pred"] - self.content["forces_true"])
             f_err = np.reshape(f_err, (-1,))
-            f_unc = np.reshape(self.content["forces_unc"], (-1,))
 
             forces_plot = get_calibration_figure(
                 f_err,
@@ -369,10 +372,6 @@ class CalibrationMetrics(base.ComparePredictions):
                 datalabel=rf"RLL={self.forces['rll']:.1f}",
                 forces=True,
             )
-            # forces_cdf_plot = get_cdf_figure(
-            #     f_unc,
-            #     f_err,
-            # )
             forces_cdf_plot, f_cdf_ax = plt.subplots()
             f_cdf_ax = uct.plot_calibration(
                 self.content["forces_pred"],
