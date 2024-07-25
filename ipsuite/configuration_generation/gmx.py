@@ -214,7 +214,7 @@ class Smiles2Gromacs(base.IPSNode):
     density: float = zntrack.params()
     fudgeLJ: float = zntrack.params(1.0)
     fudgeQQ: float = zntrack.params(1.0)
-    tolerance: float = zntrack.params(1.0)
+    tolerance: float = zntrack.params(2.0)
 
     mdp_files: list[str | pathlib.Path] = zntrack.deps_path()
     itp_files: list[str | None] = zntrack.deps_path(None)
