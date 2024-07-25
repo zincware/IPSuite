@@ -308,15 +308,17 @@ class CalibrationMetrics(base.ComparePredictions):
             forces_uncertainty = [x.calc.results["forces_uncertainty"] for x in self.y]
             forces_uncertainty = np.array(forces_uncertainty) * 1000
             n_ens = self.y[0].calc.results["forces_ensemble"].shape[0]
-            forces_ensemble = [np.reshape(x.calc.results["forces_ensemble"], (n_ens,-1)) for x in self.y]
+            forces_ensemble = [
+                np.reshape(x.calc.results["forces_ensemble"], (n_ens, -1)) for x in self.y
+            ]
             forces_ensemble = np.array(forces_ensemble) * 1000
-            forces_ensemble = np.transpose(forces_ensemble, (0,2,1))
-            forces_ensemble = np.reshape(forces_ensemble, (-1, n_ens)) 
+            forces_ensemble = np.transpose(forces_ensemble, (0, 2, 1))
+            forces_ensemble = np.reshape(forces_ensemble, (-1, n_ens))
 
             self.content["forces_true"] = np.reshape(true_forces, (-1,))
             self.content["forces_pred"] = np.reshape(pred_forces, (-1,))
             self.content["forces_unc"] = np.reshape(forces_uncertainty, (-1,))
-            self.content["forces_ensemble"] = forces_ensemble 
+            self.content["forces_ensemble"] = forces_ensemble
 
     def get_metrics(self):
         """Update the metrics."""

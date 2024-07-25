@@ -95,6 +95,7 @@ def get_figure(
     ax.legend()
     return fig
 
+
 def get_calibration_figure(
     error,
     std,
