@@ -2029,6 +2029,17 @@ numpy = ">=1.13"
 packaging = "*"
 
 [[package]]
+name = "fasteners"
+version = "0.19"
+description = "A python package that provides useful locks"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "fasteners-0.19-py3-none-any.whl", hash = "sha256:758819cb5d94cdedf4e836988b74de396ceacb8e2794d21f82d131fd9ee77237"},
+    {file = "fasteners-0.19.tar.gz", hash = "sha256:b4f37c3ac52d8a445af3a66bce57b33b5e90b97c696b7b984f530cf8f0ded09c"},
+]
+
+[[package]]
 name = "fastjsonschema"
 version = "2.20.0"
 description = "Fastest Python implementation of JSON schema"
@@ -2451,6 +2462,22 @@ pyparsing = "*"
 
 [package.extras]
 full = ["numpy", "ply"]
+
+[[package]]
+name = "griddataformats"
+version = "1.0.2"
+description = "Reading and writing of data on regular grids in Python"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "GridDataFormats-1.0.2-py3-none-any.whl", hash = "sha256:4562bb2da9a064a8e6640e5fb853e204c8f32f6403651703f6b0ef58a009054c"},
+    {file = "GridDataFormats-1.0.2.tar.gz", hash = "sha256:b93cf7f36fce33dbc428026f26dba560d5c7ba2387caca495bad920f90094502"},
+]
+
+[package.dependencies]
+mrcfile = "*"
+numpy = ">=1.21"
+scipy = "*"
 
 [[package]]
 name = "grpcio"
@@ -3780,6 +3807,68 @@ docs = ["atomman", "myst_nb", "nglview", "numpydoc", "ovito", "pydata-sphinx-the
 test = ["atomman", "ovito", "pytest", "sympy"]
 
 [[package]]
+name = "mda-xdrlib"
+version = "0.2.0"
+description = "Stand-alone XDRLIB module (from cpython 3.10.8)"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "mda_xdrlib-0.2.0-py3-none-any.whl", hash = "sha256:0d1757b339f5db2d017a89ddaae06a82cd7a2cce26b8063df9f52b64e933fb47"},
+    {file = "mda_xdrlib-0.2.0.tar.gz", hash = "sha256:f26f7158a83c32b96d15b530fce2cbc1190c4b7024e41faa4ab3e3db74e272af"},
+]
+
+[package.extras]
+testing = ["pytest"]
+
+[[package]]
+name = "mdanalysis"
+version = "2.7.0"
+description = "An object-oriented toolkit to analyze molecular dynamics trajectories."
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "MDAnalysis-2.7.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:752a7e79f2195e284bd5c6c74510e7a587050aa15a5fd5d1f0b1c173238c7f9e"},
+    {file = "MDAnalysis-2.7.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:d9f5506b70614aa21974488c61b150dcf443c2ef50bacba0ff9c5369fdd1dec8"},
+    {file = "MDAnalysis-2.7.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:cd8d2d5318f5adaa2b4143c60f5006bb9f5ef294eea87bea5b35127cc8f30399"},
+    {file = "MDAnalysis-2.7.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3f6924273c498c7134cfe985f2779ebf2f1d4204161c354ae8175779a20794e9"},
+    {file = "MDAnalysis-2.7.0-cp310-cp310-win_amd64.whl", hash = "sha256:348372eacd74a6be0cd7e2af9a5d6f0aae6b86c16868937bd57f4636e4e6141e"},
+    {file = "MDAnalysis-2.7.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:45a6ad90705ff50ddae7f0d7a2b3ddfd0185e3e8314930874b9fc3ac56853ec9"},
+    {file = "MDAnalysis-2.7.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:3be89d52e3442d58b65eef89626147d1e319a7912a913c7fccd78ba878418800"},
+    {file = "MDAnalysis-2.7.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9358a88e4558febc4eca58dc69aeaf836b8eacc92556e0205c6c40497907e3ab"},
+    {file = "MDAnalysis-2.7.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1fd4b24cfb5fc63e9ae758251af947702f1a033f9bb38e54e206453c6afd3db0"},
+    {file = "MDAnalysis-2.7.0-cp311-cp311-win_amd64.whl", hash = "sha256:eea51334fb3cc45475003e992c63205f5c5ea34920154ab2cea9d44120b5904b"},
+    {file = "MDAnalysis-2.7.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:486794d7e957e959f612e1f664878e0244594864c057bff0748eca6fef7d1523"},
+    {file = "MDAnalysis-2.7.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:aaf7c158a65e032d15ef63cc08a6790d87ec3d7ee6037eb778d1959aec6c305a"},
+    {file = "MDAnalysis-2.7.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5613c102d2ba4ac6ff2527ba9ea1b2564fdd90f3e06e921752bbcad82c6b173e"},
+    {file = "MDAnalysis-2.7.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:cf975db416007242e5674ff44803ce8e36313c5602f401244858e26e848b9411"},
+    {file = "MDAnalysis-2.7.0-cp312-cp312-win_amd64.whl", hash = "sha256:3bcc653057e8ea6f35a32e9993d840ae919842fa0756a966966d6eedc1072ee5"},
+    {file = "MDAnalysis-2.7.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:c7dc2b9601126cdd19e2b39ee38fc359977f5ab949ae416fc2470b110fc2c75a"},
+    {file = "MDAnalysis-2.7.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:1bd57db448afd1b73f0ea8954f3f1fdf9033442d18cc9f2ef3f1c59930a24e0b"},
+    {file = "MDAnalysis-2.7.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:81dfcd1f519fd288921eda7f97db0d1d287d55645c5cbe96031baf6209bfd2f5"},
+    {file = "MDAnalysis-2.7.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:501a473d65ef6e296f50a8d246a77f31ca41752be1f7edc76f88e468d672a41d"},
+    {file = "MDAnalysis-2.7.0-cp39-cp39-win_amd64.whl", hash = "sha256:345043a6365237a55d20f8dc0e31aa1d4e09e348ca8e1877dee6a2a6f6500c0b"},
+    {file = "MDAnalysis-2.7.0.tar.gz", hash = "sha256:572e82945e5d058e3749ec5f18e6b3831ef7f2119cb54672567ae9a977201e93"},
+]
+
+[package.dependencies]
+fasteners = "*"
+GridDataFormats = ">=0.4.0"
+joblib = ">=0.12"
+matplotlib = ">=1.5.1"
+mda-xdrlib = "*"
+mmtf-python = ">=1.0.0"
+numpy = ">=1.22.3,<2.0"
+packaging = "*"
+scipy = ">=1.5.0"
+threadpoolctl = "*"
+tqdm = ">=4.43.0"
+
+[package.extras]
+analysis = ["biopython (>=1.80)", "networkx (>=2.0)", "scikit-learn", "seaborn", "tidynamics (>=1.0.0)"]
+doc = ["mdanalysis-sphinx-theme (>=1.3.0)", "pybtex", "pybtex-docutils", "sphinx", "sphinx-sitemap", "sphinxcontrib-bibtex"]
+extra-formats = ["chemfiles (>=0.10)", "gsd (>3.0.0)", "h5py (>=2.10)", "netCDF4 (>=1.0)", "parmed", "pyedr (>=0.7.0)", "pytng (>=0.2.3)", "rdkit (>=2020.03.1)"]
+
+[[package]]
 name = "mir-allegro"
 version = "0.2.0"
 description = "Allegro is an open-source code for building highly scalable and accurate equivariant deep learning interatomic potentials."
@@ -3860,6 +3949,24 @@ numpy = [
 dev = ["absl-py", "pyink", "pylint (>=2.6.0)", "pytest", "pytest-xdist"]
 
 [[package]]
+name = "mmtf-python"
+version = "1.1.3"
+description = "A decoding libary for the PDB mmtf format"
+optional = false
+python-versions = "*"
+files = [
+    {file = "mmtf-python-1.1.3.tar.gz", hash = "sha256:12a02fe1b7131f0a2b8ce45b46f1e0cdd28b9818fe4499554c26884987ea0c32"},
+    {file = "mmtf_python-1.1.3-py2.py3-none-any.whl", hash = "sha256:502031c509a8a6d73e042781abbd88b84c1afffe65097eb0c1b70f329ffd1e6e"},
+]
+
+[package.dependencies]
+msgpack = ">=1.0.0"
+
+[package.extras]
+dev = ["check-manifest"]
+test = ["coverage"]
+
+[[package]]
 name = "monty"
 version = "2024.7.12"
 description = "Monty is the missing complement to Python."
@@ -3886,6 +3993,20 @@ develop = ["codecov", "pycodestyle", "pytest (>=4.6)", "pytest-cov", "wheel"]
 docs = ["sphinx"]
 gmpy = ["gmpy2 (>=2.1.0a4)"]
 tests = ["pytest (>=4.6)"]
+
+[[package]]
+name = "mrcfile"
+version = "1.5.3"
+description = "MRC file I/O library"
+optional = false
+python-versions = "*"
+files = [
+    {file = "mrcfile-1.5.3-py2.py3-none-any.whl", hash = "sha256:fbf2b5583afae38656343f2d6bac67d85e0e798b2fd608be63ecd2758cd67c61"},
+    {file = "mrcfile-1.5.3.tar.gz", hash = "sha256:3f304c02cb9f0900b26683679c5d3d750da64b5c370b58d69af8a8ddf720c0ce"},
+]
+
+[package.dependencies]
+numpy = ">=1.16.0"
 
 [[package]]
 name = "msgpack"
@@ -8120,4 +8241,4 @@ nequip = []
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "3132165cf287f77d94c5b898bcbc7c78234e9fd8a4f8ab02e98c4d7fab2b0e03"
+content-hash = "8b1c220171adb5f7b350677c4c09eac244a835505a97911a7160766252f16039"
