@@ -1,23 +1,82 @@
+import contextlib
 import pathlib
 import re
 import shutil
 import subprocess
 
+import h5py
 import MDAnalysis as mda
-import numpy as np
-import pandas as pd
+import znh5md
 import zntrack
-from ase import Atoms, units
+from ase import Atoms
 from ase.calculators.singlepoint import SinglePointCalculator
-from ase.io import read
+from ase.data import atomic_numbers
+from MDAnalysis.coordinates.timestep import Timestep
 from pint import UnitRegistry
 from rdkit import Chem
 from rdkit.Chem import AllChem, rdMolDescriptors
 
-from ipsuite import base, fields
+from ipsuite import base
 
 # Initialize pint unit registry
 ureg = UnitRegistry()
+
+
+def timestep_to_atoms(u: mda.Universe, ts: Timestep) -> Atoms:
+    """Convert an MDAnalysis timestep to an ASE atoms object.
+
+    Parameters
+    ----------
+    u : MDAnalysis.Universe
+        The MDAnalysis Universe object containing topology information.
+    ts : MDAnalysis.coordinates.Timestep
+        The MDAnalysis Timestep object to convert.
+
+    Returns
+    -------
+    ase.Atoms
+        The converted ASE Atoms object.
+    """
+    # Set the universe's trajectory to the provided timestep
+    u.trajectory.ts = ts
+
+    # Extract positions from timestep
+    positions = ts.positions
+
+    # Extract masses and elements from the universe
+    names = u.atoms.names
+    cell = u.dimensions
+
+    # Adapted from ASE gro reader
+    symbols = []
+    for name in names:
+        if name in atomic_numbers:
+            symbols.append(name)
+        elif name[0] in atomic_numbers:
+            symbols.append(name[0])
+        elif name[-1] in atomic_numbers:
+            symbols.append(name[-1])
+        else:
+            # not an atomic symbol
+            # if we can not determine the symbol, we use
+            # the dummy symbol X
+            symbols.append("X")
+
+    forces = ts.forces * ureg.kilocalories / ureg.mol / ureg.angstrom
+    # convert to eV/Å
+    forces.ito(ureg.eV / ureg.angstrom / ureg.particle)
+    forces = forces.magnitude
+    energy = 0
+    with contextlib.suppress(KeyError):
+        energy = ts.aux["Total Energy"] * ureg.kilocalories / ureg.mol
+        energy.ito(ureg.eV / ureg.particle)
+        energy = energy.magnitude
+
+    atoms = Atoms(symbols, positions=positions, cell=cell, pbc=True)
+    atoms.calc = SinglePointCalculator(atoms, energy=energy, forces=forces)
+    atoms.info["h5md_time"] = (ts.time * ureg.picosecond).to(ureg.femtosecond).magnitude
+
+    return atoms
 
 
 def smiles_to_pdb(
@@ -204,7 +263,7 @@ class Smiles2Gromacs(base.IPSNode):
 
             conda install conda-forge::gromacs
             conda install conda-forge::acpype
-            pip install MDAnalysis
+            pip install MDAnalysis pyedr
 
     """
 
@@ -220,7 +279,7 @@ class Smiles2Gromacs(base.IPSNode):
     itp_files: list[str | None] = zntrack.deps_path(None)
     pdb_files: list[str | pathlib.Path] = zntrack.deps_path(None)
 
-    atoms = fields.Atoms()
+    traj_file: list[Atoms] = zntrack.outs_path(zntrack.nwd / "structures.h5")
 
     output_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "gromacs")
 
@@ -235,6 +294,12 @@ class Smiles2Gromacs(base.IPSNode):
         if self.output_dir.exists():
             shutil.rmtree(self.output_dir)
         self.mdp_files = [pathlib.Path(mdp_file) for mdp_file in self.mdp_files]
+
+    @property
+    def atoms(self):
+        with self.state.fs.open(self.traj_file, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
 
     def _run_acpype(self):
         for idx, (label, charge) in enumerate(zip(self.labels, self.charges)):
@@ -356,47 +421,20 @@ class Smiles2Gromacs(base.IPSNode):
         subprocess.run(cmd, check=True, shell=True, cwd=self.output_dir)
         self.box = "box.pdb"
 
-    def _extract_energies(self):
-        cmd = ["echo", "8", "|", "gmx", "energy", "-f", "box.edr"]
-        subprocess.run(cmd, check=True, cwd=self.output_dir)
-
-        lineNumber = 1
-        with (self.output_dir / "energy.xvg").open("r") as in_file:
-            for i, line in enumerate(in_file, 1):
-                if line.startswith(" "):
-                    lineNumber = i
-                    break
-        df = pd.read_csv(
-            "energy.xvg",
-            skiprows=lineNumber,
-            header=None,
-            names=["time", "energy"],
-            sep="\s+",
-        )
-        energies = df["energy"].iloc[:] * units.kcal / units.mol
-        return energies
-
     def _convert_trajectory(self):
-        atoms_template = read((self.output_dir / "box.gro").as_posix())
-        trr = mda.coordinates.TRR.TRRReader((self.output_dir / "box.trr").as_posix())
+        gro = self.output_dir / "box.gro"
+        trr = self.output_dir / "box.trr"
+        edr = self.output_dir / "box.edr"
+        u = mda.Universe(gro, trr)
+        aux = mda.auxiliary.EDR.EDRReader(edr)
+        u.trajectory.add_auxiliary(auxdata=aux)
 
-        # energies = self._extract_energies()
-        energies = np.zeros(len(trr))
+        images = []
+        for ts in u.trajectory:
+            images.append(timestep_to_atoms(u, ts))
 
-        traj = []
-        Z = atoms_template.numbers
-        for frame, energy in zip(trr, energies):
-            pos = frame.positions
-            forces = frame.forces * units.kcal / units.mol / 10
-            cell = frame.dimensions
-
-            new_atoms = Atoms(numbers=Z, positions=pos, cell=cell)
-            new_atoms.pbc = True
-            calc = SinglePointCalculator(new_atoms, energy=energy, forces=forces)
-            new_atoms.calc = calc
-            traj.append(new_atoms)
-
-        self.atoms = traj
+        io = znh5md.IO(self.traj_file, store="time")
+        io.extend(images)
 
     def run(self):
         self.output_dir.mkdir(exist_ok=True, parents=True)
