@@ -8165,13 +8165,13 @@ dask = ["bokeh (>=2.4.2,<3.0.0)", "dask (>=2022.12.1,<2023.0.0)", "dask-jobqueue
 
 [[package]]
 name = "znh5md"
-version = "0.3.1"
+version = "0.3.2"
 description = "ASE Interface for the H5MD format."
 optional = false
 python-versions = "<4.0,>=3.10"
 files = [
-    {file = "znh5md-0.3.1-py3-none-any.whl", hash = "sha256:f3000f5478fc5625d86b710fa2a96221038ee367d14f2989285054f0fe3808ba"},
-    {file = "znh5md-0.3.1.tar.gz", hash = "sha256:1b0ebd26c325b195eeb709d4bd31b38d24a025c650e7b33c7acc39cab2fd47b3"},
+    {file = "znh5md-0.3.2-py3-none-any.whl", hash = "sha256:79e06e191a560bc45cd63a248f5095f9dff5021f75e31546b2c238f47a5e089e"},
+    {file = "znh5md-0.3.2.tar.gz", hash = "sha256:ef37e2ff0ad0e4a7e0d19c8e5742c78ad1a7100a05a3f1e3a7927a17691e86cc"},
 ]
 
 [package.dependencies]
@@ -8241,4 +8241,4 @@ nequip = []
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "8b1c220171adb5f7b350677c4c09eac244a835505a97911a7160766252f16039"
+content-hash = "3a527395fd88f96e0da6bf5e84d32898a27d43737851c381f2040bffdb790c14"
