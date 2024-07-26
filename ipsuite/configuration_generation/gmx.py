@@ -274,6 +274,7 @@ class Smiles2Gromacs(base.IPSNode):
     fudgeLJ: float = zntrack.params(1.0)
     fudgeQQ: float = zntrack.params(1.0)
     tolerance: float = zntrack.params(2.0)
+    cleanup: bool = zntrack.params(True)
 
     mdp_files: list[str | pathlib.Path] = zntrack.deps_path()
     itp_files: list[str | None] = zntrack.deps_path(None)
@@ -449,3 +450,14 @@ class Smiles2Gromacs(base.IPSNode):
         self._create_box_top()
         self._run_gmx()
         self._convert_trajectory()
+
+        if self.cleanup:
+            paths = list(self.output_dir.iterdir())
+            with (self.output_dir / "info.txt").open("w") as f:
+                f.write("The following data has been removed:\n")
+                f.write("\n".join([file.name for file in paths]))
+            for path in paths:
+                if path.is_file():
+                    path.unlink()
+                else:
+                    shutil.rmtree(path)
