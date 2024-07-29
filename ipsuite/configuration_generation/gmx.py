@@ -68,7 +68,8 @@ def timestep_to_atoms(u: mda.Universe, ts: Timestep) -> Atoms:
     forces = forces.magnitude
     energy = 0
     with contextlib.suppress(KeyError):
-        energy = ts.aux["Total Energy"] * ureg.kilocalories / ureg.mol
+        energy = ts.aux["Potential"]
+        energy = energy *  ureg.kilocalories / ureg.mol
         energy.ito(ureg.eV / ureg.particle)
         energy = energy.magnitude
     
