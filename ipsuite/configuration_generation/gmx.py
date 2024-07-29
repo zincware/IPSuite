@@ -71,10 +71,17 @@ def timestep_to_atoms(u: mda.Universe, ts: Timestep) -> Atoms:
         energy = ts.aux["Total Energy"] * ureg.kilocalories / ureg.mol
         energy.ito(ureg.eV / ureg.particle)
         energy = energy.magnitude
-
+    
     atoms = Atoms(symbols, positions=positions, cell=cell, pbc=True)
     atoms.calc = SinglePointCalculator(atoms, energy=energy, forces=forces)
     atoms.info["h5md_time"] = (ts.time * ureg.picosecond).to(ureg.femtosecond).magnitude
+
+    with contextlib.suppress(KeyError):
+        atoms.info["temperature"] = ts.aux["Temperature"]
+    with contextlib.suppress(KeyError):
+        atoms.info["pressure"] = ts.aux["Pressure"]
+    with contextlib.suppress(KeyError):
+        atoms.info["density"] = ts.aux["Density"]
 
     return atoms
 
