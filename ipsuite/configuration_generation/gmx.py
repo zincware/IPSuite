@@ -3,6 +3,7 @@ import pathlib
 import re
 import shutil
 import subprocess
+import yaml, json
 
 import h5py
 import MDAnalysis as mda
@@ -20,6 +21,25 @@ from ipsuite import base
 
 # Initialize pint unit registry
 ureg = UnitRegistry()
+
+def dict_to_gf(data: dict) -> str:
+    """Convert a dictionary to a Gromacs .mdp file."""
+    return "\n".join([f"{key} = {value}" for key, value in data.items()])
+
+def params_to_mdp(file: pathlib.Path, target: pathlib.Path):
+    """Convert yaml/json files to mdp files."""
+    if file.suffix in [".yaml", ".yml"]:
+        with file.open("r") as f:
+            data = yaml.safe_load(f)
+            data = dict_to_gf(data)
+    elif file.suffix == ".json":
+        with file.open("r") as f:
+            data = json.load(f)
+            data = dict_to_gf(data)
+    else:
+        data = file.read_text()
+
+    target.write_text(data)
 
 
 def timestep_to_atoms(u: mda.Universe, ts: Timestep) -> Atoms:
@@ -254,6 +274,8 @@ class Smiles2Gromacs(base.IPSNode):
         Density of the packed box in g/cm^3.
     mdp_files: list[str | pathlib.Path]
         List of paths to the Gromacs MDP files.
+        Can also be "json" or "yaml" files, which
+        will be converted to MDP files (preferred).
     itp_files: list[str | None]|None
         if given, for each label either the path to the
         ITP file or None.  The order must match the order
@@ -284,7 +306,7 @@ class Smiles2Gromacs(base.IPSNode):
     tolerance: float = zntrack.params(2.0)
     cleanup: bool = zntrack.params(True)
 
-    mdp_files: list[str | pathlib.Path] = zntrack.deps_path()
+    mdp_files: list[str | pathlib.Path] = zntrack.params_path()
     itp_files: list[str | None] = zntrack.deps_path(None)
     pdb_files: list[str | pathlib.Path] = zntrack.deps_path(None)
 
@@ -381,12 +403,15 @@ class Smiles2Gromacs(base.IPSNode):
                 f.write(f"{label} {count}\n")
 
     def _run_gmx(self):
+        for file in self.mdp_files:
+            params_to_mdp(file, self.output_dir / file.with_suffix(".mdp").name)    
+
         for mdp_file in self.mdp_files:
             cmd = [
                 "gmx",
                 "grompp",
                 "-f",
-                mdp_file.resolve().as_posix(),
+                mdp_file.with_suffix(".mdp").name,
                 "-c",
                 "box.gro",
                 "-p",
