@@ -1,12 +1,13 @@
 import contextlib
+import json
 import pathlib
 import re
 import shutil
 import subprocess
-import yaml, json
 
 import h5py
 import MDAnalysis as mda
+import yaml
 import znh5md
 import zntrack
 from ase import Atoms
@@ -22,9 +23,11 @@ from ipsuite import base
 # Initialize pint unit registry
 ureg = UnitRegistry()
 
+
 def dict_to_gf(data: dict) -> str:
     """Convert a dictionary to a Gromacs .mdp file."""
     return "\n".join([f"{key} = {value}" for key, value in data.items()])
+
 
 def params_to_mdp(file: pathlib.Path, target: pathlib.Path):
     """Convert yaml/json files to mdp files."""
@@ -285,7 +288,7 @@ class Smiles2Gromacs(base.IPSNode):
         PDB file or None.  The order must match the order
         of the labels.
     production_indices: list[int]|None
-        The gromacs runs that should be stored in the 
+        The gromacs runs that should be stored in the
         trajectory file.  If None, the last run is stored.
         The order is always the same as the order of the
         MDP files.
@@ -412,7 +415,7 @@ class Smiles2Gromacs(base.IPSNode):
 
     def _run_gmx(self):
         for file in self.mdp_files:
-            params_to_mdp(file, self.output_dir / file.with_suffix(".mdp").name)    
+            params_to_mdp(file, self.output_dir / file.with_suffix(".mdp").name)
 
         for mdp_file in self.mdp_files:
             cmd = [
