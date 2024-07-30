@@ -24,7 +24,7 @@ from ipsuite import base
 ureg = UnitRegistry()
 
 
-def dict_to_gf(data: dict) -> str:
+def dict_to_mdp(data: dict) -> str:
     """Convert a dictionary to a Gromacs .mdp file."""
     return "\n".join([f"{key} = {value}" for key, value in data.items()])
 
@@ -34,11 +34,11 @@ def params_to_mdp(file: pathlib.Path, target: pathlib.Path):
     if file.suffix in [".yaml", ".yml"]:
         with file.open("r") as f:
             data = yaml.safe_load(f)
-            data = dict_to_gf(data)
+            data = dict_to_mdp(data)
     elif file.suffix == ".json":
         with file.open("r") as f:
             data = json.load(f)
-            data = dict_to_gf(data)
+            data = dict_to_mdp(data)
     else:
         data = file.read_text()
 
