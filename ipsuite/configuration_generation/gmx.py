@@ -284,6 +284,11 @@ class Smiles2Gromacs(base.IPSNode):
         if given, for each label either the path to the
         PDB file or None.  The order must match the order
         of the labels.
+    production_indices: list[int]|None
+        The gromacs runs that should be stored in the 
+        trajectory file.  If None, the last run is stored.
+        The order is always the same as the order of the
+        MDP files.
 
     Installation
     ------------
@@ -304,6 +309,7 @@ class Smiles2Gromacs(base.IPSNode):
     fudgeLJ: float = zntrack.params(1.0)
     fudgeQQ: float = zntrack.params(1.0)
     tolerance: float = zntrack.params(2.0)
+    production_indices: list[int] = zntrack.params(None)
     cleanup: bool = zntrack.params(True)
 
     mdp_files: list[str | pathlib.Path] = zntrack.params_path()
@@ -319,6 +325,8 @@ class Smiles2Gromacs(base.IPSNode):
             raise ValueError("The number of smiles must match the number of counts")
         if len(self.smiles) != len(self.labels):
             raise ValueError("The number of smiles must match the number of labels")
+        if self.production_indices is None:
+            self.production_indices = [len(self.mdp_files) - 1]
 
         if isinstance(self.output_dir, str):
             self.output_dir = pathlib.Path(self.output_dir)
@@ -456,19 +464,25 @@ class Smiles2Gromacs(base.IPSNode):
         self.box = "box.pdb"
 
     def _convert_trajectory(self):
-        gro = self.output_dir / "box.gro"
-        trr = self.output_dir / "box.trr"
-        edr = self.output_dir / "box.edr"
-        u = mda.Universe(gro, trr)
-        aux = mda.auxiliary.EDR.EDRReader(edr)
-        u.trajectory.add_auxiliary(auxdata=aux)
-
-        images = []
-        for ts in u.trajectory:
-            images.append(timestep_to_atoms(u, ts))
-
         io = znh5md.IO(self.traj_file, store="time")
-        io.extend(images)
+        for idx in sorted(self.production_indices):
+            if idx == len(self.mdp_files) - 1:
+                gro = self.output_dir / "box.gro"
+                trr = self.output_dir / "box.trr"
+                edr = self.output_dir / "box.edr"
+            else:
+                gro = self.output_dir / f"#box.gro.{idx + 1}#"
+                trr = self.output_dir / f"#box.trr.{idx + 1}#"
+                edr = self.output_dir / f"#box.edr.{idx + 1}#"
+            u = mda.Universe(gro, trr, topology_format="GRO", format="TRR")
+            aux = mda.auxiliary.EDR.EDRReader(edr)
+            u.trajectory.add_auxiliary(auxdata=aux)
+
+            images = []
+            for ts in u.trajectory:
+                images.append(timestep_to_atoms(u, ts))
+
+            io.extend(images)
 
     def run(self):
         self.output_dir.mkdir(exist_ok=True, parents=True)
