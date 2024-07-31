@@ -19,7 +19,7 @@ RUN bash -c "source /opt/tools/cp2k/tools/toolchain/install/setup && make -j 192
 
 # Install PACKMOL
 WORKDIR /opt/tools
-RUN wget https://github.com/m3g/packmol/archive/refs/tags/v20.15.0.tar.gz 
+RUN wget https://github.com/m3g/packmol/archive/refs/tags/v20.15.0.tar.gz
 RUN tar -xzvf v20.15.0.tar.gz
 WORKDIR /opt/tools/packmol-20.15.0
 RUN make
