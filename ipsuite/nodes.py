@@ -38,6 +38,7 @@ class _Nodes:
     MultiPackmol = "ipsuite.configuration_generation.MultiPackmol"
     SmilesToAtoms = "ipsuite.configuration_generation.SmilesToAtoms"
     SmilesToConformers = "ipsuite.configuration_generation.SmilesToConformers"
+    Smiles2Gromacs = "ipsuite.configuration_generation.Smiles2Gromacs"
 
     # Data
     AddData = "ipsuite.data_loading.AddData"
