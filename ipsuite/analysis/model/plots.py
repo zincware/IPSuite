@@ -199,7 +199,7 @@ def get_gaussianicity_figure(error_true, error_pred, forces=True):
         ax.semilogy(xgrid, gauss(xgrid, 0, std), "k--", label="Gaussian")
 
     except:
-        pass
+        print("Curve fit failed, only plotting distributions")
 
     ax.semilogy(xgrid, true_sel, "r-", label="empirical")
     ax.semilogy(xgrid, ens_sel, "b-", label="predicted")

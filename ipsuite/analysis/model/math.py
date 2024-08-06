@@ -92,8 +92,8 @@ def comptue_rll(pred, std, true):
     errors = np.abs(pred - true)
     rmse = compute_rmse(errors)
     numerator = np.sum(nlls(errors, std) - nlls(errors, rmse))
-    demoninator = np.sum(nlls(errors, errors) - nlls(errors, rmse))
-    rll = numerator / demoninator * 100
+    denominator = np.sum(nlls(errors, errors) - nlls(errors, rmse))
+    rll = numerator / denominator * 100
     return rll
 
 

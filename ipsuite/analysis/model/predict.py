@@ -284,7 +284,6 @@ class CalibrationMetrics(base.ComparePredictions):
 
     def get_data(self):
         """Create dict of all data."""
-        true_keys = self.x[0].calc.results.keys()
         pred_keys = self.y[0].calc.results.keys()
 
         energy_true = [a.get_potential_energy() / len(a) for a in self.x]
