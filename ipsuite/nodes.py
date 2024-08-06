@@ -90,7 +90,6 @@ class _Nodes:
     LJSinglePoint = "ipsuite.calculators.LJSinglePoint"
     EMTSinglePoint = "ipsuite.calculators.EMTSinglePoint"
     OrcaSinglePoint = "ipsuite.calculators.OrcaSinglePoint"
-    ApaxJaxMD = "ipsuite.calculators.ApaxJaxMD"
     LammpsSimulator = "ipsuite.calculators.LammpsSimulator"
     MixCalculator = "ipsuite.calculators.MixCalculator"
 
