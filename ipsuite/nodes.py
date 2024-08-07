@@ -12,8 +12,6 @@ class _Nodes:
     EnsembleModel = "ipsuite.models.EnsembleModel"
     MACE = "ipsuite.models.MACE"
     Nequip = "ipsuite.models.Nequip"
-    Apax = "ipsuite.models.Apax"
-    ApaxEnsemble = "ipsuite.models.ApaxEnsemble"
 
     # Configuration Selection
     IndexSelection = "ipsuite.configuration_selection.IndexSelection"
@@ -27,7 +25,6 @@ class _Nodes:
     UniformTemporalSelection = "ipsuite.configuration_selection.UniformTemporalSelection"
     ThresholdSelection = "ipsuite.configuration_selection.ThresholdSelection"
     FilterOutlier = "ipsuite.configuration_selection.FilterOutlier"
-    BatchKernelSelection = "ipsuite.models.apax.BatchKernelSelection"
 
     # Configuration Comparison
     REMatch = "ipsuite.configuration_comparison.REMatch"
@@ -93,7 +90,6 @@ class _Nodes:
     LJSinglePoint = "ipsuite.calculators.LJSinglePoint"
     EMTSinglePoint = "ipsuite.calculators.EMTSinglePoint"
     OrcaSinglePoint = "ipsuite.calculators.OrcaSinglePoint"
-    ApaxJaxMD = "ipsuite.calculators.ApaxJaxMD"
     LammpsSimulator = "ipsuite.calculators.LammpsSimulator"
     MixCalculator = "ipsuite.calculators.MixCalculator"
 
