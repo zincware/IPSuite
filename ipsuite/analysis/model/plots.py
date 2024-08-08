@@ -31,10 +31,6 @@ def density_scatter(ax, x, y, bins, **kwargs) -> None:
     # convert e.g. DataFrame to numpy array values
     x = np.array(x)
     y = np.array(y)
-    # print(x)
-    # print(y)
-    # print(bins)
-    # quit()
 
     if "cmap" not in kwargs:
         kwargs["cmap"] = "viridis"
