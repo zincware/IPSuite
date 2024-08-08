@@ -1,6 +1,6 @@
-import h5py
 import pathlib
 
+import h5py
 import tqdm
 import znh5md
 import zntrack
