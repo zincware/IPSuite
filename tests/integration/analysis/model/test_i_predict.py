@@ -29,3 +29,5 @@ def test_calibration(data_repo):
             x=test_data.atoms,
             y=pred.atoms,
         )
+
+    project.run(environment={"OPENBLAS_NUM_THREADS": "1"})
