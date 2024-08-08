@@ -1,4 +1,3 @@
-from .apax_jax_md import ApaxJaxMD
 from .ase_geoopt import ASEGeoOpt
 from .ase_md import (
     ASEMD,
@@ -31,7 +30,6 @@ __all__ = [
     "LJSinglePoint",
     "LangevinThermostat",
     "VelocityVerletDynamic",
-    "ApaxJaxMD",
     "RescaleBoxModifier",
     "BoxOscillatingRampModifier",
     "EMTSinglePoint",
