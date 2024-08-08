@@ -37,12 +37,7 @@ dscribe = "^2.1.0"
 quippy-ase = "^0.9.12"
 xmltodict = "^0.13.0"
 
-[tool.poetry.group.nequip.dependencies]
-mir-allegro = { git = "https://github.com/mir-group/allegro.git"}
-nequip = "^0.5.6"
-
-[tool.poetry.group.mace.dependencies]
-mace-torch = "^0.3.4"
+[tool.poetry.group.d3.dependencies]
 torch-dftd = "^0.4.0"
 
 [tool.poetry.group.dev.dependencies]
@@ -66,9 +61,6 @@ sphinx-copybutton = "^0.5.2"
 [tool.poetry.extras]
 comparison = ["h5py", "tensorflow", "dscribe"]
 gap = ["quippy-ase", "xmltodict"]
-nequip = ["nequip"]
-allegro = ["mir-allegro"]
-mace = ["mace-torch"]
 d3 = ["torch-dftd"]
 
 [build-system]

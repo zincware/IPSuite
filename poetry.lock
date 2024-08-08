@@ -496,13 +496,13 @@ tests-mypy = ["mypy (>=1.11.1)", "pytest-mypy-plugins"]
 
 [[package]]
 name = "babel"
-version = "2.15.0"
+version = "2.16.0"
 description = "Internationalization utilities"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "Babel-2.15.0-py3-none-any.whl", hash = "sha256:08706bdad8d0a3413266ab61bd6c34d0c28d6e1e7badf40a2cebe67644e2e1fb"},
-    {file = "babel-2.15.0.tar.gz", hash = "sha256:8daf0e265d05768bc6c7a314cf1321e9a123afc328cc635c18622a2f30a04413"},
+    {file = "babel-2.16.0-py3-none-any.whl", hash = "sha256:368b5b98b37c06b7daf6696391c3240c938b37767d4584413e8438c5c435fa8b"},
+    {file = "babel-2.16.0.tar.gz", hash = "sha256:d1f3554ca26605fe173f3de0c65f750f5a42f924499bf134de6423582298e316"},
 ]
 
 [package.extras]
@@ -956,21 +956,6 @@ files = [
 
 [package.extras]
 test = ["flake8 (==3.7.8)", "hypothesis (==3.55.3)"]
-
-[[package]]
-name = "configargparse"
-version = "1.7"
-description = "A drop-in replacement for argparse that allows options to also be set via config files and/or environment variables."
-optional = false
-python-versions = ">=3.5"
-files = [
-    {file = "ConfigArgParse-1.7-py3-none-any.whl", hash = "sha256:d249da6591465c6c26df64a9f73d2536e743be2f244eb3ebe61114af2f94f86b"},
-    {file = "ConfigArgParse-1.7.tar.gz", hash = "sha256:e7067471884de5478c58a511e529f0f9bd1c66bfef1dea90935438d6c23306d1"},
-]
-
-[package.extras]
-test = ["PyYAML", "mock", "pytest"]
-yaml = ["PyYAML"]
 
 [[package]]
 name = "configobj"
@@ -1735,26 +1720,6 @@ shortuuid = ">=1.0.8"
 dev = ["celery-types", "celery-types (==0.15.0)", "dvc-task[docs,tests]", "mypy (==1.9.0)"]
 docs = ["mkdocs (>=1.5.2,<2)", "mkdocs-gen-files (>=0.5.0,<1)", "mkdocs-material (>=9.3.1,<10)", "mkdocs-section-index (>=0.3.6,<1)", "mkdocstrings-python (>=1.6.3,<2)"]
 tests = ["pytest (>=7,<9)", "pytest-celery", "pytest-cov (>=4.1.0)", "pytest-mock", "pytest-rerunfailures", "pytest-sugar", "pytest-test-utils (>=0.0.6)"]
-
-[[package]]
-name = "e3nn"
-version = "0.4.4"
-description = "Equivariant convolutional neural networks for the group E(3) of 3 dimensional rotations, translations, and mirrors."
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "e3nn-0.4.4-py3-none-any.whl", hash = "sha256:87d99876abb362a6e07d555d10752ff2e20c2b7731d8928ebe5d9121fb019f84"},
-    {file = "e3nn-0.4.4.tar.gz", hash = "sha256:51c91a84c1fb72e7e3600000958fa8caad48f8270937090fb8d0f8bfffbb3525"},
-]
-
-[package.dependencies]
-opt-einsum-fx = ">=0.1.4"
-scipy = "*"
-sympy = "*"
-torch = ">=1.8.0"
-
-[package.extras]
-dev = ["pre-commit", "pytest"]
 
 [[package]]
 name = "entrypoints"
@@ -3173,27 +3138,6 @@ files = [
 ]
 
 [[package]]
-name = "lightning-utilities"
-version = "0.11.6"
-description = "Lightning toolbox for across the our ecosystem."
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "lightning_utilities-0.11.6-py3-none-any.whl", hash = "sha256:ecd9953c316cbaf56ad820fbe7bd062187b9973c4a23d47b076cd59dc080a310"},
-    {file = "lightning_utilities-0.11.6.tar.gz", hash = "sha256:79fc27ef8ec8b8d55a537920f2c7610270c0c9e037fa6efc78f1aa34ec8cdf04"},
-]
-
-[package.dependencies]
-packaging = ">=17.1"
-setuptools = "*"
-typing-extensions = "*"
-
-[package.extras]
-cli = ["fire"]
-docs = ["requests (>=2.0.0)"]
-typing = ["mypy (>=1.0.0)", "types-setuptools"]
-
-[[package]]
 name = "llvmlite"
 version = "0.43.0"
 description = "lightweight wrapper around basic LLVM functionality"
@@ -3222,51 +3166,6 @@ files = [
     {file = "llvmlite-0.43.0-cp39-cp39-win_amd64.whl", hash = "sha256:47e147cdda9037f94b399bf03bfd8a6b6b1f2f90be94a454e3386f006455a9b4"},
     {file = "llvmlite-0.43.0.tar.gz", hash = "sha256:ae2b5b5c3ef67354824fb75517c8db5fbe93bc02cd9671f3c62271626bc041d5"},
 ]
-
-[[package]]
-name = "looseversion"
-version = "1.3.0"
-description = "Version numbering for anarchists and software realists"
-optional = false
-python-versions = "*"
-files = [
-    {file = "looseversion-1.3.0-py2.py3-none-any.whl", hash = "sha256:781ef477b45946fc03dd4c84ea87734b21137ecda0e1e122bcb3c8d16d2a56e0"},
-    {file = "looseversion-1.3.0.tar.gz", hash = "sha256:ebde65f3f6bb9531a81016c6fef3eb95a61181adc47b7f949e9c0ea47911669e"},
-]
-
-[[package]]
-name = "mace-torch"
-version = "0.3.6"
-description = ""
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "mace_torch-0.3.6-py3-none-any.whl", hash = "sha256:f1e13e7e0f2751546b1ca421eec58930e3e4e17fc3662b999d5a144799caf3bf"},
-    {file = "mace_torch-0.3.6.tar.gz", hash = "sha256:7bd009d16cf0eeacadd56308d344997facc39e55c0ab591488fffab96fd30c89"},
-]
-
-[package.dependencies]
-ase = "*"
-configargparse = "*"
-e3nn = "0.4.4"
-GitPython = "*"
-h5py = "*"
-matplotlib = "*"
-matscipy = "*"
-numpy = "<2.0"
-opt-einsum = "*"
-pandas = "*"
-prettytable = "*"
-python-hostlist = "*"
-torch = ">=1.12"
-torch-ema = "*"
-torchmetrics = "*"
-tqdm = "*"
-
-[package.extras]
-dev = ["black", "isort", "mypy", "pre-commit", "pylint", "pytest"]
-schedulefree = ["schedulefree"]
-wandb = ["wandb"]
 
 [[package]]
 name = "markdown"
@@ -3419,46 +3318,6 @@ files = [
 traitlets = "*"
 
 [[package]]
-name = "matscipy"
-version = "1.0.0"
-description = "Generic Python Materials Science tools"
-optional = false
-python-versions = ">=3.7.0"
-files = [
-    {file = "matscipy-1.0.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:4038a0c917644a9144b4962c54fc77f3be8cccba2172dc79432a5c6c4a27b872"},
-    {file = "matscipy-1.0.0-cp310-cp310-macosx_12_0_arm64.whl", hash = "sha256:8b9014ad64f238af720631c955ecb1e8a6ec80cbc892f8f2b5c4a6ce1b3ced99"},
-    {file = "matscipy-1.0.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:62b0f0699b3c7a59ad45b318cb5789595b24532e93d5ee49fce2c29529e4a010"},
-    {file = "matscipy-1.0.0-cp310-cp310-win_amd64.whl", hash = "sha256:cf714d19a470bd4c29a23703ccac51bfca81ba76db5464d24e2bb96fddaf91d9"},
-    {file = "matscipy-1.0.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:56df29e8f55bbe7f6332dac1468456158ac954c01adc6b51a58dd622f9a99968"},
-    {file = "matscipy-1.0.0-cp311-cp311-macosx_12_0_arm64.whl", hash = "sha256:e0aaefefd0685326300bcb0e35a47b2548502126ee521a3d5fbd07485d5c08b8"},
-    {file = "matscipy-1.0.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f7ef29f5153f6fe9ebd147abcdabd4cd4050c1da94ca2d57ed2681c61b5ac808"},
-    {file = "matscipy-1.0.0-cp311-cp311-win_amd64.whl", hash = "sha256:0adedd5a5f95cfff9f43d1a6384aa3c066ca566b5068864e5155f6bd7227b3d9"},
-    {file = "matscipy-1.0.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:d6b86bf919e406163939e68c3f31bdd16b0b7954924f659da246f5b97180fcfb"},
-    {file = "matscipy-1.0.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:45e7994ec4f91d6e038507fc07aec491f75a4ffa8e808aa8807b80be61eacee6"},
-    {file = "matscipy-1.0.0-cp312-cp312-win_amd64.whl", hash = "sha256:04ca7ba6ee820feb2ae3f9cf4c588de6e32a012270e510fd4685245982152d13"},
-    {file = "matscipy-1.0.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:e50ad1df9862234780951c2e5034738279883b6bc7f94045310e5ec76580a793"},
-    {file = "matscipy-1.0.0-cp38-cp38-macosx_12_0_arm64.whl", hash = "sha256:d9ea621f0ceff38e189da17d51eeb9a06395fbeb6b8cd660f6d22e9fd46e6d28"},
-    {file = "matscipy-1.0.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:43977b190958bf69652eae419da0c931512584bc78df801c76777a55783c0e4c"},
-    {file = "matscipy-1.0.0-cp38-cp38-win_amd64.whl", hash = "sha256:db63cb5601466b85ea0017dab53b717fdf4910ddf21bc2d4a772901e2916351b"},
-    {file = "matscipy-1.0.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:f4a06d01f9c0a5c782bc16edcfb3334ef813c925c1561bb1d808b4165d79b69f"},
-    {file = "matscipy-1.0.0-cp39-cp39-macosx_12_0_arm64.whl", hash = "sha256:99ea22dca7a2798c3334fa28ee5acaf4c7dadd3df16c37d4a7fe1ecc60d1cdab"},
-    {file = "matscipy-1.0.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:5c9032db508f37b052cb6d4b687f59b3736f4a8a3fee9a82d1fd6fca947d6f48"},
-    {file = "matscipy-1.0.0-cp39-cp39-win_amd64.whl", hash = "sha256:20bc5962c15addcd9624499805444d6fe5dcfac33d8d65aa5009f8a671c00015"},
-    {file = "matscipy-1.0.0.tar.gz", hash = "sha256:50d896bf7527dc0acbba8ed548dbd247a77a129faf592a3e47a9fa128ca19483"},
-]
-
-[package.dependencies]
-ase = ">=3.16.0"
-looseversion = "*"
-numpy = ">=1.16.0"
-scipy = ">=1.2.3"
-
-[package.extras]
-cli = ["argcomplete"]
-docs = ["atomman", "jupytext", "myst_nb", "nglview", "nglview (==3.0.8)", "numpydoc", "ovito", "pydata-sphinx-theme", "sphinx", "sphinx_copybutton", "sphinx_rtd_theme", "sphinxcontrib-spelling"]
-test = ["atomman", "ovito", "pytest", "pytest-subtests", "sympy"]
-
-[[package]]
 name = "mda-xdrlib"
 version = "0.2.0"
 description = "Stand-alone XDRLIB module (from cpython 3.10.8)"
@@ -3519,24 +3378,6 @@ tqdm = ">=4.43.0"
 analysis = ["biopython (>=1.80)", "networkx (>=2.0)", "scikit-learn", "seaborn", "tidynamics (>=1.0.0)"]
 doc = ["mdanalysis-sphinx-theme (>=1.3.0)", "pybtex", "pybtex-docutils", "sphinx", "sphinx-sitemap", "sphinxcontrib-bibtex"]
 extra-formats = ["chemfiles (>=0.10)", "gsd (>3.0.0)", "h5py (>=2.10)", "netCDF4 (>=1.0)", "parmed", "pyedr (>=0.7.0)", "pytng (>=0.2.3)", "rdkit (>=2020.03.1)"]
-
-[[package]]
-name = "mir-allegro"
-version = "0.2.0"
-description = "Allegro is an open-source code for building highly scalable and accurate equivariant deep learning interatomic potentials."
-optional = false
-python-versions = ">=3.7"
-files = []
-develop = false
-
-[package.dependencies]
-nequip = ">=0.5.3"
-
-[package.source]
-type = "git"
-url = "https://github.com/mir-group/allegro.git"
-reference = "HEAD"
-resolved_reference = "22f673c565d148ae8e9394443baa9f5b5716c8e7"
 
 [[package]]
 name = "mistune"
@@ -3926,27 +3767,6 @@ docs = ["myst-parser", "pydata-sphinx-theme", "sphinx", "sphinxcontrib-github-al
 test = ["pep440", "pre-commit", "pytest", "testpath"]
 
 [[package]]
-name = "nequip"
-version = "0.5.6"
-description = "NequIP is an open-source code for building E(3)-equivariant interatomic potentials."
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "nequip-0.5.6-py3-none-any.whl", hash = "sha256:e05f7be878e14389190664569b065bd744ff2e9837efd5b1fadc0a8107d2ad18"},
-    {file = "nequip-0.5.6.tar.gz", hash = "sha256:3c9a7760f04a93349709192b3b883989fe1bef1b38f98d9733a56eada94ab856"},
-]
-
-[package.dependencies]
-ase = "*"
-e3nn = ">=0.4.4,<0.6.0"
-numpy = "*"
-pyyaml = "*"
-torch = ">=1.10.0,<1.13"
-torch-ema = ">=0.3.0"
-torch-runstats = ">=0.2.0"
-tqdm = "*"
-
-[[package]]
 name = "nest-asyncio"
 version = "1.6.0"
 description = "Patch asyncio to allow nested event loops"
@@ -4148,22 +3968,6 @@ numpy = ">=1.7"
 [package.extras]
 docs = ["numpydoc", "sphinx (==1.2.3)", "sphinx-rtd-theme", "sphinxcontrib-napoleon"]
 tests = ["pytest", "pytest-cov", "pytest-pep8"]
-
-[[package]]
-name = "opt-einsum-fx"
-version = "0.1.4"
-description = "Einsum optimization using opt_einsum and PyTorch FX"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "opt_einsum_fx-0.1.4-py3-none-any.whl", hash = "sha256:85f489f4c7c31fd88d5faf9669c09e61ec37a30098809fdcfe2a08a9e42f23c9"},
-    {file = "opt_einsum_fx-0.1.4.tar.gz", hash = "sha256:7eeb7f91ecb70be65e6179c106ea7f64fc1db6319e3d1289a4518b384f81e74f"},
-]
-
-[package.dependencies]
-opt-einsum = "*"
-packaging = "*"
-torch = ">=1.8.0"
 
 [[package]]
 name = "optree"
@@ -4657,23 +4461,6 @@ pyyaml = ">=5.1"
 virtualenv = ">=20.10.0"
 
 [[package]]
-name = "prettytable"
-version = "3.10.2"
-description = "A simple Python library for easily displaying tabular data in a visually appealing ASCII table format"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "prettytable-3.10.2-py3-none-any.whl", hash = "sha256:1cbfdeb4bcc73976a778a0fb33cb6d752e75396f16574dcb3e2d6332fd93c76a"},
-    {file = "prettytable-3.10.2.tar.gz", hash = "sha256:29ec6c34260191d42cd4928c28d56adec360ac2b1208a26c7e4f14b90cc8bc84"},
-]
-
-[package.dependencies]
-wcwidth = "*"
-
-[package.extras]
-tests = ["pytest", "pytest-cov", "pytest-lazy-fixtures"]
-
-[[package]]
 name = "prometheus-client"
 version = "0.20.0"
 description = "Python client for the Prometheus monitoring system."
@@ -5119,16 +4906,6 @@ files = [
 
 [package.dependencies]
 six = ">=1.5"
-
-[[package]]
-name = "python-hostlist"
-version = "1.23.0"
-description = "Python module for hostlist handling"
-optional = false
-python-versions = "*"
-files = [
-    {file = "python-hostlist-1.23.0.tar.gz", hash = "sha256:56e0156b501f792c078114f07324f34f37827041581ee5d1ffdce89cca533219"},
-]
 
 [[package]]
 name = "python-json-logger"
@@ -6600,38 +6377,6 @@ files = [
 ]
 
 [[package]]
-name = "torch"
-version = "1.12.1"
-description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
-optional = false
-python-versions = ">=3.7.0"
-files = [
-    {file = "torch-1.12.1-cp310-cp310-manylinux1_x86_64.whl", hash = "sha256:9c038662db894a23e49e385df13d47b2a777ffd56d9bcd5b832593fab0a7e286"},
-    {file = "torch-1.12.1-cp310-cp310-manylinux2014_aarch64.whl", hash = "sha256:4e1b9c14cf13fd2ab8d769529050629a0e68a6fc5cb8e84b4a3cc1dd8c4fe541"},
-    {file = "torch-1.12.1-cp310-cp310-win_amd64.whl", hash = "sha256:e9c8f4a311ac29fc7e8e955cfb7733deb5dbe1bdaabf5d4af2765695824b7e0d"},
-    {file = "torch-1.12.1-cp310-none-macosx_10_9_x86_64.whl", hash = "sha256:976c3f997cea38ee91a0dd3c3a42322785414748d1761ef926b789dfa97c6134"},
-    {file = "torch-1.12.1-cp310-none-macosx_11_0_arm64.whl", hash = "sha256:68104e4715a55c4bb29a85c6a8d57d820e0757da363be1ba680fa8cc5be17b52"},
-    {file = "torch-1.12.1-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:743784ccea0dc8f2a3fe6a536bec8c4763bd82c1352f314937cb4008d4805de1"},
-    {file = "torch-1.12.1-cp37-cp37m-manylinux2014_aarch64.whl", hash = "sha256:b5dbcca369800ce99ba7ae6dee3466607a66958afca3b740690d88168752abcf"},
-    {file = "torch-1.12.1-cp37-cp37m-win_amd64.whl", hash = "sha256:f3b52a634e62821e747e872084ab32fbcb01b7fa7dbb7471b6218279f02a178a"},
-    {file = "torch-1.12.1-cp37-none-macosx_10_9_x86_64.whl", hash = "sha256:8a34a2fbbaa07c921e1b203f59d3d6e00ed379f2b384445773bd14e328a5b6c8"},
-    {file = "torch-1.12.1-cp37-none-macosx_11_0_arm64.whl", hash = "sha256:42f639501928caabb9d1d55ddd17f07cd694de146686c24489ab8c615c2871f2"},
-    {file = "torch-1.12.1-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:0b44601ec56f7dd44ad8afc00846051162ef9c26a8579dda0a02194327f2d55e"},
-    {file = "torch-1.12.1-cp38-cp38-manylinux2014_aarch64.whl", hash = "sha256:cd26d8c5640c3a28c526d41ccdca14cf1cbca0d0f2e14e8263a7ac17194ab1d2"},
-    {file = "torch-1.12.1-cp38-cp38-win_amd64.whl", hash = "sha256:42e115dab26f60c29e298559dbec88444175528b729ae994ec4c65d56fe267dd"},
-    {file = "torch-1.12.1-cp38-none-macosx_10_9_x86_64.whl", hash = "sha256:a8320ba9ad87e80ca5a6a016e46ada4d1ba0c54626e135d99b2129a4541c509d"},
-    {file = "torch-1.12.1-cp38-none-macosx_11_0_arm64.whl", hash = "sha256:03e31c37711db2cd201e02de5826de875529e45a55631d317aadce2f1ed45aa8"},
-    {file = "torch-1.12.1-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:9b356aea223772cd754edb4d9ecf2a025909b8615a7668ac7d5130f86e7ec421"},
-    {file = "torch-1.12.1-cp39-cp39-manylinux2014_aarch64.whl", hash = "sha256:6cf6f54b43c0c30335428195589bd00e764a6d27f3b9ba637aaa8c11aaf93073"},
-    {file = "torch-1.12.1-cp39-cp39-win_amd64.whl", hash = "sha256:f00c721f489089dc6364a01fd84906348fe02243d0af737f944fddb36003400d"},
-    {file = "torch-1.12.1-cp39-none-macosx_10_9_x86_64.whl", hash = "sha256:bfec2843daa654f04fda23ba823af03e7b6f7650a873cdb726752d0e3718dada"},
-    {file = "torch-1.12.1-cp39-none-macosx_11_0_arm64.whl", hash = "sha256:69fe2cae7c39ccadd65a123793d30e0db881f1c1927945519c5c17323131437e"},
-]
-
-[package.dependencies]
-typing-extensions = "*"
-
-[[package]]
 name = "torch-dftd"
 version = "0.4.0"
 description = "pytorch implementation of dftd2 & dftd3"
@@ -6648,58 +6393,6 @@ pymatgen = ">=2020.1.28"
 
 [package.extras]
 develop = ["ase (==3.21.1)", "pysen[lint] (==0.10.5)"]
-
-[[package]]
-name = "torch-ema"
-version = "0.3"
-description = "PyTorch library for computing moving averages of model parameters."
-optional = false
-python-versions = "*"
-files = [
-    {file = "torch_ema-0.3-py3-none-any.whl", hash = "sha256:823ad8da5c10bc1eebcec739cc3f521aa9573229fe04e5673c304d29f1433279"},
-    {file = "torch_ema-0.3.tar.gz", hash = "sha256:5a3595405fa311995f01291a1d4a9242d6be08a0fc9db29152ec6cfd586ea414"},
-]
-
-[package.dependencies]
-torch = "*"
-
-[[package]]
-name = "torch-runstats"
-version = "0.2.0"
-description = "Running/online statistics for PyTorch"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "torch_runstats-0.2.0-py3-none-any.whl", hash = "sha256:ba5a5214e1154aac8cca383943e7a9029e412f62e663002ede9c3dd19b947847"},
-    {file = "torch_runstats-0.2.0.tar.gz", hash = "sha256:bc7f32887103c820bd7cc710b9c476d1ec56a68a3ff9a42b9b56758bfb8afd97"},
-]
-
-[[package]]
-name = "torchmetrics"
-version = "1.4.1"
-description = "PyTorch native Metrics"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "torchmetrics-1.4.1-py3-none-any.whl", hash = "sha256:c2e7cd56dd8bdc60ae63d712f3bdce649f23bd174d9180bdd0b746e0230b865a"},
-]
-
-[package.dependencies]
-lightning-utilities = ">=0.8.0"
-numpy = ">1.20.0"
-packaging = ">17.1"
-torch = ">=1.10.0"
-
-[package.extras]
-all = ["SciencePlots (>=2.0.0)", "gammatone (>1.0.0)", "ipadic (>=1.0.0)", "matplotlib (>=3.3.0)", "mecab-python3 (>=1.0.6)", "mypy (==1.11.0)", "nltk (>=3.6)", "pesq (>=0.0.4)", "piq (<=0.8.0)", "pycocotools (>2.0.0)", "pystoi (>=0.3.0)", "regex (>=2021.9.24)", "scipy (>1.0.0)", "sentencepiece (>=0.2.0)", "torch (==2.3.1)", "torch-fidelity (<=0.4.0)", "torchaudio (>=0.10.0)", "torchvision (>=0.8)", "tqdm (>=4.41.0)", "transformers (>4.4.0)", "transformers (>=4.42.3)", "types-PyYAML", "types-emoji", "types-protobuf", "types-requests", "types-setuptools", "types-six", "types-tabulate"]
-audio = ["gammatone (>1.0.0)", "pesq (>=0.0.4)", "pystoi (>=0.3.0)", "torchaudio (>=0.10.0)"]
-detection = ["pycocotools (>2.0.0)", "torchvision (>=0.8)"]
-dev = ["SciencePlots (>=2.0.0)", "bert-score (==0.3.13)", "dython (<=0.7.6)", "fairlearn", "fast-bss-eval (>=0.1.0)", "faster-coco-eval (>=1.3.3)", "gammatone (>1.0.0)", "huggingface-hub (<0.25)", "ipadic (>=1.0.0)", "jiwer (>=2.3.0)", "kornia (>=0.6.7)", "lpips (<=0.1.4)", "matplotlib (>=3.3.0)", "mecab-ko (>=1.0.0)", "mecab-ko-dic (>=1.0.0)", "mecab-python3 (>=1.0.6)", "mir-eval (>=0.6)", "monai (==1.3.2)", "mypy (==1.11.0)", "netcal (>1.0.0)", "nltk (>=3.6)", "numpy (<2.1.0)", "pandas (>1.0.0)", "pandas (>=1.4.0)", "pesq (>=0.0.4)", "piq (<=0.8.0)", "pycocotools (>2.0.0)", "pystoi (>=0.3.0)", "pytorch-msssim (==1.0.0)", "regex (>=2021.9.24)", "rouge-score (>0.1.0)", "sacrebleu (>=2.3.0)", "scikit-image (>=0.19.0)", "scipy (>1.0.0)", "sentencepiece (>=0.2.0)", "sewar (>=0.4.4)", "statsmodels (>0.13.5)", "torch (==2.3.1)", "torch-complex (<0.5.0)", "torch-fidelity (<=0.4.0)", "torchaudio (>=0.10.0)", "torchvision (>=0.8)", "tqdm (>=4.41.0)", "transformers (>4.4.0)", "transformers (>=4.42.3)", "types-PyYAML", "types-emoji", "types-protobuf", "types-requests", "types-setuptools", "types-six", "types-tabulate"]
-image = ["scipy (>1.0.0)", "torch-fidelity (<=0.4.0)", "torchvision (>=0.8)"]
-multimodal = ["piq (<=0.8.0)", "transformers (>=4.42.3)"]
-text = ["ipadic (>=1.0.0)", "mecab-python3 (>=1.0.6)", "nltk (>=3.6)", "regex (>=2021.9.24)", "sentencepiece (>=0.2.0)", "tqdm (>=4.41.0)", "transformers (>4.4.0)"]
-typing = ["mypy (==1.11.0)", "torch (==2.3.1)", "types-PyYAML", "types-emoji", "types-protobuf", "types-requests", "types-setuptools", "types-six", "types-tabulate"]
-visual = ["SciencePlots (>=2.0.0)", "matplotlib (>=3.3.0)"]
 
 [[package]]
 name = "tornado"
@@ -7447,14 +7140,11 @@ zninit = ">=0.1,<0.2"
 znjson = ">=0.2,<0.3"
 
 [extras]
-allegro = []
 comparison = []
 d3 = []
 gap = []
-mace = []
-nequip = []
 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "ab5a064036e759840da6fc364eb68f7a23801d51a128bb6c22146959bcf11266"
+content-hash = "2bc3e75712f560f862e4992fe648ff6f3760751d093ddabfb9e9fca658c65eca"

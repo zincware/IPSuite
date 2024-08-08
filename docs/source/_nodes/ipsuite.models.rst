@@ -28,22 +28,6 @@ ipsuite.models.gap module
    :undoc-members:
    :show-inheritance:
 
-ipsuite.models.mace\_model module
----------------------------------
-
-.. automodule:: ipsuite.models.mace_model
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-ipsuite.models.nequip module
-----------------------------
-
-.. automodule:: ipsuite.models.nequip
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 

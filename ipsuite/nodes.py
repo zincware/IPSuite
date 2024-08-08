@@ -10,8 +10,6 @@ class _Nodes:
     # Models
     GAP = "ipsuite.models.GAP"
     EnsembleModel = "ipsuite.models.EnsembleModel"
-    MACE = "ipsuite.models.MACE"
-    Nequip = "ipsuite.models.Nequip"
 
     # Configuration Selection
     IndexSelection = "ipsuite.configuration_selection.IndexSelection"
@@ -103,7 +101,6 @@ class _Nodes:
         "ipsuite.calculators.TemperatureOscillatingRampModifier"
     )
     TemperatureRampModifier = "ipsuite.calculators.TemperatureRampModifier"
-    TorchD3 = "ipsuite.calculators.TorchD3"
 
     # Geometry
     BarycenterMapping = "ipsuite.geometry.BarycenterMapping"
