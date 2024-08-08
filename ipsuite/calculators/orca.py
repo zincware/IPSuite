@@ -1,8 +1,10 @@
+import pathlib
+
 import h5py
 import tqdm
 import znh5md
 import zntrack
-from ase.calculators.orca import ORCA
+from ase.calculators.orca import ORCA, OrcaProfile
 
 from ipsuite import base
 
@@ -12,7 +14,7 @@ class OrcaSinglePoint(base.ProcessAtoms):
     orcablocks: str = zntrack.params("%pal nprocs 16 end")
     ASE_ORCA_COMMAND: str = zntrack.meta.Environment("orca")
 
-    orca_directory: str = zntrack.outs_path(zntrack.nwd / "orca")
+    orca_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "orca")
     output_file: str = zntrack.outs_path(zntrack.nwd / "structures.h5")
 
     def run(self):
@@ -34,11 +36,12 @@ class OrcaSinglePoint(base.ProcessAtoms):
         if directory is None:
             directory = self.orca_directory
 
+        profile = OrcaProfile(command=self.ASE_ORCA_COMMAND)
+
         calc = ORCA(
-            label="orcacalc",
+            profile=profile,
             orcasimpleinput=self.orcasimpleinput,
             orcablocks=self.orcablocks,
             directory=directory,
-            command=f"{self.ASE_ORCA_COMMAND} PREFIX.inp > PREFIX.out",
         )
         return calc
