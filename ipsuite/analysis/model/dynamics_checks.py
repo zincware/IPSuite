@@ -41,6 +41,8 @@ class ConnectivityCheck(base.Check):
     """Check to see whether the covalent connectivity of the system
     changes during a simulation.
     The connectivity is based on ASE's natural cutoffs.
+    The pair of atoms which triggered this check will be converted to
+    Lithium for easy visibility
 
     """
 

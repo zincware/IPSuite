@@ -1,5 +1,5 @@
 import pathlib
-from typing import List
+from typing import List, Optional
 
 import ase
 import matplotlib.pyplot as plt
@@ -261,9 +261,27 @@ class PredictionMetrics(base.ComparePredictions):
 
 
 class CalibrationMetrics(base.ComparePredictions):
-    """Analyse the calibration of a models uncertainty estimate."""
+    """Analyse the calibration of a models uncertainty estimate.
+    Plots the empirical vs predicted error distribution,
+    a log-log calibration plot and the miscalibration area.
+    Further, various UQ metrics are computed:
+    - Mean absolute calibration error
+    - Root mean square miscalibration error
+    - Miscalibration area
+    - NLL
+    - RLL
 
-    force_dist_slices: List[tuple] = zntrack.params([])
+    For more information checkout the uncertainty toolbox or
+    the following paper: 10.1088/2632-2153/ad594a
+
+    Parameters
+    ----------
+    force_dist_slices: List[tuple]
+        Interval in which to analyse the gassianity of error distributions.
+
+    """
+
+    force_dist_slices: Optional[List[tuple]] = zntrack.params(None)
 
     data_file = zntrack.outs_path(zntrack.nwd / "data.npz")
     energy: dict = zntrack.metrics()
@@ -273,6 +291,7 @@ class CalibrationMetrics(base.ComparePredictions):
 
     def _post_init_(self):
         self.content = {}
+        self.force_dist_slices = []
 
     def _post_load_(self):
         """Load metrics - if available."""
@@ -304,20 +323,25 @@ class CalibrationMetrics(base.ComparePredictions):
             true_forces = np.array(true_forces) * 1000
             pred_forces = [a.get_forces() for a in self.y]
             pred_forces = np.array(pred_forces) * 1000
+
             forces_uncertainty = [x.calc.results["forces_uncertainty"] for x in self.y]
             forces_uncertainty = np.array(forces_uncertainty) * 1000
-            n_ens = self.y[0].calc.results["forces_ensemble"].shape[0]
-            forces_ensemble = [
-                np.reshape(x.calc.results["forces_ensemble"], (n_ens, -1)) for x in self.y
-            ]
-            forces_ensemble = np.array(forces_ensemble) * 1000
-            forces_ensemble = np.transpose(forces_ensemble, (0, 2, 1))
-            forces_ensemble = np.reshape(forces_ensemble, (-1, n_ens))
 
             self.content["forces_true"] = np.reshape(true_forces, (-1,))
             self.content["forces_pred"] = np.reshape(pred_forces, (-1,))
             self.content["forces_unc"] = np.reshape(forces_uncertainty, (-1,))
-            self.content["forces_ensemble"] = forces_ensemble
+
+            if "forces_ensemble" in self.y[0].calc.results.keys():
+                n_ens = self.y[0].calc.results["forces_ensemble"].shape[0]
+                forces_ensemble = [
+                    np.reshape(x.calc.results["forces_ensemble"], (n_ens, -1)) for x in self.y
+                ]
+                forces_ensemble = np.array(forces_ensemble) * 1000
+                forces_ensemble = np.transpose(forces_ensemble, (0, 2, 1))
+                forces_ensemble = np.reshape(forces_ensemble, (-1, n_ens))
+
+                self.content["forces_ensemble"] = forces_ensemble
+
 
     def get_metrics(self):
         """Update the metrics."""
@@ -382,15 +406,16 @@ class CalibrationMetrics(base.ComparePredictions):
             )
 
             gaussianicy_figures = []
-            for start, end in self.force_dist_slices:
-                error_true, error_pred = slice_ensemble_uncertainty(
-                    self.content["forces_true"],
-                    self.content["forces_ensemble"],
-                    start,
-                    end,
-                )
-                fig = get_gaussianicity_figure(error_true, error_pred, forces=True)
-                gaussianicy_figures.append(fig)
+            if "forces_ensemble" in self.content.keys():
+                for start, end in self.force_dist_slices:
+                    error_true, error_pred = slice_ensemble_uncertainty(
+                        self.content["forces_true"],
+                        self.content["forces_ensemble"],
+                        start,
+                        end,
+                    )
+                    fig = get_gaussianicity_figure(error_true, error_pred, forces=True)
+                    gaussianicy_figures.append(fig)
             if save:
                 forces_plot.savefig(self.plots_dir / "forces.png")
                 forces_cdf_plot.savefig(self.plots_dir / "forces_cdf.png")

@@ -100,6 +100,9 @@ def get_calibration_figure(
     forces=False,
     figsize: tuple = (10, 7),
 ):
+    """Log-log plot of errors vs predicted standard deviations with quantiles
+    for a linearly increasing noise level.
+    """
     fig, ax = plt.subplots(1, 1, figsize=figsize, dpi=300)
 
     x = np.linspace(1e-6, 5e3, 5)
@@ -175,6 +178,9 @@ def slice_uncertainty(true, pred_mean, pred_std, slice_start, slice_end):
 
 
 def get_gaussianicity_figure(error_true, error_pred, forces=True):
+    """Plots empirical and predicted error distributions.
+    If possible, it also tries to fit a gaussian to the empirical distribution.
+    """
     true_kde_sel = gaussian_kde(error_true)
     ens_kde_sel = gaussian_kde(error_pred)
 
