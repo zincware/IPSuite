@@ -1,15 +1,27 @@
 import pathlib
+from typing import List, Optional
 
 import ase
+import matplotlib.pyplot as plt
 import numpy as np
 import tqdm
+import uncertainty_toolbox as uct
 import zntrack
 from ase.calculators.singlepoint import PropertyNotImplementedError
-from scipy import stats
 
 from ipsuite import base, models, utils
-from ipsuite.analysis.model.math import decompose_stress_tensor, force_decomposition
-from ipsuite.analysis.model.plots import get_cdf_figure, get_figure, get_hist
+from ipsuite.analysis.model.math import (
+    compute_uncertainty_metrics,
+    decompose_stress_tensor,
+    force_decomposition,
+)
+from ipsuite.analysis.model.plots import (  # get_cdf_figure,
+    get_calibration_figure,
+    get_figure,
+    get_gaussianicity_figure,
+    get_hist,
+    slice_ensemble_uncertainty,
+)
 from ipsuite.geometry import BarycenterMapping
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
@@ -249,7 +261,27 @@ class PredictionMetrics(base.ComparePredictions):
 
 
 class CalibrationMetrics(base.ComparePredictions):
-    """Analyse the calibration of a models uncertainty estimate."""
+    """Analyse the calibration of a models uncertainty estimate.
+    Plots the empirical vs predicted error distribution,
+    a log-log calibration plot and the miscalibration area.
+    Further, various UQ metrics are computed:
+    - Mean absolute calibration error
+    - Root mean square miscalibration error
+    - Miscalibration area
+    - NLL
+    - RLL
+
+    For more information checkout the uncertainty toolbox or
+    the following paper: 10.1088/2632-2153/ad594a
+
+    Parameters
+    ----------
+    force_dist_slices: List[tuple]
+        Interval in which to analyse the gassianity of error distributions.
+
+    """
+
+    force_dist_slices: Optional[List[tuple]] = zntrack.params(None)
 
     data_file = zntrack.outs_path(zntrack.nwd / "data.npz")
     energy: dict = zntrack.metrics()
@@ -259,6 +291,7 @@ class CalibrationMetrics(base.ComparePredictions):
 
     def _post_init_(self):
         self.content = {}
+        self.force_dist_slices = []
 
     def _post_load_(self):
         """Load metrics - if available."""
@@ -270,14 +303,14 @@ class CalibrationMetrics(base.ComparePredictions):
 
     def get_data(self):
         """Create dict of all data."""
-        true_keys = self.x[0].calc.results.keys()
         pred_keys = self.y[0].calc.results.keys()
 
         energy_true = [a.get_potential_energy() / len(a) for a in self.x]
         energy_true = np.array(energy_true) * 1000
+        self.content["energy_true"] = energy_true
         energy_pred = [a.get_potential_energy() / len(a) for a in self.y]
         energy_pred = np.array(energy_pred) * 1000
-        self.content["energy_err"] = np.abs(energy_true - energy_pred)
+        self.content["energy_pred"] = energy_pred
 
         energy_uncertainty = [
             a.calc.results["energy_uncertainty"] / len(a) for a in self.y
@@ -285,69 +318,110 @@ class CalibrationMetrics(base.ComparePredictions):
         energy_uncertainty = np.array(energy_uncertainty) * 1000
         self.content["energy_unc"] = energy_uncertainty
 
-        if "forces" in true_keys and "forces_uncertainty" in pred_keys:
+        if "forces" in pred_keys:
             true_forces = [a.get_forces() for a in self.x]
-            true_forces = np.concatenate(true_forces, axis=0) * 1000
+            true_forces = np.array(true_forces) * 1000
             pred_forces = [a.get_forces() for a in self.y]
-            pred_forces = np.concatenate(pred_forces, axis=0) * 1000
-            forces_uncertainty = [x.calc.results["forces_uncertainty"] for x in self.y]
-            forces_uncertainty = np.concatenate(forces_uncertainty, axis=0) * 1000
+            pred_forces = np.array(pred_forces) * 1000
 
-            self.content["forces_err"] = np.abs(true_forces - pred_forces)
-            self.content["forces_unc"] = forces_uncertainty
+            forces_uncertainty = [x.calc.results["forces_uncertainty"] for x in self.y]
+            forces_uncertainty = np.array(forces_uncertainty) * 1000
+
+            self.content["forces_true"] = np.reshape(true_forces, (-1,))
+            self.content["forces_pred"] = np.reshape(pred_forces, (-1,))
+            self.content["forces_unc"] = np.reshape(forces_uncertainty, (-1,))
+
+            if "forces_ensemble" in self.y[0].calc.results.keys():
+                n_ens = self.y[0].calc.results["forces_ensemble"].shape[0]
+                forces_ensemble = [
+                    np.reshape(x.calc.results["forces_ensemble"], (n_ens, -1))
+                    for x in self.y
+                ]
+                forces_ensemble = np.array(forces_ensemble) * 1000
+                forces_ensemble = np.transpose(forces_ensemble, (0, 2, 1))
+                forces_ensemble = np.reshape(forces_ensemble, (-1, n_ens))
+
+                self.content["forces_ensemble"] = forces_ensemble
 
     def get_metrics(self):
         """Update the metrics."""
-        e_err = self.content["energy_err"]
-        e_unc = self.content["energy_unc"]
-        pearsonr = stats.pearsonr(e_err, e_unc)[0]
-        self.energy = {"pearsonr": pearsonr}
+        e_pred = self.content["energy_pred"]
+        e_std = self.content["energy_unc"]
+        e_true = self.content["energy_true"]
+        metrics = compute_uncertainty_metrics(e_pred, e_std, e_true)
+        self.energy = metrics
 
-        if "forces_err" in self.content.keys():
-            f_err = np.reshape(self.content["forces_err"], (-1,))
-            f_unc = np.reshape(self.content["forces_unc"], (-1,))
-            self.forces = {"pearsonr": stats.pearsonr(f_err, f_unc)[0]}
-        else:
-            self.forces = {}
+        if "forces_unc" in self.content:
+            f_pred = self.content["forces_pred"]
+            f_std = self.content["forces_unc"]
+            f_true = self.content["forces_true"]
+            metrics = compute_uncertainty_metrics(f_pred, f_std, f_true)
+            self.forces = metrics
 
     def get_plots(self, save=False):
         """Create figures for all available data."""
         self.plots_dir.mkdir(exist_ok=True)
+        e_err = np.abs(self.content["energy_pred"] - self.content["energy_true"])
 
-        energy_plot = get_figure(
+        energy_plot = get_calibration_figure(
+            e_err,
             self.content["energy_unc"],
-            self.content["energy_err"],
-            datalabel=rf"Pearson: {self.energy['pearsonr']:.4f}",
-            xlabel=r"energy uncertainty $\sigma$ / meV/atom",
-            ylabel=r"energy error $\Delta E$ / meV/atom",
+            markersize=10,
+            datalabel=rf"RLL={self.energy['rll']:.1f}",
+            forces=False,
         )
-        energy_cdf_plot = get_cdf_figure(
-            self.content["energy_err"],
+        energy_gauss = get_gaussianicity_figure(
+            e_err, self.content["energy_unc"], forces=False
+        )
+
+        energy_cdf_plot, e_cdf_ax = plt.subplots()
+        e_cdf_ax = uct.plot_calibration(
+            self.content["energy_pred"],
             self.content["energy_unc"],
+            self.content["energy_true"],
+            ax=e_cdf_ax,
         )
+
         if save:
             energy_plot.savefig(self.plots_dir / "energy.png")
+            energy_gauss.savefig(self.plots_dir / "energy_gaussianicity.png")
             energy_cdf_plot.savefig(self.plots_dir / "energy_cdf.png")
 
-        if "forces_err" in self.content:
-            xlabel = r"force uncertainty per atom $\sigma$ / meV$ \cdot \AA^{-1}$"
-            ylabel = r"force components error per atom $\Delta F$ / meV$ \cdot \AA^{-1}$"
-            f_err = np.reshape(self.content["forces_err"], (-1,))
-            f_unc = np.reshape(self.content["forces_unc"], (-1,))
-            forces_plot = get_figure(
-                f_unc,
+        if "forces_unc" in self.content:
+            f_err = np.abs(self.content["forces_pred"] - self.content["forces_true"])
+            f_err = np.reshape(f_err, (-1,))
+
+            forces_plot = get_calibration_figure(
                 f_err,
-                datalabel=rf"Pearson: {self.forces['pearsonr']:.4f}",
-                xlabel=xlabel,
-                ylabel=ylabel,
+                self.content["forces_unc"],
+                datalabel=rf"RLL={self.forces['rll']:.1f}",
+                forces=True,
             )
-            forces_cdf_plot = get_cdf_figure(
-                f_err,
-                f_unc,
+            forces_cdf_plot, f_cdf_ax = plt.subplots()
+            f_cdf_ax = uct.plot_calibration(
+                self.content["forces_pred"],
+                self.content["forces_unc"],
+                self.content["forces_true"],
+                ax=f_cdf_ax,
             )
+
+            gaussianicy_figures = []
+            if "forces_ensemble" in self.content.keys():
+                for start, end in self.force_dist_slices:
+                    error_true, error_pred = slice_ensemble_uncertainty(
+                        self.content["forces_true"],
+                        self.content["forces_ensemble"],
+                        start,
+                        end,
+                    )
+                    fig = get_gaussianicity_figure(error_true, error_pred, forces=True)
+                    gaussianicy_figures.append(fig)
             if save:
                 forces_plot.savefig(self.plots_dir / "forces.png")
                 forces_cdf_plot.savefig(self.plots_dir / "forces_cdf.png")
+
+                for ii, fig in enumerate(gaussianicy_figures):
+                    fig.savefig(self.plots_dir / f"forces_gaussianicity_{ii}.png")
 
     def run(self):
         self.nwd.mkdir(exist_ok=True, parents=True)
@@ -361,7 +435,7 @@ class ForceAngles(base.ComparePredictions):
     plot: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "angle.png")
     log_plot: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "angle_ylog.png")
 
-    angles: dict = zntrack.zn.metrics()
+    angles: dict = zntrack.metrics()
 
     def run(self):
         true_forces = np.reshape([a.get_forces() for a in self.x], (-1, 3))
@@ -402,16 +476,16 @@ class ForceDecomposition(base.ComparePredictions):
         prediced and true forces for each trans, rot, vib component.
     """
 
-    trans_forces: dict = zntrack.zn.metrics()
-    rot_forces: dict = zntrack.zn.metrics()
-    vib_forces: dict = zntrack.zn.metrics()
-    wasserstein_distance = zntrack.zn.metrics()
+    trans_forces: dict = zntrack.metrics()
+    rot_forces: dict = zntrack.metrics()
+    vib_forces: dict = zntrack.metrics()
+    wasserstein_distance = zntrack.metrics()
 
-    rot_force_plt = zntrack.dvc.outs(zntrack.nwd / "rot_force.png")
-    trans_force_plt = zntrack.dvc.outs(zntrack.nwd / "trans_force.png")
-    vib_force_plt = zntrack.dvc.outs(zntrack.nwd / "vib_force.png")
+    rot_force_plt = zntrack.outs_path(zntrack.nwd / "rot_force.png")
+    trans_force_plt = zntrack.outs_path(zntrack.nwd / "trans_force.png")
+    vib_force_plt = zntrack.outs_path(zntrack.nwd / "vib_force.png")
 
-    histogram_plt = zntrack.dvc.outs(zntrack.nwd / "histogram.png")
+    histogram_plt = zntrack.outs_path(zntrack.nwd / "histogram.png")
 
     def get_plots(self):
         fig = get_figure(

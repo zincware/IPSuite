@@ -4,14 +4,6 @@ ipsuite.models package
 Submodules
 ----------
 
-ipsuite.models.apax module
---------------------------
-
-.. automodule:: ipsuite.models.apax
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 ipsuite.models.base module
 --------------------------
 

@@ -1,4 +1,5 @@
 import numpy as np
+import uncertainty_toolbox as uct
 
 
 def compute_trans_forces(mol):
@@ -74,3 +75,40 @@ def decompose_stress_tensor(stresses):
     hydrostatic_stresses = np.array(hydrostatic_stresses)
     deviatoric_stresses = np.array(deviatoric_stresses)
     return hydrostatic_stresses, deviatoric_stresses
+
+
+def compute_rmse(errors):
+    rmse = np.sqrt(np.mean(errors**2))
+    return rmse
+
+
+def nlls(pred, std, true):
+    errors = np.abs(pred - true)
+    nll = 0.5 * ((errors / std) ** 2 + np.log(2 * np.pi * std**2))
+    return nll
+
+
+def comptue_rll(pred, std, true):
+    errors = np.abs(pred - true)
+    rmse = compute_rmse(errors)
+    numerator = np.sum(nlls(errors, std, true) - nlls(errors, rmse, true))
+    denominator = np.sum(nlls(errors, errors, true) - nlls(errors, rmse, true))
+    rll = numerator / denominator * 100
+    return rll
+
+
+def compute_uncertainty_metrics(pred, std, true):
+    mace = uct.mean_absolute_calibration_error(pred, std, true)
+    rmsce = uct.root_mean_squared_calibration_error(pred, std, true)
+    miscal = uct.miscalibration_area(pred, std, true)
+    nll = np.mean(nlls(pred, std, true))
+    rll = comptue_rll(pred, std, true)
+
+    metrics = {
+        "mace": mace,
+        "rmsce": rmsce,
+        "miscal": miscal,
+        "nll": nll,
+        "rll": rll,
+    }
+    return metrics

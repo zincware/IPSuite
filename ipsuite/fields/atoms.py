@@ -1,6 +1,5 @@
 """Lazy ASE Atoms loading."""
 
-import functools
 import typing
 
 import h5py
@@ -31,25 +30,13 @@ class Atoms(zntrack.Field):
         instance.nwd.mkdir(exist_ok=True, parents=True)
         file = self.get_files(instance)[0]
 
-        db = znh5md.io.DataWriter(filename=file)
-        db.initialize_database_groups()
-        db.add(znh5md.io.AtomsReader(atoms, frames_per_chunk=100000, use_pbc_group=True))
+        db = znh5md.IO(filename=file)
+        db.extend(atoms)
 
     def get_data(self, instance: zntrack.Node) -> base.protocol.ATOMS_LST:
         """Get data from znh5md File."""
-        file = self.get_files(instance)[0]
+        file_name = self.get_files(instance)[0]
 
-        def file_handle(filename):
-            file = instance.state.fs.open(filename, "rb")
-            return h5py.File(file)
-
-        data = znh5md.ASEH5MD(
-            file,
-            format_handler=functools.partial(
-                znh5md.FormatHandler, file_handle=file_handle
-            ),
-        )
-        return data[:]
-        # if instance.state.rev is None and instance.state.remote is None::
-        #     # it is slightly faster
-        #     return znh5md.ASEH5MD(file)[:]
+        with instance.state.fs.open(file_name, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
