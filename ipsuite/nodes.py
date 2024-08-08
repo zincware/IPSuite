@@ -10,8 +10,6 @@ class _Nodes:
     # Models
     GAP = "ipsuite.models.GAP"
     EnsembleModel = "ipsuite.models.EnsembleModel"
-    MACE = "ipsuite.models.MACE"
-    Nequip = "ipsuite.models.Nequip"
 
     # Configuration Selection
     IndexSelection = "ipsuite.configuration_selection.IndexSelection"
