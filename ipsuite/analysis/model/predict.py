@@ -334,14 +334,14 @@ class CalibrationMetrics(base.ComparePredictions):
             if "forces_ensemble" in self.y[0].calc.results.keys():
                 n_ens = self.y[0].calc.results["forces_ensemble"].shape[0]
                 forces_ensemble = [
-                    np.reshape(x.calc.results["forces_ensemble"], (n_ens, -1)) for x in self.y
+                    np.reshape(x.calc.results["forces_ensemble"], (n_ens, -1))
+                    for x in self.y
                 ]
                 forces_ensemble = np.array(forces_ensemble) * 1000
                 forces_ensemble = np.transpose(forces_ensemble, (0, 2, 1))
                 forces_ensemble = np.reshape(forces_ensemble, (-1, n_ens))
 
                 self.content["forces_ensemble"] = forces_ensemble
-
 
     def get_metrics(self):
         """Update the metrics."""

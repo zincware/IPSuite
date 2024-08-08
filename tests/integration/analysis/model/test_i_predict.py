@@ -2,7 +2,6 @@ import ipsuite as ips
 
 
 def test_calibration(data_repo):
-
     water = ips.data_loading.AddDataH5MD.from_rev(name="water")
 
     with ips.Project(automatic_node_names=True) as project:
@@ -23,7 +22,7 @@ def test_calibration(data_repo):
 
         pred = ips.analysis.Prediction(
             data=test_data.atoms,
-            model= ensemble_model,
+            model=ensemble_model,
         )
         calibration = ips.analysis.CalibrationMetrics(
             x=test_data.atoms,
