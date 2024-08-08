@@ -26,6 +26,7 @@ rdkit = "^2023"
 lazy-loader = "^0.2"
 znflow = "^0.1.11"
 zntrack = "^0.7.3"
+uncertainty-toolbox = "^0.1.1"
 
 [tool.poetry.group.comparison.dependencies]
 h5py = "^3.8.0"
@@ -66,7 +67,6 @@ sphinx-copybutton = "^0.5.2"
 comparison = ["h5py", "tensorflow", "dscribe"]
 gap = ["quippy-ase", "xmltodict"]
 nequip = ["nequip"]
-apax = ["apax"]
 allegro = ["mir-allegro"]
 mace = ["mace-torch"]
 d3 = ["torch-dftd"]
