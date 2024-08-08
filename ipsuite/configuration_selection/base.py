@@ -169,7 +169,8 @@ class BatchConfigurationSelection(ConfigurationSelection):
         The atoms data to process. This must be an input to the Node
     train_data: list[ase.Atoms]
         Batch active learning methods usually take into account the data
-        a model was trained on. The training dataset has to be supplied with this argument.
+        a model was trained on. The training dataset has to be supplied
+        with this argument.
     atoms: list[ase.Atoms]
         The processed atoms data. This is an output of the Node.
         It does not have to be 'field.Atoms' but can also be e.g. a 'property'.
