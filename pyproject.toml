@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ipsuite"
-version = "0.1.3"
+version = "0.1.4"
 description = "A suite of tools for machine learned interatomic potentials."
 authors = ["zincwarecode <zincwarecode@gmail.com>"]
 keywords = ["data-version-control", "machine-learning", "reproducibility", "interatomic potentials"]
@@ -13,7 +13,7 @@ repository = "https://github.com/zincware/ipsuite"
 
 [tool.poetry.dependencies]
 # tensorflow-io-gcs-filesystem
-python = ">=3.10,<3.12"
+python = ">=3.10,<4.0.0"
 
 znh5md = "^0.3.2"
 ase = "^3.23"
