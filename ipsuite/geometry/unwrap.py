@@ -1,7 +1,7 @@
 import ase
+import networkx as nx
 import numpy as np
 from ase.calculators.singlepoint import SinglePointCalculator
-import networkx as nx
 
 from ipsuite.geometry import graphs
 from ipsuite.geometry.graphs import edges_from_atoms
