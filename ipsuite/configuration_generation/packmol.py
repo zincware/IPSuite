@@ -2,8 +2,8 @@
 
 import logging
 import pathlib
-import subprocess
 import re
+import subprocess
 import threading
 
 import ase
@@ -17,6 +17,7 @@ from ipsuite.utils.ase_sim import get_box_from_density
 
 log = logging.getLogger(__name__)
 
+
 def get_packmol_version():
     """
     Get the version of the local installed packmol.
@@ -29,10 +30,7 @@ def get_packmol_version():
 
     try:
         process = subprocess.Popen(
-            ['packmol'],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True
+            ["packmol"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
 
         def read_output(process, output_list):
@@ -49,23 +47,24 @@ def get_packmol_version():
         reader_thread.start()
 
         reader_thread.join(timeout=1)
-        
+
         if process.poll() is None:
             process.terminate()
             process.wait()
-        
+
         reader_thread.join()
-        full_output = ''.join(output_lines)
-        
-        version_match = re.search(r'Version (\d+\.\d+\.\d+)', full_output)
-        
+        full_output = "".join(output_lines)
+
+        version_match = re.search(r"Version (\d+\.\d+\.\d+)", full_output)
+
         if version_match:
             return version_match.group(1)
         else:
             raise ValueError(f"Could not find version in packmol output: {full_output}")
-    
+
     except Exception as e:
         return f"An error occurred: {str(e)}"
+
 
 class Packmol(base.IPSNode):
     """
@@ -119,7 +118,7 @@ class Packmol(base.IPSNode):
             ase.io.write(self.structures / f"{idx}.xyz", atoms)
 
         if self.density is not None:
-            self._get_box_from_molar_volume()    
+            self._get_box_from_molar_volume()
 
         file = f"""
         tolerance {self.tolerance}
@@ -130,9 +129,9 @@ class Packmol(base.IPSNode):
         packmol_version = get_packmol_version()
         log.info(f"Packmol version: {packmol_version}")
 
-        packmol_version = int(packmol_version.replace('.', ''))
+        packmol_version = int(packmol_version.replace(".", ""))
 
-        if self.pbc and packmol_version >= 20150:          
+        if self.pbc and packmol_version >= 20150:
             scaled_box = self.box
 
             request_pbc_str = f"""
@@ -143,11 +142,13 @@ class Packmol(base.IPSNode):
 
         elif self.pbc and packmol_version < 20150:
             scaled_box = [x - 2 * self.tolerance for x in self.box]
-            log.warning("Packmol version is too old to use periodic boundary conditions.\
-                The box size will be scaled by tolerance to avoid overlapping atoms.")
+            log.warning(
+                "Packmol version is too old to use periodic boundary conditions.         "
+                "       The box size will be scaled by tolerance to avoid overlapping"
+                " atoms."
+            )
         else:
             scaled_box = self.box
-
 
         for idx, count in enumerate(self.count):
             file += f"""
@@ -227,9 +228,9 @@ class MultiPackmol(Packmol):
         packmol_version = get_packmol_version()
         log.info(f"Packmol version: {packmol_version}")
 
-        packmol_version = int(packmol_version.replace('.', ''))
+        packmol_version = int(packmol_version.replace(".", ""))
 
-        if self.pbc and packmol_version >= 20150:          
+        if self.pbc and packmol_version >= 20150:
             scaled_box = self.box
 
             request_pbc_str = f"""
@@ -240,8 +241,11 @@ class MultiPackmol(Packmol):
 
         elif self.pbc and packmol_version < 20150:
             scaled_box = [x - 2 * self.tolerance for x in self.box]
-            log.warning("Packmol version is too old to use periodic boundary conditions.\
-                The box size will be scaled by tolerance to avoid overlapping atoms.")
+            log.warning(
+                "Packmol version is too old to use periodic boundary conditions.         "
+                "       The box size will be scaled by tolerance to avoid overlapping"
+                " atoms."
+            )
         else:
             scaled_box = self.box
 
@@ -251,9 +255,12 @@ class MultiPackmol(Packmol):
                 ase.io.write(self.structures / f"{idx}_{jdx}.xyz", atoms)
 
         for idx in range(self.n_configurations):
-            file = file_head + f"""
+            file = (
+                file_head
+                + f"""
             output mixture_{idx}.xyz
             """
+            )
             for jdx, count in enumerate(self.count):
                 choices = np.random.choice(len(self.data[jdx]), count)
                 for kdx in choices:
