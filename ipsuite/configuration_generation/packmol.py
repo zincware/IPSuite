@@ -3,6 +3,8 @@
 import logging
 import pathlib
 import subprocess
+import re
+import threading
 
 import ase
 import ase.units
@@ -15,12 +17,11 @@ from ipsuite.utils.ase_sim import get_box_from_density
 
 log = logging.getLogger(__name__)
 
-
-import subprocess
-import re
-import threading
-
 def get_packmol_version():
+    """
+    Get the version of the local installed packmol.
+    """
+
     # packmol when called with --version
     # will just print a standard output and wait for user input
     # this function is a bit akward as it needs to read the output
@@ -33,7 +34,7 @@ def get_packmol_version():
             stderr=subprocess.PIPE,
             text=True
         )
-        
+
         def read_output(process, output_list):
             try:
                 for line in process.stdout:
@@ -42,7 +43,7 @@ def get_packmol_version():
                         break
             except Exception as e:
                 output_list.append(f"Error: {str(e)}")
-        
+                
         output_lines = []
         reader_thread = threading.Thread(target=read_output, args=(process, output_lines))
         reader_thread.start()
@@ -130,17 +131,16 @@ class Packmol(base.IPSNode):
         log.info(f"Packmol version: {packmol_version}")
 
         packmol_version = int(packmol_version.replace('.', ''))
-            
-        if self.pbc and packmol_version >= 20150:
-            
+
+        if self.pbc and packmol_version >= 20150:          
             scaled_box = self.box
 
             request_pbc_str = f"""
             pbc {" ".join([f"{x:.4f}" for x in scaled_box])}
             """
-            
+
             file += request_pbc_str
-            
+
         elif self.pbc and packmol_version < 20150:
             scaled_box = [x - 2 * self.tolerance for x in self.box]
             log.warning("Packmol version is too old to use periodic boundary conditions.\
