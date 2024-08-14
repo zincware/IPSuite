@@ -16,6 +16,56 @@ from ipsuite.utils.ase_sim import get_box_from_density
 log = logging.getLogger(__name__)
 
 
+import subprocess
+import re
+import threading
+
+def get_packmol_version():
+    # packmol when called with --version
+    # will just print a standard output and wait for user input
+    # this function is a bit akward as it needs to read the output
+    # and terminate the subprocess without using a timeout
+
+    try:
+        process = subprocess.Popen(
+            ['packmol'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        
+        def read_output(process, output_list):
+            try:
+                for line in process.stdout:
+                    output_list.append(line)
+                    if "Version" in line:
+                        break
+            except Exception as e:
+                output_list.append(f"Error: {str(e)}")
+        
+        output_lines = []
+        reader_thread = threading.Thread(target=read_output, args=(process, output_lines))
+        reader_thread.start()
+
+        reader_thread.join(timeout=1)
+        
+        if process.poll() is None:
+            process.terminate()
+            process.wait()
+        
+        reader_thread.join()
+        full_output = ''.join(output_lines)
+        
+        version_match = re.search(r'Version (\d+\.\d+\.\d+)', full_output)
+        
+        if version_match:
+            return version_match.group(1)
+        else:
+            raise ValueError(f"Could not find version in packmol output: {full_output}")
+    
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
+
 class Packmol(base.IPSNode):
     """
 
@@ -68,18 +118,37 @@ class Packmol(base.IPSNode):
             ase.io.write(self.structures / f"{idx}.xyz", atoms)
 
         if self.density is not None:
-            self._get_box_from_molar_volume()
-
-        if self.pbc:
-            scaled_box = [x - self.tolerance for x in self.box]
-        else:
-            scaled_box = self.box
+            self._get_box_from_molar_volume()    
 
         file = f"""
         tolerance {self.tolerance}
         filetype xyz
         output mixture.xyz
         """
+
+        packmol_version = get_packmol_version()
+        log.info(f"Packmol version: {packmol_version}")
+
+        packmol_version = int(packmol_version.replace('.', ''))
+            
+        if self.pbc and packmol_version >= 20150:
+            
+            scaled_box = self.box
+
+            request_pbc_str = f"""
+            pbc {" ".join([f"{x:.4f}" for x in scaled_box])}
+            """
+            
+            file += request_pbc_str
+            
+        elif self.pbc and packmol_version < 20150:
+            scaled_box = [x - 2 * self.tolerance for x in self.box]
+            log.warning("Packmol version is too old to use periodic boundary conditions.\
+                The box size will be scaled by tolerance to avoid overlapping atoms.")
+        else:
+            scaled_box = self.box
+
+
         for idx, count in enumerate(self.count):
             file += f"""
             structure {idx}.xyz
@@ -151,6 +220,7 @@ class MultiPackmol(Packmol):
             self._get_box_from_molar_volume()
 
         if self.pbc:
+
             scaled_box = [x - self.tolerance for x in self.box]
         else:
             scaled_box = self.box
