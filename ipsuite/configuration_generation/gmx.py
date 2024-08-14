@@ -107,11 +107,11 @@ def timestep_to_atoms(u: mda.Universe, ts: Timestep) -> Atoms:
     atoms.info["h5md_time"] = (ts.time * ureg.picosecond).to(ureg.femtosecond).magnitude
 
     with contextlib.suppress(KeyError):
-        atoms.info["temperature"] = ts.aux["Temperature"]
+        atoms.info["temperature"] = ts.aux["Temperature"].item()
     with contextlib.suppress(KeyError):
-        atoms.info["pressure"] = ts.aux["Pressure"]
+        atoms.info["pressure"] = ts.aux["Pressure"].item()
     with contextlib.suppress(KeyError):
-        atoms.info["density"] = ts.aux["Density"]
+        atoms.info["density"] = ts.aux["Density"].item()
 
     return atoms
 
