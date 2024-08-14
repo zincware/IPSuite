@@ -43,7 +43,7 @@ def get_packmol_version():
                         break
             except Exception as e:
                 output_list.append(f"Error: {str(e)}")
-                
+
         output_lines = []
         reader_thread = threading.Thread(target=read_output, args=(process, output_lines))
         reader_thread.start()
@@ -219,9 +219,29 @@ class MultiPackmol(Packmol):
         if self.density is not None:
             self._get_box_from_molar_volume()
 
-        if self.pbc:
+        file_head = f"""
+        tolerance {self.tolerance}
+        filetype xyz
+        """
 
-            scaled_box = [x - self.tolerance for x in self.box]
+        packmol_version = get_packmol_version()
+        log.info(f"Packmol version: {packmol_version}")
+
+        packmol_version = int(packmol_version.replace('.', ''))
+
+        if self.pbc and packmol_version >= 20150:          
+            scaled_box = self.box
+
+            request_pbc_str = f"""
+            pbc {" ".join([f"{x:.4f}" for x in scaled_box])}
+            """
+
+            file_head += request_pbc_str
+
+        elif self.pbc and packmol_version < 20150:
+            scaled_box = [x - 2 * self.tolerance for x in self.box]
+            log.warning("Packmol version is too old to use periodic boundary conditions.\
+                The box size will be scaled by tolerance to avoid overlapping atoms.")
         else:
             scaled_box = self.box
 
@@ -231,9 +251,7 @@ class MultiPackmol(Packmol):
                 ase.io.write(self.structures / f"{idx}_{jdx}.xyz", atoms)
 
         for idx in range(self.n_configurations):
-            file = f"""
-            tolerance {self.tolerance}
-            filetype xyz
+            file = file_head + f"""
             output mixture_{idx}.xyz
             """
             for jdx, count in enumerate(self.count):
