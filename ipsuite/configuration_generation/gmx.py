@@ -26,6 +26,12 @@ ureg = UnitRegistry()
 
 def dict_to_mdp(data: dict) -> str:
     """Convert a dictionary to a Gromacs .mdp file."""
+    # convert all values that are lists to strings
+    # e.g. for `annealing-time`
+    for key, value in data.items():
+        if isinstance(value, list):
+            data[key] = " ".join([str(v) for v in value])
+
     return "\n".join([f"{key} = {value}" for key, value in data.items()])
 
 
