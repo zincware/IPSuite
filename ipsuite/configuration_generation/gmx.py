@@ -26,6 +26,12 @@ ureg = UnitRegistry()
 
 def dict_to_mdp(data: dict) -> str:
     """Convert a dictionary to a Gromacs .mdp file."""
+    # convert all values that are lists to strings
+    # e.g. for `annealing-time`
+    for key, value in data.items():
+        if isinstance(value, list):
+            data[key] = " ".join([str(v) for v in value])
+
     return "\n".join([f"{key} = {value}" for key, value in data.items()])
 
 
@@ -101,11 +107,11 @@ def timestep_to_atoms(u: mda.Universe, ts: Timestep) -> Atoms:
     atoms.info["h5md_time"] = (ts.time * ureg.picosecond).to(ureg.femtosecond).magnitude
 
     with contextlib.suppress(KeyError):
-        atoms.info["temperature"] = ts.aux["Temperature"]
+        atoms.info["temperature"] = ts.aux["Temperature"].item()
     with contextlib.suppress(KeyError):
-        atoms.info["pressure"] = ts.aux["Pressure"]
+        atoms.info["pressure"] = ts.aux["Pressure"].item()
     with contextlib.suppress(KeyError):
-        atoms.info["density"] = ts.aux["Density"]
+        atoms.info["density"] = ts.aux["Density"].item()
 
     return atoms
 
