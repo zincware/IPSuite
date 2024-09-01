@@ -20,6 +20,7 @@ from tqdm import trange
 
 from ipsuite import base
 from ipsuite.utils.ase_sim import freeze_copy_atoms, get_box_from_density, get_energy
+from ipsuite.calculators.integrators import StochasticCellRescalingCSVR
 
 log = logging.getLogger(__name__)
 
@@ -357,6 +358,46 @@ class NPTThermostat(base.IPSNode):
         )
         thermostat.set_fraction_traceless(self.fraction_traceless)
         return thermostat
+
+
+
+
+class CSVR(base.IPSNode):
+    """Initialize the langevin thermostat
+
+    Attributes
+    ----------
+    time_step: float
+        time step of simulation
+
+    temperature: float
+        temperature in K to simulate at
+
+    friction: float
+        friction of the Langevin simulator
+
+    """
+    _module_ = "apax.nodes"
+
+    time_step: int = zntrack.params()
+    temperature: float = zntrack.params()
+    betaT: float = zntrack.params(4.57e-5 / units.bar)
+    pressure_au: float= zntrack.params(1.01325 * units.bar)
+    taut: float = zntrack.params(100 * units.fs)
+    taup: float = zntrack.params(1000 * units.fs)
+
+    def get_thermostat(self, atoms):
+        thermostat = StochasticCellRescalingCSVR(
+            atoms=atoms,
+            timestep=self.time_step * units.fs,
+            temperature_K=self.temperature,
+            betaT = 4.57e-5 / units.bar,
+            pressure_au= self.pressure_au,
+            taut = self.taut,
+            taup = self.taup,
+        )
+        return thermostat
+
 
 
 class FixedSphereConstraint(base.IPSNode):

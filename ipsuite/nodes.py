@@ -94,6 +94,7 @@ class _Nodes:
     LangevinThermostat = "ipsuite.calculators.LangevinThermostat"
     VelocityVerletDynamic = "ipsuite.calculators.VelocityVerletDynamic"
     NPTThermostat = "ipsuite.calculators.NPTThermostat"
+    CSVR = "ipsuite.calculators.CSVR"
     RescaleBoxModifier = "ipsuite.calculators.RescaleBoxModifier"
     BoxOscillatingRampModifier = "ipsuite.calculators.BoxOscillatingRampModifier"
     TemperatureRampModifier = "ipsuite.calculators.TemperatureRampModifier"

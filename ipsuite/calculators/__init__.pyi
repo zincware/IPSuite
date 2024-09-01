@@ -11,6 +11,7 @@ from .ase_md import (
     TemperatureOscillatingRampModifier,
     TemperatureRampModifier,
     VelocityVerletDynamic,
+    CSVR,
 )
 from .ase_standard import EMTSinglePoint, LJSinglePoint
 from .cp2k import CP2KSinglePoint, CP2KYaml
@@ -40,4 +41,5 @@ __all__ = [
     "LammpsSimulator",
     "FixedLayerConstraint",
     "MixCalculator",
+    "CSVR",
 ]
