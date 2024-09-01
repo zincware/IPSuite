@@ -19,8 +19,8 @@ from ase.md.verlet import VelocityVerlet
 from tqdm import trange
 
 from ipsuite import base
-from ipsuite.utils.ase_sim import freeze_copy_atoms, get_box_from_density, get_energy
 from ipsuite.calculators.integrators import StochasticCellRescalingCSVR
+from ipsuite.utils.ase_sim import freeze_copy_atoms, get_box_from_density, get_energy
 
 log = logging.getLogger(__name__)
 
@@ -360,8 +360,6 @@ class NPTThermostat(base.IPSNode):
         return thermostat
 
 
-
-
 class CSVR(base.IPSNode):
     """Initialize the langevin thermostat
 
@@ -377,12 +375,13 @@ class CSVR(base.IPSNode):
         friction of the Langevin simulator
 
     """
+
     _module_ = "apax.nodes"
 
     time_step: int = zntrack.params()
     temperature: float = zntrack.params()
     betaT: float = zntrack.params(4.57e-5 / units.bar)
-    pressure_au: float= zntrack.params(1.01325 * units.bar)
+    pressure_au: float = zntrack.params(1.01325 * units.bar)
     taut: float = zntrack.params(100 * units.fs)
     taup: float = zntrack.params(1000 * units.fs)
 
@@ -391,13 +390,12 @@ class CSVR(base.IPSNode):
             atoms=atoms,
             timestep=self.time_step * units.fs,
             temperature_K=self.temperature,
-            betaT = 4.57e-5 / units.bar,
-            pressure_au= self.pressure_au,
-            taut = self.taut,
-            taup = self.taup,
+            betaT=4.57e-5 / units.bar,
+            pressure_au=self.pressure_au,
+            taut=self.taut,
+            taup=self.taup,
         )
         return thermostat
-
 
 
 class FixedSphereConstraint(base.IPSNode):

@@ -1,6 +1,7 @@
 from .ase_geoopt import ASEGeoOpt
 from .ase_md import (
     ASEMD,
+    CSVR,
     BoxOscillatingRampModifier,
     FixedLayerConstraint,
     FixedSphereConstraint,
@@ -11,7 +12,6 @@ from .ase_md import (
     TemperatureOscillatingRampModifier,
     TemperatureRampModifier,
     VelocityVerletDynamic,
-    CSVR,
 )
 from .ase_standard import EMTSinglePoint, LJSinglePoint
 from .cp2k import CP2KSinglePoint, CP2KYaml
