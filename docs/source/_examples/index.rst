@@ -7,7 +7,7 @@ The notebooks contained in this section cover the functionality of IPS and assum
 
 The utility of IPS is best demonstrated by some worked examples.
 This section starts out with some introductory notebooks demonstrating the capabilities of the Nodes from each submodule.
-Later notebooks feature some more complex workflows which are closer to real world use case. 
+Later notebooks feature some more complex workflows which are closer to real world use case.
 All notebooks can be found in `/examples/docs`.
 
 

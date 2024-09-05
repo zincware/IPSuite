@@ -3,7 +3,6 @@ import pathlib
 import typing
 
 import ase.io
-from ase.io.trajectory import TrajectoryWriter
 import ase.optimize
 import h5py
 import znh5md
