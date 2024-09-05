@@ -3,7 +3,8 @@ import collections
 import ase
 import numpy as np
 import zntrack
-from ase.neighborlist import build_neighbor_list
+from ase.geometry import conditional_find_mic
+from ase.neighborlist import build_neighbor_list, natural_cutoffs
 
 from ipsuite import base
 from ipsuite.utils.ase_sim import get_energy
@@ -40,24 +41,62 @@ class ConnectivityCheck(base.Check):
     """Check to see whether the covalent connectivity of the system
     changes during a simulation.
     The connectivity is based on ASE's natural cutoffs.
+    The pair of atoms which triggered this check will be converted to
+    Lithium for easy visibility
 
     """
+
+    bonded_min_dist: float = zntrack.params(0.6)
+    bonded_max_dist: float = zntrack.params(2.0)
 
     def _post_init_(self) -> None:
         self.nl = None
         self.first_cm = None
 
     def initialize(self, atoms):
-        self.nl = build_neighbor_list(atoms, self_interaction=False)
-        self.first_cm = self.nl.get_connectivity_matrix(sparse=False)
+        cutoffs = natural_cutoffs(atoms, mult=1.0)
+        nl = build_neighbor_list(
+            atoms, cutoffs=cutoffs, skin=0.0, self_interaction=False, bothways=False
+        )
+        first_cm = nl.get_connectivity_matrix(sparse=True)
+        self.indices = np.vstack(first_cm.nonzero()).T
+        self.idx_i, self.idx_j = self.indices.T
+
         self.is_initialized = True
 
     def check(self, atoms: ase.Atoms) -> bool:
-        self.nl.update(atoms)
-        cm = self.nl.get_connectivity_matrix(sparse=False)
+        p1 = atoms.positions[self.idx_i]
+        p2 = atoms.positions[self.idx_j]
+        _, dists = conditional_find_mic(p1 - p2, atoms.cell, atoms.pbc)
 
-        connectivity_change = np.sum(np.abs(self.first_cm - cm))
-        if connectivity_change > 0:
+        unstable = False
+        if self.bonded_min_dist:
+            min_dist = np.min(dists)
+            too_close = min_dist < self.bonded_min_dist
+            unstable = unstable or too_close
+
+            if too_close:
+                min_idx = np.argmin(dists)
+                first_atom = self.idx_i[min_idx]
+                second_atom = self.idx_j[min_idx]
+
+                atoms.numbers[first_atom] = 3
+                atoms.numbers[second_atom] = 3
+
+        if self.bonded_max_dist:
+            max_dist = np.max(dists)
+            too_far = max_dist > self.bonded_max_dist
+            unstable = unstable or too_far
+
+            if too_far:
+                max_idx = np.argmax(dists)
+                first_atom = self.idx_i[max_idx]
+                second_atom = self.idx_j[max_idx]
+
+                atoms.numbers[first_atom] = 3
+                atoms.numbers[second_atom] = 3
+
+        if unstable:
             self.status = (
                 "Connectivity check failed: last iteration"
                 "covalent connectivity of the system changed"

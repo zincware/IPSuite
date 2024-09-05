@@ -322,19 +322,19 @@ def run_stability_nve(
     ) as pbar:
         for idx in range(max_steps):
             dyn.run(1)
-            last_n_atoms.append(freeze_copy_atoms(atoms))
-            etot, ekin, epot = get_energy_terms(atoms)
 
             if idx % pbar_update == 0:
+                etot, ekin, epot = get_energy_terms(atoms)
                 pbar.set_description(get_desc())
                 pbar.update(pbar_update)
 
             check_results = [check.check(atoms) for check in checks]
             unstable = any(check_results)
+            last_n_atoms.append(freeze_copy_atoms(atoms))
             if unstable:
-                stable_steps = idx
                 break
 
+    stable_steps = idx
     return stable_steps, list(last_n_atoms)
 
 
@@ -361,7 +361,7 @@ class MDStability(base.ProcessAtoms):
     model = zntrack.deps()
     model_outs = zntrack.outs_path(zntrack.nwd / "model_outs")
     max_steps: int = zntrack.params()
-    checks: list[zntrack.Node] = zntrack.deps()
+    checks: list[zntrack.Node] = zntrack.deps(None)
     time_step: float = zntrack.params(0.5)
     initial_temperature: float = zntrack.params(300)
     save_last_n: int = zntrack.params(1)

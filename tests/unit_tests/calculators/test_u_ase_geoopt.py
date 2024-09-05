@@ -30,7 +30,6 @@ class DebugCheck(base.Check):
         return False
 
 
-@pytest.mark.skip(reason="Something is broken, probably ZnTrack related.")
 def test_ase_geoopt(proj_path, cu_box):
     cu_box = cu_box[0]
     cu_box.rattle(0.5)
@@ -42,7 +41,7 @@ def test_ase_geoopt(proj_path, cu_box):
 
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
-        model = ips.calculators.EMTSinglePoint(data=data.atoms)
+        model = ips.calculators.LJSinglePoint(data=data.atoms)
         opt = ips.calculators.ASEGeoOpt(
             data=data.atoms,
             model=model,
