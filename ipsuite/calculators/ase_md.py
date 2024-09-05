@@ -1,4 +1,4 @@
-import functools
+import collections.abc
 import logging
 import pathlib
 import typing
@@ -15,20 +15,32 @@ from ase import units
 from ase.md.langevin import Langevin
 from ase.md.npt import NPT
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
+from ase.md.verlet import VelocityVerlet
 from tqdm import trange
 
 from ipsuite import base
-from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
+from ipsuite.utils.ase_sim import freeze_copy_atoms, get_box_from_density, get_energy
 
 log = logging.getLogger(__name__)
 
 
-class RescaleBoxModifier(base.IPSNode):
-    cell: int = zntrack.zn.params()
+class RescaleBoxModifier(base.Modifier):
+    cell: int = zntrack.params(None)
+    density: float = zntrack.params(None)
     _initial_cell = None
+
+    # def _post_init_(self):
+    #     super()._post_init_()
+    #     if self.density is not None and self.cell is not None:
+    #         raise ValueError("Only one of density or cell can be given.")
+    #     if self.density is None and self.cell is None:
+    #         raise ValueError("Either density or cell has to be given.")
+    # Currently not possible due to a ZnTrack bug
 
     def modify(self, thermostat, step, total_steps):
         # we use the thermostat, so we can also modify e.g. temperature
+        if self.cell is None:
+            self.cell = get_box_from_density([[thermostat.atoms]], [1], self.density)
         if isinstance(self.cell, int):
             self.cell = np.array(
                 [[self.cell, 0, 0], [0, self.cell, 0], [0, 0, self.cell]]
@@ -45,28 +57,45 @@ class RescaleBoxModifier(base.IPSNode):
         thermostat.atoms.set_cell(new_cell, scale_atoms=True)
 
 
-class BoxOscillatingRampModifier(base.IPSNode):
+class BoxOscillatingRampModifier(base.Modifier):
     """Ramp the simulation cell to a specified end cell with some oscillations.
 
     Attributes
     ----------
-    end_cell: float, list[float]
-        cell to ramp to, cubic or tetragonal.
+    end_cell: float, list[float], optional
+        cell to ramp to, cubic or tetragonal. If None, the cell will oscillate
+        around the initial cell.
     cell_amplitude: float
         amplitude in oscillations of the diagonal cell elements
     num_oscillations: float
         number of oscillations. No oscillations will occur if set to 0.
     interval: int, default 1
         interval in which the box size is changed.
+    num_ramp_oscillations: float, optional
+        number of oscillations to ramp the box size to the end cell.
+        This value has to be smaller than num_oscillations.
+        For LotF applications, this can prevent a loop of ever decreasing cell sizes.
+        To ensure this use a value of 0.5.
     """
 
-    end_cell: int = zntrack.zn.params()
-    cell_amplitude: typing.Union[float, list[float]] = zntrack.zn.params()
-    num_oscillations: float = zntrack.zn.params()
-    interval: int = zntrack.zn.params(1)
+    def _post_init_(self):
+        super()._post_init_()
+        if self.num_ramp_oscillations is not None:
+            if self.num_ramp_oscillations > self.num_oscillations:
+                raise ValueError(
+                    "num_ramp_oscillations has to be smaller than num_oscillations."
+                )
+
+    end_cell: int = zntrack.params(None)
+    cell_amplitude: typing.Union[float, list[float]] = zntrack.params()
+    num_oscillations: float = zntrack.params()
+    num_ramp_oscillations: float = zntrack.params(None)
+    interval: int = zntrack.params(1)
     _initial_cell = None
 
     def modify(self, thermostat, step, total_steps):
+        if self.end_cell is None:
+            self.end_cell = thermostat.atoms.get_cell()
         if self._initial_cell is None:
             self._initial_cell = thermostat.atoms.get_cell()
             if isinstance(self.end_cell, (float, int)):
@@ -83,7 +112,20 @@ class BoxOscillatingRampModifier(base.IPSNode):
                 )
 
         percentage = step / (total_steps - 1)
-        ramp = percentage * (self.end_cell - self._initial_cell)
+        # if num_ramp_oscillations is set, the cell size is ramped to end_cell within
+        # num_ramp_oscillations instead of num_oscillations. This can prevent a loop of
+        # ever decreasing cell sizes in LoTF applications where simulations
+        # can be aborted at small cell sizes.
+        if self.num_ramp_oscillations is not None:
+            percentage_per_oscillation = (
+                percentage * self.num_oscillations / self.num_ramp_oscillations
+            )
+            percentage_per_oscillation = min(percentage_per_oscillation, 1)
+        else:
+            # ramp over all oscillations
+            percentage_per_oscillation = percentage
+
+        ramp = percentage_per_oscillation * (self.end_cell - self._initial_cell)
         oscillation = self.cell_amplitude * np.sin(
             2 * np.pi * percentage * self.num_oscillations
         )
@@ -94,7 +136,7 @@ class BoxOscillatingRampModifier(base.IPSNode):
             thermostat.atoms.set_cell(new_cell, scale_atoms=True)
 
 
-class TemperatureRampModifier(base.IPSNode):
+class TemperatureRampModifier(base.Modifier):
     """Ramp the temperature from start_temperature to temperature.
 
     Attributes
@@ -107,9 +149,9 @@ class TemperatureRampModifier(base.IPSNode):
         interval in which the temperature is changed.
     """
 
-    start_temperature: float = zntrack.zn.params(None)
-    temperature: float = zntrack.zn.params()
-    interval: int = zntrack.zn.params(1)
+    start_temperature: float = zntrack.params(None)
+    temperature: float = zntrack.params()
+    interval: int = zntrack.params(1)
 
     def modify(self, thermostat, step, total_steps):
         # we use the thermostat, so we can also modify e.g. temperature
@@ -129,7 +171,7 @@ class TemperatureRampModifier(base.IPSNode):
             thermostat.set_temperature(temperature_K=new_temperature)
 
 
-class TemperatureOscillatingRampModifier(base.IPSNode):
+class TemperatureOscillatingRampModifier(base.Modifier):
     """Ramp the temperature from start_temperature to temperature with some oscillations.
 
     Attributes
@@ -146,11 +188,11 @@ class TemperatureOscillatingRampModifier(base.IPSNode):
         interval in which the temperature is changed.
     """
 
-    start_temperature: float = zntrack.zn.params(None)
-    end_temperature: float = zntrack.zn.params()
-    temperature_amplitude: float = zntrack.zn.params()
-    num_oscillations: float = zntrack.zn.params()
-    interval: int = zntrack.zn.params(1)
+    start_temperature: float = zntrack.params(None)
+    end_temperature: float = zntrack.params()
+    temperature_amplitude: float = zntrack.params()
+    num_oscillations: float = zntrack.params()
+    interval: int = zntrack.params(1)
 
     def modify(self, thermostat, step, total_steps):
         # we use the thermostat, so we can also modify e.g. temperature
@@ -174,7 +216,7 @@ class TemperatureOscillatingRampModifier(base.IPSNode):
             thermostat.set_temperature(temperature_K=new_temperature)
 
 
-class PressureRampModifier(base.IPSNode):
+class PressureRampModifier(base.Modifier):
     """Ramp the temperature from start_temperature to temperature.
     Works only for the NPT thermostat (not NPTBerendsen).
 
@@ -189,9 +231,9 @@ class PressureRampModifier(base.IPSNode):
         interval in which the pressure is changed.
     """
 
-    start_pressure_au: float = zntrack.zn.params(None)
-    end_pressure_au: float = zntrack.zn.params()
-    interval: int = zntrack.zn.params(1)
+    start_pressure_au: float = zntrack.params(None)
+    end_pressure_au: float = zntrack.params()
+    interval: int = zntrack.params(1)
 
     def modify(self, thermostat, step, total_steps):
         if self.start_pressure_au is None:
@@ -221,19 +263,37 @@ class LangevinThermostat(base.IPSNode):
 
     """
 
-    time_step: int = zntrack.zn.params()
-    temperature: float = zntrack.zn.params()
-    friction: float = zntrack.zn.params()
+    time_step: int = zntrack.params()
+    temperature: float = zntrack.params()
+    friction: float = zntrack.params()
 
     def get_thermostat(self, atoms):
-        self.time_step *= units.fs
         thermostat = Langevin(
             atoms=atoms,
-            timestep=self.time_step,
+            timestep=self.time_step * units.fs,
             temperature_K=self.temperature,
             friction=self.friction,
         )
         return thermostat
+
+
+class VelocityVerletDynamic(base.IPSNode):
+    """Initialize the Velocity Verlet dynamics
+
+    Attributes
+    ----------
+    time_step: float
+        time step of simulation
+    """
+
+    time_step: int = zntrack.params()
+
+    def get_thermostat(self, atoms):
+        dyn = VelocityVerlet(
+            atoms=atoms,
+            timestep=self.time_step * units.fs,
+        )
+        return dyn
 
 
 class NPTThermostat(base.IPSNode):
@@ -261,14 +321,18 @@ class NPTThermostat(base.IPSNode):
         if True allows only the diagonal elements of the box to change,
         i.e. box angles are constant
 
+    fraction_traceless: Union[int, float]
+        How much of the traceless part of the virial to keep.
+        If set to 0, the volume of the cell can change, but the shape cannot.
     """
 
-    time_step: float = zntrack.zn.params()
-    temperature: float = zntrack.zn.params()
-    pressure: float = zntrack.zn.params()
-    ttime: float = zntrack.zn.params()
-    pfactor: float = zntrack.zn.params()
-    tetragonal_strain: bool = zntrack.zn.params(True)
+    time_step: float = zntrack.params()
+    temperature: float = zntrack.params()
+    pressure: float = zntrack.params()
+    ttime: float = zntrack.params()
+    pfactor: float = zntrack.params()
+    tetragonal_strain: bool = zntrack.params(True)
+    fraction_traceless: typing.Union[int, float] = zntrack.params(1)
 
     def get_thermostat(self, atoms):
         if self.tetragonal_strain:
@@ -291,226 +355,354 @@ class NPTThermostat(base.IPSNode):
             pfactor=self.pfactor,
             mask=mask,
         )
+        thermostat.set_fraction_traceless(self.fraction_traceless)
         return thermostat
 
 
-class ASEMD(base.ProcessSingleAtom):
+class FixedSphereConstraint(base.IPSNode):
+    """Attributes
+    ----------
+    atom_id: int
+        The id to use as the center of the sphere to fix.
+        If None, the closed atom to the center will be picked.
+    atom_type: str, optional
+        The type of the atom to fix. E.g. if
+        atom_type = H, atom_id = 1, the first
+        hydrogen atom will be fixed. If None,
+        the first atom will be fixed, no matter the type.
+    radius: float
+    """
+
+    atom_id = zntrack.params(None)
+    atom_type = zntrack.params(None)
+    radius = zntrack.params()
+
+    def _post_init_(self):
+        if self.atom_type is not None and self.atom_id is None:
+            raise ValueError("If atom_type is given, atom_id must be given as well.")
+
+    def get_selected_atom_id(self, atoms: ase.Atoms) -> int:
+        if self.atom_type is not None:
+            return np.where(np.array(atoms.get_chemical_symbols()) == self.atom_type)[0][
+                self.atom_id
+            ]
+
+        elif self.atom_id is not None:
+            return self.atom_id
+        else:
+            _, dist = ase.geometry.get_distances(
+                atoms.get_positions(), np.diag(atoms.get_cell() / 2)
+            )
+            return np.argmin(dist)
+
+    def get_constraint(self, atoms):
+        r_ij, d_ij = ase.geometry.get_distances(
+            atoms.get_positions(), cell=atoms.cell, pbc=True
+        )
+        selected_atom_id = self.get_selected_atom_id(atoms)
+
+        indices = np.nonzero(d_ij[selected_atom_id] < self.radius)[0]
+        return ase.constraints.FixAtoms(indices=indices)
+
+
+class FixedLayerConstraint(base.IPSNode):
+    """Class to fix a layer of atoms within a MD
+        simulation
+
+    Attributes
+    ----------
+    upper_limit: float
+        all atoms with a lower z pos will be fixed.
+    lower_limit: float
+        all atoms with a higher z pos will be fixed.
+    """
+
+    upper_limit = zntrack.params()
+    lower_limit = zntrack.params()
+
+    def get_constraint(self, atoms):
+        z_coordinates = atoms.positions[:, 2]
+
+        self.indices = np.where(
+            (self.lower_limit <= z_coordinates) & (z_coordinates <= self.upper_limit)
+        )[0]
+
+        return ase.constraints.FixAtoms(indices=self.indices)
+
+
+class ASEMD(base.IPSNode):
     """Class to run a MD simulation with ASE.
 
     Attributes
     ----------
-    atoms_lst: list
-        list of atoms objects to start simulation from
-    start_id: int
-        starting id to pick from list of atoms
     model: zntrack.Node
         A node that implements a 'get_calculation' method
-    checker_list: list[CheckNodes]
-        checker, which tracks various metrics and stops the
-        simulation after a threshold is exceeded.
+    data: list[ase.Atoms]
+        The atoms data to process. This must be an input to the Node.
+        It can either a single atoms object or a list of atoms objects
+        with a given 'data_id'.
+    data_id: int | -1
+        The id of the atoms object to process. If None, the last
+        atoms object is used. Only relevant if 'data' is a list.
+    data_ids: list[int] | None
+        The ids of the atoms object to process. Only relevant if the
+        mapped function is used.
+        ```
+        mapped_asemd = zn.apply(ips.nodes.ASEMD, method='map')(**kwargs)
+        ```
+    checks: list[Check]
+        checks, which track various metrics and stop the
+        simulation if some criterion is met.
+    constraints: list[Constraint]
+        constrains the atoms within the md simulation.
+    modifiers: list[Modifier]
+        modifies e.g. temperature or cell during the simulation.
     thermostat: ase dynamics
         dynamics method used for simulation
-    init_temperature: float
-        temperature in K to initialize velocities
-    init_velocity: np.array()
-        starting velocities to continue a simulation
     steps: int
-        number of steps to simulate
+        total number of steps of the simulation
     sampling_rate: int
-        number of sample runs
-    metrics_dict:
-        saved total energy and all metrics from the check nodes
+        number defines after how many md steps a structure
+        is loaded to the cache
     repeat: float
         number of repeats
-    traj_file: Path
-        path where to save the trajectory
     dump_rate: int, default=1000
         Keep a cache of the last 'dump_rate' atoms and
         write them to the trajectory file every 'dump_rate' steps.
+    pop_last : bool
+        Option to pop last, default false.
+    use_momenta : bool
+        Option to use momenta to init the simulation, default false.
+    seed : int
+        Random seed for the simulation.
+    wrap: bool
+        Keep the atoms in the cell if true, default false.
     """
 
-    model = zntrack.zn.deps()
-    model_outs = zntrack.dvc.outs(zntrack.nwd / "model/")
-    checker_list: list = zntrack.zn.nodes(None)
-    modifier: list = zntrack.zn.nodes(None)
-    thermostat = zntrack.zn.nodes()
+    model = zntrack.deps()
 
-    steps: int = zntrack.zn.params()
-    init_temperature: float = zntrack.zn.params(None)
-    init_velocity = zntrack.zn.params(None)
-    sampling_rate = zntrack.zn.params(1)
-    repeat = zntrack.zn.params((1, 1, 1))
-    dump_rate = zntrack.zn.params(1000)
+    data: list[ase.Atoms] = zntrack.deps()
 
-    metrics_dict = zntrack.zn.plots()
+    data_id: typing.Optional[int] = zntrack.params(-1)
+    data_ids: typing.Optional[int] = zntrack.params(None)
 
-    steps_before_stopping = zntrack.zn.metrics()
+    model_outs = zntrack.outs_path(zntrack.nwd / "model/")
+    checks: list = zntrack.deps(None)
+    constraints: list = zntrack.deps(None)
+    modifiers: list = zntrack.deps(None)
+    thermostat = zntrack.deps()
 
-    velocity_cache = zntrack.zn.outs()
+    steps: int = zntrack.params()
+    sampling_rate = zntrack.params(1)
+    repeat = zntrack.params((1, 1, 1))
+    dump_rate = zntrack.params(1000)
+    pop_last = zntrack.params(False)
+    use_momenta = zntrack.params(False)
+    seed: int = zntrack.params(42)
+    wrap: bool = zntrack.params(False)
 
-    traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.h5")
+    metrics_dict = zntrack.plots()
 
-    def get_constraint(self):
-        return []
+    steps_before_stopping = zntrack.metrics()
 
-    def get_atoms(self) -> ase.Atoms:
-        atoms: ase.Atoms = self.get_data()
-        return atoms.repeat(self.repeat)
+    structures = zntrack.outs()
+    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
+
+    def get_atoms(self, method="run") -> ase.Atoms | typing.List[ase.Atoms]:
+        """Get the atoms object to process given the 'data' and 'data_id'.
+
+        Returns
+        -------
+        ase.Atoms | list[ase.Atoms]
+            The atoms object to process
+        """
+        if self.data is not None:
+            if isinstance(self.data, (list, collections.abc.Sequence)):
+                atoms = self.data.copy()
+            else:
+                atoms = list(self.data.copy())
+        else:
+            raise ValueError("No data given.")
+
+        if method == "run":
+            return atoms[self.data_id]
+        else:
+            return atoms
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
-        def file_handle(filename):
-            file = self.state.fs.open(filename, "rb")
-            return h5py.File(file)
+        with self.state.fs.open(self.traj_file, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
 
-        return znh5md.ASEH5MD(
-            self.traj_file,
-            format_handler=functools.partial(
-                znh5md.FormatHandler, file_handle=file_handle
-            ),
-        ).get_atoms_list()
+    def initialize_md(self):
+        np.random.seed(self.seed)
 
-    def run(self):  # noqa: C901
-        """Run the simulation."""
-        if self.checker_list is None:
-            self.checker_list = []
-        if self.modifier is None:
-            self.modifier = []
+        if self.checks is None:
+            self.checks = []
+        if self.modifiers is None:
+            self.modifiers = []
+        if self.constraints is None:
+            self.constraints = []
 
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
-        atoms = self.get_atoms()
-        atoms.calc = self.model.get_calculator(directory=self.model_outs)
-        if (self.init_velocity is None) and (self.init_temperature is None):
-            self.init_temperature = self.thermostat.temperature
 
-        if self.init_temperature is not None:
-            # Initialize velocities
-            MaxwellBoltzmannDistribution(atoms, temperature_K=self.init_temperature)
-        else:
-            # Continue with last md step
-            atoms.set_velocities(self.init_velocity)
+        self.db = znh5md.IO(self.traj_file)
+
+    def run_md(self, atoms):  # noqa: C901
+        atoms.repeat(self.repeat)
+        atoms.calc = self.model.get_calculator(directory=self.model_outs)
+
+        if not self.use_momenta:
+            init_temperature = self.thermostat.temperature
+            MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
 
         # initialize thermostat
         time_step = self.thermostat.time_step
         thermostat = self.thermostat.get_thermostat(atoms=atoms)
 
         # initialize Atoms calculator and metrics_dict
-        _, _ = get_energy(atoms)
-        metrics_dict = {"energy": [], "temp": []}
-        for checker in self.checker_list:
-            _ = checker.check(atoms)
-            metric = checker.get_metric()
-            if metric is not None:
-                for key in metric.keys():
-                    metrics_dict[key] = []
+        metrics_dict = {
+            "energy": [],
+            "temperature": [],
+            "step": [],
+        }
+        for checker in self.checks:
+            checker.initialize(atoms)
+            if checker.get_quantity() is not None:
+                metrics_dict[checker.get_quantity()] = []
 
         # Run simulation
-        total_fs = int(self.steps * time_step * self.sampling_rate)
+        sampling_iterations = self.steps / self.sampling_rate
+        if sampling_iterations % 1 != 0:
+            sampling_iterations = np.round(sampling_iterations)
+            self.steps = int(sampling_iterations * self.sampling_rate)
+            log.warning(
+                "The sampling_rate is not a devisor of steps."
+                f"Steps were adjusted to {self.steps}"
+            )
+        sampling_iterations = int(sampling_iterations)
+        total_fs = self.steps * time_step
 
-        atoms.set_constraint(self.get_constraint())
+        for constraint in self.constraints:
+            atoms.set_constraint(constraint.get_constraint(atoms))
 
         atoms_cache = []
-
-        db = znh5md.io.DataWriter(self.traj_file)
-        db.initialize_database_groups()
-
+        self.steps_before_stopping = -1
+        current_step = 0
         with trange(
-            total_fs,
+            self.steps,
             leave=True,
             ncols=120,
         ) as pbar:
-            for idx in range(self.steps):
+            for idx_outer in range(sampling_iterations):
                 desc = []
                 stop = []
-                for modifier in self.modifier:
-                    modifier.modify(thermostat, step=idx, total_steps=self.steps)
-                thermostat.run(self.sampling_rate)
-                temperature, energy = get_energy(atoms)
-                metrics_dict["energy"].append(energy)
-                metrics_dict["temp"].append(temperature)
 
-                for checker in self.checker_list:
-                    stop.append(checker.check(atoms))
-                    if stop[-1]:
-                        log.critical(
-                            f"\n {type(checker).__name__} returned false."
-                            "Simulation was stopped."
+                # run MD for sampling_rate steps
+                for idx_inner in range(self.sampling_rate):
+                    for modifier in self.modifiers:
+                        modifier.modify(
+                            thermostat,
+                            step=idx_outer * self.sampling_rate + idx_inner,
+                            total_steps=self.steps,
                         )
-                    metric = checker.get_metric()
-                    if metric is not None:
-                        for key, val in metric.items():
-                            metrics_dict[key].append(val)
-                        desc.append(str(checker))
+                    if self.wrap:
+                        atoms.wrap()
 
-                if "stress" in atoms.calc.implemented_properties:
-                    atoms.get_stress()
+                    thermostat.run(1)
 
-                atoms_cache.append(freeze_copy_atoms(atoms))
-                if len(atoms_cache) == self.dump_rate:
-                    db.add(
-                        znh5md.io.AtomsReader(
-                            atoms_cache,
-                            frames_per_chunk=self.dump_rate,
-                            step=1,
-                            time=self.sampling_rate,
-                        )
-                    )
-                    atoms_cache = []
+                    for checker in self.checks:
+                        stop.append(checker.check(atoms))
+                        if stop[-1]:
+                            log.critical(str(checker))
 
-                energy = metrics_dict["energy"][-1]
-                desc.append(f"E: {energy:.3f} eV")
-
-                if idx % (1 / time_step) == 0:
-                    pbar.set_description("\t".join(desc))
-                    pbar.update(self.sampling_rate)
+                    if any(stop):
+                        break
 
                 if any(stop):
-                    self.steps_before_stopping = len(metrics_dict["energy"])
+                    self.steps_before_stopping = (
+                        idx_outer * self.sampling_rate + idx_inner
+                    )
                     break
+                else:
+                    metrics_dict = update_metrics_dict(
+                        atoms, metrics_dict, self.checks, current_step
+                    )
+                    atoms_cache.append(freeze_copy_atoms(atoms))
+                    if len(atoms_cache) == self.dump_rate:
+                        self.db.extend(atoms_cache)
+                        atoms_cache = []
 
-        db.add(
-            znh5md.io.AtomsReader(
-                atoms_cache,
-                frames_per_chunk=self.dump_rate,
-                step=1,
-                time=self.sampling_rate,
-            )
-        )
+                    time = (idx_outer + 1) * self.sampling_rate * time_step
+                    temperature = metrics_dict["temperature"][-1]
+                    energy = metrics_dict["energy"][-1]
+                    desc = get_desc(temperature, energy, time, total_fs)
+                    pbar.set_description(desc)
+                    pbar.update(self.sampling_rate)
+                    current_step += 1
 
-        self.velocity_cache = atoms.get_velocities()
+        if not self.pop_last and self.steps_before_stopping != -1:
+            metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks)
+            atoms_cache.append(freeze_copy_atoms(atoms))
+            current_step += 1
+
+        self.db.extend(atoms_cache)
+        return metrics_dict, current_step
+
+    def run(self):
+        """Run the simulation."""
+        self.initialize_md()
+
+        atoms = self.get_atoms()
+        metrics_dict, _ = self.run_md(atoms=atoms)
+
         self.metrics_dict = pd.DataFrame(metrics_dict)
 
-        self.metrics_dict.index.name = "step"
-        self.steps_before_stopping = -1
+    def map(self):  # noqa: A003
+        self.initialize_md()
 
-
-class FixedSphereASEMD(ASEMD):
-    """Attributes
-    ----------
-    atom_id: int
-        The id to use as the center of the sphere to fix.
-        If None, the closed atom to the center will be picked.
-    radius: float
-    """
-
-    atom_id = zntrack.zn.params(None)
-    selected_atom_id = zntrack.zn.outs()
-    radius = zntrack.zn.params()
-
-    def get_constraint(self):
-        atoms = self.get_atoms()
-        r_ij, d_ij = ase.geometry.get_distances(atoms.get_positions())
-        if self.atom_id is not None:
-            self.selected_atom_id = self.atom_id
+        metrics_list = []
+        if self.data_ids is not None:
+            structures = [self.get_atoms(method="map")[idx] for idx in self.data_ids]
         else:
-            _, dist = ase.geometry.get_distances(
-                atoms.get_positions(), np.diag(atoms.get_cell() / 2)
-            )
-            self.selected_atom_id = np.argmin(dist)
+            structures = self.get_atoms(method="map")
 
-        if isinstance(self.selected_atom_id, np.generic):
-            self.selected_atom_id = self.selected_atom_id.item()
+        self.structures = []
+        for atoms in structures:
+            metrics, current_step = self.run_md(atoms=atoms)
+            metrics_list.append(metrics)
+            self.structures.append(self.atoms[-current_step:])
 
-        indices = np.nonzero(d_ij[self.selected_atom_id] < self.radius)[0]
-        return ase.constraints.FixAtoms(indices=indices)
+        # Flatten metrics dictionary
+        flattened_metrics = {}
+        for key in metrics_list[0].keys():
+            flattened_metrics[key] = []
+
+        for metrics in metrics_list:
+            for key, value in metrics.items():
+                flattened_metrics[key].extend(value)
+
+        self.metrics_dict = pd.DataFrame(flattened_metrics)
+
+
+def get_desc(temperature: float, total_energy: float, time: float, total_time: float):
+    """TQDM description."""
+    return (
+        f"Temp.: {temperature:.3f} K \t Energy {total_energy:.3f} eV \t Time"
+        f" {time:.1f}/{total_time:.1f} fs"
+    )
+
+
+def update_metrics_dict(atoms, metrics_dict, checks, step):
+    temperature, energy = get_energy(atoms)
+    metrics_dict["energy"].append(energy)
+    metrics_dict["temperature"].append(temperature)
+    metrics_dict["step"].append(step)
+    for checker in checks:
+        metric = checker.get_value(atoms)
+        if metric is not None:
+            metrics_dict[checker.get_quantity()].append(metric)
+
+    return metrics_dict

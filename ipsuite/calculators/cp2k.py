@@ -2,8 +2,11 @@
 
 This interface is less restrictive than CP2K Single Point.
 """
+
 import contextlib
 import functools
+import logging
+import os
 import pathlib
 import shutil
 import subprocess
@@ -20,9 +23,19 @@ import yaml
 import znh5md
 import zntrack
 from ase.calculators.singlepoint import SinglePointCalculator
-from cp2k_input_tools.generator import CP2KInputGenerator
+
+try:
+    from cp2k_input_tools.generator import CP2KInputGenerator
+except ImportError as err:
+    raise ImportError(
+        "Please install the newest development version of cp2k-input-tools: 'pip install"
+        " git+https://github.com/cp2k/cp2k-input-tools.git'"
+    ) from err
+
 
 from ipsuite import base
+
+log = logging.getLogger(__name__)
 
 
 def _update_paths(cp2k_input_dict) -> dict:
@@ -64,17 +77,32 @@ def _update_paths(cp2k_input_dict) -> dict:
         )
 
 
+def _update_cmd(cp2k_cmd: str | None, env="IPSUITE_CP2K_SHELL") -> str:
+    """Update the shell command to run cp2k."""
+    if cp2k_cmd is None:
+        # Load from environment variable IPSUITE_CP2K_SHELL
+        try:
+            cp2k_cmd = os.environ[env]
+            log.info(f"Using IPSUITE_CP2K_SHELL={cp2k_cmd}")
+        except KeyError as err:
+            raise RuntimeError(
+                f"Please set the environment variable '{env}' or set the cp2k executable."
+            ) from err
+    return cp2k_cmd
+
+
 class CP2KYaml(base.ProcessSingleAtom):
     """Node for running CP2K Single point calculations."""
 
-    cp2k_bin: str = zntrack.meta.Text("cp2k.psmp")
-    cp2k_params = zntrack.dvc.params("cp2k.yaml")
-    wfn_restart: str = zntrack.dvc.deps(None)
+    cp2k_bin: str = zntrack.meta.Text(None)
+    cp2k_params = zntrack.params_path("cp2k.yaml")
+    wfn_restart: str = zntrack.deps_path(None)
 
-    cp2k_directory: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "cp2k")
+    cp2k_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "cp2k")
 
     def run(self):
         """ZnTrack run method."""
+        self.cp2k_bin = _update_cmd(self.cp2k_bin)
         self.cp2k_directory.mkdir(exist_ok=True)
         with pathlib.Path(self.cp2k_params).open("r") as file:
             cp2k_input_dict = yaml.safe_load(file)
@@ -94,8 +122,7 @@ class CP2KYaml(base.ProcessSingleAtom):
         _update_paths(cp2k_input_dict)
 
         cp2k_input_script = "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
-        with self.operating_directory():
-            self._run_cp2k(atoms, cp2k_input_script)
+        self._run_cp2k(atoms, cp2k_input_script)
 
     def _run_cp2k(self, atoms, cp2k_input_script):
         ase.io.write(self.cp2k_directory / "atoms.xyz", atoms)
@@ -143,8 +170,9 @@ class CP2KSinglePoint(base.ProcessAtoms):
 
     Parameters
     ----------
-    cp2k_shell : str
-        The cmd to run cp2k.
+    cp2k_shell : str, default=None
+        The cmd to run cp2k. If None, the environment variable
+        IPSUITE_CP2K_SHELL is used.
     cp2k_params : str
         The path to the cp2k yaml input file. cp2k-input-tools is used to
         generate the input file from the yaml file.
@@ -156,27 +184,33 @@ class CP2KSinglePoint(base.ProcessAtoms):
         A cp2k Node that has a wfn restart file.
     """
 
-    cp2k_shell: str = zntrack.meta.Text("cp2k_shell.ssmp")
-    cp2k_params = zntrack.dvc.params("cp2k.yaml")
-    cp2k_files = zntrack.dvc.deps(None)
+    cp2k_shell: str = zntrack.meta.Text(None)
+    cp2k_params = zntrack.params_path("cp2k.yaml")
+    cp2k_files = zntrack.deps_path(None)
 
-    wfn_restart_file: str = zntrack.dvc.deps(None)
-    wfn_restart_node = zntrack.zn.deps(None)
-    output_file = zntrack.dvc.outs(zntrack.nwd / "atoms.h5")
-    cp2k_directory = zntrack.dvc.outs(zntrack.nwd / "cp2k")
+    wfn_restart_file: str = zntrack.deps_path(None)
+    wfn_restart_node = zntrack.deps(None)
+    output_file = zntrack.outs_path(zntrack.nwd / "structures.h5")
+    cp2k_directory = zntrack.outs_path(zntrack.nwd / "cp2k")
 
     def run(self):
-        """ZnTrack run method."""
+        """ZnTrack run method.
 
-        db = znh5md.io.DataWriter(self.output_file)
-        db.initialize_database_groups()
+        Raises
+        ------
+        RuntimeError
+            If the cp2k_shell is not set.
+        """
 
+        self.cp2k_shell = _update_cmd(self.cp2k_shell)
+
+        db = znh5md.IO(self.output_file)
         calc = self.get_calculator()
 
-        for atoms in tqdm.tqdm(self.get_data()):
+        for atoms in tqdm.tqdm(self.get_data(), ncols=70):
             atoms.calc = calc
             atoms.get_potential_energy()
-            db.add(znh5md.io.AtomsReader([atoms]))
+            db.append(atoms)
 
         for file in self.cp2k_directory.glob("cp2k-RESTART.wfn.*"):
             # we don't need all restart files
@@ -184,16 +218,9 @@ class CP2KSinglePoint(base.ProcessAtoms):
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
-        def file_handle(filename):
-            file = self.state.fs.open(filename, "rb")
-            return h5py.File(file)
-
-        return znh5md.ASEH5MD(
-            self.output_file,
-            format_handler=functools.partial(
-                znh5md.FormatHandler, file_handle=file_handle
-            ),
-        ).get_atoms_list()
+        with self.state.fs.open(self.output_file, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
 
     def get_input_script(self):
         """Return the input script.
@@ -222,6 +249,8 @@ class CP2KSinglePoint(base.ProcessAtoms):
         return "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
 
     def get_calculator(self, directory: str = None):
+        self.cp2k_shell = _update_cmd(self.cp2k_shell)
+
         if directory is None:
             directory = self.cp2k_directory
         else:
@@ -230,7 +259,7 @@ class CP2KSinglePoint(base.ProcessAtoms):
                 shutil.copy(restart_wfn, directory / "cp2k-RESTART.wfn")
 
         patch(
-            "ase.calculators.cp2k.Popen",
+            "ase.calculators.cp2k.subprocess.Popen",
             wraps=functools.partial(subprocess.Popen, cwd=directory),
         ).start()
 

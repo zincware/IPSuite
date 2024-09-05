@@ -1,4 +1,3 @@
-import functools
 import logging
 import pathlib
 import typing
@@ -47,24 +46,21 @@ class RattleAnalysis(base.ProcessSingleAtom):
         The atom to pick from self.atoms as a starting point
     """
 
-    model: models.MLModel = zntrack.zn.deps()
-    model_outs = zntrack.dvc.outs(zntrack.nwd / "model/")
+    model: models.MLModel = zntrack.deps()
+    model_outs = zntrack.outs_path(zntrack.nwd / "model/")
 
-    logspace: bool = zntrack.zn.params(True)
-    stop: float = zntrack.zn.params(3.0)
-    factor: float = zntrack.zn.params(0.001)
-    num: int = zntrack.zn.params(100)
+    logspace: bool = zntrack.params(True)
+    stop: float = zntrack.params(3.0)
+    factor: float = zntrack.params(0.001)
+    num: int = zntrack.params(100)
 
-    seed: int = zntrack.zn.params(1234)
-    energies: pd.DataFrame = zntrack.zn.plots(
+    seed: int = zntrack.params(1234)
+    energies: pd.DataFrame = zntrack.plots(
         # x="x",
         # y="y",
         # x_label="stdev of randomly displaced atoms",
         # y_label="predicted energy",
     )
-
-    def post_init(self):
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
 
     def run(self):
         self.model_outs.mkdir(parents=True, exist_ok=True)
@@ -111,25 +107,22 @@ class BoxScale(base.ProcessSingleAtom):
         The size of the generated space of stdev points
     """
 
-    model: models.MLModel = zntrack.zn.deps()
-    model_outs = zntrack.dvc.outs(zntrack.nwd / "model")
-    mapping: base.Mapping = zntrack.zn.nodes(None)
+    model: models.MLModel = zntrack.deps()
+    model_outs = zntrack.outs_path(zntrack.nwd / "model")
+    mapping: base.Mapping = zntrack.deps(None)
 
-    stop: float = zntrack.zn.params(2.0)
-    num: int = zntrack.zn.params(100)
-    start: float = zntrack.zn.params(1)
+    stop: float = zntrack.params(2.0)
+    num: int = zntrack.params(100)
+    start: float = zntrack.params(1)
 
-    plot = zntrack.dvc.outs(zntrack.nwd / "energy.png")
+    plot = zntrack.outs_path(zntrack.nwd / "energy.png")
 
-    energies: pd.DataFrame = zntrack.zn.plots(
+    energies: pd.DataFrame = zntrack.plots(
         x="x",
         y="y",
         x_label="Scale factor of the initial cell",
         y_label="predicted energy",
     )
-
-    def _post_init_(self):
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
 
     def run(self):
         self.model_outs.mkdir(parents=True, exist_ok=True)
@@ -198,21 +191,21 @@ class BoxHeatUp(base.ProcessSingleAtom):
 
     """
 
-    start_temperature: float = zntrack.zn.params()
-    stop_temperature: float = zntrack.zn.params()
-    steps: int = zntrack.zn.params()
-    time_step: float = zntrack.zn.params(0.5)
-    friction = zntrack.zn.params()
-    repeat = zntrack.zn.params((1, 1, 1))
+    start_temperature: float = zntrack.params()
+    stop_temperature: float = zntrack.params()
+    steps: int = zntrack.params()
+    time_step: float = zntrack.params(0.5)
+    friction = zntrack.params()
+    repeat = zntrack.params((1, 1, 1))
 
-    max_temperature: float = zntrack.zn.params(None)
+    max_temperature: float = zntrack.params(None)
 
-    flux_data = zntrack.zn.plots()
+    flux_data = zntrack.plots()
 
-    model = zntrack.zn.deps()
-    model_outs = zntrack.dvc.outs(zntrack.nwd / "model")
+    model = zntrack.deps()
+    model_outs = zntrack.outs_path(zntrack.nwd / "model")
 
-    plots = zntrack.dvc.outs(zntrack.nwd / "temperature.png")
+    plots = zntrack.outs_path(zntrack.nwd / "temperature.png")
 
     def get_atoms(self) -> ase.Atoms:
         atoms: ase.Atoms = self.get_data()
@@ -296,7 +289,7 @@ def run_stability_nve(
     time_step: float,
     max_steps: int,
     init_temperature: float,
-    checks: list[base.CheckBase],
+    checks: list[base.Check],
     save_last_n: int,
     rng: typing.Optional[np.random.Generator] = None,
 ) -> typing.Tuple[int, list[ase.Atoms]]:
@@ -365,32 +358,25 @@ class MDStability(base.ProcessAtoms):
     seed: seed for the MaxwellBoltzmann distribution
     """
 
-    model = zntrack.zn.deps()
-    model_outs = zntrack.dvc.outs(zntrack.nwd / "model_outs")
-    max_steps: int = zntrack.zn.params()
-    checks: list[zntrack.Node] = zntrack.zn.nodes()
-    time_step: float = zntrack.zn.params(0.5)
-    initial_temperature: float = zntrack.zn.params(300)
-    save_last_n: int = zntrack.zn.params(1)
-    bins: int = zntrack.zn.params(None)
-    seed: int = zntrack.zn.params(0)
+    model = zntrack.deps()
+    model_outs = zntrack.outs_path(zntrack.nwd / "model_outs")
+    max_steps: int = zntrack.params()
+    checks: list[zntrack.Node] = zntrack.deps()
+    time_step: float = zntrack.params(0.5)
+    initial_temperature: float = zntrack.params(300)
+    save_last_n: int = zntrack.params(1)
+    bins: int = zntrack.params(None)
+    seed: int = zntrack.params(0)
 
-    traj_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "trajectory.h5")
-    plots_dir: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "plots")
-    stable_steps_df: pd.DataFrame = zntrack.zn.plots()
+    traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
+    plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
+    stable_steps_df: pd.DataFrame = zntrack.plots()
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
-        def file_handle(filename):
-            file = self.state.fs.open(filename, "rb")
-            return h5py.File(file)
-
-        return znh5md.ASEH5MD(
-            self.traj_file,
-            format_handler=functools.partial(
-                znh5md.FormatHandler, file_handle=file_handle
-            ),
-        ).get_atoms_list()
+        with self.state.fs.open(self.traj_file, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
 
     def get_plots(self, stable_steps: int) -> None:
         """Create figures for all available data."""
@@ -418,8 +404,7 @@ class MDStability(base.ProcessAtoms):
 
         stable_steps = []
 
-        db = znh5md.io.DataWriter(self.traj_file)
-        db.initialize_database_groups()
+        db = znh5md.IO(self.traj_file)
         unstable_atoms = []
 
         for ii in tqdm.trange(
@@ -438,13 +423,7 @@ class MDStability(base.ProcessAtoms):
             )
             unstable_atoms.extend(last_n_atoms)
             stable_steps.append(n_steps)
-        db.add(
-            znh5md.io.AtomsReader(
-                unstable_atoms,
-                frames_per_chunk=self.save_last_n,
-                step=1,
-            )
-        )
+        db.extend(unstable_atoms)
 
         self.get_plots(stable_steps)
         self.stable_steps_df = pd.DataFrame({"stable_steps": np.array(stable_steps)})

@@ -19,13 +19,20 @@ def test_AddData(proj_path, traj_file, atoms_list, eager):
     subprocess.check_call(["dvc", "add", traj_file.name])
     with ipsuite.Project() as project:
         data = ipsuite.AddData(file=traj_file.name)
+        data2 = ipsuite.data_loading.ReadData(file=traj_file.name)
 
     project.run(eager=eager)
     if not eager:
         data.load()
+        data2.load()
 
     assert isinstance(data.atoms, list)
     assert isinstance(data.atoms[0], ase.Atoms)
+
+    assert isinstance(data2.atoms, list)
+    assert isinstance(data2.atoms[0], ase.Atoms)
+
+    assert data.atoms == data2.atoms
 
     for loaded, given in zip(data.atoms[:], atoms_list):
         # Check that the atoms match
@@ -37,9 +44,8 @@ def test_AddData(proj_path, traj_file, atoms_list, eager):
 
 def test_AddDataH5MD(proj_path, atoms_list):
     # file would be external otherwise
-    db = znh5md.io.DataWriter("data.h5")
-    db.initialize_database_groups()
-    db.add(znh5md.io.AtomsReader(atoms_list))
+    db = znh5md.IO("data.h5")
+    db.extend(atoms_list)
     # shutil.copy(traj_file, ".")
 
     # subprocess.check_call(["dvc", "add", traj_file.name])

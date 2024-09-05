@@ -1,4 +1,5 @@
 """The Nequip and allegro model module."""
+
 import logging
 import pathlib
 import shutil
@@ -13,7 +14,6 @@ import yaml
 import zntrack
 import zntrack.utils
 
-from ipsuite import utils
 from ipsuite.models import MLModel
 from ipsuite.utils.helpers import check_duplicate_keys
 
@@ -37,24 +37,24 @@ def _write_xyz_input_files(
 class Nequip(MLModel):
     """The Nequip and allegro model."""
 
-    config: str = zntrack.dvc.params()
-    validation_data = zntrack.zn.deps()
+    config: str = zntrack.params_path()
+    validation_data = zntrack.deps()
 
-    train_data_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "train.extxyz")
-    validation_data_file: pathlib.Path = zntrack.dvc.outs(
+    train_data_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "train.extxyz")
+    validation_data_file: pathlib.Path = zntrack.outs_path(
         zntrack.nwd / "validation.extxyz"
     )
 
-    deployed_model: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "deployed_model.pth")
-    model_directory: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "model")
+    deployed_model: pathlib.Path = zntrack.outs_path(zntrack.nwd / "deployed_model.pth")
+    model_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model")
 
-    metrics_batch_train = zntrack.dvc.plots(
+    metrics_batch_train = zntrack.plots_path(
         zntrack.nwd / "metrics_batch_train.csv"  # , y=" loss", y_label="loss"
     )
-    metrics_batch_val = zntrack.dvc.plots(
+    metrics_batch_val = zntrack.plots_path(
         zntrack.nwd / "metrics_batch_val.csv"  # , y=" loss", y_label="loss"
     )
-    metrics_epoch = zntrack.dvc.plots(
+    metrics_epoch = zntrack.plots_path(
         zntrack.nwd / "metrics_epoch.csv",
         # x="epoch",
         # x_label="epochs",
@@ -62,7 +62,7 @@ class Nequip(MLModel):
         # y_label="validation loss",
     )
 
-    metrics = zntrack.zn.metrics()
+    metrics = zntrack.metrics()
 
     device: str = zntrack.meta.Text("cuda" if torch.cuda.is_available() else "cpu")
     remove_processed_dataset = True
@@ -77,11 +77,6 @@ class Nequip(MLModel):
                     "Please keep track of the parameter file with git, just like the"
                     f" params.yaml. Use 'git add {self.config}'."
                 )
-
-        self.data = utils.helpers.get_deps_if_node(self.data, "atoms")
-        self.validation_data = utils.helpers.get_deps_if_node(
-            self.validation_data, "atoms"
-        )
 
     def _handle_parameter_file(self, n_train: int, n_val: int, chemical_symbols: list):
         """Update and rewrite the nequip parameter file."""
@@ -167,12 +162,17 @@ class Nequip(MLModel):
 
     def get_calculator(self, **kwargs):
         """Get a nequip ase calculator."""
+        import unittest.mock
+
         from nequip.ase.nequip_calculator import NequIPCalculator
 
-        return NequIPCalculator.from_deployed_model(
-            model_path=self.deployed_model.as_posix(),
-            device=self.device,
-        )
+        with unittest.mock.patch(
+            "torch.serialization._open_file_like", self.state.fs.open
+        ):
+            return NequIPCalculator.from_deployed_model(
+                model_path=self.deployed_model.as_posix(),
+                device=self.device,
+            )
 
     @property
     def lammps_pair_style(self) -> str:

@@ -3,16 +3,22 @@ from .ase_geoopt import ASEGeoOpt
 from .ase_md import (
     ASEMD,
     BoxOscillatingRampModifier,
-    FixedSphereASEMD,
+    FixedLayerConstraint,
+    FixedSphereConstraint,
     LangevinThermostat,
     NPTThermostat,
     PressureRampModifier,
     RescaleBoxModifier,
     TemperatureOscillatingRampModifier,
     TemperatureRampModifier,
+    VelocityVerletDynamic,
 )
 from .ase_standard import EMTSinglePoint, LJSinglePoint
 from .cp2k import CP2KSinglePoint, CP2KYaml
+from .lammps import LammpsSimulator
+from .mix import MixCalculator
+from .orca import OrcaSinglePoint
+from .torch_d3 import TorchD3
 from .xtb import xTBSinglePoint
 
 __all__ = [
@@ -20,10 +26,11 @@ __all__ = [
     "CP2KYaml",
     "ASEGeoOpt",
     "ASEMD",
-    "FixedSphereASEMD",
+    "FixedSphereConstraint",
     "xTBSinglePoint",
     "LJSinglePoint",
     "LangevinThermostat",
+    "VelocityVerletDynamic",
     "ApaxJaxMD",
     "RescaleBoxModifier",
     "BoxOscillatingRampModifier",
@@ -32,4 +39,9 @@ __all__ = [
     "PressureRampModifier",
     "TemperatureOscillatingRampModifier",
     "NPTThermostat",
+    "OrcaSinglePoint",
+    "LammpsSimulator",
+    "TorchD3",
+    "FixedLayerConstraint",
+    "MixCalculator",
 ]

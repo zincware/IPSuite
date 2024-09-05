@@ -7,7 +7,7 @@ from ipsuite.configuration_comparison import REMatch
 
 @pytest.fixture
 def soap_representation(atoms_list):
-    soap = SOAP(species=[6, 8], rcut=7, nmax=4, lmax=4)
+    soap = SOAP(species=[6, 8], r_cut=7, n_max=4, l_max=4)
     return soap.create(atoms_list)
 
 

@@ -13,6 +13,7 @@ class _Nodes:
     MACE = "ipsuite.models.MACE"
     Nequip = "ipsuite.models.Nequip"
     Apax = "ipsuite.models.Apax"
+    ApaxEnsemble = "ipsuite.models.ApaxEnsemble"
 
     # Configuration Selection
     IndexSelection = "ipsuite.configuration_selection.IndexSelection"
@@ -25,6 +26,8 @@ class _Nodes:
     )
     UniformTemporalSelection = "ipsuite.configuration_selection.UniformTemporalSelection"
     ThresholdSelection = "ipsuite.configuration_selection.ThresholdSelection"
+    FilterOutlier = "ipsuite.configuration_selection.FilterOutlier"
+    BatchKernelSelection = "ipsuite.models.apax.BatchKernelSelection"
 
     # Configuration Comparison
     REMatch = "ipsuite.configuration_comparison.REMatch"
@@ -32,27 +35,39 @@ class _Nodes:
 
     # Configuration Generation
     Packmol = "ipsuite.configuration_generation.Packmol"
+    MultiPackmol = "ipsuite.configuration_generation.MultiPackmol"
     SmilesToAtoms = "ipsuite.configuration_generation.SmilesToAtoms"
+    SmilesToConformers = "ipsuite.configuration_generation.SmilesToConformers"
+    Smiles2Gromacs = "ipsuite.configuration_generation.Smiles2Gromacs"
 
     # Data
     AddData = "ipsuite.data_loading.AddData"
     AddDataH5MD = "ipsuite.data_loading.AddDataH5MD"
+    ReadData = "ipsuite.data_loading.ReadData"
+
+    # Datasets
+    MD22Dataset = "ipsuite.datasets.MD22Dataset"
 
     # Bootstrap
     RattleAtoms = "ipsuite.bootstrap.RattleAtoms"
     TranslateMolecules = "ipsuite.bootstrap.TranslateMolecules"
     RotateMolecules = "ipsuite.bootstrap.RotateMolecules"
+    SurfaceRasterScan = "ipsuite.bootstrap.SurfaceRasterScan"
+    SurfaceRasterMetrics = "ipsuite.bootstrap.SurfaceRasterMetrics"
 
     # Analysis
     DipoleHistogram = "ipsuite.analysis.DipoleHistogram"
     EnergyHistogram = "ipsuite.analysis.EnergyHistogram"
     ForcesHistogram = "ipsuite.analysis.ForcesHistogram"
     StressHistogram = "ipsuite.analysis.StressHistogram"
+    ForcesUncertaintyHistogram = "ipsuite.analysis.ForcesUncertaintyHistogram"
+    EnergyUncertaintyHistogram = "ipsuite.analysis.EnergyUncertaintyHistogram"
     ModelEnsembleAnalysis = "ipsuite.analysis.ModelEnsembleAnalysis"
     PredictionMetrics = "ipsuite.analysis.PredictionMetrics"
     ForceAngles = "ipsuite.analysis.ForceAngles"
     RattleAnalysis = "ipsuite.analysis.RattleAnalysis"
     Prediction = "ipsuite.analysis.Prediction"
+    CalibrationMetrics = "ipsuite.analysis.CalibrationMetrics"
     BoxScale = "ipsuite.analysis.BoxScale"
     BoxHeatUp = "ipsuite.analysis.BoxHeatUp"
     NaNCheck = "ipsuite.analysis.NaNCheck"
@@ -65,19 +80,25 @@ class _Nodes:
     ForceDecomposition = "ipsuite.analysis.ForceDecomposition"
     ThresholdCheck = "ipsuite.analysis.ThresholdCheck"
     TemperatureCheck = "ipsuite.analysis.TemperatureCheck"
+    FixedSphereConstraint = "ipsuite.calculators.FixedSphereConstraint"
+    FixedLayerConstraint = "ipsuite.calculators.FixedLayerConstraint"
+    AnalyseDensity = "ipsuite.analysis.AnalyseDensity"
 
     # calculators
     CP2KSinglePoint = "ipsuite.calculators.CP2KSinglePoint"
     CP2KYaml = "ipsuite.calculators.CP2KYaml"
     ASEGeoOpt = "ipsuite.calculators.ASEGeoOpt"
     ASEMD = "ipsuite.calculators.ASEMD"
-    FixedSphereASEMD = "ipsuite.calculators.FixedSphereASEMD"
     xTBSinglePoint = "ipsuite.calculators.xTBSinglePoint"
     LJSinglePoint = "ipsuite.calculators.LJSinglePoint"
     EMTSinglePoint = "ipsuite.calculators.EMTSinglePoint"
+    OrcaSinglePoint = "ipsuite.calculators.OrcaSinglePoint"
     ApaxJaxMD = "ipsuite.calculators.ApaxJaxMD"
+    LammpsSimulator = "ipsuite.calculators.LammpsSimulator"
+    MixCalculator = "ipsuite.calculators.MixCalculator"
 
     LangevinThermostat = "ipsuite.calculators.LangevinThermostat"
+    VelocityVerletDynamic = "ipsuite.calculators.VelocityVerletDynamic"
     NPTThermostat = "ipsuite.calculators.NPTThermostat"
     RescaleBoxModifier = "ipsuite.calculators.RescaleBoxModifier"
     BoxOscillatingRampModifier = "ipsuite.calculators.BoxOscillatingRampModifier"
@@ -86,9 +107,13 @@ class _Nodes:
         "ipsuite.calculators.TemperatureOscillatingRampModifier"
     )
     TemperatureRampModifier = "ipsuite.calculators.TemperatureRampModifier"
+    TorchD3 = "ipsuite.calculators.TorchD3"
 
     # Geometry
     BarycenterMapping = "ipsuite.geometry.BarycenterMapping"
+
+    # Data manipulation
+    Flatten = "ipsuite.base.Flatten"
 
 
 def __getattr__(name):

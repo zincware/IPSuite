@@ -119,19 +119,6 @@ def test_KernelSelect(proj_path, traj_file, eager):
     assert isinstance(REMatch_selection.atoms[0], ase.Atoms)
 
 
-@pytest.mark.parametrize("eager", [True, False])
-def test_select_from_file(proj_path, traj_file, eager):
-    with ips.Project() as proj:
-        selection = ips.configuration_selection.RandomSelection(
-            data=None, data_file=traj_file, n_configurations=5
-        )
-    proj.run(eager=eager)
-    if not eager:
-        selection.load()
-    assert len(selection.atoms) == 5
-    assert isinstance(selection.atoms[0], ase.Atoms)
-
-
 @pytest.fixture
 def test_traj(tmp_path_factory) -> typing.Tuple[str, int]:
     """Generate n atoms objects. The first n/2 are random shifts of a CH4 tetraeder.

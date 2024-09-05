@@ -1,7 +1,6 @@
 """Load Data directly from a H5MD trajectory file."""
-import functools
+
 import typing
-import uuid
 
 import ase
 import h5py
@@ -15,21 +14,13 @@ class AddDataH5MD(base.IPSNode):
     """Load Data directly from a H5MD trajectory file."""
 
     file = zntrack.dvc.deps()
-    _hash = zntrack.zn.outs()
     _atoms = None
 
     def run(self):
-        self._hash = str(uuid.uuid4())  # we must have an output
+        pass
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
-        def file_handle(filename):
-            file = self.state.fs.open(filename, "rb")
-            return h5py.File(file)
-
-        return znh5md.ASEH5MD(
-            self.file,
-            format_handler=functools.partial(
-                znh5md.FormatHandler, file_handle=file_handle
-            ),
-        ).get_atoms_list()
+        with self.state.fs.open(self.file, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]

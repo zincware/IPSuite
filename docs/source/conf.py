@@ -6,36 +6,36 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'IPSuite'
-copyright = '2023, zincwarecode'
-author = 'zincwarecode'
-release = '0.1.0a2'
+import sys
+from pathlib import Path
+
+project = "IPSuite"
+project_copyright = "2024, zincwarecode"
+author = "zincwarecode"
+release = "0.1.1"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
+
+sys.path.insert(0, Path("../../ipsuite/").resolve().as_posix())
+
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx.ext.napoleon",
+    "sphinx.ext.doctest",
     "sphinx_copybutton",
-    "nbsphinx",
-    "nbsphinx_link",
     "sphinx.ext.viewcode",
+    "sphinx.ext.autosummary",
 ]
 
-templates_path = ['_templates']
-exclude_patterns = []
+autosummary_generate = True
 
+templates_path = ["_templates"]
+exclude_patterns = []
 
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'furo'
-html_static_path = ['_static']
-
-html_css_files = [
-    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/fontawesome.min.css",
-    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/solid.min.css",
-    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/brands.min.css",
-]
+html_theme = "furo"
+html_static_path = ["_static"]
