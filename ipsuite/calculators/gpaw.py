@@ -3,7 +3,6 @@ import pathlib
 import typing
 import ase
 
-import gpaw
 import tqdm
 import znh5md
 import zntrack
@@ -11,7 +10,7 @@ import h5py
 
 from ipsuite import base
 
-
+import gpaw
 
 
 class GPAWSinglePoint(base.ProcessAtoms):
@@ -20,20 +19,22 @@ class GPAWSinglePoint(base.ProcessAtoms):
     See the GPAW documentation for an explanation of the parameters.
     """
 
-    pw: int = zntrack.zn.params(200)
-    xc: str = zntrack.zn.params("PBE")
-    kpts: tuple[int]= zntrack.zn.params((4,4,4))
-    eigensolver: str = zntrack.zn.params("rmm-diis")
-    occupations: float = zntrack.zn.params(0.0)
-    hund: bool = zntrack.zn.params(False)
+    pw: int = zntrack.params(200)
+    xc: str = zntrack.params("PBE")
+    kpts: tuple[int]= zntrack.params((4,4,4))
+    eigensolver: str = zntrack.params("rmm-diis")
+    occupations: float = zntrack.params(0.0)
+    hund: bool = zntrack.params(False)
 
-    output_file: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "atoms.h5")
-    gpaw_directory: pathlib.Path = zntrack.dvc.outs(zntrack.nwd)
+    output_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "atoms.h5")
+    gpaw_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "gpaw")
 
 
     def run(self):
-        db = znh5md.io.DataWriter(self.output_file)
-        db.initialize_database_groups()
+        if not self.gpaw_directory.exists():
+            self.gpaw_directory.mkdir(exist_ok=True)
+
+        db = znh5md.IO(self.output_file)
 
         calc = self.get_calculator()
 
@@ -41,20 +42,13 @@ class GPAWSinglePoint(base.ProcessAtoms):
             atoms.calc = calc
             atoms.get_potential_energy()
             atoms.get_forces()
-            db.add(znh5md.io.AtomsReader([atoms]))
+            db.append(atoms)
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
-        def file_handle(filename):
-            file = self.state.fs.open(filename, "rb")
-            return h5py.File(file)
-
-        return znh5md.ASEH5MD(
-            self.output_file,
-            format_handler=functools.partial(
-                znh5md.FormatHandler, file_handle=file_handle
-            ),
-        ).get_atoms_list()
+        with self.state.fs.open(self.output_file, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
 
 
     def get_calculator(self, directory: str = None):
@@ -70,6 +64,6 @@ class GPAWSinglePoint(base.ProcessAtoms):
             kpts=self.kpts,
             eigensolver=self.eigensolver,
             occupations=gpaw.FermiDirac(self.occupations, fixmagmom=True),
-            txt=directory / "gpaw.out",
+            txt=(directory / "gpaw.out").as_posix(),
         )
         return calc
