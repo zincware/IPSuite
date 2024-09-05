@@ -70,8 +70,7 @@ class StochasticCellRescalingCSVR(MolecularDynamics):
         self.transferred_energy = 0.0
 
     def set_temperature(self, temperature=None, temperature_K=None):
-        self.temp = units.kB * self._process_temperature(temperature,
-                                                         temperature_K, 'eV')
+        self.temp = units.kB * self._process_temperature(temperature, temperature_K, "eV")
 
     def scale_velocities(self):
         """Do the NVT Bussi stochastic velocity scaling."""
