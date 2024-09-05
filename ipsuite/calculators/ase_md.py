@@ -376,8 +376,6 @@ class CSVR(base.IPSNode):
 
     """
 
-    _module_ = "apax.nodes"
-
     time_step: int = zntrack.params()
     temperature: float = zntrack.params()
     betaT: float = zntrack.params(4.57e-5 / units.bar)

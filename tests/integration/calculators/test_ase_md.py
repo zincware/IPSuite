@@ -8,7 +8,7 @@ import ipsuite as ips
 from ipsuite.utils.ase_sim import get_density_from_atoms
 
 
-def test_ase_md(proj_path, cu_box):
+def test_ase_run_md(proj_path, cu_box):
     atoms = []
     for _ in range(5):
         atoms.extend(cu_box)
@@ -28,7 +28,7 @@ def test_ase_md(proj_path, cu_box):
     temperature_ramp = ips.calculators.TemperatureRampModifier(temperature=300)
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
-        model = ips.calculators.EMTSinglePoint(data=data.atoms)
+        model = ips.calculators.LJSinglePoint(data=data.atoms)
         md = ips.calculators.ASEMD(
             data=data.atoms,
             model=model,
