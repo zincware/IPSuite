@@ -1,4 +1,5 @@
 """Utils for computing metrics."""
+
 import numpy as np
 
 
@@ -68,11 +69,13 @@ def get_angles(vec1, vec2) -> np.ndarray:
 
 def get_full_metrics(true: np.ndarray, prediction: np.ndarray) -> dict:
     """Calculate metrics for a given true and predicted value."""
-    return {
+    metrics = {
         "rmse": root_mean_squared_error(true, prediction),
+        "mse": mean_squared_error(true, prediction),
         "mae": mean_absolute_error(true, prediction),
         "max": maximum_error(true, prediction),
         "lp4": calculate_l_p_norm(true, prediction, p=4),
         "rrmse": relative_rmse(true, prediction),
-        # "pearsonr": pearsonr(true, prediction)[0],
     }
+
+    return metrics

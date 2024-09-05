@@ -15,11 +15,11 @@ import zntrack
 from dscribe.descriptors import SOAP
 from tqdm import trange
 
-from ipsuite import base, utils
+from ipsuite import base
 
 
 def convert_to_df(similarities: typing.List) -> pd.DataFrame:
-    """Convert similarities to pd.DataFrame to save as zn.plots.
+    """Convert similarities to pd.DataFrame to save as zntrack.plots.
 
     Parameters
     ----------
@@ -118,7 +118,6 @@ class ConfigurationComparison(base.IPSNode):
 
     Attributes
     ----------
-        hash used to use this Node as zn.Nodes()
     reference: typing.Union[utils.helpers.UNION_ATOMS_OR_ATOMS_LST,
      utils.types.SupportsAtoms]
         reference configurations to compare analyte to
@@ -126,7 +125,7 @@ class ConfigurationComparison(base.IPSNode):
         utils.helpers.UNION_ATOMS_OR_ATOMS_LST, utils.types.SupportsAtoms
     ]
         analyte comparison to compare with reference
-    similarities: zn.plots()
+    similarities: zntrack.plots()
         in the end a csv file to save computed maximal similarities
     soap: typing.Union[dict, SOAPParameter]
         parameter to use for the SOAP descriptor
@@ -136,13 +135,16 @@ class ConfigurationComparison(base.IPSNode):
         name of the node used within the dvc graph
     compile_with_jit: bool
         choose if kernel should be compiled with jit or not.
+    memory: int
+            How far back to look in the MMK vector.
     """
 
-    reference: base.protocol.HasOrIsAtoms = zntrack.zn.deps()
-    analyte: base.protocol.HasOrIsAtoms = zntrack.zn.deps()
-    similarities = zntrack.zn.plots()
-    soap: typing.Union[dict, SOAPParameter] = zntrack.zn.params(SOAPParameter())
-    result: typing.List[float] = zntrack.zn.outs()
+    reference: base.protocol.HasOrIsAtoms = zntrack.deps()
+    analyte: base.protocol.HasOrIsAtoms = zntrack.deps()
+    memory: int = zntrack.params(1000)
+    similarities = zntrack.plots()
+    soap: typing.Union[dict, SOAPParameter] = zntrack.params(SOAPParameter())
+    result: typing.List[float] = zntrack.outs()
 
     _name_ = "ConfigurationComparison"
     use_jit: bool = zntrack.meta.Text(True)
@@ -153,7 +155,7 @@ class ConfigurationComparison(base.IPSNode):
         analyte=None,
         soap: dict = None,
         use_jit: bool = True,
-        **kwargs
+        **kwargs,
     ):
         """Initialize the ConfigurationComparison node.
 
@@ -166,7 +168,7 @@ class ConfigurationComparison(base.IPSNode):
                 utils.types.SupportsAtoms]
             analyte comparison to compare with reference (If reference is None, analyte
              will be compared to itself)
-        similarities: zn.plots()
+        similarities: zntrack.plots()
             In the end a csv file to save computed maximal similarities
         soap: dict
             Parameter to use for the SOAP descriptor.
@@ -178,11 +180,9 @@ class ConfigurationComparison(base.IPSNode):
         super().__init__(**kwargs)
         if soap is None:
             soap = {}
-        if reference is None:
-            self.reference = None
-        else:
-            self.reference = utils.helpers.get_deps_if_node(reference, "atoms")
-        self.analyte = utils.helpers.get_deps_if_node(analyte, "atoms")
+        self.reference = reference
+        self.analyte = analyte
+
         if not self.state.loaded:
             self.soap = SOAPParameter(**soap)
 
@@ -204,9 +204,9 @@ class ConfigurationComparison(base.IPSNode):
         _soap = SOAP(
             species=species,
             periodic=False,  # any(self.analyte[0].pbc),
-            rcut=self.soap.r_cut,
-            nmax=self.soap.n_max,
-            lmax=self.soap.l_max,
+            r_cut=self.soap.r_cut,
+            n_max=self.soap.n_max,
+            l_max=self.soap.l_max,
             sigma=self.soap.sigma,
             rbf=self.soap.rbf,
             weighting=self.soap.weighting,
@@ -292,6 +292,12 @@ class ConfigurationComparison(base.IPSNode):
                         if max_index == 0:
                             continue
                         reference_soap = representation_file["soap"][:max_index]
+                        # if max_index <= self.memory:
+                        #     reference_soap = representation_file["soap"][:max_index]
+                        # else:
+                        #     reference_soap = representation_file["soap"][
+                        #         max_index - self.memory : max_index
+                        #     ]
                         analyte_soap = representation_file["soap"][max_index]
                         comparison = self.compare(reference_soap, analyte_soap)
                         self.result.append(float(comparison.numpy()))
@@ -307,6 +313,14 @@ class ConfigurationComparison(base.IPSNode):
                 ) as pbar:
                     for max_index, _atoms in enumerate(self.analyte):
                         reference_soap = representation_file["soap_reference"]
+                        # if max_index <= self.memory:
+                        #     reference_soap = representation_file["soap_reference"][
+                        #         :max_index
+                        #     ]
+                        # else:
+                        #     reference_soap = representation_file["soap_reference"][
+                        #         max_index - self.memory : max_index
+                        #     ]
                         analyte_soap = representation_file["soap_analyte"][max_index]
                         comparison = self.compare(reference_soap, analyte_soap)
                         self.result.append(float(comparison.numpy()))

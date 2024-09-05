@@ -39,8 +39,6 @@ jobs:
           git config --global init.defaultBranch "main"
       - name: Install package
         run: |
-          git config --global credential.helper store
-          echo "https://${{ secrets.APAX_USERNAME }}:${{ secrets.APAX_ACCESS }}@github.com" > ~/.git-credentials
           poetry install --all-extras
       - name: Pytest
         run: |
@@ -53,7 +51,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
-          - "3.10"
+          - "3.10.14"
         os:
           - ubuntu-latest
         branch:
@@ -69,7 +67,7 @@ jobs:
         run: |
           pipx install poetry
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'poetry'
@@ -82,6 +80,7 @@ jobs:
           git config --global user.email johndoe@example.com
           git config --global init.defaultBranch "main"
       - name: prepare repo
+        continue-on-error: true
         run: |
           git clone https://github.com/PythonFZ/IPS-Examples
           cd IPS-Examples

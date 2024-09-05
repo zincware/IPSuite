@@ -1,4 +1,5 @@
 """Logging Setup for the ipsuite package."""
+
 import logging
 import sys
 

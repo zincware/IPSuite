@@ -1,7 +1,9 @@
 import ase
+import networkx as nx
 import numpy as np
 from ase.calculators.singlepoint import SinglePointCalculator
 
+from ipsuite.geometry import graphs
 from ipsuite.geometry.graphs import edges_from_atoms
 
 
@@ -24,26 +26,18 @@ def sort_atomic_edges(edges, idx):
 
 
 def displace_neighbors(mol, edges):
-    for edge in edges:
-        dist = mol.get_distance(edge[0], edge[1], vector=True)
-        pdist = mol.get_distance(edge[0], edge[1], True, vector=True)
+    dist = mol.get_distance(edges[0], edges[1], vector=True)
+    pdist = mol.get_distance(edges[0], edges[1], True, vector=True)
 
-        displacement = dist - pdist
-        mol.positions[edge[1]] -= displacement
+    displacement = dist - pdist
+    mol.positions[edges[1]] -= displacement
 
 
 def unwrap(atoms, edges, idx):
-    # TODO this should probably be width first, not depth first
-    current_edges = sort_atomic_edges(edges, idx)
-    displace_neighbors(atoms, current_edges)
-
-    next_idxs = current_edges[:, 1]
-
-    mask = np.all(edges != idx, axis=1)
-    filtered_edges = edges[mask]
-
-    for next_idx in next_idxs:
-        unwrap(atoms, filtered_edges, next_idx)
+    G = graphs.atoms_to_graph(atoms)
+    edges = nx.traversal.bfs_edges(G, idx)
+    for e in edges:
+        displace_neighbors(atoms, e)
 
 
 def unwrap_system(atoms: ase.Atoms, components: list[np.ndarray]) -> list[ase.Atom]:
@@ -60,7 +54,7 @@ def unwrap_system(atoms: ase.Atoms, components: list[np.ndarray]) -> list[ase.At
         if atoms.calc is not None:
             mol.calc = SinglePointCalculator(mol, forces=atoms.get_forces()[component])
         edges = edges_from_atoms(mol)
-        closest_atom = closest_atom_to_center(atoms)
+        closest_atom = closest_atom_to_center(mol)
         unwrap(mol, edges, idx=closest_atom)
         molecules.append(mol)
 

@@ -4,6 +4,7 @@ References
 ----------
 https://docs.pytest.org/en/6.2.x/fixture.html#scope-sharing-fixtures-across-classes-modules-packages-or-session
 """
+
 import logging
 import os
 import pathlib
@@ -50,6 +51,8 @@ def atoms_list() -> typing.List[ase.Atoms]:
             atoms=atom,
             energy=idx / 21,
             forces=np.random.randn(2, 3),
+            energy_uncertainty=idx + 2,
+            forces_uncertainty=np.full((2, 3), 2.0) + idx,
         )
 
     return atoms

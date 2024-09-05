@@ -4,6 +4,7 @@ import ase.geometry
 import ase.io
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import scipy
 import zntrack
 
@@ -38,16 +39,16 @@ def nonuniform_imshow(ax, x, y, z, aspect=1, cmap=plt.cm.rainbow):
 class MoveSingleParticle(base.IPSNode):
     """Move a single particle in a given direction."""
 
-    atoms_list = zntrack.zn.deps()
-    atoms_list_id = zntrack.zn.params(0)  # the atoms object in the atoms list
-    atom_id = zntrack.zn.params(0)  # the atom id to move
-    scale = zntrack.zn.params(0.5)  # the standard deviation of the normal distribution
-    seed = zntrack.zn.params(1234)
+    atoms_list = zntrack.deps()
+    atoms_list_id = zntrack.params(0)  # the atoms object in the atoms list
+    atom_id = zntrack.params(0)  # the atom id to move
+    scale = zntrack.params(0.5)  # the standard deviation of the normal distribution
+    seed = zntrack.params(1234)
 
-    samples = zntrack.zn.params(10)  # how many samples to take
+    samples = zntrack.params(10)  # how many samples to take
 
-    atoms: list = zntrack.zn.outs()
-    atoms_path = zntrack.dvc.outs(zntrack.nwd / "atoms")
+    atoms: list = zntrack.outs()
+    atoms_path = zntrack.outs_path(zntrack.nwd / "atoms")
 
     def run(self):
         """ZnTrack run method."""
@@ -65,8 +66,8 @@ class MoveSingleParticle(base.IPSNode):
 
 
 class AnalyseGlobalForceSensitivity(base.IPSNode):
-    atoms_list = zntrack.zn.deps()
-    plots = zntrack.dvc.outs(zntrack.nwd / "plots")
+    atoms_list = zntrack.deps()
+    plots = zntrack.outs_path(zntrack.nwd / "plots")
 
     def run(self):
         # assume all atoms have only a single particle changed
@@ -104,45 +105,56 @@ class IsConstraintMD(typing.Protocol):
 
 
 class AnalyseSingleForceSensitivity(base.IPSNode):
-    """Attributes
-    ----------
-    sim_list : list[]
-    """
+    data: list[list[ase.Atoms]] = zntrack.deps()
+    sim_list: list = zntrack.deps()  # list["ASEMD"]
 
-    sim_list: typing.List[IsConstraintMD] = zntrack.zn.deps()
-    atoms_list = zntrack.zn.deps()
-    plots = zntrack.dvc.outs(zntrack.nwd / "plots")
+    alpha: float = zntrack.params(
+        0.05
+    )  # Desired significance level (e.g., 95% confidence interval)
+
+    sensitivity: pd.DataFrame = zntrack.plots()
+    sensitivity_plot: str = zntrack.outs_path(zntrack.nwd / "sensitivity.png")
+
+    def t_confidence_interval(self, data):
+        """Returns the confidence interval for the given data and significance level."""
+        df = len(data) - 1
+
+        sample_variance = np.var(data, ddof=1)
+        # lower_chi2 = stats.chi2.ppf(alpha / 2, df)
+        upper_chi2 = scipy.stats.chi2.ppf(1 - self.alpha / 2, df)
+
+        lower_bound = np.sqrt((df * sample_variance) / upper_chi2)
+        # upper_bound = np.sqrt((df * sample_variance) / lower_chi2)
+
+        return np.std(data) - lower_bound
+
+    def get_values(self, data, item):
+        forces = np.array([x.get_forces() for x in data])
+        val = np.linalg.norm(forces[:, item], axis=1)
+        return np.std(val, ddof=1), self.t_confidence_interval(val)
 
     def run(self):
-        self.plots.mkdir(parents=True, exist_ok=True)
-        if len(self.sim_list) != len(self.atoms_list):
-            raise ValueError("The size of simulations and atoms list must be equal.")
+        values = []
 
-        force_std = []
-        for configurations in self.atoms_list:
-            forces = [atoms.get_forces() for atoms in configurations.results]
-            forces = np.stack(forces)[:, self.sim_list[0].selected_atom_id]
+        self.data = [x.atoms if isinstance(x, zntrack.Node) else x for x in self.data]
 
-            force_std.append(
-                [
-                    _compute_std_leave_one_out(forces[..., 0]),
-                    _compute_std_leave_one_out(forces[..., 1]),
-                    _compute_std_leave_one_out(forces[..., 2]),
-                    _compute_std_leave_one_out(np.linalg.norm(forces, axis=-1)),
-                ]
-            )
+        for atoms, sim in zip(self.data, self.sim_list):
+            radius = sim.constraints[0].radius
+            atom_id = sim.constraints[0].get_selected_atom_id(atoms[0])
 
-        force_std = np.array(force_std)
-        # shape (n, 4, 2)
+            value = self.get_values(atoms, atom_id)
+            values.append({"radius": radius, "std": value[0], "ci": value[1]})
 
-        for idx, label in enumerate(["x", "y", "z", "norm"]):
-            fig, ax = plt.subplots()
-            ax.errorbar(
-                [x.radius for x in self.sim_list],
-                force_std[:, idx, 0],
-                yerr=force_std[:, idx, 1],
-                capsize=5,
-            )
-            ax.set_ylabel(rf"Standard deviation $\sigma$ of force $f_\mathrm{{{label}}}$")
-            ax.set_xlabel(r"Distance $r ~ / ~ \AA$")
-            fig.savefig(self.plots / f"std_force_vs_radius_{label}.png")
+        self.sensitivity = pd.DataFrame(values).set_index("radius").sort_index()
+
+        fig, ax = plt.subplots()
+        ax.errorbar(
+            x=self.sensitivity.index,
+            y=self.sensitivity["std"],
+            yerr=self.sensitivity["ci"],
+            capsize=5,
+        )
+        ax.set_ylabel(r"Standard deviation $\sigma$ of force $f$")
+        ax.set_xlabel(r"Distance $r ~ / ~ \AA$")
+        ax.set_yscale("log")
+        fig.savefig(self.sensitivity_plot, bbox_inches="tight")
