@@ -19,7 +19,7 @@ from ase.md.verlet import VelocityVerlet
 from tqdm import trange
 
 from ipsuite import base
-from ipsuite.calculators.integrators import StochasticCellRescalingCSVR
+from ipsuite.calculators.integrators import StochasticVelocityCellRescaling
 from ipsuite.utils.ase_sim import freeze_copy_atoms, get_box_from_density, get_energy
 
 log = logging.getLogger(__name__)
@@ -360,8 +360,8 @@ class NPTThermostat(base.IPSNode):
         return thermostat
 
 
-class CSVR(base.IPSNode):
-    """Initialize the langevin thermostat
+class SVCRBarostat(base.IPSNode):
+    """Initialize the CSVR thermostat
 
     Attributes
     ----------
@@ -370,10 +370,14 @@ class CSVR(base.IPSNode):
 
     temperature: float
         temperature in K to simulate at
-
-    friction: float
-        friction of the Langevin simulator
-
+    betaT: float
+        Very approximate compressibility of the system.
+    pressure_au: float
+        Pressure in atomic units.
+    taut: float
+        Temperature coupling time scale.
+    taup: float
+        Pressure coupling time scale.
     """
 
     time_step: int = zntrack.params()
@@ -384,11 +388,11 @@ class CSVR(base.IPSNode):
     taup: float = zntrack.params(1000 * units.fs)
 
     def get_thermostat(self, atoms):
-        thermostat = StochasticCellRescalingCSVR(
+        thermostat = StochasticVelocityCellRescaling(
             atoms=atoms,
             timestep=self.time_step * units.fs,
             temperature_K=self.temperature,
-            betaT=4.57e-5 / units.bar,
+            betaT=self.betaT,
             pressure_au=self.pressure_au,
             taut=self.taut,
             taup=self.taup,

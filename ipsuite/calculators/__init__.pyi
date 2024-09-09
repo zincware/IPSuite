@@ -1,7 +1,7 @@
 from .ase_geoopt import ASEGeoOpt
 from .ase_md import (
     ASEMD,
-    CSVR,
+    SVCRBarostat,
     BoxOscillatingRampModifier,
     FixedLayerConstraint,
     FixedSphereConstraint,
@@ -41,5 +41,5 @@ __all__ = [
     "LammpsSimulator",
     "FixedLayerConstraint",
     "MixCalculator",
-    "CSVR",
+    "SVCRBarostat",
 ]

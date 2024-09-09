@@ -20,7 +20,7 @@ def test_ase_run_md(proj_path, cu_box):
         temperature=1,
         friction=1,
     )
-    barostat = ips.calculators.CSVR(
+    barostat = ips.calculators.SVCRBarostat(
         time_step=1,
         temperature=1,
     )
