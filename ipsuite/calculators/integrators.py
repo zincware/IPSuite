@@ -6,7 +6,7 @@ from ase.md.md import MolecularDynamics
 from ase.parallel import world
 
 
-class StochasticVelocityCellRescaling(MolecularDynamics): 
+class StochasticVelocityCellRescaling(MolecularDynamics):
     """Bussi stochastic velocity and cell rescaling (NVT / NPT) molecular dynamics.
     Based on the paper from Bussi et al. (https://arxiv.org/abs/0803.4060)
     Thermostat is based on the ASE  implementation of SVR.
