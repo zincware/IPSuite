@@ -1,16 +1,15 @@
-import functools
 import pathlib
 import typing
-import ase
 
+import ase
+import gpaw
+import h5py
 import tqdm
 import znh5md
 import zntrack
-import h5py
+from ase.calculators.subprocesscalculator import gpaw_process
 
 from ipsuite import base
-
-import gpaw
 
 
 class GPAWSinglePoint(base.ProcessAtoms):
@@ -19,9 +18,10 @@ class GPAWSinglePoint(base.ProcessAtoms):
     See the GPAW documentation for an explanation of the parameters.
     """
 
+    ncores: int = zntrack.params(1)
     pw: int = zntrack.params(200)
     xc: str = zntrack.params("PBE")
-    kpts: tuple[int]= zntrack.params((4,4,4))
+    kpts: tuple[int] = zntrack.params((4, 4, 4))
     eigensolver: str = zntrack.params("rmm-diis")
     occupations: float = zntrack.params(0.0)
     hund: bool = zntrack.params(False)
@@ -29,20 +29,18 @@ class GPAWSinglePoint(base.ProcessAtoms):
     output_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "atoms.h5")
     gpaw_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "gpaw")
 
-
     def run(self):
         if not self.gpaw_directory.exists():
             self.gpaw_directory.mkdir(exist_ok=True)
 
         db = znh5md.IO(self.output_file)
 
-        calc = self.get_calculator()
-
-        for atoms in tqdm.tqdm(self.get_data()):
-            atoms.calc = calc
-            atoms.get_potential_energy()
-            atoms.get_forces()
-            db.append(atoms)
+        with self.get_calculator() as calc:
+            for atoms in tqdm.tqdm(self.get_data()):
+                atoms.calc = calc
+                atoms.get_potential_energy()
+                atoms.get_forces()
+                db.append(atoms)
 
     @property
     def atoms(self) -> typing.List[ase.Atoms]:
@@ -50,14 +48,14 @@ class GPAWSinglePoint(base.ProcessAtoms):
             with h5py.File(f) as file:
                 return znh5md.IO(file_handle=file)[:]
 
-
     def get_calculator(self, directory: str = None):
         if directory is None:
             directory = self.gpaw_directory
         else:
             directory = pathlib.Path(directory)
 
-        calc = gpaw.GPAW(
+        calc = gpaw_process(
+            ncores=self.ncores,
             mode=gpaw.PW(self.pw),
             xc=self.xc,
             hund=self.hund,
