@@ -84,7 +84,7 @@ class _Nodes:
     CP2KYaml = "ipsuite.calculators.CP2KYaml"
     ASEGeoOpt = "ipsuite.calculators.ASEGeoOpt"
     ASEMD = "ipsuite.calculators.ASEMD"
-    GPAWSinglepoint = "ipsuite.calculators.GPAWSinglepoint"
+    GPAWSinglePoint = "ipsuite.calculators.GPAWSinglePoint"
     xTBSinglePoint = "ipsuite.calculators.xTBSinglePoint"
     LJSinglePoint = "ipsuite.calculators.LJSinglePoint"
     EMTSinglePoint = "ipsuite.calculators.EMTSinglePoint"
