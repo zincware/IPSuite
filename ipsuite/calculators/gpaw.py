@@ -2,10 +2,7 @@ import os
 import pathlib
 import typing
 
-import ase
-import h5py
 import tqdm
-import znh5md
 import zntrack
 from ase.calculators.subprocesscalculator import gpaw_process
 from gpaw.eigensolvers.eigensolver import Eigensolver
@@ -14,6 +11,7 @@ from gpaw.poisson import _PoissonSolver
 from gpaw.wavefunctions.mode import Mode
 
 from ipsuite import base
+from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
 class GPAWSinglePoint(base.ProcessAtoms):
@@ -44,27 +42,19 @@ class GPAWSinglePoint(base.ProcessAtoms):
     convergence: dict = zntrack.params({})
 
     ncores: int = zntrack.params(None)
-    output_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "atoms.h5")
     gpaw_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "gpaw")
 
     def run(self):
         if not self.gpaw_directory.exists():
             self.gpaw_directory.mkdir(exist_ok=True)
 
-        db = znh5md.IO(self.output_file)
-
+        self.atoms = []
         with self.get_calculator() as calc:
             for atoms in tqdm.tqdm(self.get_data()):
                 atoms.calc = calc
                 atoms.get_potential_energy()
                 atoms.get_forces()
-                db.append(atoms)
-
-    @property
-    def atoms(self) -> typing.List[ase.Atoms]:
-        with self.state.fs.open(self.output_file, "rb") as f:
-            with h5py.File(f) as file:
-                return znh5md.IO(file_handle=file)[:]
+                self.atoms.append(freeze_copy_atoms(atoms))
 
     def get_calculator(self, directory: str = None):
         if directory is None:
