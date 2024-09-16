@@ -1,3 +1,4 @@
+import os
 import pathlib
 import typing
 
@@ -42,7 +43,7 @@ class GPAWSinglePoint(base.ProcessAtoms):
     symmetry: dict | str = zntrack.params(None)
     convergence: dict = zntrack.params({})
 
-    ncores: int = zntrack.params(1)
+    ncores: int = zntrack.params(None)
     output_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "atoms.h5")
     gpaw_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "gpaw")
 
@@ -71,8 +72,13 @@ class GPAWSinglePoint(base.ProcessAtoms):
         else:
             directory = pathlib.Path(directory)
 
+        if self.ncores is None:
+            ncores = len(os.sched_getaffinity(0))
+        else:
+            ncores = self.ncores
+
         calc = gpaw_process(
-            ncores=self.ncores,
+            ncores=ncores,
             txt=(directory / "gpaw.out").as_posix(),
             **self._get_calculator_kwargs()
         )
