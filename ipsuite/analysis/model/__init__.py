@@ -24,6 +24,7 @@ from ipsuite.analysis.model.predict import (
     CalibrationMetrics,
     ForceAngles,
     ForceDecomposition,
+    ForceUncertaintyDecomposition,
     Prediction,
     PredictionMetrics,
 )
@@ -34,6 +35,7 @@ __all__ = [
     "ForceAngles",
     "PredictionMetrics",
     "ForceDecomposition",
+    "ForceUncertaintyDecomposition",
     "RattleAnalysis",
     "BoxHeatUp",
     "BoxScale",

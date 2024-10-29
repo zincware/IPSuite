@@ -52,7 +52,17 @@ def unwrap_system(atoms: ase.Atoms, components: list[np.ndarray]) -> list[ase.At
     for component in components:
         mol = atoms[component].copy()
         if atoms.calc is not None:
-            mol.calc = SinglePointCalculator(mol, forces=atoms.get_forces()[component])
+
+            results = {"forces":atoms.get_forces()[component]}
+            if "forces_uncertainty" in atoms.calc.results.keys():
+                f_unc = atoms.calc.results["forces_uncertainty"][component]
+                results["forces_uncertainty"] = f_unc
+
+            if "forces_ensemble" in atoms.calc.results.keys():
+                f_ens = atoms.calc.results["forces_ensemble"][component]
+                results["forces_ensemble"] = f_ens
+
+            mol.calc = SinglePointCalculator(mol, **results)
         edges = edges_from_atoms(mol)
         closest_atom = closest_atom_to_center(mol)
         unwrap(mol, edges, idx=closest_atom)

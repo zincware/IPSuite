@@ -63,6 +63,7 @@ class _Nodes:
     RattleAnalysis = "ipsuite.analysis.RattleAnalysis"
     Prediction = "ipsuite.analysis.Prediction"
     CalibrationMetrics = "ipsuite.analysis.CalibrationMetrics"
+    ForceUncertaintyDecomposition = "ipsuite.analysis.ForceUncertaintyDecomposition"
     BoxScale = "ipsuite.analysis.BoxScale"
     BoxHeatUp = "ipsuite.analysis.BoxHeatUp"
     NaNCheck = "ipsuite.analysis.NaNCheck"
