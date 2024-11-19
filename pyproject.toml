@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ipsuite"
-version = "0.1.4"
+version = "0.2.0"
 description = "A suite of tools for machine learned interatomic potentials."
 authors = ["zincwarecode <zincwarecode@gmail.com>"]
 keywords = ["data-version-control", "machine-learning", "reproducibility", "interatomic potentials"]
@@ -24,7 +24,7 @@ cp2k-output-tools = "^0.5.0"
 
 rdkit = "^2023"
 lazy-loader = "^0.2"
-zntrack = "0.8.0a5"
+zntrack = "0.8.0a7"
 uncertainty-toolbox = "^0.1.1"
 
 [tool.poetry.group.comparison.dependencies]
