@@ -1,7 +1,10 @@
 import ase
 import numpy as np
+import os
 
 import ipsuite as ips
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+
 
 
 def test_ensemble_model(data_repo):
@@ -52,10 +55,7 @@ def test_ensemble_model(data_repo):
             x=test_data.atoms, y=prediction.atoms
         )
 
-    project.run(environment={"OPENBLAS_NUM_THREADS": "1"})
-
-    uncertainty_selection.load()
-    md.load()
+    project.repro()
 
     uncertainties = [x.calc.results["energy_uncertainty"] for x in md.atoms]
     assert [md.atoms[np.argmax(uncertainties)]] == uncertainty_selection.atoms

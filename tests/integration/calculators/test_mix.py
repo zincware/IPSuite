@@ -5,7 +5,7 @@ import ipsuite as ips
 
 def test_mix_calculators(proj_path, traj_file):
     with ips.Project(automatic_node_names=True) as proj:
-        data = ips.AddData(traj_file)
+        data = ips.AddData(file=traj_file)
         lj1 = ips.calculators.LJSinglePoint(data=data.atoms)
         lj2 = ips.calculators.LJSinglePoint(data=data.atoms)
 

@@ -10,7 +10,7 @@ from ipsuite import base, fields
 
 
 class SmilesToAtoms(base.IPSNode):
-    atoms = fields.Atoms()
+    atoms: list[ase.Atoms] = fields.Atoms()
 
     smiles: str = zntrack.params()
     cell: float = zntrack.params(None)
@@ -45,7 +45,7 @@ class SmilesToAtoms(base.IPSNode):
 
 
 class SmilesToConformers(base.IPSNode):
-    atoms = fields.Atoms()
+    atoms: list[ase.Atoms] = fields.Atoms()
 
     smiles: str = zntrack.params()
     numConfs: int = zntrack.params()

@@ -5,7 +5,7 @@ import ipsuite as ips
 
 def test_version():
     """Test 'IPSuite' version."""
-    assert ips.__version__ == "0.1.4"
+    assert ips.__version__ == "0.2.0"
 
 
 def test_node_imports():

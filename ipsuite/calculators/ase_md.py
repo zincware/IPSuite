@@ -414,9 +414,9 @@ class FixedSphereConstraint(base.IPSNode):
     radius: float
     """
 
-    atom_id = zntrack.params(None)
-    atom_type = zntrack.params(None)
-    radius = zntrack.params()
+    atom_id: int|None = zntrack.params(None)
+    atom_type: str|None = zntrack.params(None)
+    radius: float = zntrack.params()
 
     def _post_init_(self):
         if self.atom_type is not None and self.atom_id is None:

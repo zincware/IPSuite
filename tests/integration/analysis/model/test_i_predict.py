@@ -1,5 +1,7 @@
 import ipsuite as ips
+import os
 
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
 
 def test_calibration(data_repo):
     water = ips.data_loading.AddDataH5MD.from_rev(name="water")
@@ -29,4 +31,4 @@ def test_calibration(data_repo):
             y=pred.atoms,
         )
 
-    project.run(environment={"OPENBLAS_NUM_THREADS": "1"})
+    project.repro()
