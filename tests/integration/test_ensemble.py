@@ -1,10 +1,11 @@
-import ase
-import numpy as np
 import os
 
-import ipsuite as ips
-os.environ["OPENBLAS_NUM_THREADS"] = "1"
+import ase
+import numpy as np
 
+import ipsuite as ips
+
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
 
 
 def test_ensemble_model(data_repo):
