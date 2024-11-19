@@ -7,12 +7,12 @@ import subprocess
 import ase
 import ase.units
 import numpy as np
+import rdkit2ase
 import zntrack
 from ase.visualize import view
 
 from ipsuite import base, fields
 from ipsuite.utils.ase_sim import get_box_from_density
-import rdkit2ase
 
 log = logging.getLogger(__name__)
 
@@ -62,7 +62,11 @@ class Packmol(base.IPSNode):
             self.box = [self.box, self.box, self.box]
 
     def run(self):
-        self.atoms = [rdkit2ase.pack(data=self.data, counts=self.count, density=self.density, verbose=True)]
+        self.atoms = [
+            rdkit2ase.pack(
+                data=self.data, counts=self.count, density=self.density, verbose=True
+            )
+        ]
         self.atoms[0].arrays.pop("residuenames")
         self.atoms[0].arrays.pop("atomtypes")
 
