@@ -1,6 +1,7 @@
 import logging
 
 import ase
+from pathlib import Path
 import numpy as np
 import tqdm
 import zntrack
@@ -38,7 +39,7 @@ class Bootstrap(base.ProcessSingleAtom):
     include_original: bool = zntrack.params(True)
     seed: int = zntrack.params(0)
     model: base.IPSNode = zntrack.deps(None)
-    model_outs = zntrack.outs_path(zntrack.nwd / "model_outs")
+    model_outs: Path = zntrack.outs_path(zntrack.nwd / "model_outs")
 
     def run(self) -> None:
         atoms = self.get_data()

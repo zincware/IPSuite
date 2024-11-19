@@ -18,7 +18,7 @@ class SplitSelection(ConfigurationSelection):
         The percentage of the data to select.
     """
 
-    split = zntrack.params()
+    split: float = zntrack.params()
 
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         """Select Atoms randomly."""

@@ -94,7 +94,7 @@ def _update_cmd(cp2k_cmd: str | None, env="IPSUITE_CP2K_SHELL") -> str:
 class CP2KYaml(base.ProcessSingleAtom):
     """Node for running CP2K Single point calculations."""
 
-    cp2k_bin: str = zntrack.meta.Text(None)
+    cp2k_bin: str|None = zntrack.params(None)
     cp2k_params = zntrack.params_path("cp2k.yaml")
     wfn_restart: str = zntrack.deps_path(None)
 
@@ -184,7 +184,7 @@ class CP2KSinglePoint(base.ProcessAtoms):
         A cp2k Node that has a wfn restart file.
     """
 
-    cp2k_shell: str = zntrack.meta.Text(None)
+    cp2k_shell: str|None = zntrack.params(None)
     cp2k_params = zntrack.params_path("cp2k.yaml")
     cp2k_files = zntrack.deps_path(None)
 

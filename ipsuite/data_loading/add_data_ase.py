@@ -79,7 +79,7 @@ class AddData(base.IPSNode):
     """
 
     atoms: typing.List[ase.Atoms] = fields.Atoms()
-    file: typing.Union[str, pathlib.Path] = zntrack.dvc.deps()
+    file: typing.Union[str, pathlib.Path] = zntrack.deps_path()
     lines_to_read: int = zntrack.params(None)
 
     def _post_init_(self):

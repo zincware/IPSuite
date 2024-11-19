@@ -78,9 +78,9 @@ class PredictionMetrics(base.ComparePredictions):
 
     # TODO ADD OPTIONAL YMAX PARAMETER
 
-    figure_ymax: dict[str, float] = zntrack.params({})
+    figure_ymax: dict[str, float] = zntrack.params(default_factory=dict)
 
-    data_file = zntrack.outs_path(zntrack.nwd / "data.npz")
+    data_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "data.npz")
 
     energy: dict = zntrack.metrics()
     forces: dict = zntrack.metrics()
@@ -283,7 +283,7 @@ class CalibrationMetrics(base.ComparePredictions):
 
     force_dist_slices: Optional[List[tuple]] = zntrack.params(None)
 
-    data_file = zntrack.outs_path(zntrack.nwd / "data.npz")
+    data_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "data.npz")
     energy: dict = zntrack.metrics()
     forces: dict = zntrack.metrics()
 
@@ -432,8 +432,8 @@ class CalibrationMetrics(base.ComparePredictions):
 
 
 class ForceAngles(base.ComparePredictions):
-    plot: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "angle.png")
-    log_plot: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "angle_ylog.png")
+    plot: pathlib.Path = zntrack.outs_path(zntrack.nwd / "angle.png")
+    log_plot: pathlib.Path = zntrack.outs_path(zntrack.nwd / "angle_ylog.png")
 
     angles: dict = zntrack.metrics()
 
@@ -479,13 +479,13 @@ class ForceDecomposition(base.ComparePredictions):
     trans_forces: dict = zntrack.metrics()
     rot_forces: dict = zntrack.metrics()
     vib_forces: dict = zntrack.metrics()
-    wasserstein_distance = zntrack.metrics()
+    wasserstein_distance: dict = zntrack.metrics()
 
-    rot_force_plt = zntrack.outs_path(zntrack.nwd / "rot_force.png")
-    trans_force_plt = zntrack.outs_path(zntrack.nwd / "trans_force.png")
-    vib_force_plt = zntrack.outs_path(zntrack.nwd / "vib_force.png")
+    rot_force_plt: pathlib.Path = zntrack.outs_path(zntrack.nwd / "rot_force.png")
+    trans_force_plt: pathlib.Path = zntrack.outs_path(zntrack.nwd / "trans_force.png")
+    vib_force_plt: pathlib.Path = zntrack.outs_path(zntrack.nwd / "vib_force.png")
 
-    histogram_plt = zntrack.outs_path(zntrack.nwd / "histogram.png")
+    histogram_plt: pathlib.Path = zntrack.outs_path(zntrack.nwd / "histogram.png")
 
     def get_plots(self):
         fig = get_figure(

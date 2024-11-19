@@ -47,7 +47,7 @@ class KernelSelection(ConfigurationSelection):
     initial_configurations: typing.List[ase.Atoms] = zntrack.deps(None)
     points_per_cycle: int = zntrack.params(1)
     kernel_results: typing.List[typing.List[float]] = zntrack.outs()
-    seed = zntrack.params(1234)
+    seed: int = zntrack.params(1234)
     threshold: float = zntrack.params(None)
 
     # TODO what if the correlation time restricts the number of atoms to

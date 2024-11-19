@@ -19,6 +19,8 @@ import zntrack
 import pathlib
 import json
 import yaml
+import znh5md
+import h5py
 
 CWD = pathlib.Path(__file__).parent.resolve()
 

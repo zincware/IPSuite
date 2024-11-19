@@ -47,7 +47,7 @@ class LammpsSimulator(base.ProcessSingleAtom):
     - dont forget to "dvc init"...
     """
     lmp_directory: str = zntrack.outs_path(zntrack.nwd / "lammps")
-    lmp_exe: str = zntrack.meta.Text("lmp_serial")
+    lmp_exe: str = zntrack.params("lmp_serial")
     skiprun: bool = False
 
     # outputs

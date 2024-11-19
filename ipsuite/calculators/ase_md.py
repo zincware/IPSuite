@@ -520,33 +520,33 @@ class ASEMD(base.IPSNode):
         Keep the atoms in the cell if true, default false.
     """
 
-    model = zntrack.deps()
+    model: typing.Any = zntrack.deps()
 
     data: list[ase.Atoms] = zntrack.deps()
 
     data_id: typing.Optional[int] = zntrack.params(-1)
     data_ids: typing.Optional[int] = zntrack.params(None)
 
-    model_outs = zntrack.outs_path(zntrack.nwd / "model/")
+    model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model/")
     checks: list = zntrack.deps(None)
     constraints: list = zntrack.deps(None)
     modifiers: list = zntrack.deps(None)
-    thermostat = zntrack.deps()
+    thermostat: typing.Any = zntrack.deps()
 
     steps: int = zntrack.params()
     sampling_rate = zntrack.params(1)
-    repeat = zntrack.params((1, 1, 1))
-    dump_rate = zntrack.params(1000)
-    pop_last = zntrack.params(False)
-    use_momenta = zntrack.params(False)
+    repeat: typing.Tuple[bool, bool, bool] = zntrack.params((1, 1, 1))
+    dump_rate: int = zntrack.params(1000)
+    pop_last: bool = zntrack.params(False)
+    use_momenta: bool = zntrack.params(False)
     seed: int = zntrack.params(42)
     wrap: bool = zntrack.params(False)
 
-    metrics_dict = zntrack.plots()
+    metrics_dict: pd.DataFrame = zntrack.plots()
 
-    steps_before_stopping = zntrack.metrics()
+    steps_before_stopping: dict = zntrack.metrics()
 
-    structures = zntrack.outs()
+    structures: typing.Any = zntrack.outs()
     traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
 
     def get_atoms(self, method="run") -> ase.Atoms | typing.List[ase.Atoms]:

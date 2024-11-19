@@ -12,7 +12,7 @@ from ipsuite import base
 class OrcaSinglePoint(base.ProcessAtoms):
     orcasimpleinput: str = zntrack.params("B3LYP def2-TZVP")
     orcablocks: str = zntrack.params("%pal nprocs 16 end")
-    ASE_ORCA_COMMAND: str = zntrack.meta.Environment("orca")
+    ASE_ORCA_COMMAND: str = zntrack.params("orca")
 
     orca_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "orca")
     output_file: str = zntrack.outs_path(zntrack.nwd / "structures.h5")

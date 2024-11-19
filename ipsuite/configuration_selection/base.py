@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import znflow
 import zntrack
+from pathlib import Path
 
 from ipsuite import base
 from ipsuite.utils import combine
@@ -35,7 +36,7 @@ class ConfigurationSelection(base.ProcessAtoms):
     exclude: typing.Union[zntrack.Node, typing.List[zntrack.Node]] = zntrack.deps(None)
     selected_configurations: typing.Dict[str, typing.List[int]] = zntrack.outs()
 
-    img_selection = zntrack.outs_path(zntrack.nwd / "selection.png")
+    img_selection: Path = zntrack.outs_path(zntrack.nwd / "selection.png")
 
     _name_ = "ConfigurationSelection"
 

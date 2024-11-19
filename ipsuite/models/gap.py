@@ -198,11 +198,11 @@ class GAP(MLModel):
     """
 
     # SOAP
-    soap: typing.Union[dict, SOAP] = zntrack.params(SOAP())
+    soap: typing.Union[dict, SOAP] = zntrack.params(default_factory=SOAP)
     # DistanceNb
-    distance_nb: typing.Union[dict, DistanceNb] = zntrack.params(DistanceNb())
+    distance_nb: typing.Union[dict, DistanceNb] = zntrack.params(default_factory=DistanceNb)
     # GAP
-    gap: typing.Union[dict, GapParameter] = zntrack.params(GapParameter())
+    gap: typing.Union[dict, GapParameter] = zntrack.params(default_factory=GapParameter)
     # #
     model_directory: Path = zntrack.outs_path(zntrack.nwd / "model")
     train_data_file: Path = zntrack.outs_path(zntrack.nwd / "train_atoms.extxyz")
@@ -210,7 +210,7 @@ class GAP(MLModel):
     _train_idx_file: Path = zntrack.outs_path(zntrack.nwd / "train_atoms.extxyz.idx")
 
     #
-    OPENBLAS_NUM_THREADS = zntrack.meta.Environment(None)
+    OPENBLAS_NUM_THREADS: str|None = zntrack.params(None)
 
     #
     def _post_init_(self):

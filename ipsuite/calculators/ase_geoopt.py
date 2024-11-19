@@ -25,8 +25,8 @@ class ASEGeoOpt(base.ProcessSingleAtom):
         Maximum number of steps to perform.
     """
 
-    model = zntrack.deps()
-    model_outs = zntrack.outs_path(zntrack.nwd / "model_outs")
+    model: typing.Any = zntrack.deps()
+    model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model_outs")
     optimizer: str = zntrack.params("FIRE")
     checks: list = zntrack.deps(None)
     constraints: list = zntrack.deps(None)

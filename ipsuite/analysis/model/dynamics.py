@@ -11,6 +11,7 @@ import pandas as pd
 import tqdm
 import znh5md
 import zntrack
+import pandas
 from ase import units
 from ase.md.langevin import Langevin
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
@@ -47,7 +48,7 @@ class RattleAnalysis(base.ProcessSingleAtom):
     """
 
     model: models.MLModel = zntrack.deps()
-    model_outs = zntrack.outs_path(zntrack.nwd / "model/")
+    model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model/")
 
     logspace: bool = zntrack.params(True)
     stop: float = zntrack.params(3.0)
@@ -108,14 +109,14 @@ class BoxScale(base.ProcessSingleAtom):
     """
 
     model: models.MLModel = zntrack.deps()
-    model_outs = zntrack.outs_path(zntrack.nwd / "model")
+    model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model")
     mapping: base.Mapping = zntrack.deps(None)
 
     stop: float = zntrack.params(2.0)
     num: int = zntrack.params(100)
     start: float = zntrack.params(1)
 
-    plot = zntrack.outs_path(zntrack.nwd / "energy.png")
+    plot: pathlib.Path = zntrack.outs_path(zntrack.nwd / "energy.png")
 
     energies: pd.DataFrame = zntrack.plots(
         x="x",
@@ -195,17 +196,17 @@ class BoxHeatUp(base.ProcessSingleAtom):
     stop_temperature: float = zntrack.params()
     steps: int = zntrack.params()
     time_step: float = zntrack.params(0.5)
-    friction = zntrack.params()
-    repeat = zntrack.params((1, 1, 1))
+    friction: float = zntrack.params()
+    repeat: bool = zntrack.params((1, 1, 1))
 
     max_temperature: float = zntrack.params(None)
 
-    flux_data = zntrack.plots()
+    flux_data: pd.DataFrame = zntrack.plots()
 
-    model = zntrack.deps()
-    model_outs = zntrack.outs_path(zntrack.nwd / "model")
+    model: typing.Any  = zntrack.deps()
+    model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model")
 
-    plots = zntrack.outs_path(zntrack.nwd / "temperature.png")
+    plots: pathlib.Path = zntrack.outs_path(zntrack.nwd / "temperature.png")
 
     def get_atoms(self) -> ase.Atoms:
         atoms: ase.Atoms = self.get_data()
@@ -358,8 +359,8 @@ class MDStability(base.ProcessAtoms):
     seed: seed for the MaxwellBoltzmann distribution
     """
 
-    model = zntrack.deps()
-    model_outs = zntrack.outs_path(zntrack.nwd / "model_outs")
+    model: typing.Any = zntrack.deps()
+    model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model_outs")
     max_steps: int = zntrack.params()
     checks: list[zntrack.Node] = zntrack.deps(None)
     time_step: float = zntrack.params(0.5)

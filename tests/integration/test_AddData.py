@@ -21,10 +21,10 @@ def test_AddData(proj_path, traj_file, atoms_list, eager):
         data = ipsuite.AddData(file=traj_file.name)
         data2 = ipsuite.data_loading.ReadData(file=traj_file.name)
 
-    project.run(eager=eager)
-    if not eager:
-        data.load()
-        data2.load()
+    if eager:
+        project.run()
+    else:
+        project.repro()
 
     assert isinstance(data.atoms, list)
     assert isinstance(data.atoms[0], ase.Atoms)
@@ -53,7 +53,7 @@ def test_AddDataH5MD(proj_path, atoms_list):
         data = ipsuite.data_loading.AddDataH5MD(file="data.h5")
 
     project.run()
-    data.load()
+    # data.load()
 
     assert isinstance(data.atoms, list)
     assert isinstance(data.atoms[0], ase.Atoms)

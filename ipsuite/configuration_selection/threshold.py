@@ -63,13 +63,13 @@ class ThresholdSelection(ConfigurationSelection):
         Specifies the axis along which the reduction occurs.
     """
 
-    key = zntrack.params("energy_uncertainty")
-    reference = zntrack.params("energy")
-    threshold = zntrack.params(None)
-    n_configurations = zntrack.params(None)
+    key: str = zntrack.params("energy_uncertainty")
+    reference: str = zntrack.params("energy")
+    threshold: float|None = zntrack.params(None)
+    n_configurations: int|None = zntrack.params(None)
     min_distance: int = zntrack.params(1)
     dim_reduction: str = zntrack.params(None)
-    reduction_axis = zntrack.params((1, 2))
+    reduction_axis: list[int] = zntrack.params((1, 2))
 
     def _post_init_(self):
         if self.threshold is None and self.n_configurations is None:

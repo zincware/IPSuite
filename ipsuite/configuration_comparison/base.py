@@ -142,12 +142,12 @@ class ConfigurationComparison(base.IPSNode):
     reference: base.protocol.HasOrIsAtoms = zntrack.deps()
     analyte: base.protocol.HasOrIsAtoms = zntrack.deps()
     memory: int = zntrack.params(1000)
-    similarities = zntrack.plots()
-    soap: typing.Union[dict, SOAPParameter] = zntrack.params(SOAPParameter())
+    similarities: pd.DataFrame = zntrack.plots()
+    soap: typing.Union[dict, SOAPParameter] = zntrack.params(default_factory=SOAPParameter)
     result: typing.List[float] = zntrack.outs()
 
     _name_ = "ConfigurationComparison"
-    use_jit: bool = zntrack.meta.Text(True)
+    use_jit: bool = zntrack.params(True)
 
     def __init__(
         self,

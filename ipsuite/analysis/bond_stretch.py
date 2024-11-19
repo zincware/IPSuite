@@ -32,14 +32,14 @@ class BondStretchAnalyses(ProcessAtoms):
         size of the plot
     """
 
-    ase_calculator = zntrack.deps()
+    ase_calculator: typing.Any = zntrack.deps()
 
-    idxs = zntrack.params()
-    r_min = zntrack.params()
-    r_max = zntrack.params()
-    n_steps = zntrack.params()
+    idxs: typing.Tuple[int, int] = zntrack.params()
+    r_min: float = zntrack.params()
+    r_max: float = zntrack.params()
+    n_steps: int = zntrack.params()
     data_id: typing.Optional[int] = zntrack.params(0)
-    fig_size = zntrack.params((10, 7))
+    fig_size: typing.Tuple[int, int] = zntrack.params((10, 7))
 
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
 
