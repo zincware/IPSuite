@@ -1,4 +1,5 @@
 import typing
+from pathlib import Path
 
 import ase.geometry
 import ase.io
@@ -7,7 +8,6 @@ import numpy as np
 import pandas as pd
 import scipy
 import zntrack
-from pathlib import Path
 
 from ipsuite import base
 
@@ -43,7 +43,9 @@ class MoveSingleParticle(base.IPSNode):
     atoms_list: typing.Any = zntrack.deps()
     atoms_list_id: int = zntrack.params(0)  # the atoms object in the atoms list
     atom_id: int = zntrack.params(0)  # the atom id to move
-    scale: float = zntrack.params(0.5)  # the standard deviation of the normal distribution
+    scale: float = zntrack.params(
+        0.5
+    )  # the standard deviation of the normal distribution
     seed: int = zntrack.params(1234)
 
     samples: int = zntrack.params(10)  # how many samples to take

@@ -1,7 +1,7 @@
 import logging
+from pathlib import Path
 
 import ase
-from pathlib import Path
 import numpy as np
 import tqdm
 import zntrack

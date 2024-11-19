@@ -11,7 +11,6 @@ import pandas as pd
 import tqdm
 import znh5md
 import zntrack
-import pandas
 from ase import units
 from ase.md.langevin import Langevin
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
@@ -203,7 +202,7 @@ class BoxHeatUp(base.ProcessSingleAtom):
 
     flux_data: pd.DataFrame = zntrack.plots()
 
-    model: typing.Any  = zntrack.deps()
+    model: typing.Any = zntrack.deps()
     model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model")
 
     plots: pathlib.Path = zntrack.outs_path(zntrack.nwd / "temperature.png")

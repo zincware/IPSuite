@@ -2,13 +2,13 @@
 
 import logging
 import typing
+from pathlib import Path
 
 import ase
 import matplotlib.pyplot as plt
 import numpy as np
 import znflow
 import zntrack
-from pathlib import Path
 
 from ipsuite import base
 from ipsuite.utils import combine

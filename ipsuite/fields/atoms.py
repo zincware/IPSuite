@@ -3,7 +3,9 @@
 import functools
 import pathlib
 
+import h5py
 import znfields
+import znh5md
 from zntrack import Node
 from zntrack.config import (
     NOT_AVAILABLE,
@@ -16,13 +18,6 @@ from zntrack.config import (
     ZnTrackOptionEnum,
 )
 from zntrack.plugins import base_getter, plugin_getter
-from zntrack import Node
-import zntrack
-import pathlib
-import json
-import yaml
-import znh5md
-import h5py
 
 CWD = pathlib.Path(__file__).parent.resolve()
 

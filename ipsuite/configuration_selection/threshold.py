@@ -65,8 +65,8 @@ class ThresholdSelection(ConfigurationSelection):
 
     key: str = zntrack.params("energy_uncertainty")
     reference: str = zntrack.params("energy")
-    threshold: float|None = zntrack.params(None)
-    n_configurations: int|None = zntrack.params(None)
+    threshold: float | None = zntrack.params(None)
+    n_configurations: int | None = zntrack.params(None)
     min_distance: int = zntrack.params(1)
     dim_reduction: str = zntrack.params(None)
     reduction_axis: list[int] = zntrack.params((1, 2))
