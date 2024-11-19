@@ -25,6 +25,7 @@ def test_configuration_selection(proj_path, traj_file, cls, selected_ids):
 
     assert selection.atoms == [data.atoms[x] for x in selected_ids]
 
+
 def test_UniformArangeSelection(proj_path, traj_file):
     with ips.Project() as project:
         data = [
