@@ -12,6 +12,7 @@ from ase.visualize import view
 
 from ipsuite import base, fields
 from ipsuite.utils.ase_sim import get_box_from_density
+import rdkit2ase
 
 log = logging.getLogger(__name__)
 
@@ -47,7 +48,6 @@ class Packmol(base.IPSNode):
     tolerance: float = zntrack.params(2.0)
     box: list = zntrack.params(None)
     density: float = zntrack.params(None)
-    structures = zntrack.outs_path(zntrack.nwd / "packmol")
     atoms = fields.Atoms()
     pbc: bool = zntrack.params(True)
 
@@ -62,41 +62,9 @@ class Packmol(base.IPSNode):
             self.box = [self.box, self.box, self.box]
 
     def run(self):
-        self.structures.mkdir(exist_ok=True, parents=True)
-        for idx, atoms in enumerate(self.data):
-            atoms = atoms[-1] if self.data_ids is None else atoms[self.data_ids[idx]]
-            ase.io.write(self.structures / f"{idx}.xyz", atoms)
-
-        if self.density is not None:
-            self._get_box_from_molar_volume()
-
-        if self.pbc:
-            scaled_box = [x - self.tolerance for x in self.box]
-        else:
-            scaled_box = self.box
-
-        file = f"""
-        tolerance {self.tolerance}
-        filetype xyz
-        output mixture.xyz
-        """
-        for idx, count in enumerate(self.count):
-            file += f"""
-            structure {idx}.xyz
-                number {count}
-                inside box 0 0 0 {" ".join([f"{x:.4f}" for x in scaled_box])}
-            end structure
-            """
-        with pathlib.Path(self.structures / "packmole.inp").open("w") as f:
-            f.write(file)
-
-        subprocess.check_call("packmol < packmole.inp", shell=True, cwd=self.structures)
-
-        atoms = ase.io.read(self.structures / "mixture.xyz")
-        if self.pbc:
-            atoms.cell = self.box
-            atoms.pbc = True
-        self.atoms = [atoms]
+        self.atoms = [rdkit2ase.pack(data=self.data, counts=self.count, density=self.density, verbose=True)]
+        self.atoms[0].arrays.pop("residuenames")
+        self.atoms[0].arrays.pop("atomtypes")
 
     def _get_box_from_molar_volume(self):
         """Get the box size from the molar volume"""
