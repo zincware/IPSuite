@@ -73,7 +73,7 @@ def test_ensemble_model_stress(proj_path, cu_box):
         prediction = ips.analysis.Prediction(model=ensemble_model, data=model1.atoms)
         analysis = ips.analysis.PredictionMetrics(x=model1.atoms, y=prediction.atoms)
 
-    project.run(eager=False)
+    project.repro()
 
     analysis.load()
 

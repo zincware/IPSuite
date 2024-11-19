@@ -26,22 +26,19 @@ def trained_model(proj_path, traj_file) -> tuple:
 
         model = ipsuite.models.GAP(soap={"cutoff": 0.7}, data=train_selection.atoms)
 
-    project.run()
+    project.repro()
 
     return project, model, validation_selection
 
 
-@pytest.mark.parametrize("eager", [True, False])
-def test_PredictWithModel(trained_model, eager):
+def test_PredictWithModel(trained_model):
     project, model, validation_selection = trained_model
 
     with project:
         analysis = ipsuite.analysis.Prediction(
             model=model, data=validation_selection.atoms
         )
-    project.run(eager=eager)
-    if not eager:
-        analysis.load()
+    project.repro()
 
     assert np.any(
         np.not_equal(analysis.data[0].get_forces(), analysis.atoms[0].get_forces())
@@ -61,8 +58,7 @@ def test_PredictWithModel(trained_model, eager):
     assert analysis.atoms[0].get_forces().shape == (2, 3)
 
 
-@pytest.mark.parametrize("eager", [True, False])
-def test_AnalysePrediction(trained_model, eager):
+def test_AnalysePrediction(trained_model):
     project, model, validation_selection = trained_model
 
     with project:
@@ -70,16 +66,13 @@ def test_AnalysePrediction(trained_model, eager):
         analysis = ipsuite.analysis.PredictionMetrics(
             x=validation_selection.atoms, y=prediction.atoms
         )
-    project.run(eager=eager)
-    if not eager:
-        analysis.load()
+    project.repro()
 
     assert analysis.energy
     assert analysis.energy["rmse"] > 0.0
 
 
-@pytest.mark.parametrize("eager", [True, False])
-def test_AnalyseForceAngles(trained_model, eager):
+def test_AnalyseForceAngles(trained_model):
     project, model, validation_selection = trained_model
     with project:
         prediction = ipsuite.analysis.Prediction(
@@ -89,9 +82,7 @@ def test_AnalyseForceAngles(trained_model, eager):
             x=validation_selection.atoms, y=prediction.atoms
         )
 
-    project.run(eager=eager)
-    if not eager:
-        analysis.load()
+    project.repro()
 
     assert analysis.plot.exists()
     assert analysis.log_plot.exists()
@@ -105,9 +96,8 @@ def test_RattleAnalysis(trained_model):
         analysis = ipsuite.analysis.RattleAnalysis(
             model=model, data=validation_selection.atoms
         )
-    project.run()
+    project.repro()
 
-    analysis.load()
     assert analysis.energies is not None
 
 
@@ -118,14 +108,12 @@ def test_BoxScaleAnalysis(trained_model):
         analysis = ipsuite.analysis.BoxScale(
             model=model, data=validation_selection.atoms, num=10, stop=1.1
         )
-    project.run()
-    analysis.load()
+    project.repro()
 
     assert analysis.energies is not None
 
 
-@pytest.mark.parametrize("eager", [True, False])
-def test_MDStabilityAnalysis(trained_model, eager):
+def test_MDStabilityAnalysis(trained_model):
     project, model, validation_selection = trained_model
 
     checks = [
@@ -143,10 +131,8 @@ def test_MDStabilityAnalysis(trained_model, eager):
             bins=10,
             save_last_n=1,
         )
-    project.run(eager=eager)
 
-    if not eager:
-        analysis.load()
+    project.repro()
 
     validation_selection.load()
     assert len(analysis.atoms) == len(validation_selection.atoms)

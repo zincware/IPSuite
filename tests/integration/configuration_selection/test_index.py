@@ -6,9 +6,8 @@ import ipsuite as ips
 
 
 @pytest.mark.parametrize("data_style", ["lst", "single", "attr", "attr_lst", "dct"])
-@pytest.mark.parametrize("eager", [True, False])
 @pytest.mark.parametrize("proj_w_data", [1], indirect=True)
-def test_direct_selection(proj_w_data, eager, data_style):
+def test_direct_selection(proj_w_data, data_style):
     proj, data = proj_w_data
 
     with proj:
@@ -35,15 +34,7 @@ def test_direct_selection(proj_w_data, eager, data_style):
             name="selection2",
         )
 
-    if eager:
-        for node in data:
-            node.load()
-
-    proj.run(eager=eager)
-    if not eager:
-        selection.load()
-        data[0].load()
-        selection_w_exclusion.load()
+    proj.repro()
     assert selection.selected_configurations == {"data_0": [0, 1, 2]}
     assert selection_w_exclusion.selected_configurations == {"data_0": [3, 4, 5]}
 

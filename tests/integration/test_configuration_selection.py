@@ -16,23 +16,16 @@ import ipsuite as ips
         (ips.configuration_selection.UniformTemporalSelection, [0, 10, 20]),
     ],
 )
-@pytest.mark.parametrize("eager", [True, False])
-def test_configuration_selection(proj_path, traj_file, eager, cls, selected_ids):
+def test_configuration_selection(proj_path, traj_file, cls, selected_ids):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
         selection = cls(data=data.atoms, n_configurations=3)
 
-    project.run(eager=eager, save=not eager)
-
-    if not eager:
-        selection.load()
-        data.load()
+    project.repro()
 
     assert selection.atoms == [data.atoms[x] for x in selected_ids]
 
-
-@pytest.mark.parametrize("eager", [True, False])
-def test_UniformArangeSelection(proj_path, traj_file, eager):
+def test_UniformArangeSelection(proj_path, traj_file):
     with ips.Project() as project:
         data = [
             ips.AddData(file=traj_file, name="data1"),
@@ -40,16 +33,12 @@ def test_UniformArangeSelection(proj_path, traj_file, eager):
         ]
         selection = ips.configuration_selection.UniformArangeSelection(data=data, step=10)
 
-    project.run(eager=eager, save=not eager)
-
-    if not eager:
-        selection.load()
+    project.repro()
 
     assert selection.selected_configurations == {"data1": [0, 10, 20], "data2": [9, 19]}
 
 
-@pytest.mark.parametrize("eager", [True, False])
-def test_SplitSelection(proj_path, traj_file, eager):
+def test_SplitSelection(proj_path, traj_file):
     with ips.Project() as project:
         data = [
             ips.AddData(file=traj_file, name="data1"),
@@ -57,16 +46,12 @@ def test_SplitSelection(proj_path, traj_file, eager):
         ]
         selection = ips.configuration_selection.SplitSelection(data=data, split=0.3)
 
-    project.run(eager=eager, save=not eager)
-
-    if not eager:
-        selection.load()
+    project.repro()
 
     assert selection.selected_configurations == {"data1": list(range(12)), "data2": []}
 
 
-@pytest.mark.parametrize("eager", [False])
-def test_KernelSelect(proj_path, traj_file, eager):
+def test_KernelSelect(proj_path, traj_file):
     mmk_kernel = ips.configuration_comparison.MMKernel(
         use_jit=True,
         soap={
@@ -108,10 +93,7 @@ def test_KernelSelect(proj_path, traj_file, eager):
             name="REMatch",
         )
 
-    project.run(eager=eager)
-    if not eager:
-        mmk_selection.load()
-        REMatch_selection.load()
+    project.repro()
 
     assert len(mmk_selection.atoms) == 5
     assert isinstance(mmk_selection.atoms[0], ase.Atoms)

@@ -4,18 +4,14 @@ from ase import Atoms
 
 import ipsuite as ips
 
-
-@pytest.mark.parametrize("eager", [True, False])
-def test_ips_BarycenterMapping(data_repo, eager):
+def test_ips_BarycenterMapping(data_repo):
     """Test the BarycenterMapping class."""
     data = ips.AddData.from_rev(name="BMIM_BF4_363_15K")
 
     with ips.Project() as project:
         mapping = ips.geometry.BarycenterMapping(data=data.atoms)
 
-    project.run(eager=eager)
-    if not eager:
-        mapping.load()
+    project.repro()
 
     assert len(mapping.atoms) == 30
     assert len(mapping.molecules) == 30 * 20

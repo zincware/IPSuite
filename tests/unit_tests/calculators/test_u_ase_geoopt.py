@@ -60,7 +60,7 @@ def test_ase_geoopt(proj_path, cu_box):
             name="opt_max_step",
         )
 
-    project.run(eager=True)
+    project.repro()
 
     assert len(opt.atoms) == n_iterations + 1
     assert len(opt_max_step.atoms) == 3

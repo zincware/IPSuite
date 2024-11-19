@@ -10,8 +10,7 @@ import znh5md
 import ipsuite
 
 
-@pytest.mark.parametrize("eager", [True, False])
-def test_AddData(proj_path, traj_file, atoms_list, eager):
+def test_AddData(proj_path, traj_file, atoms_list):
     # file would be external otherwise
     traj_file = pathlib.Path(traj_file)
     shutil.copy(traj_file, ".")
@@ -21,10 +20,7 @@ def test_AddData(proj_path, traj_file, atoms_list, eager):
         data = ipsuite.AddData(file=traj_file.name)
         data2 = ipsuite.data_loading.ReadData(file=traj_file.name)
 
-    if eager:
-        project.run()
-    else:
-        project.repro()
+    project.repro()
 
     assert isinstance(data.atoms, list)
     assert isinstance(data.atoms[0], ase.Atoms)
