@@ -15,13 +15,13 @@ from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
 class GPAWSinglePoint(base.ProcessAtoms):
-    """Rudimentary GPAW interface.
-    Currently only supports energies and forces.
-    See the GPAW documentation for an explanation of the parameters.
+    """GPAW single-point calculation interface. Currently only supports
+    energies and forces. See the GPAW documentation for an explanation of the
+    parameters: https://gpaw.readthedocs.io/documentation/basic.html
     """
 
     mode: str | dict | Mode = zntrack.params(None)
-    xc: str = zntrack.params('PBE')
+    xc: str = zntrack.params("PBE")
     occupations: dict = zntrack.params(None)
     poissonsolver: dict | _PoissonSolver = zntrack.params(None)
     h: float = zntrack.params(None)
@@ -29,11 +29,11 @@ class GPAWSinglePoint(base.ProcessAtoms):
     kpts: dict | tuple[int, int, int] = zntrack.params(None)
     nbands: int | str = zntrack.params(None)
     charge: float = zntrack.params(0.0)
-    setups: str | dict = zntrack.params('paw')
+    setups: str | dict = zntrack.params("paw")
     basis: str | dict = zntrack.params(None)
     spinpol: bool = zntrack.params(None)
     mixer: dict = zntrack.params(None)
-    eigensolver: str | Eigensolver = zntrack.params('rmm-diis')
+    eigensolver: str | Eigensolver = zntrack.params("rmm-diis")
     external: ExternalPotential = zntrack.params(None)
     random: bool = zntrack.params(False)
     hund: bool = zntrack.params(False)
@@ -69,7 +69,7 @@ class GPAWSinglePoint(base.ProcessAtoms):
 
         calc = gpaw_process(
             ncores=ncores,
-            txt=(directory / "gpaw.out").as_posix(),
+            txt=str(directory / "gpaw.out"),
             **self._get_calculator_kwargs()
         )
         return calc
