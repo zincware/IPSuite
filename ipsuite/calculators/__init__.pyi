@@ -17,9 +17,7 @@ from .ase_standard import EMTSinglePoint, LJSinglePoint
 from .cp2k import CP2KSinglePoint, CP2KYaml
 from .lammps import LammpsSimulator
 from .mix import MixCalculator
-from .orca import OrcaSinglePoint
 from .xtb import xTBSinglePoint
-from .gpaw import GPAWSinglePoint
 
 __all__ = [
     "CP2KSinglePoint",
@@ -38,8 +36,7 @@ __all__ = [
     "PressureRampModifier",
     "TemperatureOscillatingRampModifier",
     "NPTThermostat",
-    "GPAWSinglePoint"
-    "OrcaSinglePoint",
+    "GPAWSinglePointOrcaSinglePoint",
     "LammpsSimulator",
     "FixedLayerConstraint",
     "MixCalculator",

@@ -70,7 +70,7 @@ class GPAWSinglePoint(base.ProcessAtoms):
         calc = gpaw_process(
             ncores=ncores,
             txt=str(directory / "gpaw.out"),
-            **self._get_calculator_kwargs()
+            **self._get_calculator_kwargs(),
         )
         return calc
 
@@ -95,7 +95,7 @@ class GPAWSinglePoint(base.ProcessAtoms):
             hund=self.hund,
             maxiter=self.maxiter,
             symmetry=self.symmetry,
-            convergence=self.convergence
+            convergence=self.convergence,
         )
 
         # let GPAW's initialization handle setting defaults
