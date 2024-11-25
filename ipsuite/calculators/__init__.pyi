@@ -8,6 +8,7 @@ from .ase_md import (
     NPTThermostat,
     PressureRampModifier,
     RescaleBoxModifier,
+    SVCRBarostat,
     TemperatureOscillatingRampModifier,
     TemperatureRampModifier,
     VelocityVerletDynamic,
@@ -42,4 +43,5 @@ __all__ = [
     "LammpsSimulator",
     "FixedLayerConstraint",
     "MixCalculator",
+    "SVCRBarostat",
 ]

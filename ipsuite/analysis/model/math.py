@@ -88,13 +88,28 @@ def nlls(pred, std, true):
     return nll
 
 
-def comptue_rll(pred, std, true):
-    errors = np.abs(pred - true)
-    rmse = compute_rmse(errors)
-    numerator = np.sum(nlls(errors, std, true) - nlls(errors, rmse, true))
-    denominator = np.sum(nlls(errors, errors, true) - nlls(errors, rmse, true))
-    rll = numerator / denominator * 100
-    return rll
+def nll(pred, std, true):
+    tmp = nlls(pred, std, true)
+    return np.mean(tmp)
+
+
+def comptue_rll(inputs, std, target):
+    """Compute relative log likelihood
+    Adapted from https://github.com/bananenpampe/DPOSE
+    """
+
+    mse = np.mean((inputs - target) ** 2)
+    uncertainty_estimate = (inputs - target) ** 2
+
+    ll_best = nll(inputs, np.sqrt(uncertainty_estimate), target)
+
+    ll_worst_case_best_RMSE = nll(inputs, np.sqrt(np.ones_like(std) * mse), target)
+
+    ll_actual = nll(inputs, std, target)
+
+    rll = (ll_actual - ll_worst_case_best_RMSE) / (ll_best - ll_worst_case_best_RMSE)
+
+    return rll * 100
 
 
 def compute_uncertainty_metrics(pred, std, true):
