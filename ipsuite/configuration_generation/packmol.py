@@ -47,7 +47,7 @@ class Packmol(base.IPSNode):
     tolerance: float = zntrack.params(2.0)
     box: list = zntrack.params(None)
     density: float = zntrack.params(None)
-    structures = zntrack.outs_path(zntrack.nwd / "packmol")
+    structures: str = zntrack.outs_path(zntrack.nwd / "packmol")
     atoms: list[ase.Atoms] = fields.Atoms()
     pbc: bool = zntrack.params(True)
 

@@ -16,7 +16,7 @@ from ipsuite.utils import combine
 log = logging.getLogger(__name__)
 
 
-class ConfigurationSelection(base.ProcessAtoms):
+class ConfigurationSelection(base.IPSNode):
     """Base Node for ConfigurationSelection.
 
     Attributes
@@ -30,6 +30,8 @@ class ConfigurationSelection(base.ProcessAtoms):
 
     """
 
+    data: list[ase.Atoms] = zntrack.deps()
+
     exclude_configurations: typing.Union[
         typing.Dict[str, typing.List[int]], base.protocol.HasSelectedConfigurations
     ] = zntrack.deps(None)
@@ -40,7 +42,7 @@ class ConfigurationSelection(base.ProcessAtoms):
 
     _name_ = "ConfigurationSelection"
 
-    def _post_init_(self):
+    def __post_init__(self):
         if self.data is not None and not isinstance(self.data, dict):
             try:
                 self.data = znflow.combine(
@@ -48,6 +50,18 @@ class ConfigurationSelection(base.ProcessAtoms):
                 )
             except TypeError:
                 self.data = znflow.combine(self.data, attribute="atoms")
+
+    def update_data(self):
+        """Update the data attribute."""
+        if self.data is None:
+            self.data = self.get_data()
+
+    def get_data(self) -> list[ase.Atoms]:
+        """Get the atoms data to process."""
+        if self.data is not None:
+            return self.data
+        else:
+            raise ValueError("No data given.")
 
     def run(self):
         """ZnTrack Node Run method."""

@@ -1,3 +1,4 @@
+import dataclasses
 import logging
 import pathlib
 import typing
@@ -31,10 +32,10 @@ class ASEGeoOpt(base.ProcessSingleAtom):
     checks: list = zntrack.deps(None)
     constraints: list = zntrack.deps(None)
 
-    repeat: list = zntrack.params([1, 1, 1])
-    run_kwargs: dict = zntrack.params({"fmax": 0.05})
-    init_kwargs: dict = zntrack.params({})
-    dump_rate = zntrack.params(1000)
+    repeat: list = zntrack.params((1, 1, 1))
+    run_kwargs: dict = zntrack.params(default_factory=lambda: {"fmax": 0.05})
+    init_kwargs: dict = zntrack.params(default_factory=lambda: {})
+    dump_rate: int = zntrack.params(1000)
     maxstep: int = zntrack.params(None)
 
     traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")

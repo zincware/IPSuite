@@ -137,41 +137,53 @@ def test_traj(tmp_path_factory) -> typing.Tuple[str, int]:
 def test_MMKSelectMethod(proj_path, test_traj):
     test_traj, n_configurations = test_traj
 
-    rematch_kernel = ips.configuration_comparison.REMatch(
-        soap={
-            "r_cut": 3,
-            "n_max": 3,
-            "l_max": 3,
-            "sigma": 0.5,
-        }
-    )
-    mmk_kernel = ips.configuration_comparison.MMKernel(
-        # use_jit=False,
-        soap={
-            "r_cut": 3,
-            "n_max": 3,
-            "l_max": 3,
-            "sigma": 0.5,
-        },
-    )
+    # rematch_kernel = ips.configuration_comparison.REMatch(
+    #     soap={
+    #         "r_cut": 3,
+    #         "n_max": 3,
+    #         "l_max": 3,
+    #         "sigma": 0.5,
+    #     }
+    # )
+    # mmk_kernel = ips.configuration_comparison.MMKernel(
+    #     # use_jit=False,
+    #     soap={
+    #         "r_cut": 3,
+    #         "n_max": 3,
+    #         "l_max": 3,
+    #         "sigma": 0.5,
+    #     },
+    # )
 
     with ips.Project() as project:
         data = ips.AddData(file=test_traj)
         seed_configs = ips.configuration_selection.RandomSelection(
             data=data, n_configurations=1, name="seed"
         )
-        mmk_selection = ips.configuration_selection.KernelSelection(
+        mmk_selection = ips.configuration_comparison.MMKernel(
             correlation_time=1,
             n_configurations=n_configurations - 1,  # remove the seed configuration
-            kernel=mmk_kernel,
+            # kernel=mmk_kernel,
+            soap={
+                "r_cut": 3,
+                "n_max": 3,
+                "l_max": 3,
+                "sigma": 0.5,
+            },
             initial_configurations=seed_configs.atoms,
             data=data,
             name="MMK",
         )
-        rematch_selection = ips.configuration_selection.KernelSelection(
+        rematch_selection = ips.configuration_comparison.REMatch(
             correlation_time=1,
             n_configurations=n_configurations - 1,  # remove the seed configuration
-            kernel=rematch_kernel,
+            # kernel=rematch_kernel,
+            soap={
+                "r_cut": 3,
+                "n_max": 3,
+                "l_max": 3,
+                "sigma": 0.5,
+            },
             initial_configurations=seed_configs.atoms,
             data=data,
             name="REMatch",

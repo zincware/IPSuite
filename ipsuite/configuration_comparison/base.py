@@ -139,8 +139,8 @@ class ConfigurationComparison(base.IPSNode):
             How far back to look in the MMK vector.
     """
 
-    reference: base.protocol.HasOrIsAtoms = zntrack.deps()
-    analyte: base.protocol.HasOrIsAtoms = zntrack.deps()
+    reference: base.protocol.HasOrIsAtoms | None = zntrack.deps(None)
+    analyte: base.protocol.HasOrIsAtoms | None = zntrack.deps(None)
     memory: int = zntrack.params(1000)
     similarities: pd.DataFrame = zntrack.plots()
     soap: typing.Union[dict, SOAPParameter] = zntrack.params(
@@ -151,50 +151,15 @@ class ConfigurationComparison(base.IPSNode):
     _name_ = "ConfigurationComparison"
     use_jit: bool = zntrack.params(True)
 
-    def __init__(
-        self,
-        reference=None,
-        analyte=None,
-        soap: dict = None,
-        use_jit: bool = True,
-        **kwargs,
-    ):
-        """Initialize the ConfigurationComparison node.
+    soap_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "soap_representation.hdf5")
+    
 
-        Parameters
-        ----------
-        reference: typing.Union[utils.helpers.UNION_ATOMS_OR_ATOMS_LST,
-                    utils.types.SupportsAtoms]
-            reference configurations to compare analyte to
-        analyte: typing.Union[utils.helpers.UNION_ATOMS_OR_ATOMS_LST,
-                utils.types.SupportsAtoms]
-            analyte comparison to compare with reference (If reference is None, analyte
-             will be compared to itself)
-        similarities: zntrack.plots()
-            In the end a csv file to save computed maximal similarities
-        soap: dict
-            Parameter to use for the SOAP descriptor.
-        use_jit: bool
-            use jit compilation.
-        kwargs: dict
-            additional keyword arguments
-        """
-        super().__init__(**kwargs)
-        if soap is None:
+    def _post_init_(self):
+        if self.soap is None:
             soap = {}
-        self.reference = reference
-        self.analyte = analyte
-
         if not self.state.loaded:
             self.soap = SOAPParameter(**soap)
 
-        self.soap_file = self.nwd / "soap_representation.hdf5"
-
-        # remove "soap_reference" from HDF5, do not write "soap_analyte"
-        self.load_analyte = False
-        self.remove_database = True
-        self.disable_tqdm = False
-        self.use_jit = use_jit
 
     def save_representation(self):
         """Save the SOAP descriptor representation as hdf5 file to save RAM.
@@ -202,6 +167,7 @@ class ConfigurationComparison(base.IPSNode):
         It will create SOAP descriptor for each configurations
          and save them ordered in a hdf5 file.
         """
+        load_analyte = False
         species = [int(x) for x in set(self.analyte[0].get_atomic_numbers())]
         _soap = SOAP(
             species=species,
@@ -245,7 +211,7 @@ class ConfigurationComparison(base.IPSNode):
                     disable_tqdm=self.disable_tqdm,
                 )
 
-                if not self.load_analyte:
+                if not load_analyte:
                     create_dataset(
                         file=representation_file,
                         data=self.analyte,
@@ -280,6 +246,9 @@ class ConfigurationComparison(base.IPSNode):
         Use the chosen comparison method to compute the similarity between
         configurations and save the result as a csv file.
         """
+        # remove "soap_reference" from HDF5, do not write "soap_analyte"
+        remove_database = True
+        disable_tqdm = False
         self.result = []
         self.save_representation()
         if self.reference is None:
@@ -288,7 +257,7 @@ class ConfigurationComparison(base.IPSNode):
                     (len(self.analyte) - 1),
                     desc="Comparing",
                     leave=True,
-                    disable=self.disable_tqdm,
+                    disable=disable_tqdm,
                 ) as pbar:
                     for max_index, _atoms in enumerate(self.analyte):
                         if max_index == 0:
@@ -311,7 +280,7 @@ class ConfigurationComparison(base.IPSNode):
                     (len(self.analyte)),
                     desc="Comparing",
                     leave=True,
-                    disable=self.disable_tqdm,
+                    disable=disable_tqdm,
                 ) as pbar:
                     for max_index, _atoms in enumerate(self.analyte):
                         reference_soap = representation_file["soap_reference"]
@@ -332,7 +301,7 @@ class ConfigurationComparison(base.IPSNode):
         with h5py.File(self.soap_file, "a") as representation_file:
             with contextlib.suppress(KeyError):
                 del representation_file["soap_reference"]
-        if self.remove_database:
+        if remove_database:
             self.unlink_database()
 
     def compare(self, reference: np.ndarray, analyte: np.ndarray) -> tf.Tensor:

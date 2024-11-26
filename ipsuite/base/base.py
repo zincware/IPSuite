@@ -29,10 +29,6 @@ class ProcessAtoms(IPSNode):
     data: list[ase.Atoms] = zntrack.deps()
     atoms: list[ase.Atoms] = fields.Atoms()
 
-    def _post_init_(self):
-        if self.data is not None:
-            self.data = znflow.combine(self.data, attribute="atoms")
-
     def update_data(self):
         """Update the data attribute."""
         if self.data is None:

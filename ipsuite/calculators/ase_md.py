@@ -458,8 +458,8 @@ class FixedLayerConstraint(base.IPSNode):
         all atoms with a higher z pos will be fixed.
     """
 
-    upper_limit = zntrack.params()
-    lower_limit = zntrack.params()
+    upper_limit: float = zntrack.params()
+    lower_limit: float = zntrack.params()
 
     def get_constraint(self, atoms):
         z_coordinates = atoms.positions[:, 2]
@@ -534,7 +534,7 @@ class ASEMD(base.IPSNode):
     thermostat: typing.Any = zntrack.deps()
 
     steps: int = zntrack.params()
-    sampling_rate = zntrack.params(1)
+    sampling_rate: int = zntrack.params(1)
     repeat: typing.Tuple[bool, bool, bool] = zntrack.params((1, 1, 1))
     dump_rate: int = zntrack.params(1000)
     pop_last: bool = zntrack.params(False)
