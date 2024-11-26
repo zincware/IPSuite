@@ -47,7 +47,10 @@ def test_index_chained(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
         pre_selection = ips.configuration_selection.IndexSelection(
-            data=data.atoms, start=0, stop=5, step=None,
+            data=data.atoms,
+            start=0,
+            stop=5,
+            step=None,
         )  # we use this to "change" the data
         selection = ips.configuration_selection.IndexSelection(
             data=pre_selection.atoms, indices=[0, 1, 2], name="selection"
@@ -64,7 +67,10 @@ def test_index_chained(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
         pre_selection = ips.configuration_selection.IndexSelection(
-            data=data.atoms, start=5, stop=10, step=None,
+            data=data.atoms,
+            start=5,
+            stop=10,
+            step=None,
         )  # we use this to "change" the data
         selection = ips.configuration_selection.IndexSelection(
             data=pre_selection.atoms, indices=[0, 1, 2], name="selection"
@@ -83,7 +89,10 @@ def test_exclude_configurations(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
         test_data = ips.configuration_selection.IndexSelection(
-            data=data, start=0, stop=5, step=None,
+            data=data,
+            start=0,
+            stop=5,
+            step=None,
         )
 
         train_data = ips.configuration_selection.IndexSelection(

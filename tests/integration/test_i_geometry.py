@@ -1,4 +1,5 @@
 import typing
+
 import ase
 import numpy as np
 import pytest
@@ -10,8 +11,7 @@ import ipsuite as ips
 def test_ips_BarycenterMapping(data_repo):
     """Test the BarycenterMapping class."""
     data = ips.AddData.from_rev(
-        name="BMIM_BF4_363_15K",
-        remote="https://github.com/IPSProjects/ips-examples"
+        name="BMIM_BF4_363_15K", remote="https://github.com/IPSProjects/ips-examples"
     )
 
     mapping = ips.geometry.BarycenterMapping()

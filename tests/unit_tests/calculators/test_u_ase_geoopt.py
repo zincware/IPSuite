@@ -1,4 +1,5 @@
 import dataclasses
+
 import ase
 import numpy as np
 import pytest
@@ -6,6 +7,7 @@ import zntrack
 
 import ipsuite as ips
 from ipsuite import base
+
 
 @dataclasses.dataclass
 class DebugCheck(base.Check):

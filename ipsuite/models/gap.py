@@ -20,7 +20,6 @@ import znflow
 import zntrack
 from jinja2 import Template
 from znjson import ConverterBase
-from zntrack.config import NodeStatusEnum
 
 from ipsuite import static_data
 from ipsuite.models import MLModel

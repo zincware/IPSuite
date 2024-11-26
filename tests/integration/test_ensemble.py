@@ -9,8 +9,7 @@ import ipsuite as ips
 os.environ["OPENBLAS_NUM_THREADS"] = "1"
 
 
-def test_ensemble_model(proj_path ,traj_file):
-
+def test_ensemble_model(proj_path, traj_file):
     thermostat = ips.calculators.LangevinThermostat(
         time_step=1.0, temperature=100.0, friction=0.01
     )
@@ -27,8 +26,12 @@ def test_ensemble_model(proj_path ,traj_file):
             exclude_configurations=test_data.selected_configurations,
         )
 
-        model1 = ips.models.GAP(data=train_data.atoms, soap={"n_max": 1}, use_stresses=False)
-        model2 = ips.models.GAP(data=train_data.atoms, soap={"n_max": 2}, use_stresses=False)
+        model1 = ips.models.GAP(
+            data=train_data.atoms, soap={"n_max": 1}, use_stresses=False
+        )
+        model2 = ips.models.GAP(
+            data=train_data.atoms, soap={"n_max": 2}, use_stresses=False
+        )
 
         ensemble_model = ips.models.EnsembleModel(models=[model1, model2])
 
@@ -47,9 +50,7 @@ def test_ensemble_model(proj_path ,traj_file):
             data=md.atoms, n_configurations=1, threshold=0.0001
         )
 
-        ips.analysis.ModelEnsembleAnalysis(
-            data=test_data.atoms, models=[model1, model2]
-        )
+        ips.analysis.ModelEnsembleAnalysis(data=test_data.atoms, models=[model1, model2])
 
         prediction = ips.analysis.Prediction(data=test_data.atoms, model=ensemble_model)
         prediction_metrics = ips.analysis.PredictionMetrics(

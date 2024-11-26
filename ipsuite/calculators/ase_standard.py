@@ -39,7 +39,6 @@ class EMTSinglePoint(base.ProcessAtoms):
     """
 
     def run(self):
-
         if self.data:
             self.atoms = self.get_data()
 
