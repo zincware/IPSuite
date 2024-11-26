@@ -488,6 +488,7 @@ class ForceDecomposition(base.ComparePredictions):
     histogram_plt = zntrack.outs_path(zntrack.nwd / "histogram.png")
 
     def get_plots(self):
+        # TODO update plots true - pred y axis
         fig = get_figure(
             np.reshape(self.true_forces["trans"], -1),
             np.reshape(self.pred_forces["trans"], -1),
@@ -635,9 +636,6 @@ def decompose_force_uncertainty(atom_true, atom_pred):
     rot_unc = np.sum((rot_ens - rot_pred[:,:,None])**2, axis=-1) / (n_ens - 1)
     vib_unc = np.sum((vib_ens - vib_pred[:,:,None])**2, axis=-1) / (n_ens - 1)
 
-    # sum((forces_ens - forces_mean) ** 2, axis=0)
-
-
     true = (trans_true, rot_true, vib_true)
     pred = (trans_pred, rot_pred, vib_pred)
     unc = (trans_unc, rot_unc, vib_unc)
@@ -724,14 +722,14 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
         self.pred = {"trans": [], "rot": [], "vib": []}
         self.uncertainties = {"trans": [], "rot": [], "vib": []}
         
-        nproc = 2# os.getenv("IPSUITE_NPROC", multiprocessing.cpu_count())
+        nproc = os.getenv("IPSUITE_NPROC", multiprocessing.cpu_count())
         process_pool = ProcessPoolExecutor(nproc)
 
         pbar = tqdm.trange(
             0, len(self.x), desc="structures", ncols=70, leave=True, mininterval=0.25,
         )
-        # for result in process_pool.map(decompose_force_uncertainty, self.x, self.y):
-        for i in range(len(self.x)):
+        for result in process_pool.map(decompose_force_uncertainty, self.x, self.y):
+        # for i in range(len(self.x)):
             result = decompose_force_uncertainty(self.x[i], self.y[i])
             true, pred, unc = result
             trans_true, rot_true, vib_true = true
