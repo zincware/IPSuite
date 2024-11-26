@@ -10,7 +10,7 @@ os.environ["OPENBLAS_NUM_THREADS"] = "1"
 
 
 def test_ensemble_model(proj_path, traj_file):
-    thermostat = ips.calculators.LangevinThermostat(
+    thermostat = ips.LangevinThermostat(
         time_step=1.0, temperature=100.0, friction=0.01
     )
 
@@ -35,7 +35,7 @@ def test_ensemble_model(proj_path, traj_file):
 
         ensemble_model = ips.EnsembleModel(models=[model1, model2])
 
-        md = ips.calculators.ASEMD(
+        md = ips.ASEMD(
             data=test_data.atoms,
             model=ensemble_model,
             thermostat=thermostat,
@@ -69,8 +69,8 @@ def test_ensemble_model_stress(proj_path, traj_file):
 
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
-        model1 = ips.calculators.EMTSinglePoint(data=data.atoms)
-        model2 = ips.calculators.EMTSinglePoint(data=data.atoms)
+        model1 = ips.EMTSinglePoint(data=data.atoms)
+        model2 = ips.EMTSinglePoint(data=data.atoms)
         ensemble_model = ips.EnsembleModel(models=[model1, model2])
 
         prediction = ips.Prediction(model=ensemble_model, data=data.atoms)

@@ -11,7 +11,7 @@ def test_lj_single_point(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file.name)
 
-        lj = ips.calculators.LJSinglePoint(
+        lj = ips.LJSinglePoint(
             data=data.atoms,
         )
     project.repro()

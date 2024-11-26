@@ -41,11 +41,12 @@ def test_ase_geoopt(proj_path, cu_box):
     n_iterations = 5
 
     check = DebugCheck(n_iterations=n_iterations)
+    # The issue is, that we can not run `ImportError: {'module': 'calculators.test_u_ase_geoopt', 'cls': 'DebugCheck'}`
 
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
-        model = ips.calculators.LJSinglePoint(data=data.atoms)
-        opt = ips.calculators.ASEGeoOpt(
+        model = ips.LJSinglePoint(data=data.atoms)
+        opt = ips.ASEGeoOpt(
             data=data.atoms,
             model=model,
             optimizer="FIRE",
@@ -53,7 +54,7 @@ def test_ase_geoopt(proj_path, cu_box):
             run_kwargs={"fmax": 0.05},
         )
 
-        opt_max_step = ips.calculators.ASEGeoOpt(
+        opt_max_step = ips.ASEGeoOpt(
             data=data.atoms,
             model=model,
             optimizer="FIRE",

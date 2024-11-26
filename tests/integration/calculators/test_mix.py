@@ -6,16 +6,16 @@ import ipsuite as ips
 def test_mix_calculators(proj_path, traj_file):
     with ips.Project() as proj:
         data = ips.AddData(file=traj_file)
-        lj1 = ips.calculators.LJSinglePoint(data=data.atoms)
-        lj2 = ips.calculators.LJSinglePoint(data=data.atoms)
+        lj1 = ips.LJSinglePoint(data=data.atoms)
+        lj2 = ips.LJSinglePoint(data=data.atoms)
 
-        mean_calc = ips.calculators.MixCalculator(
+        mean_calc = ips.MixCalculator(
             data=data.atoms,
             calculators=[lj1, lj2],
             method="mean",
         )
 
-        sum_calc = ips.calculators.MixCalculator(
+        sum_calc = ips.MixCalculator(
             data=data.atoms,
             calculators=[lj1, lj2],
             method="sum",
@@ -45,20 +45,20 @@ def test_mix_calculators(proj_path, traj_file):
 
 
 def test_mix_calculator_external(proj_path, traj_file):
-    lj1 = ips.calculators.LJSinglePoint(data=None)
-    lj2 = ips.calculators.LJSinglePoint(data=None)
+    lj1 = ips.LJSinglePoint(data=None)
+    lj2 = ips.LJSinglePoint(data=None)
 
     with ips.Project() as proj:
         data = ips.AddData(file=traj_file)
-        lj3 = ips.calculators.LJSinglePoint(data=data.atoms)
+        lj3 = ips.LJSinglePoint(data=data.atoms)
 
-        mean_calc = ips.calculators.MixCalculator(
+        mean_calc = ips.MixCalculator(
             data=data.atoms,
             calculators=[lj1, lj2],
             method="mean",
         )
 
-        sum_calc = ips.calculators.MixCalculator(
+        sum_calc = ips.MixCalculator(
             data=data.atoms,
             calculators=[lj1, lj2],
             method="sum",
