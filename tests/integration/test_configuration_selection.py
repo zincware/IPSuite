@@ -3,6 +3,7 @@ import typing
 
 import ase
 import pytest
+import zntrack
 
 import ipsuite as ips
 
@@ -23,32 +24,35 @@ def test_configuration_selection(proj_path, traj_file, cls, selected_ids):
 
     project.repro()
 
+    selection = zntrack.from_rev(name=selection.name)
     assert selection.atoms == [data.atoms[x] for x in selected_ids]
 
 
 def test_UniformArangeSelection(proj_path, traj_file):
     with ips.Project() as project:
         data = [
-            ips.AddData(file=traj_file, name="data1"),
-            ips.AddData(file=traj_file, name="data2"),
+            ips.AddData(file=traj_file, name="data1").atoms,
+            ips.AddData(file=traj_file, name="data2").atoms,
         ]
-        selection = ips.configuration_selection.UniformArangeSelection(data=data, step=10)
+        selection = ips.configuration_selection.UniformArangeSelection(data=sum(data, []), step=10)
 
     project.repro()
 
+    selection = zntrack.from_rev(name=selection.name)
     assert selection.selected_configurations == {"data1": [0, 10, 20], "data2": [9, 19]}
 
 
 def test_SplitSelection(proj_path, traj_file):
     with ips.Project() as project:
         data = [
-            ips.AddData(file=traj_file, name="data1"),
-            ips.AddData(file=traj_file, name="data2"),
+            ips.AddData(file=traj_file, name="data1").atoms,
+            ips.AddData(file=traj_file, name="data2").atoms,
         ]
-        selection = ips.configuration_selection.SplitSelection(data=data, split=0.3)
+        selection = ips.configuration_selection.SplitSelection(data=sum(data, []), split=0.3)
 
     project.repro()
 
+    selection = zntrack.from_rev(name=selection.name)
     assert selection.selected_configurations == {"data1": list(range(12)), "data2": []}
 
 

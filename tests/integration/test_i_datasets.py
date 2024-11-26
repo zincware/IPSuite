@@ -11,7 +11,7 @@ def test_md22():
     project = ips.Project()
 
     with project:
-        data = ips.datasets.MD22Dataset("AT-AT")
+        data = ips.datasets.MD22Dataset(dataset="AT-AT")
 
     project.run()
 
