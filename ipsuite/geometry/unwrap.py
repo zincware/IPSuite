@@ -52,8 +52,7 @@ def unwrap_system(atoms: ase.Atoms, components: list[np.ndarray]) -> list[ase.At
     for component in components:
         mol = atoms[component].copy()
         if atoms.calc is not None:
-
-            results = {"forces":atoms.get_forces()[component]}
+            results = {"forces": atoms.get_forces()[component]}
             if "forces_uncertainty" in atoms.calc.results.keys():
                 f_unc = atoms.calc.results["forces_uncertainty"][component]
                 results["forces_uncertainty"] = f_unc

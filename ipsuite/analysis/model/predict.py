@@ -1,8 +1,6 @@
-import os
 import pathlib
-from typing import List, Optional
-import multiprocessing
 from concurrent.futures import ProcessPoolExecutor
+from typing import List, Optional
 
 import ase
 import matplotlib.pyplot as plt
@@ -598,7 +596,6 @@ class ForceDecomposition(base.ComparePredictions):
             self.true_forces["rot"].append(atom_rot_forces)
             self.true_forces["vib"].append(atom_vib_forces)
 
-
         for atom in tqdm.tqdm(self.y, ncols=70):
             atom_trans_forces, atom_rot_forces, atom_vib_forces = force_decomposition(
                 atom, mapping
@@ -608,39 +605,46 @@ class ForceDecomposition(base.ComparePredictions):
             self.pred_forces["rot"].append(atom_rot_forces)
             self.pred_forces["vib"].append(atom_vib_forces)
 
-        self.pred_forces = {k: np.concatenate(v) * 1000 for k,v in self.pred_forces.items()}
-        self.true_forces = {k: np.concatenate(v) * 1000 for k,v in self.true_forces.items()}
+        self.pred_forces = {
+            k: np.concatenate(v) * 1000 for k, v in self.pred_forces.items()
+        }
+        self.true_forces = {
+            k: np.concatenate(v) * 1000 for k, v in self.true_forces.items()
+        }
 
         self.get_metrics()
         self.get_plots()
         self.get_histogram()
 
 
-
-    
 def decompose_force_uncertainty(atom_true, atom_pred):
     mapping = BarycenterMapping(data=None, frozen=True)
 
     trans_true, rot_true, vib_true = force_decomposition(
-        atom_true, mapping, key="forces",
+        atom_true,
+        mapping,
+        key="forces",
     )
-  
+
     trans_ens, rot_ens, vib_ens = force_decomposition(
-        atom_pred, mapping, key="forces_ensemble",
+        atom_pred,
+        mapping,
+        key="forces_ensemble",
     )
     n_ens = trans_ens.shape[2]
     trans_pred = np.mean(trans_ens, axis=-1)
     rot_pred = np.mean(rot_ens, axis=-1)
     vib_pred = np.mean(vib_ens, axis=-1)
-    trans_unc = np.sum((trans_ens - trans_pred[:,:,None])**2, axis=-1) / (n_ens - 1)
-    rot_unc = np.sum((rot_ens - rot_pred[:,:,None])**2, axis=-1) / (n_ens - 1)
-    vib_unc = np.sum((vib_ens - vib_pred[:,:,None])**2, axis=-1) / (n_ens - 1)
+    trans_unc = np.sum((trans_ens - trans_pred[:, :, None]) ** 2, axis=-1) / (n_ens - 1)
+    rot_unc = np.sum((rot_ens - rot_pred[:, :, None]) ** 2, axis=-1) / (n_ens - 1)
+    vib_unc = np.sum((vib_ens - vib_pred[:, :, None]) ** 2, axis=-1) / (n_ens - 1)
+
+    # sum((forces_ens - forces_mean) ** 2, axis=0)
 
     true = (trans_true, rot_true, vib_true)
     pred = (trans_pred, rot_pred, vib_pred)
     unc = (trans_unc, rot_unc, vib_unc)
     return true, pred, unc
-
 
 
 class ForceUncertaintyDecomposition(base.ComparePredictions):
@@ -678,7 +682,6 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
         trans_plot.savefig(self.plots_dir / "trans.png")
         trans_gauss.savefig(self.plots_dir / "trans_gauss.png")
 
-
         rot_plot = get_calibration_figure(
             rot_err,
             self.uncertainties["rot"],
@@ -691,7 +694,6 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
         )
         rot_plot.savefig(self.plots_dir / "rot.png")
         rot_gauss.savefig(self.plots_dir / "rot_gauss.png")
-
 
         vib_plot = get_calibration_figure(
             vib_err,
@@ -709,13 +711,18 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
     def get_metrics(self):
         """Update the metrics."""
 
-        metrics = compute_uncertainty_metrics(self.pred["trans"], self.uncertainties["trans"], self.true["trans"])
+        metrics = compute_uncertainty_metrics(
+            self.pred["trans"], self.uncertainties["trans"], self.true["trans"]
+        )
         self.trans_forces = metrics
-        metrics = compute_uncertainty_metrics(self.pred["rot"], self.uncertainties["rot"], self.true["rot"])
+        metrics = compute_uncertainty_metrics(
+            self.pred["rot"], self.uncertainties["rot"], self.true["rot"]
+        )
         self.rot_forces = metrics
-        metrics = compute_uncertainty_metrics(self.pred["vib"], self.uncertainties["vib"], self.true["vib"])
+        metrics = compute_uncertainty_metrics(
+            self.pred["vib"], self.uncertainties["vib"], self.true["vib"]
+        )
         self.vib_forces = metrics
-
 
     def run(self):
         self.true = {"trans": [], "rot": [], "vib": []}
@@ -726,7 +733,12 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
         process_pool = ProcessPoolExecutor(nproc)
 
         pbar = tqdm.trange(
-            0, len(self.x), desc="structures", ncols=70, leave=True, mininterval=0.25,
+            0,
+            len(self.x),
+            desc="structures",
+            ncols=70,
+            leave=True,
+            mininterval=0.25,
         )
         for result in process_pool.map(decompose_force_uncertainty, self.x, self.y):
         # for i in range(len(self.x)):
@@ -748,9 +760,15 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
 
             pbar.update(1)
 
-
-        self.true = {k: np.reshape(np.concatenate(v), (-1,)) * 1000 for k,v in self.true.items()}
-        self.pred = {k: np.reshape(np.concatenate(v), (-1,)) * 1000 for k,v in self.pred.items()}
-        self.uncertainties = {k: np.reshape(np.concatenate(v), (-1,)) * 1000 for k,v in self.uncertainties.items()}
+        self.true = {
+            k: np.reshape(np.concatenate(v), (-1,)) * 1000 for k, v in self.true.items()
+        }
+        self.pred = {
+            k: np.reshape(np.concatenate(v), (-1,)) * 1000 for k, v in self.pred.items()
+        }
+        self.uncertainties = {
+            k: np.reshape(np.concatenate(v), (-1,)) * 1000
+            for k, v in self.uncertainties.items()
+        }
         self.get_metrics()
         self.get_plots()
