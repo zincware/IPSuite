@@ -34,7 +34,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
 
     repeat: list = zntrack.params((1, 1, 1))
     run_kwargs: dict = zntrack.params(default_factory=lambda: {"fmax": 0.05})
-    init_kwargs: dict = zntrack.params(default_factory=lambda: {})
+    init_kwargs: dict = zntrack.params(default_factory=dict)
     dump_rate: int = zntrack.params(1000)
     maxstep: int = zntrack.params(None)
 

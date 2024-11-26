@@ -82,7 +82,7 @@ class SOAPParameterConverter(znjson.ConverterBase):
         return SOAPParameter(**value)
 
 
-znjson.config.register(SOAPParameterConverter)
+# znjson.config.register(SOAPParameterConverter)
 
 
 def create_dataset(file: h5py.File, data, soap: SOAP, name: str):

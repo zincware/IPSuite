@@ -19,7 +19,7 @@ import xmltodict
 import znflow
 import zntrack
 from jinja2 import Template
-from znjson import ConverterBase, config
+from znjson import ConverterBase
 
 from ipsuite import static_data
 from ipsuite.models import MLModel
@@ -171,7 +171,7 @@ class GapParameterConverter(ConverterBase):
         return GapParameter(**value)
 
 
-config.register([SOAPConverter, DistanceNbConverter, GapParameterConverter])
+# config.register([SOAPConverter, DistanceNbConverter, GapParameterConverter])
 
 
 class GAP(MLModel):
