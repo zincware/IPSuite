@@ -13,7 +13,6 @@ class IPSNode(zntrack.Node):
     """Base class for all IPSuite nodes."""
 
 
-
 class ProcessAtoms(IPSNode):
     """Protocol for objects that process atoms.
 

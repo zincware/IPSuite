@@ -10,15 +10,11 @@ os.environ["OPENBLAS_NUM_THREADS"] = "1"
 
 
 def test_ensemble_model(proj_path, traj_file):
-    thermostat = ips.LangevinThermostat(
-        time_step=1.0, temperature=100.0, friction=0.01
-    )
+    thermostat = ips.LangevinThermostat(time_step=1.0, temperature=100.0, friction=0.01)
 
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
-        test_data = ips.RandomSelection(
-            data=data.atoms, n_configurations=5
-        )
+        test_data = ips.RandomSelection(data=data.atoms, n_configurations=5)
 
         train_data = ips.RandomSelection(
             data=data.atoms,
@@ -26,12 +22,8 @@ def test_ensemble_model(proj_path, traj_file):
             exclude_configurations=test_data.selected_configurations,
         )
 
-        model1 = ips.GAP(
-            data=train_data.atoms, soap={"n_max": 1}, use_stresses=False
-        )
-        model2 = ips.GAP(
-            data=train_data.atoms, soap={"n_max": 2}, use_stresses=False
-        )
+        model1 = ips.GAP(data=train_data.atoms, soap={"n_max": 1}, use_stresses=False)
+        model2 = ips.GAP(data=train_data.atoms, soap={"n_max": 2}, use_stresses=False)
 
         ensemble_model = ips.EnsembleModel(models=[model1, model2])
 
@@ -53,9 +45,7 @@ def test_ensemble_model(proj_path, traj_file):
         ips.ModelEnsembleAnalysis(data=test_data.atoms, models=[model1, model2])
 
         prediction = ips.Prediction(data=test_data.atoms, model=ensemble_model)
-        prediction_metrics = ips.PredictionMetrics(
-            x=test_data.atoms, y=prediction.atoms
-        )
+        prediction_metrics = ips.PredictionMetrics(x=test_data.atoms, y=prediction.atoms)
 
     project.repro()
 

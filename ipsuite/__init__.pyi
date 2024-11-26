@@ -1,35 +1,94 @@
-from .version import __version__
+from . import base
+
+# Analysis
+from .analysis import (
+    AnalyseDensity,
+    AnalyseGlobalForceSensitivity,
+    AnalyseSingleForceSensitivity,
+    BoxHeatUp,
+    BoxScale,
+    CalibrationMetrics,
+    ConnectivityCheck,
+    DipoleHistogram,
+    EnergyHistogram,
+    EnergySpikeCheck,
+    EnergyUncertaintyHistogram,
+    ForceAngles,
+    ForceDecomposition,
+    ForcesHistogram,
+    ForcesUncertaintyHistogram,
+    MDStability,
+    ModelEnsembleAnalysis,
+    MoveSingleParticle,
+    NaNCheck,
+    Prediction,
+    PredictionMetrics,
+    RattleAnalysis,
+    StressHistogram,
+    TemperatureCheck,
+    ThresholdCheck,
+)
 
 # Base imports
 from .base import Flatten
-from . import base
 
-# Models
-from .models import GAP, EnsembleModel
+# Bootstrap
+from .bootstrap import (
+    RattleAtoms,
+    RotateMolecules,
+    SurfaceRasterMetrics,
+    SurfaceRasterScan,
+    TranslateMolecules,
+)
+
+# Calculators
+from .calculators import (
+    ASEMD,
+    ASEGeoOpt,
+    BoxOscillatingRampModifier,
+    CP2KSinglePoint,
+    CP2KYaml,
+    EMTSinglePoint,
+    FixedLayerConstraint,
+    FixedSphereConstraint,
+    LammpsSimulator,
+    LangevinThermostat,
+    LJSinglePoint,
+    MixCalculator,
+    NPTThermostat,
+    OrcaSinglePoint,
+    PressureRampModifier,
+    RescaleBoxModifier,
+    SVCRBarostat,
+    TemperatureOscillatingRampModifier,
+    TemperatureRampModifier,
+    VelocityVerletDynamic,
+    xTBSinglePoint,
+)
+
+# Configuration Comparison
+from .configuration_comparison import MMKernel, REMatch
+
+# Configuration Generation
+from .configuration_generation import (
+    MultiPackmol,
+    Packmol,
+    Smiles2Gromacs,
+    SmilesToAtoms,
+    SmilesToConformers,
+)
 
 # Configuration Selection
 from .configuration_selection import (
+    FilterOutlier,
     IndexSelection,
     KernelSelection,
     RandomSelection,
     SplitSelection,
+    ThresholdSelection,
     UniformArangeSelection,
     UniformEnergeticSelection,
     UniformTemporalSelection,
-    ThresholdSelection,
-    FilterOutlier,
-)
-
-# Configuration Comparison
-from .configuration_comparison import REMatch, MMKernel
-
-# Configuration Generation
-from .configuration_generation import (
-    Packmol,
-    MultiPackmol,
-    SmilesToAtoms,
-    SmilesToConformers,
-    Smiles2Gromacs,
 )
 
 # Data
@@ -38,74 +97,15 @@ from .data_loading import AddData, AddDataH5MD, ReadData
 # Datasets
 from .datasets import MD22Dataset
 
-# Bootstrap
-from .bootstrap import (
-    RattleAtoms,
-    TranslateMolecules,
-    RotateMolecules,
-    SurfaceRasterScan,
-    SurfaceRasterMetrics,
-)
-
-# Analysis
-from .analysis import (
-    DipoleHistogram,
-    EnergyHistogram,
-    ForcesHistogram,
-    StressHistogram,
-    ForcesUncertaintyHistogram,
-    EnergyUncertaintyHistogram,
-    ModelEnsembleAnalysis,
-    PredictionMetrics,
-    ForceAngles,
-    RattleAnalysis,
-    Prediction,
-    CalibrationMetrics,
-    BoxScale,
-    BoxHeatUp,
-    NaNCheck,
-    ConnectivityCheck,
-    EnergySpikeCheck,
-    MDStability,
-    MoveSingleParticle,
-    AnalyseGlobalForceSensitivity,
-    AnalyseSingleForceSensitivity,
-    ForceDecomposition,
-    ThresholdCheck,
-    TemperatureCheck,
-    AnalyseDensity,
-)
-
-# Calculators
-from .calculators import (
-    CP2KSinglePoint,
-    CP2KYaml,
-    ASEGeoOpt,
-    ASEMD,
-    FixedSphereConstraint,
-    xTBSinglePoint,
-    LJSinglePoint,
-    LangevinThermostat,
-    VelocityVerletDynamic,
-    RescaleBoxModifier,
-    BoxOscillatingRampModifier,
-    EMTSinglePoint,
-    TemperatureRampModifier,
-    PressureRampModifier,
-    TemperatureOscillatingRampModifier,
-    NPTThermostat,
-    OrcaSinglePoint,
-    LammpsSimulator,
-    FixedLayerConstraint,
-    MixCalculator,
-    SVCRBarostat,
-)
-
 # Geometry
 from .geometry import BarycenterMapping
 
+# Models
+from .models import GAP, EnsembleModel
+
 # Project
 from .project import Project
+from .version import __version__
 
 # Update __all__ for lazy loading
 __all__ = [

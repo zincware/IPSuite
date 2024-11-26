@@ -17,9 +17,7 @@ def test_SmilesToAtoms(proj_path):
 
 def test_SmilesToConformers(proj_path):
     with ips.Project() as proj:
-        ethanol = ips.SmilesToConformers(
-            smiles="CCO", numConfs=10
-        )
+        ethanol = ips.SmilesToConformers(smiles="CCO", numConfs=10)
 
     proj.repro()
 

@@ -25,9 +25,7 @@ def test_direct_selection(proj_w_data, data_style):
         else:
             raise ValueError(data_style)
 
-        selection = ips.IndexSelection(
-            data=_data, indices=[0, 1, 2]
-        )
+        selection = ips.IndexSelection(data=_data, indices=[0, 1, 2])
         selection_w_exclusion = ips.IndexSelection(
             data=_data,
             indices=[0, 1, 2],
@@ -111,20 +109,22 @@ def test_exclude_configurations_list(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
         test_data = ips.IndexSelection(
-                data=data.atoms,
-                start=0,
-                stop=5,
-                step=None,
+            data=data.atoms,
+            start=0,
+            stop=5,
+            step=None,
         )
         train_data = ips.IndexSelection(
-                data=data.atoms, exclude=test_data,
-                start=0,
-                stop=5,
-                step=None,
+            data=data.atoms,
+            exclude=test_data,
+            start=0,
+            stop=5,
+            step=None,
         )
 
         validation_data = ips.IndexSelection(
-            data=data.atoms, exclude=[train_data, test_data],
+            data=data.atoms,
+            exclude=[train_data, test_data],
             start=0,
             stop=5,
             step=None,

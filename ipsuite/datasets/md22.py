@@ -1,5 +1,4 @@
 import tempfile
-import typing
 import urllib.request
 import zipfile
 from pathlib import Path

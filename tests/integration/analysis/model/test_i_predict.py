@@ -9,9 +9,7 @@ def test_calibration(data_repo):
     water = ips.AddDataH5MD.from_rev(name="water")
 
     with ips.Project() as project:
-        test_data = ips.RandomSelection(
-            data=water.atoms, n_configurations=5
-        )
+        test_data = ips.RandomSelection(data=water.atoms, n_configurations=5)
 
         train_data = ips.RandomSelection(
             data=water.atoms,

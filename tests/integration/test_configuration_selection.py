@@ -161,9 +161,7 @@ def test_MMKSelectMethod(proj_path, test_traj):
 
     with ips.Project() as project:
         data = ips.AddData(file=test_traj)
-        seed_configs = ips.RandomSelection(
-            data=data, n_configurations=1, name="seed"
-        )
+        seed_configs = ips.RandomSelection(data=data, n_configurations=1, name="seed")
         mmk_selection = ips.MMKernel(
             correlation_time=1,
             n_configurations=n_configurations - 1,  # remove the seed configuration
