@@ -36,7 +36,9 @@ class ConfigurationSelection(base.IPSNode):
         typing.Dict[str, typing.List[int]], base.protocol.HasSelectedConfigurations
     ] = zntrack.deps(None)
     exclude: typing.Union[zntrack.Node, typing.List[zntrack.Node]] = zntrack.deps(None)
-    selected_configurations: typing.Dict[str, typing.List[int]] = zntrack.outs(independent=True)
+    selected_configurations: typing.Dict[str, typing.List[int]] = zntrack.outs(
+        independent=True
+    )
 
     img_selection: Path = zntrack.outs_path(zntrack.nwd / "selection.png")
 

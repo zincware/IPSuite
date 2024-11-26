@@ -5,8 +5,8 @@ import typing as t
 
 import ase
 
-from ipsuite import base
 from ipsuite.geometry import barycenter_coarse_grain, graphs, unwrap
+
 
 @dataclasses.dataclass
 class BarycenterMapping:
@@ -31,9 +31,7 @@ class BarycenterMapping:
 
     _components: t.Any | None = None
 
-    def forward_mapping(
-        self, atoms: ase.Atoms
-    ) -> tuple[ase.Atoms, list[ase.Atoms]]:
+    def forward_mapping(self, atoms: ase.Atoms) -> tuple[ase.Atoms, list[ase.Atoms]]:
         if self._components is None:
             components = graphs.identify_molecules(atoms)
         else:

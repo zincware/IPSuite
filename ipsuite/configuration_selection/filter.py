@@ -20,6 +20,7 @@ class FilterOutlier(base.IPSNode):
     direction : {"above", "below", "both"}, default="both"
         The direction to filter in.
     """
+
     data: list[ase.Atoms] = zntrack.deps()
     key: str = zntrack.params("energy")
     threshold: float = zntrack.params(3)

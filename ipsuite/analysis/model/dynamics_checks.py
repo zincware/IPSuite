@@ -3,12 +3,12 @@ import dataclasses
 
 import ase
 import numpy as np
-import zntrack
 from ase.geometry import conditional_find_mic
 from ase.neighborlist import build_neighbor_list, natural_cutoffs
 
 from ipsuite import base
 from ipsuite.utils.ase_sim import get_energy
+
 
 @dataclasses.dataclass
 class NaNCheck(base.Check):
@@ -36,6 +36,7 @@ class NaNCheck(base.Check):
         else:
             self.status = "No NaN occurred"
             return False
+
 
 @dataclasses.dataclass
 class ConnectivityCheck(base.Check):
@@ -107,6 +108,7 @@ class ConnectivityCheck(base.Check):
             self.status = "covalent connectivity of the system is intact"
             return False
 
+
 @dataclasses.dataclass
 class EnergySpikeCheck(base.Check):
     """Check to see whether the potential energy of the system has fallen
@@ -149,6 +151,7 @@ class EnergySpikeCheck(base.Check):
             self.status = "No energy spike occurred"
             return False
 
+
 @dataclasses.dataclass
 class TemperatureCheck(base.Check):
     """Calculate and check teperature during a MD simulation
@@ -179,6 +182,7 @@ class TemperatureCheck(base.Check):
                 f"T_max {self.max_temperature} K"
             )
             return False
+
 
 @dataclasses.dataclass
 class ThresholdCheck(base.Check):

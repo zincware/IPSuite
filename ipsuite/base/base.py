@@ -4,7 +4,6 @@ import dataclasses
 import typing
 
 import ase
-import tqdm
 import zntrack
 
 from ipsuite import fields
@@ -97,6 +96,7 @@ class ComparePredictions(IPSNode):
 
     x: list[ase.Atoms] = zntrack.deps()
     y: list[ase.Atoms] = zntrack.deps()
+
 
 @dataclasses.dataclass
 class Check:

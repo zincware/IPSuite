@@ -5,10 +5,7 @@ import pathlib
 import h5py
 import znh5md
 from zntrack import Node
-from zntrack.config import (
-    NOT_AVAILABLE,
-    ZnTrackOptionEnum,
-)
+from zntrack.config import NOT_AVAILABLE, ZnTrackOptionEnum
 from zntrack.fields.base import field
 
 CWD = pathlib.Path(__file__).parent.resolve()
