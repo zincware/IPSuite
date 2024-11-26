@@ -29,11 +29,6 @@ class ProcessAtoms(IPSNode):
     data: list[ase.Atoms] = zntrack.deps()
     atoms: list[ase.Atoms] = fields.Atoms()
 
-    def update_data(self):
-        """Update the data attribute."""
-        if self.data is None:
-            self.data = self.get_data()
-
     def get_data(self) -> list[ase.Atoms]:
         """Get the atoms data to process."""
         if self.data is not None:
