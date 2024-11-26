@@ -36,7 +36,7 @@ def test_ase_md(proj_path, cu_box):
             sampling_rate=1,
             dump_rate=33,
         )
-        flat_md = ips.base.Flatten(mapped_md.structures)
+        flat_md = ips.Flatten(data=mapped_md.structures)
 
     project.repro()
 
