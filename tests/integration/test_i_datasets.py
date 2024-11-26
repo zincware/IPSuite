@@ -3,7 +3,7 @@ import requests
 import ipsuite as ips
 
 
-def test_md22():
+def test_md22(proj_path):
     for url in ips.MD22Dataset.datasets.values():
         response = requests.get(url)
         assert response.status_code == 200

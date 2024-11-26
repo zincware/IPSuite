@@ -2,6 +2,7 @@ from .version import __version__
 
 # Base imports
 from .base import Flatten
+from . import base
 
 # Models
 from .models import GAP, EnsembleModel
@@ -108,6 +109,7 @@ __all__ = [
     "__version__",
     # Base
     "Flatten",
+    "base",
     # Models
     "GAP",
     "EnsembleModel",
