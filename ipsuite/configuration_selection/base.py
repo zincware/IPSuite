@@ -51,11 +51,6 @@ class ConfigurationSelection(base.IPSNode):
             except TypeError:
                 self.data = znflow.combine(self.data, attribute="atoms")
 
-    def update_data(self):
-        """Update the data attribute."""
-        if self.data is None:
-            self.data = self.get_data()
-
     def get_data(self) -> list[ase.Atoms]:
         """Get the atoms data to process."""
         if self.data is not None:
