@@ -126,7 +126,7 @@ class MultiPackmol(Packmol):
     ...     boxes = ips.configuration_generation.MultiPackmol(
     ...         data=[water.atoms], count=[10], density=997, n_configurations=10
     ...         )
-    >>> project.run()
+    >>> project.repro()
 
     .. testcleanup::
         >>> tmp_path.cleanup()

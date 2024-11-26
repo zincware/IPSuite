@@ -49,7 +49,7 @@ def test_mix_calculator_external(proj_path, traj_file):
     lj2 = ips.calculators.LJSinglePoint(data=None)
 
     with ips.Project() as proj:
-        data = ips.AddData(traj_file)
+        data = ips.AddData(file=traj_file)
         lj3 = ips.calculators.LJSinglePoint(data=data.atoms)
 
         mean_calc = ips.calculators.MixCalculator(

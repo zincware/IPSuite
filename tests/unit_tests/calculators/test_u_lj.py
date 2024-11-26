@@ -14,7 +14,7 @@ def test_lj_single_point(proj_path, traj_file):
         lj = ips.calculators.LJSinglePoint(
             data=data.atoms,
         )
-    project.run()
+    project.repro()
 
     lj.load()
     results = lj.atoms[0].calc.results

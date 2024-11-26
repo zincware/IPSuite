@@ -18,7 +18,7 @@ def test_model_training(proj_path, traj_file):
 
         model = ipsuite.models.GAP(soap={"cutoff": 0.7}, data=train_selection.atoms)
 
-    project.run()
+    project.repro()
 
     model.load()
     data.load()

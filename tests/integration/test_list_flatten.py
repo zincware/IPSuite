@@ -38,7 +38,7 @@ def test_ase_md(proj_path, cu_box):
         )
         flat_md = ips.base.Flatten(mapped_md.structures)
 
-    project.run()
+    project.repro()
 
     mapped_md.load()
     flat_md.load()

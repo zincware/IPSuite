@@ -99,7 +99,7 @@ def test_exclude_configurations(proj_path, traj_file):
             data=data, start=0, stop=5, step=None, exclude=test_data
         )
 
-    project.run()
+    project.repro()
 
     assert train_data.selected_configurations == {"AddData": [5, 6, 7, 8, 9]}
     assert test_data.selected_configurations == {"AddData": [0, 1, 2, 3, 4]}
@@ -110,25 +110,30 @@ def test_exclude_configurations_list(proj_path, traj_file):
     test_data = []
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
-        test_data.append(
-            ips.configuration_selection.IndexSelection(
-                data=data, indices=slice(0, 5, None)
-            )
+        test_data = ips.configuration_selection.IndexSelection(
+                data=data.atoms,
+                start=0,
+                stop=5,
+                step=None,
         )
-        train_data.append(
-            ips.configuration_selection.IndexSelection(
-                data=data, indices=slice(0, 5, None), exclude=test_data
-            )
+        train_data = ips.configuration_selection.IndexSelection(
+                data=data.atoms, exclude=test_data,
+                start=0,
+                stop=5,
+                step=None,
         )
 
         validation_data = ips.configuration_selection.IndexSelection(
-            data=data, indices=slice(0, 5, None), exclude=train_data + test_data
+            data=data.atoms, exclude=[train_data, test_data],
+            start=0,
+            stop=5,
+            step=None,
         )
 
-    project.run()
+    project.repro()
 
-    assert train_data[0].selected_configurations == {"AddData": [5, 6, 7, 8, 9]}
-    assert test_data[0].selected_configurations == {"AddData": [0, 1, 2, 3, 4]}
+    assert train_data.selected_configurations == {"AddData": [5, 6, 7, 8, 9]}
+    assert test_data.selected_configurations == {"AddData": [0, 1, 2, 3, 4]}
     assert validation_data.selected_configurations == {"AddData": [10, 11, 12, 13, 14]}
 
 
@@ -139,6 +144,8 @@ def test_filter_outlier(proj_path, traj_file):
             data=data.atoms, key="energy", threshold=1, direction="both"
         )
 
-    project.run()
+    project.repro()
+
+    filtered_data = zntrack.from_rev(name=filtered_data.name)
 
     assert len(filtered_data.atoms) == 13

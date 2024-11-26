@@ -23,7 +23,7 @@ def test_rattle_atoms(proj_path, traj_file, include_original):
             include_original=include_original,
             seed=0,
         )
-    project.run()
+    project.repro()
 
     data.load()
     rattle.load()
@@ -53,7 +53,7 @@ def test_translate_molecules(proj_path, traj_file, include_original):
             include_original=include_original,
             seed=0,
         )
-    project.run()
+    project.repro()
 
     data.load()
     rattle.load()
@@ -83,7 +83,7 @@ def test_rotate_molecules(proj_path, traj_file, include_original):
             include_original=include_original,
             seed=0,
         )
-    project.run()
+    project.repro()
 
     data.load()
     rattle.load()

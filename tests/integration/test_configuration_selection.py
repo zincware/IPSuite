@@ -193,7 +193,7 @@ def test_MMKSelectMethod(proj_path, test_traj):
             name="REMatch",
         )
 
-    project.run()
+    project.repro()
 
     mmk_selection.load()
     rematch_selection.load()

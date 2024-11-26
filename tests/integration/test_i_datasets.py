@@ -13,6 +13,6 @@ def test_md22():
     with project:
         data = ips.datasets.MD22Dataset(dataset="AT-AT")
 
-    project.run()
+    project.repro()
 
     assert len(data.atoms) > 0

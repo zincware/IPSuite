@@ -61,7 +61,7 @@ def test_ase_run_md(proj_path, cu_box):
             dump_rate=33,
         )
 
-    project.run()
+    project.repro()
 
     md.load()
 
@@ -101,7 +101,7 @@ def test_ase_md_target_density(proj_path, cu_box):
             dump_rate=33,
         )
 
-    project.run()
+    project.repro()
 
     md.load()
     npt.assert_almost_equal(get_density_from_atoms(md.atoms[0]), 8971.719659196913)
@@ -133,7 +133,7 @@ def test_ase_md_box_ramp(proj_path, cu_box):
             dump_rate=33,
         )
 
-    project.run()
+    project.repro()
 
     md.load()
 
@@ -173,7 +173,7 @@ def test_ase_npt(proj_path, cu_box):
             dump_rate=33,
         )
 
-    project.run()
+    project.repro()
 
     md.load()
 
@@ -210,7 +210,7 @@ def test_ase_md_fixed_sphere(proj_path, cu_box):
             constraints=[constraint],
         )
 
-    project.run()
+    project.repro()
 
     md.load()
 
@@ -273,4 +273,4 @@ def test_locality_test(proj_path, cu_box):
             sim_list=[md1, md2],
         )
 
-    project.run()
+    project.repro()

@@ -16,7 +16,7 @@ def test_ConfigurationComparison(proj_path, traj_file, method):
     with ipsuite.Project() as project:
         data_1 = ipsuite.AddData(file=traj_file, name="data_1")
         comparison = method(analyte=data_1)
-    project.run()
+    project.repro()
 
     comparison.load()
     df_max = comparison.similarities
