@@ -25,10 +25,10 @@ def test_direct_selection(proj_w_data, data_style):
         else:
             raise ValueError(data_style)
 
-        selection = ips.configuration_selection.IndexSelection(
+        selection = ips.IndexSelection(
             data=_data, indices=[0, 1, 2]
         )
-        selection_w_exclusion = ips.configuration_selection.IndexSelection(
+        selection_w_exclusion = ips.IndexSelection(
             data=_data,
             indices=[0, 1, 2],
             exclude_configurations=selection.selected_configurations,
@@ -46,17 +46,17 @@ def test_direct_selection(proj_w_data, data_style):
 def test_index_chained(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
-        pre_selection = ips.configuration_selection.IndexSelection(
+        pre_selection = ips.IndexSelection(
             data=data.atoms,
             start=0,
             stop=5,
             step=None,
         )  # we use this to "change" the data
-        selection = ips.configuration_selection.IndexSelection(
+        selection = ips.IndexSelection(
             data=pre_selection.atoms, indices=[0, 1, 2], name="selection"
         )
 
-        histogram = ips.analysis.EnergyHistogram(data=selection.atoms)
+        histogram = ips.EnergyHistogram(data=selection.atoms)
 
     project.repro()
 
@@ -66,17 +66,17 @@ def test_index_chained(proj_path, traj_file):
 
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
-        pre_selection = ips.configuration_selection.IndexSelection(
+        pre_selection = ips.IndexSelection(
             data=data.atoms,
             start=5,
             stop=10,
             step=None,
         )  # we use this to "change" the data
-        selection = ips.configuration_selection.IndexSelection(
+        selection = ips.IndexSelection(
             data=pre_selection.atoms, indices=[0, 1, 2], name="selection"
         )
 
-        histogram = ips.analysis.EnergyHistogram(data=selection.atoms)
+        histogram = ips.EnergyHistogram(data=selection.atoms)
 
     project.repro()
     histogram = zntrack.from_rev(name=histogram.name)
@@ -88,14 +88,14 @@ def test_index_chained(proj_path, traj_file):
 def test_exclude_configurations(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
-        test_data = ips.configuration_selection.IndexSelection(
+        test_data = ips.IndexSelection(
             data=data,
             start=0,
             stop=5,
             step=None,
         )
 
-        train_data = ips.configuration_selection.IndexSelection(
+        train_data = ips.IndexSelection(
             data=data, start=0, stop=5, step=None, exclude=test_data
         )
 
@@ -110,20 +110,20 @@ def test_exclude_configurations_list(proj_path, traj_file):
     test_data = []
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
-        test_data = ips.configuration_selection.IndexSelection(
+        test_data = ips.IndexSelection(
                 data=data.atoms,
                 start=0,
                 stop=5,
                 step=None,
         )
-        train_data = ips.configuration_selection.IndexSelection(
+        train_data = ips.IndexSelection(
                 data=data.atoms, exclude=test_data,
                 start=0,
                 stop=5,
                 step=None,
         )
 
-        validation_data = ips.configuration_selection.IndexSelection(
+        validation_data = ips.IndexSelection(
             data=data.atoms, exclude=[train_data, test_data],
             start=0,
             stop=5,
@@ -140,7 +140,7 @@ def test_exclude_configurations_list(proj_path, traj_file):
 def test_filter_outlier(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
-        filtered_data = ips.configuration_selection.FilterOutlier(
+        filtered_data = ips.FilterOutlier(
             data=data.atoms, key="energy", threshold=1, direction="both"
         )
 

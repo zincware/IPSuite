@@ -11,10 +11,10 @@ import ipsuite as ips
 @pytest.mark.parametrize(
     ("cls", "selected_ids"),
     [
-        (ips.configuration_selection.RandomSelection, [2, 3, 13]),
-        (ips.configuration_selection.UniformEnergeticSelection, [0, 10, 20]),
+        (ips.RandomSelection, [2, 3, 13]),
+        (ips.UniformEnergeticSelection, [0, 10, 20]),
         # they are the same because energy is increasing uniformly
-        (ips.configuration_selection.UniformTemporalSelection, [0, 10, 20]),
+        (ips.UniformTemporalSelection, [0, 10, 20]),
     ],
 )
 def test_configuration_selection(proj_path, traj_file, cls, selected_ids):
@@ -34,7 +34,7 @@ def test_UniformArangeSelection(proj_path, traj_file):
             ips.AddData(file=traj_file, name="data1").atoms,
             ips.AddData(file=traj_file, name="data2").atoms,
         ]
-        selection = ips.configuration_selection.UniformArangeSelection(data=sum(data, []), step=10)
+        selection = ips.UniformArangeSelection(data=sum(data, []), step=10)
 
     project.repro()
 
@@ -48,7 +48,7 @@ def test_SplitSelection(proj_path, traj_file):
             ips.AddData(file=traj_file, name="data1").atoms,
             ips.AddData(file=traj_file, name="data2").atoms,
         ]
-        selection = ips.configuration_selection.SplitSelection(data=sum(data, []), split=0.3)
+        selection = ips.SplitSelection(data=sum(data, []), split=0.3)
 
     project.repro()
 
@@ -57,7 +57,7 @@ def test_SplitSelection(proj_path, traj_file):
 
 
 def test_KernelSelect(proj_path, traj_file):
-    mmk_kernel = ips.configuration_comparison.MMKernel(
+    mmk_kernel = ips.MMKernel(
         use_jit=True,
         soap={
             "r_cut": 1.1,
@@ -67,7 +67,7 @@ def test_KernelSelect(proj_path, traj_file):
         },
     )
 
-    rematch_kernel = ips.configuration_comparison.REMatch(
+    rematch_kernel = ips.REMatch(
         soap={
             "r_cut": 1.1,
             "n_max": 3,
@@ -78,10 +78,10 @@ def test_KernelSelect(proj_path, traj_file):
 
     with ips.Project() as project:
         data_1 = ips.AddData(file=traj_file, name="data_1")
-        seed_configs = ips.configuration_selection.RandomSelection(
+        seed_configs = ips.RandomSelection(
             data=data_1, n_configurations=1, seed=42, name="seed"
         )
-        mmk_selection = ips.configuration_selection.KernelSelection(
+        mmk_selection = ips.KernelSelection(
             correlation_time=1,
             n_configurations=5,
             kernel=mmk_kernel,
@@ -89,7 +89,7 @@ def test_KernelSelect(proj_path, traj_file):
             data=data_1,
             name="MMK",
         )
-        REMatch_selection = ips.configuration_selection.KernelSelection(
+        REMatch_selection = ips.KernelSelection(
             correlation_time=1,
             n_configurations=5,
             kernel=rematch_kernel,
@@ -141,7 +141,7 @@ def test_traj(tmp_path_factory) -> typing.Tuple[str, int]:
 def test_MMKSelectMethod(proj_path, test_traj):
     test_traj, n_configurations = test_traj
 
-    # rematch_kernel = ips.configuration_comparison.REMatch(
+    # rematch_kernel = ips.REMatch(
     #     soap={
     #         "r_cut": 3,
     #         "n_max": 3,
@@ -149,7 +149,7 @@ def test_MMKSelectMethod(proj_path, test_traj):
     #         "sigma": 0.5,
     #     }
     # )
-    # mmk_kernel = ips.configuration_comparison.MMKernel(
+    # mmk_kernel = ips.MMKernel(
     #     # use_jit=False,
     #     soap={
     #         "r_cut": 3,
@@ -161,10 +161,10 @@ def test_MMKSelectMethod(proj_path, test_traj):
 
     with ips.Project() as project:
         data = ips.AddData(file=test_traj)
-        seed_configs = ips.configuration_selection.RandomSelection(
+        seed_configs = ips.RandomSelection(
             data=data, n_configurations=1, name="seed"
         )
-        mmk_selection = ips.configuration_comparison.MMKernel(
+        mmk_selection = ips.MMKernel(
             correlation_time=1,
             n_configurations=n_configurations - 1,  # remove the seed configuration
             # kernel=mmk_kernel,
@@ -178,7 +178,7 @@ def test_MMKSelectMethod(proj_path, test_traj):
             data=data,
             name="MMK",
         )
-        rematch_selection = ips.configuration_comparison.REMatch(
+        rematch_selection = ips.REMatch(
             correlation_time=1,
             n_configurations=n_configurations - 1,  # remove the seed configuration
             # kernel=rematch_kernel,

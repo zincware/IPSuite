@@ -14,7 +14,7 @@ def test_ase_md(proj_path, cu_box):
         atoms.extend(cu_box)
 
     ase.io.write("cu_box.xyz", atoms)
-    check = ips.analysis.TemperatureCheck()
+    check = ips.TemperatureCheck()
     thermostat = ips.calculators.LangevinThermostat(
         time_step=1,
         temperature=1,

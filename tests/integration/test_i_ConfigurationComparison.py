@@ -8,8 +8,8 @@ import ipsuite
 @pytest.mark.parametrize(
     "method",
     [
-        ipsuite.configuration_comparison.MMKernel,
-        ipsuite.configuration_comparison.REMatch,
+        ipsuite.MMKernel,
+        ipsuite.REMatch,
     ],
 )
 def test_ConfigurationComparison(proj_path, traj_file, method):

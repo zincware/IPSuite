@@ -7,7 +7,7 @@ import ipsuite as ips
 
 def test_SmilesToAtoms(proj_path):
     with ips.Project() as proj:
-        ethanol = ips.configuration_generation.SmilesToAtoms(smiles="CCO")
+        ethanol = ips.SmilesToAtoms(smiles="CCO")
 
     proj.repro()
 
@@ -17,7 +17,7 @@ def test_SmilesToAtoms(proj_path):
 
 def test_SmilesToConformers(proj_path):
     with ips.Project() as proj:
-        ethanol = ips.configuration_generation.SmilesToConformers(
+        ethanol = ips.SmilesToConformers(
             smiles="CCO", numConfs=10
         )
 

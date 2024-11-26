@@ -16,24 +16,24 @@ def test_ensemble_model(proj_path, traj_file):
 
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
-        test_data = ips.configuration_selection.RandomSelection(
+        test_data = ips.RandomSelection(
             data=data.atoms, n_configurations=5
         )
 
-        train_data = ips.configuration_selection.RandomSelection(
+        train_data = ips.RandomSelection(
             data=data.atoms,
             n_configurations=5,
             exclude_configurations=test_data.selected_configurations,
         )
 
-        model1 = ips.models.GAP(
+        model1 = ips.GAP(
             data=train_data.atoms, soap={"n_max": 1}, use_stresses=False
         )
-        model2 = ips.models.GAP(
+        model2 = ips.GAP(
             data=train_data.atoms, soap={"n_max": 2}, use_stresses=False
         )
 
-        ensemble_model = ips.models.EnsembleModel(models=[model1, model2])
+        ensemble_model = ips.EnsembleModel(models=[model1, model2])
 
         md = ips.calculators.ASEMD(
             data=test_data.atoms,
@@ -43,17 +43,17 @@ def test_ensemble_model(proj_path, traj_file):
             sampling_rate=1,
         )
 
-        energy_uncertainty_hist = ips.analysis.EnergyUncertaintyHistogram(data=md.atoms)
-        forces_uncertainty_hist = ips.analysis.ForcesUncertaintyHistogram(data=md.atoms)
+        energy_uncertainty_hist = ips.EnergyUncertaintyHistogram(data=md.atoms)
+        forces_uncertainty_hist = ips.ForcesUncertaintyHistogram(data=md.atoms)
 
-        uncertainty_selection = ips.configuration_selection.ThresholdSelection(
+        uncertainty_selection = ips.ThresholdSelection(
             data=md.atoms, n_configurations=1, threshold=0.0001
         )
 
-        ips.analysis.ModelEnsembleAnalysis(data=test_data.atoms, models=[model1, model2])
+        ips.ModelEnsembleAnalysis(data=test_data.atoms, models=[model1, model2])
 
-        prediction = ips.analysis.Prediction(data=test_data.atoms, model=ensemble_model)
-        prediction_metrics = ips.analysis.PredictionMetrics(
+        prediction = ips.Prediction(data=test_data.atoms, model=ensemble_model)
+        prediction_metrics = ips.PredictionMetrics(
             x=test_data.atoms, y=prediction.atoms
         )
 
@@ -71,10 +71,10 @@ def test_ensemble_model_stress(proj_path, traj_file):
         data = ips.AddData(file=traj_file)
         model1 = ips.calculators.EMTSinglePoint(data=data.atoms)
         model2 = ips.calculators.EMTSinglePoint(data=data.atoms)
-        ensemble_model = ips.models.EnsembleModel(models=[model1, model2])
+        ensemble_model = ips.EnsembleModel(models=[model1, model2])
 
-        prediction = ips.analysis.Prediction(model=ensemble_model, data=data.atoms)
-        analysis = ips.analysis.PredictionMetrics(x=data.atoms, y=prediction.atoms)
+        prediction = ips.Prediction(model=ensemble_model, data=data.atoms)
+        analysis = ips.PredictionMetrics(x=data.atoms, y=prediction.atoms)
 
     project.repro()
 

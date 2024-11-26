@@ -120,10 +120,10 @@ class MultiPackmol(Packmol):
 
     >>> import ipsuite as ips
     >>> with ips.Project() as project:
-    ...     water = ips.configuration_generation.SmilesToConformers(
+    ...     water = ips.SmilesToConformers(
     ...         smiles='O', numConfs=100
     ...         )
-    ...     boxes = ips.configuration_generation.MultiPackmol(
+    ...     boxes = ips.MultiPackmol(
     ...         data=[water.atoms], count=[10], density=997, n_configurations=10
     ...         )
     >>> project.repro()

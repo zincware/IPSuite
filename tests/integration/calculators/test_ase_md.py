@@ -14,7 +14,7 @@ def test_ase_run_md(proj_path, cu_box):
         atoms.extend(cu_box)
 
     ase.io.write("cu_box.xyz", atoms)
-    check = ips.analysis.TemperatureCheck()
+    check = ips.TemperatureCheck()
     thermostat = ips.calculators.LangevinThermostat(
         time_step=1,
         temperature=1,
@@ -79,7 +79,7 @@ def test_ase_run_md(proj_path, cu_box):
 
 def test_ase_md_target_density(proj_path, cu_box):
     ase.io.write("cu_box.xyz", cu_box)
-    check = ips.analysis.TemperatureCheck()
+    check = ips.TemperatureCheck()
     thermostat = ips.calculators.LangevinThermostat(
         time_step=1,
         temperature=1,
@@ -268,7 +268,7 @@ def test_locality_test(proj_path, cu_box):
             constraints=[constraints[1]],
         )
 
-        ips.analysis.AnalyseSingleForceSensitivity(
+        ips.AnalyseSingleForceSensitivity(
             data=[md1, md2],
             sim_list=[md1, md2],
         )
