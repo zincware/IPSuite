@@ -32,7 +32,7 @@ class REMatch(ConfigurationComparison):
     alpha: float = zntrack.params(1.0)
     threshold: float = zntrack.params(1e-6)
 
-    def _post_init_(self):
+    def __post_init__(self):
         """Initialise the REMatchKernel instance."""
         self.re = REMatchKernel(
             metric=self.metric, alpha=self.alpha, threshold=self.threshold

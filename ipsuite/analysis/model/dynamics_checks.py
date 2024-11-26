@@ -49,7 +49,7 @@ class ConnectivityCheck(base.Check):
     bonded_min_dist: float = zntrack.params(0.6)
     bonded_max_dist: float = zntrack.params(2.0)
 
-    def _post_init_(self) -> None:
+    def __post_init__(self) -> None:
         self.nl = None
         self.first_cm = None
 
@@ -120,7 +120,7 @@ class EnergySpikeCheck(base.Check):
     min_factor: float = zntrack.params(0.5)
     max_factor: float = zntrack.params(2.0)
 
-    def _post_init_(self) -> None:
+    def __post_init__(self) -> None:
         self.max_energy = None
         self.min_energy = None
 
@@ -217,7 +217,7 @@ class ThresholdCheck(base.Check):
     minimum_window_size: int = zntrack.params(1)
     larger_only: bool = zntrack.params(False)
 
-    def _post_init_(self):
+    def __post_init__(self):
         if self.max_std is None and self.max_value is None:
             raise ValueError("Either max_std or max_value must be set")
 

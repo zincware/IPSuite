@@ -90,7 +90,7 @@ class PredictionMetrics(base.ComparePredictions):
 
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
 
-    def _post_init_(self):
+    def __post_init__(self):
         self.content = {}
 
     def _post_load_(self):
@@ -289,7 +289,7 @@ class CalibrationMetrics(base.ComparePredictions):
 
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
 
-    def _post_init_(self):
+    def __post_init__(self):
         self.content = {}
         self.force_dist_slices = []
 

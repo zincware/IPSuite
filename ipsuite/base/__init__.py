@@ -8,7 +8,6 @@ from ipsuite.base.base import (
     Flatten,
     IPSNode,
     Mapping,
-    Modifier,
     ProcessAtoms,
     ProcessSingleAtom,
 )
@@ -20,7 +19,6 @@ __all__ = [
     "AnalyseAtoms",
     "protocol",
     "Mapping",
-    "Modifier",
     "Check",
     "IPSNode",
     "Flatten",

@@ -19,7 +19,7 @@ class DebugCheck(base.Check):
 
     n_iterations: int = zntrack.params(10)
 
-    def _post_init_(self) -> None:
+    def __post_init__(self) -> None:
         self.counter = 0
         self.status = self.__class__.__name__
 

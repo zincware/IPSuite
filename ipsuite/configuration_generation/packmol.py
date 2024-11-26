@@ -51,7 +51,7 @@ class Packmol(base.IPSNode):
     atoms: list[ase.Atoms] = fields.Atoms()
     pbc: bool = zntrack.params(True)
 
-    def _post_init_(self):
+    def __post_init__(self):
         if self.box is None and self.density is None:
             raise ValueError("Either box or density must be set.")
         if len(self.data) != len(self.count):

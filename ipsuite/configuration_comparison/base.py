@@ -14,6 +14,7 @@ import znjson
 import zntrack
 from dscribe.descriptors import SOAP
 from tqdm import trange
+from zntrack.config import NodeStatusEnum
 
 from ipsuite import base
 
@@ -154,10 +155,10 @@ class ConfigurationComparison(base.IPSNode):
     soap_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "soap_representation.hdf5")
     
 
-    def _post_init_(self):
+    def __post_init__(self):
         if self.soap is None:
             soap = {}
-        if not self.state.loaded:
+        if not self.state.state == NodeStatusEnum.RUNNING:
             self.soap = SOAPParameter(**soap)
 
 

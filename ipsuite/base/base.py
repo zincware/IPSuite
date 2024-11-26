@@ -192,16 +192,6 @@ class Check(IPSNode):
         return self.status
 
 
-class Modifier(IPSNode):
-    """Base class for modifier nodes.
-    These are callbacks that can be used to alter the dynamics of an MD run.
-    This can be achieved by modifying the thermostat state or atoms in the system.
-    """
-
-    @abc.abstractmethod
-    def modify(self, thermostat: IPSNode, step: int, total_steps: int) -> None: ...
-
-
 class Flatten(ProcessAtoms):
     """Flattens list[list[ase.Atoms]] to list[ase.Atoms]"""
 

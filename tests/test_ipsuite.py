@@ -1,5 +1,6 @@
 """Test 'IPSuite' version."""
 
+import dataclasses
 import ipsuite as ips
 
 
@@ -11,4 +12,6 @@ def test_version():
 def test_node_imports():
     """Test that all nodes are imported correctly."""
     for node in ips.nodes.__all__:
-        assert issubclass(getattr(ips.nodes, node), ips.base.IPSNode)
+        subclass = issubclass(getattr(ips.nodes, node), ips.base.IPSNode)
+        dataclass = dataclasses.is_dataclass(getattr(ips.nodes, node))
+        assert subclass or dataclass

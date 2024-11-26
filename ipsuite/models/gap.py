@@ -20,6 +20,7 @@ import znflow
 import zntrack
 from jinja2 import Template
 from znjson import ConverterBase
+from zntrack.config import NodeStatusEnum
 
 from ipsuite import static_data
 from ipsuite.models import MLModel
@@ -220,8 +221,8 @@ class GAP(MLModel):
     OPENBLAS_NUM_THREADS: str | None = zntrack.params(None)
 
     #
-    def _post_init_(self):
-        if not self.state.loaded:
+    def __post_init__(self):
+        if not self.state.state == NodeStatusEnum.RUNNING:
             if self.soap is None:
                 self.soap = {}
             if self.gap is None:

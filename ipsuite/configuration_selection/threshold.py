@@ -71,11 +71,9 @@ class ThresholdSelection(ConfigurationSelection):
     dim_reduction: str = zntrack.params(None)
     reduction_axis: list[int] = zntrack.params((1, 2))
 
-    def _post_init_(self):
+    def __post_init__(self):
         if self.threshold is None and self.n_configurations is None:
             raise ValueError("Either 'threshold' or 'n_configurations' must not be None.")
-
-        return super()._post_init_()
 
     def select_atoms(
         self, atoms_lst: typing.List[ase.Atoms], save_fig: bool = True
