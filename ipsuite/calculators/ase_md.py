@@ -25,6 +25,7 @@ from ipsuite.utils.ase_sim import freeze_copy_atoms, get_box_from_density, get_e
 
 log = logging.getLogger(__name__)
 
+
 @dataclasses.dataclass
 class RescaleBoxModifier:
     cell: int | None = None
@@ -36,6 +37,7 @@ class RescaleBoxModifier:
             raise ValueError("Only one of density or cell can be given.")
         if self.density is None and self.cell is None:
             raise ValueError("Either density or cell has to be given.")
+
     # Currently not possible due to a ZnTrack bug
 
     def modify(self, thermostat, step, total_steps):
@@ -56,6 +58,7 @@ class RescaleBoxModifier:
         percentage = step / (total_steps - 1)
         new_cell = (1 - percentage) * self._initial_cell + percentage * self.cell
         thermostat.atoms.set_cell(new_cell, scale_atoms=True)
+
 
 @dataclasses.dataclass
 class BoxOscillatingRampModifier:
@@ -135,6 +138,7 @@ class BoxOscillatingRampModifier:
         if step % self.interval == 0:
             thermostat.atoms.set_cell(new_cell, scale_atoms=True)
 
+
 @dataclasses.dataclass
 class TemperatureRampModifier:
     """Ramp the temperature from start_temperature to temperature.
@@ -170,6 +174,7 @@ class TemperatureRampModifier:
         if step % self.interval == 0:
             thermostat.set_temperature(temperature_K=new_temperature)
 
+
 @dataclasses.dataclass
 class TemperatureOscillatingRampModifier:
     """Ramp the temperature from start_temperature to temperature with some oscillations.
@@ -191,7 +196,7 @@ class TemperatureOscillatingRampModifier:
     end_temperature: float
     temperature_amplitude: float
     num_oscillations: float
-    start_temperature: float | None  = None
+    start_temperature: float | None = None
     interval: int = 1
 
     def modify(self, thermostat, step, total_steps):
@@ -214,6 +219,7 @@ class TemperatureOscillatingRampModifier:
 
         if step % self.interval == 0:
             thermostat.set_temperature(temperature_K=new_temperature)
+
 
 @dataclasses.dataclass
 class PressureRampModifier:
@@ -246,6 +252,7 @@ class PressureRampModifier:
         if step % self.interval == 0:
             thermostat.set_stress(new_pressure)
 
+
 @dataclasses.dataclass
 class LangevinThermostat:
     """Initialize the langevin thermostat
@@ -276,6 +283,7 @@ class LangevinThermostat:
         )
         return thermostat
 
+
 @dataclasses.dataclass
 class VelocityVerletDynamic:
     """Initialize the Velocity Verlet dynamics
@@ -294,6 +302,7 @@ class VelocityVerletDynamic:
             timestep=self.time_step * units.fs,
         )
         return dyn
+
 
 @dataclasses.dataclass
 class NPTThermostat:
@@ -358,6 +367,7 @@ class NPTThermostat:
         thermostat.set_fraction_traceless(self.fraction_traceless)
         return thermostat
 
+
 @dataclasses.dataclass
 class SVCRBarostat:
     """Initialize the CSVR thermostat
@@ -381,10 +391,10 @@ class SVCRBarostat:
 
     time_step: int
     temperature: float
-    betaT: float = 4.57e-5 
-    pressure_au: float = 1.01325 
-    taut: float = 100 
-    taup: float = 1000 
+    betaT: float = 4.57e-5
+    pressure_au: float = 1.01325
+    taut: float = 100
+    taup: float = 1000
 
     def get_thermostat(self, atoms):
         thermostat = StochasticVelocityCellRescaling(
@@ -397,6 +407,7 @@ class SVCRBarostat:
             taup=self.taup * units.fs,
         )
         return thermostat
+
 
 @dataclasses.dataclass
 class FixedSphereConstraint:
@@ -443,6 +454,7 @@ class FixedSphereConstraint:
 
         indices = np.nonzero(d_ij[selected_atom_id] < self.radius)[0]
         return ase.constraints.FixAtoms(indices=indices)
+
 
 @dataclasses.dataclass
 class FixedLayerConstraint:

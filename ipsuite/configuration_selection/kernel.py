@@ -13,7 +13,7 @@ import zntrack
 from ipsuite.configuration_selection.base import ConfigurationSelection
 
 if typing.TYPE_CHECKING:
-    import ipsuite
+    pass
 
 
 log = logging.getLogger(__name__)

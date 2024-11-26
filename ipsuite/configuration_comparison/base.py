@@ -153,14 +153,12 @@ class ConfigurationComparison(base.IPSNode):
     use_jit: bool = zntrack.params(True)
 
     soap_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "soap_representation.hdf5")
-    
 
     def __post_init__(self):
         if self.soap is None:
             soap = {}
         if not self.state.state == NodeStatusEnum.RUNNING:
             self.soap = SOAPParameter(**soap)
-
 
     def save_representation(self):
         """Save the SOAP descriptor representation as hdf5 file to save RAM.

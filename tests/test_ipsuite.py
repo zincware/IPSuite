@@ -1,6 +1,7 @@
 """Test 'IPSuite' version."""
 
 import dataclasses
+
 import ipsuite as ips
 
 

@@ -5,7 +5,6 @@ import typing
 
 import ase
 import tqdm
-import znflow
 import zntrack
 
 from ipsuite import fields

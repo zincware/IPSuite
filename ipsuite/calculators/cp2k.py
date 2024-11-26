@@ -12,7 +12,6 @@ import shutil
 import subprocess
 import typing
 from unittest.mock import patch
-import typing as t
 
 import ase.calculators.cp2k
 import ase.io

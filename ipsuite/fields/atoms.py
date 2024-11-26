@@ -1,23 +1,14 @@
 """Lazy ASE Atoms loading."""
 
-import functools
 import pathlib
 
 import h5py
-import znfields
 import znh5md
 from zntrack import Node
 from zntrack.config import (
     NOT_AVAILABLE,
-    ZNTRACK_CACHE,
-    ZNTRACK_FIELD_DUMP,
-    ZNTRACK_FIELD_LOAD,
-    ZNTRACK_FIELD_SUFFIX,
-    ZNTRACK_INDEPENDENT_OUTPUT_TYPE,
-    ZNTRACK_OPTION,
     ZnTrackOptionEnum,
 )
-from zntrack.plugins import base_getter, plugin_getter
 from zntrack.fields.base import field
 
 CWD = pathlib.Path(__file__).parent.resolve()
@@ -34,6 +25,7 @@ def _frames_save_func(self: Node, name: str, suffix: str) -> None:
     io = znh5md.IO(filename=file)
     io.create_file()
     io.extend(getattr(self, name))
+
 
 def Atoms(*, cache: bool = True, independent: bool = False, **kwargs):
     return field(
