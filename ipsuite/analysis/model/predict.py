@@ -728,7 +728,7 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
         self.true = {"trans": [], "rot": [], "vib": []}
         self.pred = {"trans": [], "rot": [], "vib": []}
         self.uncertainties = {"trans": [], "rot": [], "vib": []}
-        
+
         nproc = os.getenv("IPSUITE_NPROC", multiprocessing.cpu_count())
         process_pool = ProcessPoolExecutor(nproc)
 
@@ -741,7 +741,7 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
             mininterval=0.25,
         )
         for result in process_pool.map(decompose_force_uncertainty, self.x, self.y):
-        # for i in range(len(self.x)):
+            # for i in range(len(self.x)):
             result = decompose_force_uncertainty(self.x[i], self.y[i])
             true, pred, unc = result
             trans_true, rot_true, vib_true = true
