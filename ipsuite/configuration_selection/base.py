@@ -36,20 +36,20 @@ class ConfigurationSelection(base.IPSNode):
         typing.Dict[str, typing.List[int]], base.protocol.HasSelectedConfigurations
     ] = zntrack.deps(None)
     exclude: typing.Union[zntrack.Node, typing.List[zntrack.Node]] = zntrack.deps(None)
-    selected_configurations: typing.Dict[str, typing.List[int]] = zntrack.outs()
+    selected_configurations: typing.Dict[str, typing.List[int]] = zntrack.outs(independent=True)
 
     img_selection: Path = zntrack.outs_path(zntrack.nwd / "selection.png")
 
     _name_ = "ConfigurationSelection"
 
-    def __post_init__(self):
-        if self.data is not None and not isinstance(self.data, dict):
-            try:
-                self.data = znflow.combine(
-                    self.data, attribute="atoms", return_dict_attr="name"
-                )
-            except TypeError:
-                self.data = znflow.combine(self.data, attribute="atoms")
+    # def __post_init__(self):
+    #     if self.data is not None and not isinstance(self.data, dict):
+    #         try:
+    #             self.data = znflow.combine(
+    #                 self.data, attribute="atoms", return_dict_attr="name"
+    #             )
+    #         except TypeError:
+    #             self.data = znflow.combine(self.data, attribute="atoms")
 
     def get_data(self) -> list[ase.Atoms]:
         """Get the atoms data to process."""
@@ -123,6 +123,7 @@ class ConfigurationSelection(base.IPSNode):
                             if idx in self.selected_configurations[key]:
                                 results.append(atoms)
             else:
+                print(data)
                 raise ValueError(f"Data must be a list or dict, not {type(data)}")
             return results
 

@@ -101,7 +101,7 @@ class TranslateMolecules(Bootstrap):
         else:
             atoms_list = []
 
-        mapping = ips.geometry.BarycenterMapping(data=None)
+        mapping = ips.geometry.BarycenterMapping()
 
         _, molecules = mapping.forward_mapping(atoms)
         for _ in range(self.n_configurations):
@@ -139,7 +139,7 @@ class RotateMolecules(Bootstrap):
         if self.maximum > 2 * np.pi:
             log.warning("Setting maximum to 2 Pi.")
 
-        mapping = ips.geometry.BarycenterMapping(data=None)
+        mapping = ips.geometry.BarycenterMapping()
 
         _, molecules = mapping.forward_mapping(atoms)
         for _ in range(self.n_configurations):

@@ -14,7 +14,7 @@ def test_ase_run_md(proj_path, cu_box):
         atoms.extend(cu_box)
 
     ase.io.write("cu_box.xyz", atoms)
-    checker = ips.analysis.TemperatureCheck()
+    check = ips.analysis.TemperatureCheck()
     thermostat = ips.calculators.LangevinThermostat(
         time_step=1,
         temperature=1,
@@ -32,7 +32,7 @@ def test_ase_run_md(proj_path, cu_box):
         md = ips.calculators.ASEMD(
             data=data.atoms,
             model=model,
-            checks=[checker],
+            checks=[check],
             modifiers=[rescale_box, temperature_ramp],
             thermostat=thermostat,
             steps=30,
@@ -43,7 +43,7 @@ def test_ase_run_md(proj_path, cu_box):
             data=data.atoms,
             data_ids=[0, 1, 2],
             model=model,
-            checks=[checker],
+            checks=[check],
             modifiers=[rescale_box, temperature_ramp],
             thermostat=thermostat,
             steps=30,
@@ -53,7 +53,7 @@ def test_ase_run_md(proj_path, cu_box):
         md2 = ips.calculators.ASEMD(
             data=data.atoms,
             model=model,
-            checks=[checker],
+            checks=[check],
             modifiers=[rescale_box, temperature_ramp],
             thermostat=barostat,
             steps=30,
@@ -79,7 +79,7 @@ def test_ase_run_md(proj_path, cu_box):
 
 def test_ase_md_target_density(proj_path, cu_box):
     ase.io.write("cu_box.xyz", cu_box)
-    checker = ips.analysis.TemperatureCheck()
+    check = ips.analysis.TemperatureCheck()
     thermostat = ips.calculators.LangevinThermostat(
         time_step=1,
         temperature=1,
@@ -93,7 +93,7 @@ def test_ase_md_target_density(proj_path, cu_box):
         md = ips.calculators.ASEMD(
             data=data.atoms,
             model=model,
-            checks=[checker],
+            checks=[check],
             modifiers=[rescale_box],
             thermostat=thermostat,
             steps=30,
@@ -246,7 +246,7 @@ def test_locality_test(proj_path, cu_box):
         ),
     ]
 
-    with ips.Project(automatic_node_names=True) as project:
+    with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
         model = ips.calculators.EMTSinglePoint(data=data.atoms)
         md1 = ips.calculators.ASEMD(

@@ -71,11 +71,11 @@ class ASEGeoOpt(base.ProcessSingleAtom):
                 db.extend(atoms_cache)
                 atoms_cache = []
 
-            for checker in self.checks:
-                stop.append(checker.check(atoms))
+            for check in self.checks:
+                stop.append(check.check(atoms))
                 if stop[-1]:
                     log.critical(
-                        f"\n {type(checker).__name__} returned false."
+                        f"\n {type(check).__name__} returned false."
                         "Simulation was stopped."
                     )
 

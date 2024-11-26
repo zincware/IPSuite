@@ -32,22 +32,8 @@ def _frames_getter(self: Node, name: str, suffix: str) -> None:
 def _frames_save_func(self: Node, name: str, suffix: str) -> None:
     file = (self.nwd / name).with_suffix(suffix)
     io = znh5md.IO(filename=file)
+    io.create_file()
     io.extend(getattr(self, name))
-
-
-# def Atoms(*, cache: bool = True, independent: bool = False, **kwargs) -> znfields.field:
-#     kwargs["metadata"] = kwargs.get("metadata", {})
-#     # kwargs["metadata"][ZNTRACK_OPTION] = ZnTrackOptionEnum.OUTS
-#     # kwargs["metadata"][ZNTRACK_CACHE] = cache
-#     # kwargs["metadata"][ZNTRACK_INDEPENDENT_OUTPUT_TYPE] = independent
-#     # kwargs["metadata"][ZNTRACK_FIELD_LOAD] = functools.partial(
-#     #     base_getter, func=_frames_getter
-#     # )
-#     # kwargs["metadata"][ZNTRACK_FIELD_DUMP] = _frames_save_func
-#     # kwargs["metadata"][ZNTRACK_FIELD_SUFFIX] = ".h5"
-#     return znfields.field(
-#         default=NOT_AVAILABLE, getter=plugin_getter, **kwargs, init=False
-#     )
 
 def Atoms(*, cache: bool = True, independent: bool = False, **kwargs):
     return field(

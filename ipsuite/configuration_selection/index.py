@@ -16,10 +16,18 @@ class IndexSelection(ConfigurationSelection):
     indices: list[int]|slice|
     """
 
-    indices: list[int] = zntrack.params()
+    indices: list[int] | None = zntrack.params(None)
+    start: int | None = zntrack.params(None)
+    stop: int | None = zntrack.params(None)
+    step: int | None = zntrack.params(None)
 
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
         """Select Atoms randomly."""
-        if isinstance(self.indices, list):
-            return self.indices
-        return list(range(len(atoms_lst)))[self.indices]
+        if self.indices:
+            if isinstance(self.indices, typing.Iterable):
+                return self.indices
+            else:
+                raise ValueError("indices must be an iterable of integers")
+        else:
+            idx_slice = slice(self.start, self.stop, self.step)
+            return list(range(len(atoms_lst)))[idx_slice]

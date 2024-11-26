@@ -222,20 +222,20 @@ class GAP(MLModel):
 
     #
     def __post_init__(self):
-        if not self.state.state == NodeStatusEnum.RUNNING:
-            if self.soap is None:
-                self.soap = {}
-            if self.gap is None:
-                self.gap = {}
-            if self.distance_nb is None:
-                self.distance_nb = {}
+        # if not self.state.state == NodeStatusEnum.CREATED:
+        #     if self.soap is None:
+        #         self.soap = {}
+        #     if self.gap is None:
+        #         self.gap = {}
+        #     if self.distance_nb is None:
+        #         self.distance_nb = {}
 
-            if isinstance(self.soap, dict):
-                self.soap = SOAP(**self.soap)
-            if isinstance(self.gap, dict):
-                self.gap = GapParameter(**self.gap)
-            if isinstance(self.distance_nb, dict):
-                self.distance_nb = DistanceNb(**self.distance_nb)
+        if isinstance(self.soap, dict):
+            self.soap = dataclasses.asdict(SOAP(**self.soap))
+        if isinstance(self.gap, dict):
+            self.gap = dataclasses.asdict(GapParameter(**self.gap))
+        if isinstance(self.distance_nb, dict):
+            self.distance_nb = dataclasses.asdict(DistanceNb(**self.distance_nb))
 
     def run(self):
         """Create output directory and train the model."""

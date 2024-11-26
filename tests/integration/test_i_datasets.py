@@ -8,12 +8,11 @@ def test_md22():
         response = requests.get(url)
         assert response.status_code == 200
 
-    project = ips.Project(automatic_node_names=True)
+    project = ips.Project()
 
     with project:
         data = ips.datasets.MD22Dataset("AT-AT")
 
     project.run()
 
-    data.load()
     assert len(data.atoms) > 0

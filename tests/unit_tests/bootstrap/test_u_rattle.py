@@ -104,10 +104,10 @@ def test_rotate_molecules_with_calc(proj_path, traj_file):
 
     n_configurations = 10
 
-    model = ips.calculators.EMTSinglePoint(data=None)
-
     with ips.Project() as project:
         data = ips.AddData(file=traj_file.name)
+
+        model = ips.calculators.EMTSinglePoint(data=None)
 
         rattle = ips.bootstrap.RotateMolecules(
             data=data.atoms,
@@ -117,9 +117,7 @@ def test_rotate_molecules_with_calc(proj_path, traj_file):
             seed=0,
             model=model,
         )
-    project.run()
-
-    rattle.load()
+    project.repro()
 
     # assert all entries in the atoms[x] list have a different potential energy
 

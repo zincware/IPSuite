@@ -1,3 +1,4 @@
+import dataclasses
 import ase
 import numpy as np
 import pytest
@@ -6,7 +7,7 @@ import zntrack
 import ipsuite as ips
 from ipsuite import base
 
-
+@dataclasses.dataclass
 class DebugCheck(base.Check):
     """A check that interrupts the dynamics after a fixed amount of iterations.
     For testing purposes.
@@ -17,7 +18,7 @@ class DebugCheck(base.Check):
         number of iterations before stopping
     """
 
-    n_iterations: int = zntrack.params(10)
+    n_iterations: int = 10
 
     def __post_init__(self) -> None:
         self.counter = 0

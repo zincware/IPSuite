@@ -119,7 +119,7 @@ class MultiPackmol(Packmol):
         >>> tmp_path = utils.docs.create_dvc_git_env_for_doctest()
 
     >>> import ipsuite as ips
-    >>> with ips.Project(automatic_node_names=True) as project:
+    >>> with ips.Project() as project:
     ...     water = ips.configuration_generation.SmilesToConformers(
     ...         smiles='O', numConfs=100
     ...         )

@@ -39,13 +39,18 @@ class EMTSinglePoint(base.ProcessAtoms):
     """
 
     def run(self):
-        self.atoms = self.get_data()
 
-        calculator = self.get_calculator()
+        if self.data:
+            self.atoms = self.get_data()
 
-        for atom in tqdm.tqdm(self.atoms, ncols=70):
-            atom.calc = calculator
-            atom.get_potential_energy()
+            calculator = self.get_calculator()
+
+            for atom in tqdm.tqdm(self.atoms, ncols=70):
+                atom.calc = calculator
+                atom.get_potential_energy()
+
+        else:
+            self.atoms = []
 
     def get_calculator(self, **kwargs):
         """Get an EMT ase calculator."""

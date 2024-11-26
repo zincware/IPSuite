@@ -4,7 +4,7 @@ import ipsuite as ips
 
 
 def test_mix_calculators(proj_path, traj_file):
-    with ips.Project(automatic_node_names=True) as proj:
+    with ips.Project() as proj:
         data = ips.AddData(file=traj_file)
         lj1 = ips.calculators.LJSinglePoint(data=data.atoms)
         lj2 = ips.calculators.LJSinglePoint(data=data.atoms)
@@ -48,7 +48,7 @@ def test_mix_calculator_external(proj_path, traj_file):
     lj1 = ips.calculators.LJSinglePoint(data=None)
     lj2 = ips.calculators.LJSinglePoint(data=None)
 
-    with ips.Project(automatic_node_names=True) as proj:
+    with ips.Project() as proj:
         data = ips.AddData(traj_file)
         lj3 = ips.calculators.LJSinglePoint(data=data.atoms)
 

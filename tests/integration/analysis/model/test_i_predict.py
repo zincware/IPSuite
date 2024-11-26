@@ -8,7 +8,7 @@ os.environ["OPENBLAS_NUM_THREADS"] = "1"
 def test_calibration(data_repo):
     water = ips.data_loading.AddDataH5MD.from_rev(name="water")
 
-    with ips.Project(automatic_node_names=True) as project:
+    with ips.Project() as project:
         test_data = ips.configuration_selection.RandomSelection(
             data=water.atoms, n_configurations=5
         )

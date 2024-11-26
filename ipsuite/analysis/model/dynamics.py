@@ -109,7 +109,7 @@ class BoxScale(base.ProcessSingleAtom):
 
     model: models.MLModel = zntrack.deps()
     model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model")
-    mapping: base.Mapping = zntrack.deps(None)
+    mapping: typing.Any | None = zntrack.deps(None)
 
     stop: float = zntrack.params(2.0)
     num: int = zntrack.params(100)

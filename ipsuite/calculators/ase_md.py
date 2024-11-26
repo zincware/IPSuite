@@ -608,10 +608,10 @@ class ASEMD(base.IPSNode):
             "temperature": [],
             "step": [],
         }
-        for checker in self.checks:
-            checker.initialize(atoms)
-            if checker.get_quantity() is not None:
-                metrics_dict[checker.get_quantity()] = []
+        for check in self.checks:
+            check.initialize(atoms)
+            if check.get_quantity() is not None:
+                metrics_dict[check.get_quantity()] = []
 
         # Run simulation
         sampling_iterations = self.steps / self.sampling_rate
@@ -653,10 +653,10 @@ class ASEMD(base.IPSNode):
 
                     thermostat.run(1)
 
-                    for checker in self.checks:
-                        stop.append(checker.check(atoms))
+                    for check in self.checks:
+                        stop.append(check.check(atoms))
                         if stop[-1]:
-                            log.critical(str(checker))
+                            log.critical(str(check))
 
                     if any(stop):
                         break
@@ -697,6 +697,8 @@ class ASEMD(base.IPSNode):
 
         atoms = self.get_atoms()
         metrics_dict, _ = self.run_md(atoms=atoms)
+
+        self.structures = []
 
         self.metrics_dict = pd.DataFrame(metrics_dict)
 
@@ -740,9 +742,9 @@ def update_metrics_dict(atoms, metrics_dict, checks, step):
     metrics_dict["energy"].append(energy)
     metrics_dict["temperature"].append(temperature)
     metrics_dict["step"].append(step)
-    for checker in checks:
-        metric = checker.get_value(atoms)
+    for check in checks:
+        metric = check.get_value(atoms)
         if metric is not None:
-            metrics_dict[checker.get_quantity()].append(metric)
+            metrics_dict[check.get_quantity()].append(metric)
 
     return metrics_dict

@@ -2,35 +2,35 @@ import os
 
 import ase
 import numpy as np
+import zntrack
 
 import ipsuite as ips
 
 os.environ["OPENBLAS_NUM_THREADS"] = "1"
 
 
-def test_ensemble_model(data_repo):
-    water = ips.data_loading.AddDataH5MD.from_rev(name="water")
+def test_ensemble_model(proj_path ,traj_file):
 
     thermostat = ips.calculators.LangevinThermostat(
         time_step=1.0, temperature=100.0, friction=0.01
     )
 
-    with ips.Project(automatic_node_names=True) as project:
+    with ips.Project() as project:
+        data = ips.AddData(file=traj_file)
         test_data = ips.configuration_selection.RandomSelection(
-            data=water.atoms, n_configurations=5
+            data=data.atoms, n_configurations=5
         )
 
         train_data = ips.configuration_selection.RandomSelection(
-            data=water.atoms,
+            data=data.atoms,
             n_configurations=5,
             exclude_configurations=test_data.selected_configurations,
         )
 
-        model1 = ips.models.GAP(data=train_data.atoms, soap={"n_max": 2})
-        model2 = ips.models.GAP(data=train_data.atoms, soap={"n_max": 3})
-        model3 = ips.models.GAP(data=train_data.atoms, soap={"n_max": 4})
+        model1 = ips.models.GAP(data=train_data.atoms, soap={"n_max": 1}, use_stresses=False)
+        model2 = ips.models.GAP(data=train_data.atoms, soap={"n_max": 2}, use_stresses=False)
 
-        ensemble_model = ips.models.EnsembleModel(models=[model1, model2, model3])
+        ensemble_model = ips.models.EnsembleModel(models=[model1, model2])
 
         md = ips.calculators.ASEMD(
             data=test_data.atoms,
@@ -44,11 +44,11 @@ def test_ensemble_model(data_repo):
         forces_uncertainty_hist = ips.analysis.ForcesUncertaintyHistogram(data=md.atoms)
 
         uncertainty_selection = ips.configuration_selection.ThresholdSelection(
-            data=md, n_configurations=1, threshold=0.0001
+            data=md.atoms, n_configurations=1, threshold=0.0001
         )
 
         ips.analysis.ModelEnsembleAnalysis(
-            data=test_data.atoms, models=[model1, model2, model3]
+            data=test_data.atoms, models=[model1, model2]
         )
 
         prediction = ips.analysis.Prediction(data=test_data.atoms, model=ensemble_model)
@@ -59,25 +59,25 @@ def test_ensemble_model(data_repo):
     project.repro()
 
     uncertainties = [x.calc.results["energy_uncertainty"] for x in md.atoms]
+    # https://github.com/zincware/ZnTrack/pull/854
+    uncertainty_selection = zntrack.from_rev(name=uncertainty_selection.name)
     assert [md.atoms[np.argmax(uncertainties)]] == uncertainty_selection.atoms
 
 
-def test_ensemble_model_stress(proj_path, cu_box):
-    ase.io.write("cu_box.xyz", cu_box)
+def test_ensemble_model_stress(proj_path, traj_file):
 
-    with ips.Project(automatic_node_names=True) as project:
-        data = ips.AddData(file="cu_box.xyz")
+    with ips.Project() as project:
+        data = ips.AddData(file=traj_file)
         model1 = ips.calculators.EMTSinglePoint(data=data.atoms)
         model2 = ips.calculators.EMTSinglePoint(data=data.atoms)
         ensemble_model = ips.models.EnsembleModel(models=[model1, model2])
 
-        prediction = ips.analysis.Prediction(model=ensemble_model, data=model1.atoms)
-        analysis = ips.analysis.PredictionMetrics(x=model1.atoms, y=prediction.atoms)
+        prediction = ips.analysis.Prediction(model=ensemble_model, data=data.atoms)
+        analysis = ips.analysis.PredictionMetrics(x=data.atoms, y=prediction.atoms)
 
     project.repro()
 
-    analysis.load()
-
-    assert (len(analysis.content["stress_pred"])) > 0
-    assert (len(analysis.content["stress_hydro_pred"])) > 0
-    assert (len(analysis.content["stress_deviat_pred"])) > 0
+    content = analysis.get_content()
+    assert (len(content["stress_pred"])) > 0
+    assert (len(content["stress_hydro_pred"])) > 0
+    assert (len(content["stress_deviat_pred"])) > 0
