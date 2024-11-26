@@ -1,6 +1,7 @@
 """Use index selection to test the selection base."""
 
 import pytest
+import zntrack
 
 import ipsuite as ips
 
@@ -72,6 +73,7 @@ def test_index_chained(proj_path, traj_file):
         histogram = ips.analysis.EnergyHistogram(data=selection.atoms)
 
     project.repro()
+    histogram = zntrack.from_rev(name=histogram.name)
     assert histogram.labels_df.to_dict()["bin_edges"][0] == pytest.approx(
         0.3333333333333333
     )
