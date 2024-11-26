@@ -171,7 +171,7 @@ class GapParameterConverter(ConverterBase):
         return GapParameter(**value)
 
 
-config.register([SOAPConverter, DistanceNbConverter, GapParameterConverter])
+# config.register([SOAPConverter, DistanceNbConverter, GapParameterConverter])
 
 
 class GAP(MLModel):

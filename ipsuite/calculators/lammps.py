@@ -51,8 +51,8 @@ class LammpsSimulator(base.ProcessSingleAtom):
     skiprun: bool = False
 
     # outputs
-    dump_file = zntrack.outs_path(zntrack.nwd / "NPT.lammpstraj")
-    log_file = zntrack.outs_path(zntrack.nwd / "NPT.log")
+    dump_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "NPT.lammpstraj")
+    log_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "NPT.log")
 
     lmp_params: str = zntrack.params_path()
     lmp_template: str = zntrack.deps_path()
