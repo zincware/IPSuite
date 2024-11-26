@@ -4,6 +4,7 @@
 [![Documentation Status](https://readthedocs.org/projects/ipsuite/badge/?version=latest)](https://ipsuite.readthedocs.io/en/latest/?badge=latest)
 [![DOI](https://img.shields.io/badge/DOI-10.1021/acs.jpcb.3c07187-red)](https://pubs.acs.org/doi/10.1021/acs.jpcb.3c07187)
 [![PyPI version](https://badge.fury.io/py/ipsuite.svg)](https://badge.fury.io/py/ipsuite)
+[![Discord](https://img.shields.io/discord/1034511611802689557)](https://discord.gg/7ncfwhsnm4)
 
 # IPS - The Inter Atomic Potential Suite
 
