@@ -36,7 +36,7 @@ def compute_rot_forces(mol, key: str = "forces"):
 
     I_ab = compute_intertia_tensor(mol_positions, masses)
     I_ab_inv = np.linalg.inv(I_ab)
-    
+
     masses = masses[:, None]
     mi_ri = masses * mol_positions
 
@@ -45,14 +45,16 @@ def compute_rot_forces(mol, key: str = "forces"):
         mol_positions = mol_positions[..., None]
         contraction_idxs = "ab, nb -> na"
 
-    f_x_r = np.sum(np.cross(mol.calc.results[key], mol_positions, axisa=1, axisb=1), axis=0)    
+    f_x_r = np.sum(
+        np.cross(mol.calc.results[key], mol_positions, axisa=1, axisb=1), axis=0
+    )
 
     # Iinv_fxr = I_ab_inv @ f_x_r but batched for ensembles
     Iinv_fxr = np.einsum(contraction_idxs, I_ab_inv, f_x_r)
 
     if key == "forces_ensemble":
         result = np.cross(mi_ri[:, None, :], Iinv_fxr[None, :, :], axisa=2, axisb=2)
-        result = np.transpose(result, (0,2,1))
+        result = np.transpose(result, (0, 2, 1))
     else:
         result = np.cross(mi_ri, Iinv_fxr)
     return result
