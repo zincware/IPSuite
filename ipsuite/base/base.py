@@ -10,7 +10,8 @@ from ipsuite import fields
 
 
 class IPSNode(zntrack.Node):
-    _module_ = "ipsuite.nodes"
+    """Base class for all IPSuite nodes."""
+
 
 
 class ProcessAtoms(IPSNode):

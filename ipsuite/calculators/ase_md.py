@@ -500,7 +500,7 @@ class ASEMD(base.IPSNode):
         The ids of the atoms object to process. Only relevant if the
         mapped function is used.
         ```
-        mapped_asemd = zn.apply(ips.nodes.ASEMD, method='map')(**kwargs)
+        mapped_asemd = zn.apply(ips.ASEMD, method='map')(**kwargs)
         ```
     checks: list[Check]
         checks, which track various metrics and stop the

@@ -4,14 +4,14 @@ import ipsuite as ips
 
 
 def test_md22():
-    for url in ips.datasets.MD22Dataset.datasets.values():
+    for url in ips.MD22Dataset.datasets.values():
         response = requests.get(url)
         assert response.status_code == 200
 
     project = ips.Project()
 
     with project:
-        data = ips.datasets.MD22Dataset(dataset="AT-AT")
+        data = ips.MD22Dataset(dataset="AT-AT")
 
     project.repro()
 
