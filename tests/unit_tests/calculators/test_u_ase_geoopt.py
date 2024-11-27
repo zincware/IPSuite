@@ -1,41 +1,6 @@
-import dataclasses
-import pathlib
-
 import ase
 import numpy as np
-import pytest
-import zntrack
-
 import ipsuite as ips
-from ipsuite import base
-
-module_path = str(pathlib.Path(__file__).resolve())
-
-
-@dataclasses.dataclass
-class DebugCheck(base.Check):
-    """A check that interrupts the dynamics after a fixed amount of iterations.
-    For testing purposes.
-
-    Attributes
-    ----------
-    n_iterations: int
-        number of iterations before stopping
-    """
-
-    _module_ = "?"
-
-    n_iterations: int = 10
-
-    def __post_init__(self) -> None:
-        self.counter = 0
-        self.status = self.__class__.__name__
-
-    def check(self, atoms):
-        if self.counter >= self.n_iterations:
-            return True
-        self.counter += 1
-        return False
 
 
 def test_ase_geoopt(proj_path, cu_box):
@@ -45,7 +10,7 @@ def test_ase_geoopt(proj_path, cu_box):
 
     n_iterations = 5
 
-    check = DebugCheck(n_iterations=n_iterations)
+    check = ips.DebugCheck(n_iterations=n_iterations)
     # The issue is, that we can not run `ImportError: {'module': 'calculators.test_u_ase_geoopt', 'cls': 'DebugCheck'}`
 
     model = ips.LJSinglePoint()

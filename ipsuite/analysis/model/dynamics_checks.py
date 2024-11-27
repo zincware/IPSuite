@@ -11,6 +11,32 @@ from ipsuite.utils.ase_sim import get_energy
 
 
 @dataclasses.dataclass
+class DebugCheck(base.Check):
+    """A check that interrupts the dynamics after a fixed amount of iterations.
+    For testing purposes.
+
+    Attributes
+    ----------
+    n_iterations: int
+        number of iterations before stopping
+    """
+
+    _module_ = "?"
+
+    n_iterations: int = 10
+
+    def __post_init__(self) -> None:
+        self.counter = 0
+        self.status = self.__class__.__name__
+
+    def check(self, atoms):
+        if self.counter >= self.n_iterations:
+            return True
+        self.counter += 1
+        return False
+
+
+@dataclasses.dataclass
 class NaNCheck(base.Check):
     """Check Node to see whether positions, energies or forces become NaN
     during a simulation.
