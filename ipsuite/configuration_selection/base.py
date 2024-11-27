@@ -65,12 +65,12 @@ class ConfigurationSelection(base.IPSNode):
         raise NotImplementedError
 
     @property
-    def atoms(self) -> typing.Sequence[ase.Atoms]:
+    def atoms(self) -> list[ase.Atoms]:
         """Get a list of the selected atoms objects."""
         return [atoms for i, atoms in enumerate(self.data) if i in self.selected_ids]
 
     @property
-    def excluded_atoms(self) -> typing.Sequence[ase.Atoms]:
+    def excluded_atoms(self) -> list[ase.Atoms]:
         """Get a list of the atoms objects that were not selected."""
         return [atoms for i, atoms in enumerate(self.data) if i not in self.selected_ids]
 
