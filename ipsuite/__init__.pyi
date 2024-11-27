@@ -66,9 +66,6 @@ from .calculators import (
     xTBSinglePoint,
 )
 
-# Configuration Comparison
-from .configuration_comparison import MMKernel, REMatch
-
 # Configuration Generation
 from .configuration_generation import (
     MultiPackmol,
@@ -82,7 +79,6 @@ from .configuration_generation import (
 from .configuration_selection import (
     FilterOutlier,
     IndexSelection,
-    KernelSelection,
     RandomSelection,
     SplitSelection,
     ThresholdSelection,
@@ -118,7 +114,6 @@ __all__ = [
     "EnsembleModel",
     # Configuration Selection
     "IndexSelection",
-    "KernelSelection",
     "RandomSelection",
     "SplitSelection",
     "UniformArangeSelection",
@@ -126,9 +121,6 @@ __all__ = [
     "UniformTemporalSelection",
     "ThresholdSelection",
     "FilterOutlier",
-    # Configuration Comparison
-    "REMatch",
-    "MMKernel",
     # Configuration Generation
     "Packmol",
     "MultiPackmol",
