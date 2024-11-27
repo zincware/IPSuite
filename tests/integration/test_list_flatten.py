@@ -22,9 +22,9 @@ def test_ase_md(proj_path, cu_box):
     )
     rescale_box = ips.RescaleBoxModifier(cell=10)
     temperature_ramp = ips.TemperatureRampModifier(temperature=300)
+    model = ips.EMTSinglePoint()
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
-        model = ips.EMTSinglePoint(data=data.atoms)
         mapped_md = zn.apply(ips.ASEMD, method="map")(
             data=data.atoms,
             data_ids=[0, 1, 2],
@@ -39,8 +39,5 @@ def test_ase_md(proj_path, cu_box):
         flat_md = ips.Flatten(data=mapped_md.structures)
 
     project.repro()
-
-    mapped_md.load()
-    flat_md.load()
 
     assert len(mapped_md.atoms) == len(flat_md.atoms)

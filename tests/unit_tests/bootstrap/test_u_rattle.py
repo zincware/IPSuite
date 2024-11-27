@@ -104,10 +104,10 @@ def test_rotate_molecules_with_calc(proj_path, traj_file):
 
     n_configurations = 10
 
+    model = ips.EMTSinglePoint()
     with ips.Project() as project:
         data = ips.AddData(file=traj_file.name)
 
-        model = ips.EMTSinglePoint(data=None)
 
         rattle = ips.bootstrap.RotateMolecules(
             data=data.atoms,

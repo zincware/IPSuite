@@ -84,9 +84,9 @@ def test_ase_md_target_density(proj_path, cu_box):
     )
     rescale_box = ips.RescaleBoxModifier(density=1000)
 
+    model = ips.EMTSinglePoint()
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
-        model = ips.EMTSinglePoint(data=data.atoms)
         md = ips.ASEMD(
             data=data.atoms,
             model=model,
@@ -116,9 +116,9 @@ def test_ase_md_box_ramp(proj_path, cu_box):
         cell_amplitude=2.0,
         num_oscillations=1.0,
     )
+    model = ips.EMTSinglePoint()
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
-        model = ips.EMTSinglePoint(data=data.atoms)
         md = ips.ASEMD(
             data=data.atoms,
             model=model,
@@ -154,9 +154,9 @@ def test_ase_npt(proj_path, cu_box):
         temperature_amplitude=20.0,
         num_oscillations=2.0,
     )
+    model = ips.EMTSinglePoint()
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
-        model = ips.EMTSinglePoint(data=data.atoms)
         md = ips.ASEMD(
             data=data.atoms,
             model=model,
@@ -189,9 +189,9 @@ def test_ase_md_fixed_sphere(proj_path, cu_box):
         radius=2.6,
     )
 
+    model = ips.EMTSinglePoint()
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
-        model = ips.EMTSinglePoint(data=data.atoms)
         md = ips.ASEMD(
             data=data.atoms,
             model=model,
@@ -236,9 +236,9 @@ def test_locality_test(proj_path, cu_box):
         ),
     ]
 
+    model = ips.EMTSinglePoint()
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
-        model = ips.EMTSinglePoint(data=data.atoms)
         md1 = ips.ASEMD(
             data=data.atoms,
             model=model,
