@@ -6,7 +6,7 @@ os.environ["OPENBLAS_NUM_THREADS"] = "1"
 
 
 def test_calibration(data_repo):
-    water = ips.AddDataH5MD.from_rev(name="water")
+    water = ips.AddDataH5MD.from_rev(name="water", remote="https://github.com/IPSProjects/ips-examples")
 
     with ips.Project() as project:
         test_data = ips.RandomSelection(data=water.atoms, n_configurations=5)
@@ -17,8 +17,8 @@ def test_calibration(data_repo):
             exclude_configurations=test_data.selected_configurations,
         )
 
-        model1 = ips.GAP(data=train_data.atoms, soap={"n_max": 2})
-        model2 = ips.GAP(data=train_data.atoms, soap={"n_max": 3})
+        model1 = ips.GAP(data=train_data.atoms, soap={"n_max": 1})
+        model2 = ips.GAP(data=train_data.atoms, soap={"n_max": 2})
 
         ensemble_model = ips.EnsembleModel(models=[model1, model2])
 

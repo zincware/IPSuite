@@ -5,6 +5,7 @@ import ase.io
 import numpy as np
 import pytest
 from ase.calculators.singlepoint import SinglePointCalculator
+import zntrack
 
 import ipsuite
 
@@ -40,6 +41,8 @@ def test_PredictWithModel(trained_model):
         )
     project.repro()
 
+    analysis = zntrack.from_rev(name=analysis.name)
+
     assert np.any(
         np.not_equal(analysis.data[0].get_forces(), analysis.atoms[0].get_forces())
     )
@@ -62,7 +65,7 @@ def test_AnalysePrediction(trained_model):
     project, model, validation_selection = trained_model
 
     with project:
-        prediction = ipsuite.analysis.Prediction(model=model, data=validation_selection)
+        prediction = ipsuite.analysis.Prediction(model=model, data=validation_selection.atoms)
         analysis = ipsuite.analysis.PredictionMetrics(
             x=validation_selection.atoms, y=prediction.atoms
         )
@@ -133,6 +136,7 @@ def test_MDStabilityAnalysis(trained_model):
         )
 
     project.repro()
+    analysis = zntrack.from_rev(name=analysis.name)
+    validation_selection = zntrack.from_rev(name=validation_selection.name)
 
-    validation_selection.load()
     assert len(analysis.atoms) == len(validation_selection.atoms)

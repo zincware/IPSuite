@@ -1,3 +1,4 @@
+import dataclasses
 import tqdm
 from ase.calculators.calculator import all_changes
 from ase.calculators.emt import EMT
@@ -6,24 +7,17 @@ from ase.calculators.singlepoint import PropertyNotImplementedError
 
 from ipsuite import base
 
-
-class LJSinglePoint(base.ProcessAtoms):
+@dataclasses.dataclass
+class LJSinglePoint:
     """This is a testing Node!
     It uses ASE'S Lennard-Jones calculator with default arguments.
     The calculator accept all elements and implements energy, forces and stress,
     making it very useful for creating dummy data.
     """
+    epsilon: float = 1.0
+    sigma: float = 1.0
+    rc: float = 10.0
 
-    def run(self):
-        self.atoms = self.get_data()
-
-        for atom in tqdm.tqdm(self.atoms, ncols=70):
-            atom.calc = self.get_calculator()
-            atom.get_potential_energy()
-            try:
-                atom.get_stress()
-            except PropertyNotImplementedError:
-                pass
 
     def get_calculator(self, **kwargs):
         """Get an LJ ase calculator."""
