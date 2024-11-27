@@ -10,11 +10,11 @@ from ipsuite.analysis.bond_stretch import BondStretchAnalyses
 from ipsuite.analysis.ensemble import ModelEnsembleAnalysis
 from ipsuite.analysis.md import AnalyseDensity
 from ipsuite.analysis.model import (
-    DebugCheck,
     BoxHeatUp,
     BoxScale,
     CalibrationMetrics,
     ConnectivityCheck,
+    DebugCheck,
     EnergySpikeCheck,
     ForceAngles,
     ForceDecomposition,
