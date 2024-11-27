@@ -40,6 +40,7 @@ __all__ = [
     "BoxScale",
     "EnergySpikeCheck",
     "ConnectivityCheck",
+    "DebugCheck",
     "NaNCheck",
     "MDStability",
     "TemperatureCheck",

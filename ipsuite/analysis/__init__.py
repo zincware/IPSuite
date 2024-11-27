@@ -44,6 +44,7 @@ __all__ = [
     "CalibrationMetrics",
     "BoxScale",
     "BoxHeatUp",
+    "DebugCheck",
     "NaNCheck",
     "TemperatureCheck",
     "ConnectivityCheck",

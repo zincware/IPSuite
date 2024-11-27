@@ -261,7 +261,7 @@ class PredictionMetrics(base.ComparePredictions):
 
     def get_content(self):
         with self.state.fs.open(self.data_file, mode="rb") as f:
-            content = {k: v for k, v in np.load(f).items()}
+            content = dict(np.load(f))
             return content
 
 
