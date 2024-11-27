@@ -19,8 +19,12 @@ class LJSinglePoint:
 
     def get_calculator(self, **kwargs):
         """Get an LJ ase calculator."""
-
-        return LennardJones()
+        calc = LennardJones(
+            epsilon=self.epsilon,
+            sigma=self.sigma,
+            rc=self.rc,
+        )
+        return calc
 
 
 @dataclasses.dataclass
