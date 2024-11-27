@@ -14,8 +14,8 @@ from ipsuite.analysis.model.dynamics import (
     RattleAnalysis,
 )
 from ipsuite.analysis.model.dynamics_checks import (
-    DebugCheck,
     ConnectivityCheck,
+    DebugCheck,
     EnergySpikeCheck,
     NaNCheck,
     TemperatureCheck,
