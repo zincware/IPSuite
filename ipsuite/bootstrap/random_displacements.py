@@ -141,7 +141,7 @@ class RotateMolecules(Bootstrap):
 
         mapping = ips.geometry.BarycenterMapping()
 
-        _, molecules = mapping.forward_mapping(atoms)
+        _, molecules = mapping.forward_mapping(atoms.copy())
         for _ in range(self.n_configurations):
             molecule_lst = []
             for molecule in molecules:

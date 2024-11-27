@@ -84,9 +84,6 @@ def test_rotate_molecules(proj_path, traj_file, include_original):
             seed=0,
         )
     project.repro()
-
-    data.load()
-    rattle.load()
     rattled_atoms = rattle.atoms
 
     desired_num_configs = n_configurations
@@ -95,7 +92,7 @@ def test_rotate_molecules(proj_path, traj_file, include_original):
 
     assert len(rattled_atoms) == desired_num_configs
     with pytest.raises(RuntimeError):
-        assert rattle.atoms[0].get_potential_energy() != 0.0
+        assert rattle.atoms[1].get_potential_energy() != 0.0
 
 
 def test_rotate_molecules_with_calc(proj_path, traj_file):
