@@ -7,11 +7,9 @@ from pathlib import Path
 import ase
 import matplotlib.pyplot as plt
 import numpy as np
-import znflow
 import zntrack
 
 from ipsuite import base
-from ipsuite.utils import combine
 
 log = logging.getLogger(__name__)
 
