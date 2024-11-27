@@ -103,8 +103,6 @@ from .models import GAP, EnsembleModel
 from .project import Project
 from .version import __version__
 
-# Configuration Comparison
-
 # Update __all__ for lazy loading
 __all__ = [
     "__version__",

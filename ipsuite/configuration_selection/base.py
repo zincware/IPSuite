@@ -29,7 +29,7 @@ class ConfigurationSelection(base.IPSNode):
     """
 
     data: list[ase.Atoms] = zntrack.deps()
-    selected_ids: list[int] = zntrack.outs()
+    selected_ids: list[int] = zntrack.outs(independent=True)
 
     img_selection: Path = zntrack.outs_path(zntrack.nwd / "selection.png")
 
