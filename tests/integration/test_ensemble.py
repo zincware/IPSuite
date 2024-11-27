@@ -57,10 +57,9 @@ def test_ensemble_model(proj_path, traj_file):
 
 
 def test_ensemble_model_stress(proj_path, traj_file):
-
     model1 = ips.EMTSinglePoint()
     model2 = ips.EMTSinglePoint()
-    
+
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
         ensemble_model = ips.EnsembleModel(models=[model1, model2])

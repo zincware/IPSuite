@@ -24,6 +24,7 @@ class ASEGeoOpt(base.IPSNode):
     maxstep: int, optional
         Maximum number of steps to perform.
     """
+
     data: typing.List[ase.Atoms] = zntrack.deps()
     data_id: int = zntrack.params(-1)
 

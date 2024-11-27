@@ -1,11 +1,8 @@
 import dataclasses
 
-import tqdm
 from ase.calculators.calculator import all_changes
 from ase.calculators.emt import EMT
 from ase.calculators.lj import LennardJones
-
-from ipsuite import base
 
 
 @dataclasses.dataclass
@@ -24,6 +21,8 @@ class LJSinglePoint:
         """Get an LJ ase calculator."""
 
         return LennardJones()
+
+
 @dataclasses.dataclass
 class EMTSinglePoint:
     """This is a testing Node!
