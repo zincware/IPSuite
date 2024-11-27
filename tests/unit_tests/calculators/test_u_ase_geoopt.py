@@ -12,7 +12,6 @@ def test_ase_geoopt(proj_path, cu_box):
     n_iterations = 5
 
     check = ips.DebugCheck(n_iterations=n_iterations)
-    # The issue is, that we can not run `ImportError: {'module': 'calculators.test_u_ase_geoopt', 'cls': 'DebugCheck'}`
 
     model = ips.LJSinglePoint()
 
