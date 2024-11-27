@@ -11,6 +11,7 @@ from ipsuite import base
 
 module_path = str(pathlib.Path(__file__).resolve())
 
+
 @dataclasses.dataclass
 class DebugCheck(base.Check):
     """A check that interrupts the dynamics after a fixed amount of iterations.
@@ -21,7 +22,8 @@ class DebugCheck(base.Check):
     n_iterations: int
         number of iterations before stopping
     """
-    _module_ = "?" 
+
+    _module_ = "?"
 
     n_iterations: int = 10
 

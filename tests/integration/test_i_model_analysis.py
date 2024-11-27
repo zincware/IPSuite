@@ -4,8 +4,8 @@ import random
 import ase.io
 import numpy as np
 import pytest
-from ase.calculators.singlepoint import SinglePointCalculator
 import zntrack
+from ase.calculators.singlepoint import SinglePointCalculator
 
 import ipsuite
 
@@ -65,7 +65,9 @@ def test_AnalysePrediction(trained_model):
     project, model, validation_selection = trained_model
 
     with project:
-        prediction = ipsuite.analysis.Prediction(model=model, data=validation_selection.atoms)
+        prediction = ipsuite.analysis.Prediction(
+            model=model, data=validation_selection.atoms
+        )
         analysis = ipsuite.analysis.PredictionMetrics(
             x=validation_selection.atoms, y=prediction.atoms
         )

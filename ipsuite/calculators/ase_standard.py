@@ -1,11 +1,12 @@
 import dataclasses
+
 import tqdm
 from ase.calculators.calculator import all_changes
 from ase.calculators.emt import EMT
 from ase.calculators.lj import LennardJones
-from ase.calculators.singlepoint import PropertyNotImplementedError
 
 from ipsuite import base
+
 
 @dataclasses.dataclass
 class LJSinglePoint:
@@ -14,10 +15,10 @@ class LJSinglePoint:
     The calculator accept all elements and implements energy, forces and stress,
     making it very useful for creating dummy data.
     """
+
     epsilon: float = 1.0
     sigma: float = 1.0
     rc: float = 10.0
-
 
     def get_calculator(self, **kwargs):
         """Get an LJ ase calculator."""

@@ -357,6 +357,7 @@ class MDStability(base.IPSNode):
     bins: number of bins in the histogram
     seed: seed for the MaxwellBoltzmann distribution
     """
+
     data: list[ase.Atoms] = zntrack.deps()
 
     model: typing.Any = zntrack.deps()
