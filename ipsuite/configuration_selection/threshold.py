@@ -115,20 +115,15 @@ class ThresholdSelection(ConfigurationSelection):
             else:
                 indices = np.argsort(values)
 
-        selection = self.get_selection(indices)
-
-        return selection
-
-    def get_selection(self, indices):
-        selected = []
+        selection = []
         for val in indices:
             # If the value is close to any of the already selected values, skip it.
-            if not any(np.abs(val - np.array(selected)) < self.min_distance):
-                selected.append(val)
-            if len(selected) == self.n_configurations:
+            if not any(np.abs(val - np.array(selection)) < self.min_distance):
+                selection.append(int(val))
+            if len(selection) == self.n_configurations:
                 break
 
-        return selected
+        return selection
 
     def _get_plot(self, atoms_lst: typing.List[ase.Atoms], indices: typing.List[int]):
         indices = np.array(indices)

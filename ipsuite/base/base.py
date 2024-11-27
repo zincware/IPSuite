@@ -56,8 +56,8 @@ class ProcessSingleAtom(IPSNode):
         starting from a single atoms object.
     """
 
-    data: typing.Union[ase.Atoms, typing.List[ase.Atoms]] = zntrack.deps()
-    data_id: typing.Optional[int] = zntrack.params(0)
+    data: typing.List[ase.Atoms] = zntrack.deps()
+    data_id: int = zntrack.params(-1)
 
     atoms: typing.List[ase.Atoms] = fields.Atoms()
 
@@ -69,14 +69,7 @@ class ProcessSingleAtom(IPSNode):
         ase.Atoms
             The atoms object to process
         """
-        if self.data is not None:
-            if isinstance(self.data, (list, collections.abc.Sequence)):
-                atoms = self.data[self.data_id].copy()
-            else:
-                atoms = self.data.copy()
-        else:
-            raise ValueError("No data given.")
-        return atoms
+        return self.data[self.data_id]
 
 
 class AnalyseAtoms(IPSNode):

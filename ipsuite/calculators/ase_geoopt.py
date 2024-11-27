@@ -14,7 +14,7 @@ from ipsuite.utils.ase_sim import freeze_copy_atoms
 log = logging.getLogger(__name__)
 
 
-class ASEGeoOpt(base.ProcessSingleAtom):
+class ASEGeoOpt(base.IPSNode):
     """Class to run a geometry optimization with ASE.
 
     Parameters
@@ -24,6 +24,8 @@ class ASEGeoOpt(base.ProcessSingleAtom):
     maxstep: int, optional
         Maximum number of steps to perform.
     """
+    data: typing.List[ase.Atoms] = zntrack.deps()
+    data_id: int = zntrack.params(-1)
 
     model: typing.Any = zntrack.deps()
     model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model_outs")
@@ -49,7 +51,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
         calculator = self.model.get_calculator(directory=self.model_outs)
 
-        atoms = self.get_data()
+        atoms = self.data[self.data_id]
         atoms = atoms.repeat(self.repeat)
         atoms.calc = calculator
 

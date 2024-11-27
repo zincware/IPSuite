@@ -21,8 +21,6 @@ class DebugCheck(base.Check):
         number of iterations before stopping
     """
 
-    _module_ = "?"
-
     n_iterations: int = 10
 
     def __post_init__(self) -> None:

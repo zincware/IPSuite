@@ -24,27 +24,13 @@ class LJSinglePoint:
         """Get an LJ ase calculator."""
 
         return LennardJones()
-
-
-class EMTSinglePoint(base.ProcessAtoms):
+@dataclasses.dataclass
+class EMTSinglePoint:
     """This is a testing Node!
     It uses ASE'S EMT calculator with default arguments.
     The calculator accept all elements and implements energy, forces,
     making it very useful for creating dummy data.
     """
-
-    def run(self):
-        if self.data:
-            self.atoms = self.get_data()
-
-            calculator = self.get_calculator()
-
-            for atom in tqdm.tqdm(self.atoms, ncols=70):
-                atom.calc = calculator
-                atom.get_potential_energy()
-
-        else:
-            self.atoms = []
 
     def get_calculator(self, **kwargs):
         """Get an EMT ase calculator."""

@@ -8,16 +8,15 @@ def test_lj_single_point(proj_path, traj_file):
     traj_file = pathlib.Path(traj_file)
     shutil.copy(traj_file, ".")
 
+    lj = ips.LJSinglePoint()
+
     with ips.Project() as project:
         data = ips.AddData(file=traj_file.name)
+        pred = ips.Prediction(data=data.atoms, model=lj)
 
-        lj = ips.LJSinglePoint(
-            data=data.atoms,
-        )
     project.repro()
 
-    lj.load()
-    results = lj.atoms[0].calc.results
+    results = pred.atoms[0].calc.results
 
     assert "energy" in results.keys()
     assert "forces" in results.keys()

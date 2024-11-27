@@ -14,9 +14,8 @@ def test_calibration(data_repo):
         test_data = ips.RandomSelection(data=water.atoms, n_configurations=5)
 
         train_data = ips.RandomSelection(
-            data=water.atoms,
+            data=test_data.excluded_atoms,
             n_configurations=5,
-            exclude_configurations=test_data.selected_configurations,
         )
 
         model1 = ips.GAP(data=train_data.atoms, soap={"n_max": 1})

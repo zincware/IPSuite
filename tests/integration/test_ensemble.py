@@ -10,16 +10,17 @@ os.environ["OPENBLAS_NUM_THREADS"] = "1"
 
 
 def test_ensemble_model(proj_path, traj_file):
+    data = ips.AddDataH5MD.from_rev(
+        name="water", remote="https://github.com/IPSProjects/ips-examples"
+    )
     thermostat = ips.LangevinThermostat(time_step=1.0, temperature=100.0, friction=0.01)
 
     with ips.Project() as project:
-        data = ips.AddData(file=traj_file)
         test_data = ips.RandomSelection(data=data.atoms, n_configurations=5)
 
         train_data = ips.RandomSelection(
-            data=data.atoms,
+            data=test_data.excluded_atoms,
             n_configurations=5,
-            exclude_configurations=test_data.selected_configurations,
         )
 
         model1 = ips.GAP(data=train_data.atoms, soap={"n_max": 1}, use_stresses=False)
@@ -57,10 +58,11 @@ def test_ensemble_model(proj_path, traj_file):
 
 def test_ensemble_model_stress(proj_path, traj_file):
 
+    model1 = ips.EMTSinglePoint()
+    model2 = ips.EMTSinglePoint()
+    
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
-        model1 = ips.EMTSinglePoint(data=data.atoms)
-        model2 = ips.EMTSinglePoint(data=data.atoms)
         ensemble_model = ips.EnsembleModel(models=[model1, model2])
 
         prediction = ips.Prediction(model=ensemble_model, data=data.atoms)
