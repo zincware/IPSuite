@@ -13,7 +13,7 @@ import ipsuite as ips
     [
         (ips.RandomSelection, [2, 3, 13]),
         (ips.UniformEnergeticSelection, [0, 10, 20]),
-        # they are the same because energy is increasing uniformly
+        # # they are the same because energy is increasing uniformly
         (ips.UniformTemporalSelection, [0, 10, 20]),
     ],
 )
@@ -38,8 +38,7 @@ def test_UniformArangeSelection(proj_path, traj_file):
 
     project.repro()
 
-    selection = zntrack.from_rev(name=selection.name)
-    assert selection.selected_configurations == {"data1": [0, 10, 20], "data2": [9, 19]}
+    assert selection.selected_ids == [0, 10, 20, 30, 40]
 
 
 def test_SplitSelection(proj_path, traj_file):
@@ -52,8 +51,7 @@ def test_SplitSelection(proj_path, traj_file):
 
     project.repro()
 
-    selection = zntrack.from_rev(name=selection.name)
-    assert selection.selected_configurations == {"data1": list(range(12)), "data2": []}
+    assert selection.selected_ids == list(range(12))
 
 
 def test_KernelSelect(proj_path, traj_file):
