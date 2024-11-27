@@ -52,4 +52,3 @@ def test_SplitSelection(proj_path, traj_file):
     project.repro()
 
     assert selection.selected_ids == list(range(12))
-

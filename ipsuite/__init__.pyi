@@ -66,8 +66,6 @@ from .calculators import (
     xTBSinglePoint,
 )
 
-# Configuration Comparison
-
 # Configuration Generation
 from .configuration_generation import (
     MultiPackmol,
@@ -104,6 +102,8 @@ from .models import GAP, EnsembleModel
 # Project
 from .project import Project
 from .version import __version__
+
+# Configuration Comparison
 
 # Update __all__ for lazy loading
 __all__ = [
