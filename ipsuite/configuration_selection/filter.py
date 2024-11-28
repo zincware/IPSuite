@@ -1,5 +1,6 @@
 import typing as t
 
+import ase
 import matplotlib.pyplot as plt
 import numpy as np
 import zntrack
@@ -7,7 +8,7 @@ import zntrack
 from ipsuite import base
 
 
-class FilterOutlier(base.ProcessAtoms):
+class FilterOutlier(base.IPSNode):
     """Remove outliers from the data based on a given property.
 
     Attributes
@@ -20,6 +21,7 @@ class FilterOutlier(base.ProcessAtoms):
         The direction to filter in.
     """
 
+    data: list[ase.Atoms] = zntrack.deps()
     key: str = zntrack.params("energy")
     threshold: float = zntrack.params(3)
     direction: t.Literal["above", "below", "both"] = zntrack.params("both")

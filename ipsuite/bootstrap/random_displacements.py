@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 import ase
 import numpy as np
@@ -38,7 +39,7 @@ class Bootstrap(base.ProcessSingleAtom):
     include_original: bool = zntrack.params(True)
     seed: int = zntrack.params(0)
     model: base.IPSNode = zntrack.deps(None)
-    model_outs = zntrack.outs_path(zntrack.nwd / "model_outs")
+    model_outs: Path = zntrack.outs_path(zntrack.nwd / "model_outs")
 
     def run(self) -> None:
         atoms = self.get_data()
@@ -100,7 +101,7 @@ class TranslateMolecules(Bootstrap):
         else:
             atoms_list = []
 
-        mapping = ips.geometry.BarycenterMapping(data=None)
+        mapping = ips.geometry.BarycenterMapping()
 
         _, molecules = mapping.forward_mapping(atoms)
         for _ in range(self.n_configurations):
@@ -138,9 +139,9 @@ class RotateMolecules(Bootstrap):
         if self.maximum > 2 * np.pi:
             log.warning("Setting maximum to 2 Pi.")
 
-        mapping = ips.geometry.BarycenterMapping(data=None)
+        mapping = ips.geometry.BarycenterMapping()
 
-        _, molecules = mapping.forward_mapping(atoms)
+        _, molecules = mapping.forward_mapping(atoms.copy())
         for _ in range(self.n_configurations):
             molecule_lst = []
             for molecule in molecules:

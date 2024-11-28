@@ -1,24 +1,37 @@
 """Molecule Mapping using networkx"""
 
-import typing
+import dataclasses
+import typing as t
 
 import ase
 
-from ipsuite import base
 from ipsuite.geometry import barycenter_coarse_grain, graphs, unwrap
 
 
-class BarycenterMapping(base.Mapping):
+@dataclasses.dataclass
+class BarycenterMapping:
     """Node that "coarse grains" each molecule in a configuration into its center of mass.
     Useful for operations affecting intermolecular distance,
     but not intramolecular distances.
+
+
+    `Mapping` nodes can be used in a more functional manner when initialized
+    with `data=None` outside the project graph.
+    In that case, one can use the mapping methods but the Node itself does not store
+    the transformed configurations.
+
+    Attributes
+    ----------
+    frozen: bool
+        If True, the neighbor list is only constructed for the first configuration.
+        The indices of the molecules will be frozen for all configurations.
     """
 
-    _components = None
+    frozen: bool = False
 
-    def forward_mapping(
-        self, atoms: ase.Atoms
-    ) -> typing.Tuple[ase.Atoms, list[ase.Atoms]]:
+    _components: t.Any | None = None
+
+    def forward_mapping(self, atoms: ase.Atoms) -> tuple[ase.Atoms, list[ase.Atoms]]:
         if self._components is None:
             components = graphs.identify_molecules(atoms)
         else:

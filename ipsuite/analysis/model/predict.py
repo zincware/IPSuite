@@ -78,9 +78,9 @@ class PredictionMetrics(base.ComparePredictions):
 
     # TODO ADD OPTIONAL YMAX PARAMETER
 
-    figure_ymax: dict[str, float] = zntrack.params({})
+    figure_ymax: dict[str, float] = zntrack.params(default_factory=dict)
 
-    data_file = zntrack.outs_path(zntrack.nwd / "data.npz")
+    data_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "data.npz")
 
     energy: dict = zntrack.metrics()
     forces: dict = zntrack.metrics()
@@ -90,7 +90,7 @@ class PredictionMetrics(base.ComparePredictions):
 
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
 
-    def _post_init_(self):
+    def __post_init__(self):
         self.content = {}
 
     def _post_load_(self):
@@ -259,6 +259,11 @@ class PredictionMetrics(base.ComparePredictions):
         self.get_metrics()
         self.get_plots(save=True)
 
+    def get_content(self):
+        with self.state.fs.open(self.data_file, mode="rb") as f:
+            content = dict(np.load(f))
+            return content
+
 
 class CalibrationMetrics(base.ComparePredictions):
     """Analyse the calibration of a models uncertainty estimate.
@@ -283,13 +288,13 @@ class CalibrationMetrics(base.ComparePredictions):
 
     force_dist_slices: Optional[List[tuple]] = zntrack.params(None)
 
-    data_file = zntrack.outs_path(zntrack.nwd / "data.npz")
+    data_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "data.npz")
     energy: dict = zntrack.metrics()
     forces: dict = zntrack.metrics()
 
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
 
-    def _post_init_(self):
+    def __post_init__(self):
         self.content = {}
         self.force_dist_slices = []
 
@@ -432,8 +437,8 @@ class CalibrationMetrics(base.ComparePredictions):
 
 
 class ForceAngles(base.ComparePredictions):
-    plot: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "angle.png")
-    log_plot: pathlib.Path = zntrack.dvc.outs(zntrack.nwd / "angle_ylog.png")
+    plot: pathlib.Path = zntrack.outs_path(zntrack.nwd / "angle.png")
+    log_plot: pathlib.Path = zntrack.outs_path(zntrack.nwd / "angle_ylog.png")
 
     angles: dict = zntrack.metrics()
 
@@ -479,13 +484,13 @@ class ForceDecomposition(base.ComparePredictions):
     trans_forces: dict = zntrack.metrics()
     rot_forces: dict = zntrack.metrics()
     vib_forces: dict = zntrack.metrics()
-    wasserstein_distance = zntrack.metrics()
+    wasserstein_distance: dict = zntrack.metrics()
 
-    rot_force_plt = zntrack.outs_path(zntrack.nwd / "rot_force.png")
-    trans_force_plt = zntrack.outs_path(zntrack.nwd / "trans_force.png")
-    vib_force_plt = zntrack.outs_path(zntrack.nwd / "vib_force.png")
+    rot_force_plt: pathlib.Path = zntrack.outs_path(zntrack.nwd / "rot_force.png")
+    trans_force_plt: pathlib.Path = zntrack.outs_path(zntrack.nwd / "trans_force.png")
+    vib_force_plt: pathlib.Path = zntrack.outs_path(zntrack.nwd / "vib_force.png")
 
-    histogram_plt = zntrack.outs_path(zntrack.nwd / "histogram.png")
+    histogram_plt: pathlib.Path = zntrack.outs_path(zntrack.nwd / "histogram.png")
 
     def get_plots(self):
         fig = get_figure(
@@ -579,7 +584,7 @@ class ForceDecomposition(base.ComparePredictions):
         fig.savefig(self.histogram_plt, bbox_inches="tight")
 
     def run(self):
-        mapping = BarycenterMapping(data=None)
+        mapping = BarycenterMapping()
         # TODO make the force_decomposition return full forces
         # TODO check if you sum the forces they yield the full forces
         # TODO make mapping a 'zn.nodes' with Mapping(species="BF4")

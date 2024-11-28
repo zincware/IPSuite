@@ -14,7 +14,7 @@ from ipsuite.utils.ase_sim import freeze_copy_atoms
 log = logging.getLogger(__name__)
 
 
-class ASEGeoOpt(base.ProcessSingleAtom):
+class ASEGeoOpt(base.IPSNode):
     """Class to run a geometry optimization with ASE.
 
     Parameters
@@ -25,16 +25,19 @@ class ASEGeoOpt(base.ProcessSingleAtom):
         Maximum number of steps to perform.
     """
 
-    model = zntrack.deps()
-    model_outs = zntrack.outs_path(zntrack.nwd / "model_outs")
+    data: typing.List[ase.Atoms] = zntrack.deps()
+    data_id: int = zntrack.params(-1)
+
+    model: typing.Any = zntrack.deps()
+    model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model_outs")
     optimizer: str = zntrack.params("FIRE")
     checks: list = zntrack.deps(None)
     constraints: list = zntrack.deps(None)
 
-    repeat: list = zntrack.params([1, 1, 1])
-    run_kwargs: dict = zntrack.params({"fmax": 0.05})
-    init_kwargs: dict = zntrack.params({})
-    dump_rate = zntrack.params(1000)
+    repeat: list = zntrack.params((1, 1, 1))
+    run_kwargs: dict = zntrack.params(default_factory=lambda: {"fmax": 0.05})
+    init_kwargs: dict = zntrack.params(default_factory=dict)
+    dump_rate: int = zntrack.params(1000)
     maxstep: int = zntrack.params(None)
 
     traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
@@ -49,7 +52,7 @@ class ASEGeoOpt(base.ProcessSingleAtom):
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
         calculator = self.model.get_calculator(directory=self.model_outs)
 
-        atoms = self.get_data()
+        atoms = self.data[self.data_id]
         atoms = atoms.repeat(self.repeat)
         atoms.calc = calculator
 
@@ -70,11 +73,11 @@ class ASEGeoOpt(base.ProcessSingleAtom):
                 db.extend(atoms_cache)
                 atoms_cache = []
 
-            for checker in self.checks:
-                stop.append(checker.check(atoms))
+            for check in self.checks:
+                stop.append(check.check(atoms))
                 if stop[-1]:
                     log.critical(
-                        f"\n {type(checker).__name__} returned false."
+                        f"\n {type(check).__name__} returned false."
                         "Simulation was stopped."
                     )
 

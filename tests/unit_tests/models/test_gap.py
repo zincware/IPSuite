@@ -36,15 +36,15 @@ def traj_file_1(tmp_path_factory) -> str:
 
 def test_gap_input():
     gap = GAP(use_energy=True, use_forces=True, use_stresses=True, data=None)
-    reference_string = """gap_fite0_method=averageat_file=nodes/MLModel/train_atoms.extxyz
+    reference_string = """gap_fite0_method=averageat_file=nodes/GAP/train_atoms.extxyz
     gap={distance_Nborder=2cutoff=6.0covariance_type=ard_sedelta=0.1
     sparse_method=CUR_POINTSadd_species=Truen_sparse=50theta_uniform=1.0:soapl_max=7
     n_max=7cutoff=6.0atom_sigma=0.5zeta=4.0cutoff_transition_width=0.5delta=1.0
     covariance_type=dot_productn_sparse=50sparse_method=CUR_POINTSadd_species=True}
-    gp_file=nodes/MLModel/model/model.xmldefault_sigma={0.00010.010.010.01}
+    gp_file=nodes/GAP/model/model.xmldefault_sigma={0.00010.010.010.01}
     sparse_jitter=1e-10energy_parameter_name=energy
     force_parameter_name=forcesstress_parameter_name=stress
-    virial_parameter_name=DUMMY>>nodes/MLModel/model/GAP_dump.txt"""
+    virial_parameter_name=DUMMY>>nodes/GAP/model/GAP_dump.txt"""
     assert gap.gap_input[0].replace(" ", "") == reference_string.replace(" ", "").replace(
         "\n", ""
     )
@@ -55,8 +55,8 @@ def test_write_gap_training_data(traj_file_1, tmp_path):
     atoms = list(read(traj_file_1, ":10"))
     gap = GAP(data=None)
     gap.write_data_to_file(file=gap.train_data_file, atoms_list=atoms)
-    assert gap.train_data_file == pathlib.Path("nodes/MLModel/train_atoms.extxyz")
-    assert Path("nodes/MLModel/train_atoms.extxyz").is_file()
+    assert gap.train_data_file == pathlib.Path("nodes/GAP/train_atoms.extxyz")
+    assert Path("nodes/GAP/train_atoms.extxyz").is_file()
 
     test = list(read(gap.train_data_file, ":"))
     assert len(test) == 10

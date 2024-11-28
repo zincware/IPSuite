@@ -94,8 +94,8 @@ def _update_cmd(cp2k_cmd: str | None, env="IPSUITE_CP2K_SHELL") -> str:
 class CP2KYaml(base.ProcessSingleAtom):
     """Node for running CP2K Single point calculations."""
 
-    cp2k_bin: str = zntrack.meta.Text(None)
-    cp2k_params = zntrack.params_path("cp2k.yaml")
+    cp2k_bin: str | None = zntrack.params(None)
+    cp2k_params: pathlib.Path = zntrack.params_path("cp2k.yaml")
     wfn_restart: str = zntrack.deps_path(None)
 
     cp2k_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "cp2k")
@@ -184,14 +184,14 @@ class CP2KSinglePoint(base.ProcessAtoms):
         A cp2k Node that has a wfn restart file.
     """
 
-    cp2k_shell: str = zntrack.meta.Text(None)
-    cp2k_params = zntrack.params_path("cp2k.yaml")
-    cp2k_files = zntrack.deps_path(None)
+    cp2k_shell: str | None = zntrack.params(None)
+    cp2k_params: str = zntrack.params_path("cp2k.yaml")
+    cp2k_files: str = zntrack.deps_path(None)
 
     wfn_restart_file: str = zntrack.deps_path(None)
-    wfn_restart_node = zntrack.deps(None)
-    output_file = zntrack.outs_path(zntrack.nwd / "structures.h5")
-    cp2k_directory = zntrack.outs_path(zntrack.nwd / "cp2k")
+    wfn_restart_node: zntrack.Node = zntrack.deps(None)
+    output_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
+    cp2k_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "cp2k")
 
     def run(self):
         """ZnTrack run method.

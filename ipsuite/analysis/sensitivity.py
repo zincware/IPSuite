@@ -1,4 +1,5 @@
 import typing
+from pathlib import Path
 
 import ase.geometry
 import ase.io
@@ -39,16 +40,18 @@ def nonuniform_imshow(ax, x, y, z, aspect=1, cmap=plt.cm.rainbow):
 class MoveSingleParticle(base.IPSNode):
     """Move a single particle in a given direction."""
 
-    atoms_list = zntrack.deps()
-    atoms_list_id = zntrack.params(0)  # the atoms object in the atoms list
-    atom_id = zntrack.params(0)  # the atom id to move
-    scale = zntrack.params(0.5)  # the standard deviation of the normal distribution
-    seed = zntrack.params(1234)
+    atoms_list: typing.Any = zntrack.deps()
+    atoms_list_id: int = zntrack.params(0)  # the atoms object in the atoms list
+    atom_id: int = zntrack.params(0)  # the atom id to move
+    scale: float = zntrack.params(
+        0.5
+    )  # the standard deviation of the normal distribution
+    seed: int = zntrack.params(1234)
 
-    samples = zntrack.params(10)  # how many samples to take
+    samples: int = zntrack.params(10)  # how many samples to take
 
     atoms: list = zntrack.outs()
-    atoms_path = zntrack.outs_path(zntrack.nwd / "atoms")
+    atoms_path: Path = zntrack.outs_path(zntrack.nwd / "atoms")
 
     def run(self):
         """ZnTrack run method."""
@@ -66,8 +69,8 @@ class MoveSingleParticle(base.IPSNode):
 
 
 class AnalyseGlobalForceSensitivity(base.IPSNode):
-    atoms_list = zntrack.deps()
-    plots = zntrack.outs_path(zntrack.nwd / "plots")
+    atoms_list: list[ase.Atoms] = zntrack.deps()
+    plots: Path = zntrack.outs_path(zntrack.nwd / "plots")
 
     def run(self):
         # assume all atoms have only a single particle changed

@@ -30,7 +30,7 @@ def test_rattle_atoms(proj_path, traj_file, random, max_rattel_shift, cell_fract
             cell_fraction=cell_fraction,
             seed=0,
         )
-    project.run()
+    project.repro()
 
     data.load()
     scan.load()

@@ -23,7 +23,7 @@ def test_rattle_atoms(proj_path, traj_file, include_original):
             include_original=include_original,
             seed=0,
         )
-    project.run()
+    project.repro()
 
     data.load()
     rattle.load()
@@ -53,7 +53,7 @@ def test_translate_molecules(proj_path, traj_file, include_original):
             include_original=include_original,
             seed=0,
         )
-    project.run()
+    project.repro()
 
     data.load()
     rattle.load()
@@ -83,10 +83,7 @@ def test_rotate_molecules(proj_path, traj_file, include_original):
             include_original=include_original,
             seed=0,
         )
-    project.run()
-
-    data.load()
-    rattle.load()
+    project.repro()
     rattled_atoms = rattle.atoms
 
     desired_num_configs = n_configurations
@@ -95,7 +92,7 @@ def test_rotate_molecules(proj_path, traj_file, include_original):
 
     assert len(rattled_atoms) == desired_num_configs
     with pytest.raises(RuntimeError):
-        assert rattle.atoms[0].get_potential_energy() != 0.0
+        assert rattle.atoms[1].get_potential_energy() != 0.0
 
 
 def test_rotate_molecules_with_calc(proj_path, traj_file):
@@ -104,8 +101,7 @@ def test_rotate_molecules_with_calc(proj_path, traj_file):
 
     n_configurations = 10
 
-    model = ips.calculators.EMTSinglePoint(data=None)
-
+    model = ips.EMTSinglePoint()
     with ips.Project() as project:
         data = ips.AddData(file=traj_file.name)
 
@@ -117,9 +113,7 @@ def test_rotate_molecules_with_calc(proj_path, traj_file):
             seed=0,
             model=model,
         )
-    project.run()
-
-    rattle.load()
+    project.repro()
 
     # assert all entries in the atoms[x] list have a different potential energy
 

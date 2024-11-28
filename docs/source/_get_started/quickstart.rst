@@ -58,9 +58,9 @@ The goal is to place water molecules inside a box at a specified density.
 
     with ips.Project() as project:
         # Generate a single water molecule
-        mol = ips.configuration_generation.SmilesToAtoms(smiles="O")
+        mol = ips.SmilesToAtoms(smiles="O")
         # Duplicate water molecules
-        packmol = ips.configuration_generation.Packmol(
+        packmol = ips.Packmol(
             data=[mol.atoms], count=[10], density=876
             )
 

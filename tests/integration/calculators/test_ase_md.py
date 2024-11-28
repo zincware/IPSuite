@@ -14,46 +14,47 @@ def test_ase_run_md(proj_path, cu_box):
         atoms.extend(cu_box)
 
     ase.io.write("cu_box.xyz", atoms)
-    checker = ips.analysis.TemperatureCheck()
-    thermostat = ips.calculators.LangevinThermostat(
+    check = ips.TemperatureCheck()
+    thermostat = ips.LangevinThermostat(
         time_step=1,
         temperature=1,
         friction=1,
     )
-    barostat = ips.calculators.SVCRBarostat(
+    barostat = ips.SVCRBarostat(
         time_step=1,
         temperature=1,
     )
-    rescale_box = ips.calculators.RescaleBoxModifier(cell=10)
-    temperature_ramp = ips.calculators.TemperatureRampModifier(temperature=300)
+    rescale_box = ips.RescaleBoxModifier(cell=10)
+    temperature_ramp = ips.TemperatureRampModifier(temperature=300)
+    model = ips.LJSinglePoint()
+
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
-        model = ips.calculators.LJSinglePoint(data=data.atoms)
-        md = ips.calculators.ASEMD(
+        md = ips.ASEMD(
             data=data.atoms,
             model=model,
-            checks=[checker],
+            checks=[check],
             modifiers=[rescale_box, temperature_ramp],
             thermostat=thermostat,
             steps=30,
             sampling_rate=1,
             dump_rate=33,
         )
-        mapped_md = zn.apply(ips.calculators.ASEMD, method="map")(
+        mapped_md = zn.apply(ips.ASEMD, method="map")(
             data=data.atoms,
             data_ids=[0, 1, 2],
             model=model,
-            checks=[checker],
+            checks=[check],
             modifiers=[rescale_box, temperature_ramp],
             thermostat=thermostat,
             steps=30,
             sampling_rate=1,
             dump_rate=33,
         )
-        md2 = ips.calculators.ASEMD(
+        md2 = ips.ASEMD(
             data=data.atoms,
             model=model,
-            checks=[checker],
+            checks=[check],
             modifiers=[rescale_box, temperature_ramp],
             thermostat=barostat,
             steps=30,
@@ -61,9 +62,7 @@ def test_ase_run_md(proj_path, cu_box):
             dump_rate=33,
         )
 
-    project.run()
-
-    md.load()
+    project.repro()
 
     assert len(md.atoms) == 30
     assert md.atoms[0].cell[0, 0] == 7.22
@@ -71,29 +70,27 @@ def test_ase_run_md(proj_path, cu_box):
     assert md.atoms[1].cell[0, 0] < 10
     assert md.atoms[-1].cell[0, 0] == 10
 
-    mapped_md.load()
-
     assert len(mapped_md.atoms) == 30 * 3
     assert len(mapped_md.structures) == 3
 
 
 def test_ase_md_target_density(proj_path, cu_box):
     ase.io.write("cu_box.xyz", cu_box)
-    checker = ips.analysis.TemperatureCheck()
-    thermostat = ips.calculators.LangevinThermostat(
+    check = ips.TemperatureCheck()
+    thermostat = ips.LangevinThermostat(
         time_step=1,
         temperature=1,
         friction=1,
     )
-    rescale_box = ips.calculators.RescaleBoxModifier(density=1000)
+    rescale_box = ips.RescaleBoxModifier(density=1000)
 
+    model = ips.EMTSinglePoint()
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
-        model = ips.calculators.EMTSinglePoint(data=data.atoms)
-        md = ips.calculators.ASEMD(
+        md = ips.ASEMD(
             data=data.atoms,
             model=model,
-            checks=[checker],
+            checks=[check],
             modifiers=[rescale_box],
             thermostat=thermostat,
             steps=30,
@@ -101,29 +98,28 @@ def test_ase_md_target_density(proj_path, cu_box):
             dump_rate=33,
         )
 
-    project.run()
+    project.repro()
 
-    md.load()
     npt.assert_almost_equal(get_density_from_atoms(md.atoms[0]), 8971.719659196913)
     npt.assert_almost_equal(get_density_from_atoms(md.atoms[-1]), 1000)
 
 
 def test_ase_md_box_ramp(proj_path, cu_box):
     ase.io.write("cu_box.xyz", cu_box)
-    thermostat = ips.calculators.LangevinThermostat(
+    thermostat = ips.LangevinThermostat(
         time_step=1,
         temperature=1,
         friction=1,
     )
-    rescale_box = ips.calculators.BoxOscillatingRampModifier(
+    rescale_box = ips.BoxOscillatingRampModifier(
         end_cell=10.0,
         cell_amplitude=2.0,
         num_oscillations=1.0,
     )
+    model = ips.EMTSinglePoint()
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
-        model = ips.calculators.EMTSinglePoint(data=data.atoms)
-        md = ips.calculators.ASEMD(
+        md = ips.ASEMD(
             data=data.atoms,
             model=model,
             modifiers=[rescale_box],
@@ -133,9 +129,7 @@ def test_ase_md_box_ramp(proj_path, cu_box):
             dump_rate=33,
         )
 
-    project.run()
-
-    md.load()
+    project.repro()
 
     assert len(md.atoms) == 20
     assert md.atoms[0].cell[0, 0] == 7.22
@@ -146,7 +140,7 @@ def test_ase_md_box_ramp(proj_path, cu_box):
 
 def test_ase_npt(proj_path, cu_box):
     ase.io.write("cu_box.xyz", cu_box)
-    thermostat = ips.calculators.NPTThermostat(
+    thermostat = ips.NPTThermostat(
         time_step=1.0,
         temperature=300,
         pressure=1.01325 * units.bar,
@@ -155,15 +149,15 @@ def test_ase_npt(proj_path, cu_box):
         tetragonal_strain=True,
         fraction_traceless=0.0,
     )
-    temperature_ramp = ips.calculators.TemperatureOscillatingRampModifier(
+    temperature_ramp = ips.TemperatureOscillatingRampModifier(
         end_temperature=100.0,
         temperature_amplitude=20.0,
         num_oscillations=2.0,
     )
+    model = ips.EMTSinglePoint()
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
-        model = ips.calculators.EMTSinglePoint(data=data.atoms)
-        md = ips.calculators.ASEMD(
+        md = ips.ASEMD(
             data=data.atoms,
             model=model,
             modifiers=[temperature_ramp],
@@ -173,9 +167,7 @@ def test_ase_npt(proj_path, cu_box):
             dump_rate=33,
         )
 
-    project.run()
-
-    md.load()
+    project.repro()
 
     assert len(md.atoms) == 30
     assert md.atoms[0].cell[0, 0] == 7.22
@@ -186,21 +178,21 @@ def test_ase_npt(proj_path, cu_box):
 
 def test_ase_md_fixed_sphere(proj_path, cu_box):
     ase.io.write("cu_box.xyz", cu_box)
-    thermostat = ips.calculators.LangevinThermostat(
+    thermostat = ips.LangevinThermostat(
         time_step=1,
         temperature=1,
         friction=1,
     )
 
-    constraint = ips.calculators.FixedSphereConstraint(
+    constraint = ips.FixedSphereConstraint(
         atom_id=0,
         radius=2.6,
     )
 
+    model = ips.EMTSinglePoint()
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
-        model = ips.calculators.EMTSinglePoint(data=data.atoms)
-        md = ips.calculators.ASEMD(
+        md = ips.ASEMD(
             data=data.atoms,
             model=model,
             thermostat=thermostat,
@@ -210,9 +202,7 @@ def test_ase_md_fixed_sphere(proj_path, cu_box):
             constraints=[constraint],
         )
 
-    project.run()
-
-    md.load()
+    project.repro()
 
     assert np.sum(md.atoms[0][0].position - md.atoms[-1][0].position) < 1e-6
     # neighbor atoms should not move
@@ -229,27 +219,27 @@ def test_locality_test(proj_path, cu_box):
         For now this is just a test that the code runs.
     """
     ase.io.write("cu_box.xyz", cu_box)
-    thermostat = ips.calculators.LangevinThermostat(
+    thermostat = ips.LangevinThermostat(
         time_step=1,
         temperature=100,
         friction=1,
     )
 
     constraints = [
-        ips.calculators.FixedSphereConstraint(
+        ips.FixedSphereConstraint(
             atom_id=0,
             radius=1.0,
         ),
-        ips.calculators.FixedSphereConstraint(
+        ips.FixedSphereConstraint(
             atom_id=0,
             radius=3.0,
         ),
     ]
 
-    with ips.Project(automatic_node_names=True) as project:
+    model = ips.EMTSinglePoint()
+    with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
-        model = ips.calculators.EMTSinglePoint(data=data.atoms)
-        md1 = ips.calculators.ASEMD(
+        md1 = ips.ASEMD(
             data=data.atoms,
             model=model,
             thermostat=thermostat,
@@ -258,7 +248,7 @@ def test_locality_test(proj_path, cu_box):
             dump_rate=33,
             constraints=[constraints[0]],
         )
-        md2 = ips.calculators.ASEMD(
+        md2 = ips.ASEMD(
             data=data.atoms,
             model=model,
             thermostat=thermostat,
@@ -268,9 +258,9 @@ def test_locality_test(proj_path, cu_box):
             constraints=[constraints[1]],
         )
 
-        ips.analysis.AnalyseSingleForceSensitivity(
+        ips.AnalyseSingleForceSensitivity(
             data=[md1, md2],
             sim_list=[md1, md2],
         )
 
-    project.run()
+    project.repro()
