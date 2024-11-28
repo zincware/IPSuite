@@ -1,6 +1,5 @@
 """ipsuite data loading with ASE."""
 
-import functools
 import logging
 import pathlib
 import typing
@@ -40,6 +39,7 @@ def load_data(
             break
         atoms.append(atom)
     return atoms
+
 
 class AddData(base.IPSNode):
     """Add data using ASE.
