@@ -55,7 +55,7 @@ def test_ensemble_model(proj_path, traj_file):
     uncertainties = [x.calc.results["energy_uncertainty"] for x in md.frames]
     # https://github.com/zincware/ZnTrack/pull/854
     uncertainty_selection = zntrack.from_rev(name=uncertainty_selection.name)
-    assert [md.frames[np.argmax(uncertainties)]] == uncertainty_selection.atoms
+    assert [md.frames[np.argmax(uncertainties)]] == uncertainty_selection.frames
 
 
 def test_ensemble_model_stress(proj_path, traj_file):
