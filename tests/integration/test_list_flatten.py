@@ -14,33 +14,30 @@ def test_ase_md(proj_path, cu_box):
         atoms.extend(cu_box)
 
     ase.io.write("cu_box.xyz", atoms)
-    checker = ips.analysis.TemperatureCheck()
-    thermostat = ips.calculators.LangevinThermostat(
+    check = ips.TemperatureCheck()
+    thermostat = ips.LangevinThermostat(
         time_step=1,
         temperature=1,
         friction=1,
     )
-    rescale_box = ips.calculators.RescaleBoxModifier(cell=10)
-    temperature_ramp = ips.calculators.TemperatureRampModifier(temperature=300)
+    rescale_box = ips.RescaleBoxModifier(cell=10)
+    temperature_ramp = ips.TemperatureRampModifier(temperature=300)
+    model = ips.EMTSinglePoint()
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
-        model = ips.calculators.EMTSinglePoint(data=data.atoms)
-        mapped_md = zn.apply(ips.calculators.ASEMD, method="map")(
-            data=data.atoms,
+        mapped_md = zn.apply(ips.ASEMD, method="map")(
+            data=data.frames,
             data_ids=[0, 1, 2],
             model=model,
-            checks=[checker],
+            checks=[check],
             modifiers=[rescale_box, temperature_ramp],
             thermostat=thermostat,
             steps=30,
             sampling_rate=1,
             dump_rate=33,
         )
-        flat_md = ips.base.Flatten(mapped_md.structures)
+        flat_md = ips.Flatten(data=mapped_md.structures)
 
-    project.run()
+    project.repro()
 
-    mapped_md.load()
-    flat_md.load()
-
-    assert len(mapped_md.atoms) == len(flat_md.atoms)
+    assert len(mapped_md.frames) == len(flat_md.frames)

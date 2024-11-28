@@ -329,7 +329,7 @@ class Smiles2Gromacs(base.IPSNode):
 
     output_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "gromacs")
 
-    def _post_init_(self):
+    def __post_init__(self):
         if len(self.smiles) != len(self.count):
             raise ValueError("The number of smiles must match the number of counts")
         if len(self.smiles) != len(self.labels):
@@ -344,7 +344,7 @@ class Smiles2Gromacs(base.IPSNode):
         self.mdp_files = [pathlib.Path(mdp_file) for mdp_file in self.mdp_files]
 
     @property
-    def atoms(self):
+    def frames(self):
         with self.state.fs.open(self.traj_file, "rb") as f:
             with h5py.File(f) as file:
                 return znh5md.IO(file_handle=file)[:]

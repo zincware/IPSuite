@@ -15,6 +15,7 @@ from ipsuite.analysis.model.dynamics import (
 )
 from ipsuite.analysis.model.dynamics_checks import (
     ConnectivityCheck,
+    DebugCheck,
     EnergySpikeCheck,
     NaNCheck,
     TemperatureCheck,
@@ -41,6 +42,7 @@ __all__ = [
     "BoxScale",
     "EnergySpikeCheck",
     "ConnectivityCheck",
+    "DebugCheck",
     "NaNCheck",
     "MDStability",
     "TemperatureCheck",
