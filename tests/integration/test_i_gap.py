@@ -16,7 +16,7 @@ def test_model_training(proj_path, traj_file):
             data=train_selection.excluded_frames, n_configurations=8, name="val_data"
         )
 
-        model = ipsuite.models.GAP(soap={"cutoff": 0.7}, data=train_selection.frames)
+        model = ipsuite.GAP(soap={"cutoff": 0.7}, data=train_selection.frames)
 
     project.repro()
 

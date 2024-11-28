@@ -16,7 +16,7 @@ def test_rattle_atoms(proj_path, traj_file, include_original):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file.name)
 
-        rattle = ips.bootstrap.RattleAtoms(
+        rattle = ips.RattleAtoms(
             data=data.frames,
             maximum=0.1,
             n_configurations=n_configurations,
@@ -46,7 +46,7 @@ def test_translate_molecules(proj_path, traj_file, include_original):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file.name)
 
-        rattle = ips.bootstrap.TranslateMolecules(
+        rattle = ips.TranslateMolecules(
             data=data.frames,
             maximum=0.1,
             n_configurations=n_configurations,
@@ -76,7 +76,7 @@ def test_rotate_molecules(proj_path, traj_file, include_original):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file.name)
 
-        rattle = ips.bootstrap.RotateMolecules(
+        rattle = ips.RotateMolecules(
             data=data.frames,
             maximum=0.1,
             n_configurations=n_configurations,
@@ -105,7 +105,7 @@ def test_rotate_molecules_with_calc(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file.name)
 
-        rattle = ips.bootstrap.RotateMolecules(
+        rattle = ips.RotateMolecules(
             data=data.frames,
             maximum=0.1,
             n_configurations=n_configurations,

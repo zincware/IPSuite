@@ -22,7 +22,7 @@ def test_unwrapping():
     cell = [[5.0, 0.0, 0.0], [0.0, 5.0, 0.0], [0.0, 0.0, 5.0]]
     atoms = Atoms("H4", positions=pos, cell=cell, pbc=True)
     atoms.wrap()
-    mapping = ips.geometry.BarycenterMapping()
+    mapping = ips.BarycenterMapping()
 
     cg_atoms_0, _ = mapping.forward_mapping(atoms)
 

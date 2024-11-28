@@ -25,7 +25,7 @@ def trained_model(proj_path, traj_file) -> tuple:
             data=train_selection.excluded_frames, n_configurations=8, name="val_data"
         )
 
-        model = ipsuite.models.GAP(soap={"cutoff": 0.7}, data=train_selection.frames)
+        model = ipsuite.GAP(soap={"cutoff": 0.7}, data=train_selection.frames)
 
     project.repro()
 
@@ -36,8 +36,8 @@ def test_PredictWithModel(trained_model):
     project, model, validation_selection = trained_model
 
     with project:
-        analysis = ipsuite.analysis.Prediction(
-            model=model, data=validation_selection.atoms
+        analysis = ipsuite.Prediction(
+            model=model, data=validation_selection.frames
         )
     project.repro()
 
@@ -65,10 +65,10 @@ def test_AnalysePrediction(trained_model):
     project, model, validation_selection = trained_model
 
     with project:
-        prediction = ipsuite.analysis.Prediction(
+        prediction = ipsuite.Prediction(
             model=model, data=validation_selection.frames
         )
-        analysis = ipsuite.analysis.PredictionMetrics(
+        analysis = ipsuite.PredictionMetrics(
             x=validation_selection.frames, y=prediction.frames
         )
     project.repro()
@@ -80,10 +80,10 @@ def test_AnalysePrediction(trained_model):
 def test_AnalyseForceAngles(trained_model):
     project, model, validation_selection = trained_model
     with project:
-        prediction = ipsuite.analysis.Prediction(
+        prediction = ipsuite.Prediction(
             model=model, data=validation_selection.frames
         )
-        analysis = ipsuite.analysis.ForceAngles(
+        analysis = ipsuite.ForceAngles(
             x=validation_selection.frames, y=prediction.frames
         )
 
@@ -98,7 +98,7 @@ def test_RattleAnalysis(trained_model):
     project, model, validation_selection = trained_model
 
     with project:
-        analysis = ipsuite.analysis.RattleAnalysis(
+        analysis = ipsuite.RattleAnalysis(
             model=model, data=validation_selection.frames
         )
     project.repro()
@@ -110,7 +110,7 @@ def test_BoxScaleAnalysis(trained_model):
     project, model, validation_selection = trained_model
 
     with project:
-        analysis = ipsuite.analysis.BoxScale(
+        analysis = ipsuite.BoxScale(
             model=model, data=validation_selection.frames, num=10, stop=1.1
         )
     project.repro()
@@ -122,12 +122,12 @@ def test_MDStabilityAnalysis(trained_model):
     project, model, validation_selection = trained_model
 
     checks = [
-        ipsuite.analysis.NaNCheck(),
-        ipsuite.analysis.ConnectivityCheck(),
-        ipsuite.analysis.EnergySpikeCheck(min_factor=0.5, max_factor=2.0),
+        ipsuite.NaNCheck(),
+        ipsuite.ConnectivityCheck(),
+        ipsuite.EnergySpikeCheck(min_factor=0.5, max_factor=2.0),
     ]
     with project:
-        analysis = ipsuite.analysis.MDStability(
+        analysis = ipsuite.MDStability(
             model=model,
             data=validation_selection.frames,
             max_steps=500,

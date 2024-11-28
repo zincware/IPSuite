@@ -59,4 +59,4 @@ def test_filter_outlier(proj_path, traj_file):
 
     filtered_data = zntrack.from_rev(name=filtered_data.name)
 
-    assert len(filtered_data.atoms) == 13
+    assert len(filtered_data.frames) == 13

@@ -259,7 +259,7 @@ def test_locality_test(proj_path, cu_box):
         )
 
         ips.AnalyseSingleForceSensitivity(
-            data=[md1, md2],
+            data=[md1.frames, md2.frames],
             sim_list=[md1, md2],
         )
 

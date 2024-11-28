@@ -20,7 +20,7 @@ def test_rattle_atoms(proj_path, traj_file, random, max_rattel_shift, cell_fract
     with ips.Project() as project:
         data = ips.AddData(file=traj_file.name)
 
-        scan = ips.bootstrap.SurfaceRasterScan(
+        scan = ips.SurfaceRasterScan(
             data=data.frames,
             symbol="O",
             n_conf_per_dist=n_conf_per_dist,

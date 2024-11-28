@@ -14,7 +14,7 @@ def test_ips_BarycenterMapping(data_repo):
         name="BMIM_BF4_363_15K", remote="https://github.com/IPSProjects/ips-examples"
     )
 
-    mapping = ips.geometry.BarycenterMapping()
+    mapping = ips.BarycenterMapping()
 
     frames = []
     all_molecules = []
