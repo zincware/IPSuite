@@ -46,7 +46,9 @@ def test_ensemble_model(proj_path, traj_file):
         ips.ModelEnsembleAnalysis(data=test_data.frames, models=[model1, model2])
 
         prediction = ips.Prediction(data=test_data.frames, model=ensemble_model)
-        prediction_metrics = ips.PredictionMetrics(x=test_data.frames, y=prediction.frames)
+        prediction_metrics = ips.PredictionMetrics(
+            x=test_data.frames, y=prediction.frames
+        )
 
     project.repro()
 
