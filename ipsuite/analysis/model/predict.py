@@ -1,3 +1,5 @@
+import multiprocessing
+import os
 import pathlib
 from concurrent.futures import ProcessPoolExecutor
 from typing import List, Optional
@@ -492,30 +494,37 @@ class ForceDecomposition(base.ComparePredictions):
 
     def get_plots(self):
         # TODO update plots true - pred y axis
+
+        true_trans = np.reshape(self.true_forces["trans"], -1)
+        pred_trans = np.reshape(self.pred_forces["trans"], -1)
         fig = get_figure(
-            np.reshape(self.true_forces["trans"], -1),
-            np.reshape(self.pred_forces["trans"], -1),
+            true_trans,
+            true_trans - pred_trans,            
             datalabel=rf"Trans. MAE: {self.trans_forces['mae']:.2f} meV$ / \AA$",
             xlabel=r"$ab~initio$ forces / meV$ \cdot \AA^{-1}$",
-            ylabel=r"predicted forces / meV$ \cdot \AA^{-1}$",
+            ylabel=r"$\Delta F_{alpha,i}_{trans}$ / meV$ \cdot \AA^{-1}$",
         )
         fig.savefig(self.trans_force_plt)
 
+        true_rot = np.reshape(self.true_forces["rot"], -1)
+        pred_rot = np.reshape(self.pred_forces["rot"], -1)
         fig = get_figure(
-            np.reshape(self.true_forces["rot"], -1),
-            np.reshape(self.pred_forces["rot"], -1),
+            true_rot,
+            true_rot - pred_rot,            
             datalabel=rf"Rot. MAE: {self.rot_forces['mae']:.2f} meV$ / \AA$",
             xlabel=r"$ab~initio$ forces / meV$ \cdot \AA^{-1}$",
-            ylabel=r"predicted forces / meV$ \cdot \AA^{-1}$",
+            ylabel=r"$\Delta F_{alpha,i}_{rot}$ / meV$ \cdot \AA^{-1}$",
         )
         fig.savefig(self.rot_force_plt)
 
+        true_vib = np.reshape(self.true_forces["vib"], -1)
+        pred_vib = np.reshape(self.pred_forces["vib"], -1)
         fig = get_figure(
-            np.reshape(self.true_forces["vib"], -1),
-            np.reshape(self.pred_forces["vib"], -1),
+            true_vib,
+            true_vib - pred_vib,            
             datalabel=rf"Vib. MAE: {self.vib_forces['mae']:.2f} meV$ / \AA$",
             xlabel=r"$ab~initio$ forces / meV$ \cdot \AA^{-1}$",
-            ylabel=r"predicted forces / meV$ \cdot \AA^{-1}$",
+            ylabel=r"$\Delta F_{alpha,i}_{vib}$ / meV$ \cdot \AA^{-1}$",
         )
         fig.savefig(self.vib_force_plt)
 
@@ -734,7 +743,7 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
         self.pred = {"trans": [], "rot": [], "vib": []}
         self.uncertainties = {"trans": [], "rot": [], "vib": []}
 
-        nproc = os.getenv("IPSUITE_NPROC", multiprocessing.cpu_count())
+        nproc = os.getenv("IPSUITE_NPROC", multiprocessing.cpu_count()-1)
         process_pool = ProcessPoolExecutor(nproc)
 
         pbar = tqdm.trange(
@@ -745,8 +754,8 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
             leave=True,
             mininterval=0.25,
         )
-        for result in process_pool.map(decompose_force_uncertainty, self.x, self.y):
-            # for i in range(len(self.x)):
+        # for result in process_pool.map(decompose_force_uncertainty, self.x, self.y):
+        for i in range(len(self.x)):
             result = decompose_force_uncertainty(self.x[i], self.y[i])
             true, pred, unc = result
             trans_true, rot_true, vib_true = true
