@@ -19,10 +19,10 @@ def test_mix_calculators(proj_path, traj_file):
             method="sum",
         )
 
-        lj1_data = ips.Prediction(data=data.atoms, model=lj1)
-        lj2_data = ips.Prediction(data=data.atoms, model=lj2)
-        mean_calc_data = ips.Prediction(data=data.atoms, model=mean_calc)
-        sum_calc_data = ips.Prediction(data=data.atoms, model=sum_calc)
+        lj1_data = ips.Prediction(data=data.frames, model=lj1)
+        lj2_data = ips.Prediction(data=data.frames, model=lj2)
+        mean_calc_data = ips.Prediction(data=data.frames, model=mean_calc)
+        sum_calc_data = ips.Prediction(data=data.frames, model=sum_calc)
 
     proj.repro()
 

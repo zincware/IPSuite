@@ -51,7 +51,7 @@ class AddData(base.IPSNode):
         to track the file with DVC.
     """
 
-    atoms: typing.List[ase.Atoms] = fields.Atoms()
+    frames: typing.List[ase.Atoms] = fields.Atoms()
     file: typing.Union[str, pathlib.Path] = zntrack.deps_path()
     lines_to_read: int = zntrack.params(None)
 
@@ -66,21 +66,21 @@ class AddData(base.IPSNode):
         """ZnTrack run method."""
         if self.lines_to_read == -1:  # backwards compatibility
             self.lines_to_read = None
-        self.atoms = load_data(file=self.file, lines_to_read=self.lines_to_read)
+        self.frames = load_data(file=self.file, lines_to_read=self.lines_to_read)
 
     def __iter__(self) -> ase.Atoms:
         """Get iterable object."""
-        yield from self.atoms
+        yield from self.frames
 
     def __len__(self) -> int:
         """Get the number of atoms."""
-        return len(self.atoms)
+        return len(self.frames)
 
     def __getitem__(self, item):
         """Access atoms objects directly and via advanced slicing."""
         if isinstance(item, list):
-            return [self.atoms[idx] for idx in item]
-        return self.atoms[item]
+            return [self.frames[idx] for idx in item]
+        return self.frames[item]
 
     @classmethod
     def save_atoms_to_file(cls, atoms: typing.List[ase.Atoms], file: str):

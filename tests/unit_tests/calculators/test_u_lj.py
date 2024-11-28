@@ -12,7 +12,7 @@ def test_lj_single_point(proj_path, traj_file):
 
     with ips.Project() as project:
         data = ips.AddData(file=traj_file.name)
-        pred = ips.Prediction(data=data.atoms, model=lj)
+        pred = ips.Prediction(data=data.frames, model=lj)
 
     project.repro()
 

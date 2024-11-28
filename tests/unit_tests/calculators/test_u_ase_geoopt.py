@@ -18,7 +18,7 @@ def test_ase_geoopt(proj_path, cu_box):
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
         opt = ips.ASEGeoOpt(
-            data=data.atoms,
+            data=data.frames,
             model=model,
             optimizer="FIRE",
             checks=[check],
@@ -26,7 +26,7 @@ def test_ase_geoopt(proj_path, cu_box):
         )
 
         opt_max_step = ips.ASEGeoOpt(
-            data=data.atoms,
+            data=data.frames,
             model=model,
             optimizer="FIRE",
             checks=[check],

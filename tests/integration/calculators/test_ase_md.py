@@ -31,7 +31,7 @@ def test_ase_run_md(proj_path, cu_box):
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
         md = ips.ASEMD(
-            data=data.atoms,
+            data=data.frames,
             model=model,
             checks=[check],
             modifiers=[rescale_box, temperature_ramp],
@@ -41,7 +41,7 @@ def test_ase_run_md(proj_path, cu_box):
             dump_rate=33,
         )
         mapped_md = zn.apply(ips.ASEMD, method="map")(
-            data=data.atoms,
+            data=data.frames,
             data_ids=[0, 1, 2],
             model=model,
             checks=[check],
@@ -52,7 +52,7 @@ def test_ase_run_md(proj_path, cu_box):
             dump_rate=33,
         )
         md2 = ips.ASEMD(
-            data=data.atoms,
+            data=data.frames,
             model=model,
             checks=[check],
             modifiers=[rescale_box, temperature_ramp],
@@ -88,7 +88,7 @@ def test_ase_md_target_density(proj_path, cu_box):
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
         md = ips.ASEMD(
-            data=data.atoms,
+            data=data.frames,
             model=model,
             checks=[check],
             modifiers=[rescale_box],
@@ -120,7 +120,7 @@ def test_ase_md_box_ramp(proj_path, cu_box):
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
         md = ips.ASEMD(
-            data=data.atoms,
+            data=data.frames,
             model=model,
             modifiers=[rescale_box],
             thermostat=thermostat,
@@ -158,7 +158,7 @@ def test_ase_npt(proj_path, cu_box):
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
         md = ips.ASEMD(
-            data=data.atoms,
+            data=data.frames,
             model=model,
             modifiers=[temperature_ramp],
             thermostat=thermostat,
@@ -193,7 +193,7 @@ def test_ase_md_fixed_sphere(proj_path, cu_box):
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
         md = ips.ASEMD(
-            data=data.atoms,
+            data=data.frames,
             model=model,
             thermostat=thermostat,
             steps=30,
@@ -240,7 +240,7 @@ def test_locality_test(proj_path, cu_box):
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
         md1 = ips.ASEMD(
-            data=data.atoms,
+            data=data.frames,
             model=model,
             thermostat=thermostat,
             steps=30,
@@ -249,7 +249,7 @@ def test_locality_test(proj_path, cu_box):
             constraints=[constraints[0]],
         )
         md2 = ips.ASEMD(
-            data=data.atoms,
+            data=data.frames,
             model=model,
             thermostat=thermostat,
             steps=30,

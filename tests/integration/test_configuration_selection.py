@@ -20,19 +20,19 @@ import ipsuite as ips
 def test_configuration_selection(proj_path, traj_file, cls, selected_ids):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
-        selection = cls(data=data.atoms, n_configurations=3)
+        selection = cls(data=data.frames, n_configurations=3)
 
     project.repro()
 
     selection = zntrack.from_rev(name=selection.name)
-    assert selection.atoms == [data.atoms[x] for x in selected_ids]
+    assert selection.frames == [data.frames[x] for x in selected_ids]
 
 
 def test_UniformArangeSelection(proj_path, traj_file):
     with ips.Project() as project:
         data = [
-            ips.AddData(file=traj_file, name="data1").atoms,
-            ips.AddData(file=traj_file, name="data2").atoms,
+            ips.AddData(file=traj_file, name="data1").frames,
+            ips.AddData(file=traj_file, name="data2").frames,
         ]
         selection = ips.UniformArangeSelection(data=sum(data, []), step=10)
 
@@ -44,8 +44,8 @@ def test_UniformArangeSelection(proj_path, traj_file):
 def test_SplitSelection(proj_path, traj_file):
     with ips.Project() as project:
         data = [
-            ips.AddData(file=traj_file, name="data1").atoms,
-            ips.AddData(file=traj_file, name="data2").atoms,
+            ips.AddData(file=traj_file, name="data1").frames,
+            ips.AddData(file=traj_file, name="data2").frames,
         ]
         selection = ips.SplitSelection(data=sum(data, []), split=0.3)
 

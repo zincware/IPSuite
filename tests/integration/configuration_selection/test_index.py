@@ -10,7 +10,7 @@ def test_index_chained(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
         pre_selection = ips.IndexSelection(
-            data=data.atoms,
+            data=data.frames,
             start=0,
             stop=5,
             step=None,
@@ -30,7 +30,7 @@ def test_index_chained(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
         pre_selection = ips.IndexSelection(
-            data=data.atoms,
+            data=data.frames,
             start=5,
             stop=10,
             step=None,
@@ -52,7 +52,7 @@ def test_filter_outlier(proj_path, traj_file):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
         filtered_data = ips.FilterOutlier(
-            data=data.atoms, key="energy", threshold=1, direction="both"
+            data=data.frames, key="energy", threshold=1, direction="both"
         )
 
     project.repro()

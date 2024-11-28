@@ -20,10 +20,10 @@ def test_AddData(proj_path, traj_file, atoms_list):
 
     project.repro()
 
-    assert isinstance(data.atoms, list)
-    assert isinstance(data.atoms[0], ase.Atoms)
+    assert isinstance(data.frames, list)
+    assert isinstance(data.frames[0], ase.Atoms)
 
-    for loaded, given in zip(data.atoms[:], atoms_list):
+    for loaded, given in zip(data.frames[:], atoms_list):
         # Check that the atoms match
         assert loaded.get_potential_energy() == given.get_potential_energy()
         npt.assert_almost_equal(loaded.get_forces(), given.get_forces())

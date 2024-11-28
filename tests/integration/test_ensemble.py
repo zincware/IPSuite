@@ -66,8 +66,8 @@ def test_ensemble_model_stress(proj_path, traj_file):
         data = ips.AddData(file=traj_file)
         ensemble_model = ips.EnsembleModel(models=[model1, model2])
 
-        prediction = ips.Prediction(model=ensemble_model, data=data.atoms)
-        analysis = ips.PredictionMetrics(x=data.atoms, y=prediction.frames)
+        prediction = ips.Prediction(model=ensemble_model, data=data.frames)
+        analysis = ips.PredictionMetrics(x=data.frames, y=prediction.frames)
 
     project.repro()
 
