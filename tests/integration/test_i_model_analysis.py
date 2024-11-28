@@ -36,9 +36,7 @@ def test_PredictWithModel(trained_model):
     project, model, validation_selection = trained_model
 
     with project:
-        analysis = ipsuite.Prediction(
-            model=model, data=validation_selection.frames
-        )
+        analysis = ipsuite.Prediction(model=model, data=validation_selection.frames)
     project.repro()
 
     analysis = zntrack.from_rev(name=analysis.name)
@@ -65,9 +63,7 @@ def test_AnalysePrediction(trained_model):
     project, model, validation_selection = trained_model
 
     with project:
-        prediction = ipsuite.Prediction(
-            model=model, data=validation_selection.frames
-        )
+        prediction = ipsuite.Prediction(model=model, data=validation_selection.frames)
         analysis = ipsuite.PredictionMetrics(
             x=validation_selection.frames, y=prediction.frames
         )
@@ -80,12 +76,8 @@ def test_AnalysePrediction(trained_model):
 def test_AnalyseForceAngles(trained_model):
     project, model, validation_selection = trained_model
     with project:
-        prediction = ipsuite.Prediction(
-            model=model, data=validation_selection.frames
-        )
-        analysis = ipsuite.ForceAngles(
-            x=validation_selection.frames, y=prediction.frames
-        )
+        prediction = ipsuite.Prediction(model=model, data=validation_selection.frames)
+        analysis = ipsuite.ForceAngles(x=validation_selection.frames, y=prediction.frames)
 
     project.repro()
 
@@ -98,9 +90,7 @@ def test_RattleAnalysis(trained_model):
     project, model, validation_selection = trained_model
 
     with project:
-        analysis = ipsuite.RattleAnalysis(
-            model=model, data=validation_selection.frames
-        )
+        analysis = ipsuite.RattleAnalysis(model=model, data=validation_selection.frames)
     project.repro()
 
     assert analysis.energies is not None
