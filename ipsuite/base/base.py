@@ -19,13 +19,13 @@ class ProcessAtoms(IPSNode):
     ----------
     data: list[ase.Atoms]
         The atoms data to process. This must be an input to the Node
-    atoms: list[ase.Atoms]
+    frames: list[ase.Atoms]
         The processed atoms data. This is an output of the Node.
         It does not have to be 'field.Atoms' but can also be e.g. a 'property'.
     """
 
     data: list[ase.Atoms] = zntrack.deps()
-    atoms: list[ase.Atoms] = fields.Atoms()
+    frames: list[ase.Atoms] = fields.Atoms()
 
     def get_data(self) -> list[ase.Atoms]:
         """Get the atoms data to process."""
@@ -47,7 +47,7 @@ class ProcessSingleAtom(IPSNode):
     data_id: int | None
         The id of the atoms object to process. If None, the first
         atoms object is used. Only relevant if 'data' is a list.
-    atoms: list[ase.Atoms]
+    frames: list[ase.Atoms]
         The processed atoms data. This is an output of the Node.
         It does not have to be 'field.Atoms' but can also be e.g. a 'property'.
         Although, we only process a single atoms object, we return a list.
@@ -58,7 +58,7 @@ class ProcessSingleAtom(IPSNode):
     data: typing.List[ase.Atoms] = zntrack.deps()
     data_id: int = zntrack.params(-1)
 
-    atoms: typing.List[ase.Atoms] = fields.Atoms()
+    frames: typing.List[ase.Atoms] = fields.Atoms()
 
     def get_data(self) -> ase.Atoms:
         """Get the atoms object to process given the 'data' and 'data_id'.
@@ -129,4 +129,4 @@ class Flatten(ProcessAtoms):
     """Flattens list[list[ase.Atoms]] to list[ase.Atoms]"""
 
     def run(self):
-        self.atoms = sum(self.data, [])
+        self.frames = sum(self.data, [])

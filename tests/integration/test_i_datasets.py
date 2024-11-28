@@ -15,4 +15,4 @@ def test_md22(proj_path):
 
     project.repro()
 
-    assert len(data.atoms) > 0
+    assert len(data.frames) > 0

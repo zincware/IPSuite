@@ -16,7 +16,7 @@ def test_lj_single_point(proj_path, traj_file):
 
     project.repro()
 
-    results = pred.atoms[0].calc.results
+    results = pred.frames[0].calc.results
 
     assert "energy" in results.keys()
     assert "forces" in results.keys()

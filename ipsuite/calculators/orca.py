@@ -27,7 +27,7 @@ class OrcaSinglePoint(base.ProcessAtoms):
             db.append(atoms)
 
     @property
-    def atoms(self):
+    def frames(self):
         with self.state.fs.open(self.output_file, "rb") as f:
             with h5py.File(f) as file:
                 return znh5md.IO(file_handle=file)[:]

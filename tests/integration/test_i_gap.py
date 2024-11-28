@@ -13,10 +13,10 @@ def test_model_training(proj_path, traj_file):
         )
 
         validation_selection = ipsuite.configuration_selection.UniformEnergeticSelection(
-            data=train_selection @ "excluded_atoms", n_configurations=8, name="val_data"
+            data=train_selection.excluded_frames, n_configurations=8, name="val_data"
         )
 
-        model = ipsuite.models.GAP(soap={"cutoff": 0.7}, data=train_selection.atoms)
+        model = ipsuite.models.GAP(soap={"cutoff": 0.7}, data=train_selection.frames)
 
     project.repro()
 

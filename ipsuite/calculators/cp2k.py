@@ -146,7 +146,7 @@ class CP2KYaml(base.ProcessSingleAtom):
             raise RuntimeError(f"CP2K failed with return code {proc.returncode}:")
 
     @property
-    def atoms(self):
+    def frames(self):
         """Return the atoms object."""
         # TODO this is for single point, what about MD
         data = {}
@@ -217,7 +217,7 @@ class CP2KSinglePoint(base.ProcessAtoms):
             file.unlink()
 
     @property
-    def atoms(self) -> typing.List[ase.Atoms]:
+    def frames(self) -> typing.List[ase.Atoms]:
         with self.state.fs.open(self.output_file, "rb") as f:
             with h5py.File(f) as file:
                 return znh5md.IO(file_handle=file)[:]

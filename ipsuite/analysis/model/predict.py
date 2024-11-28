@@ -40,7 +40,7 @@ class Prediction(base.ProcessAtoms):
     model: models.MLModel = zntrack.deps()
 
     def run(self):
-        self.atoms = []
+        self.frames = []
         calc = self.model.get_calculator()
 
         for configuration in tqdm.tqdm(self.get_data(), ncols=70):
@@ -58,7 +58,7 @@ class Prediction(base.ProcessAtoms):
                 ):  # required for nequip, GAP
                     pass
 
-            self.atoms.append(freeze_copy_atoms(atoms))
+            self.frames.append(freeze_copy_atoms(atoms))
 
 
 class PredictionMetrics(base.ComparePredictions):

@@ -26,13 +26,13 @@ def test_mix_calculators(proj_path, traj_file):
 
     proj.repro()
 
-    for a, b in zip(lj1_data.atoms, mean_calc_data.atoms):
+    for a, b in zip(lj1_data.frames, mean_calc_data.frames):
         npt.assert_almost_equal(
             a.get_potential_energy(), b.get_potential_energy(), decimal=2
         )
         npt.assert_almost_equal(a.get_forces(), b.get_forces())
 
-    for a, b, c in zip(lj1_data.atoms, lj2_data.atoms, sum_calc_data.atoms):
+    for a, b, c in zip(lj1_data.frames, lj2_data.frames, sum_calc_data.frames):
         npt.assert_almost_equal(
             a.get_potential_energy() + b.get_potential_energy(),
             c.get_potential_energy(),

@@ -16,10 +16,10 @@ def test_index_chained(proj_path, traj_file):
             step=None,
         )  # we use this to "change" the data
         selection = ips.IndexSelection(
-            data=pre_selection.atoms, indices=[0, 1, 2], name="selection"
+            data=pre_selection.frames, indices=[0, 1, 2], name="selection"
         )
 
-        histogram = ips.EnergyHistogram(data=selection.atoms)
+        histogram = ips.EnergyHistogram(data=selection.frames)
 
     project.repro()
 
@@ -36,10 +36,10 @@ def test_index_chained(proj_path, traj_file):
             step=None,
         )  # we use this to "change" the data
         selection = ips.IndexSelection(
-            data=pre_selection.atoms, indices=[0, 1, 2], name="selection"
+            data=pre_selection.frames, indices=[0, 1, 2], name="selection"
         )
 
-        histogram = ips.EnergyHistogram(data=selection.atoms)
+        histogram = ips.EnergyHistogram(data=selection.frames)
 
     project.repro()
     histogram = zntrack.from_rev(name=histogram.name)

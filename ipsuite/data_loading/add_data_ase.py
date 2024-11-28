@@ -64,7 +64,10 @@ class ReadData(base.IPSNode):
         pass
 
     @functools.cached_property
-    def atoms(self) -> typing.List[ase.Atoms]:
+    def frames(self) -> typing.List[ase.Atoms]:
+        # TODO: can not use functools cached_property
+        # TODO: does not use dvc filesystem
+        # TODO: is this used by anyone?
         return load_data(self.file, self.lines_to_read)
 
 

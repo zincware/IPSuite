@@ -40,4 +40,4 @@ def test_ase_md(proj_path, cu_box):
 
     project.repro()
 
-    assert len(mapped_md.atoms) == len(flat_md.atoms)
+    assert len(mapped_md.frames) == len(flat_md.frames)

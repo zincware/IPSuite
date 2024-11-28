@@ -11,25 +11,25 @@ def test_calibration(data_repo):
     )
 
     with ips.Project() as project:
-        test_data = ips.RandomSelection(data=water.atoms, n_configurations=5)
+        test_data = ips.RandomSelection(data=water.frames, n_configurations=5)
 
         train_data = ips.RandomSelection(
-            data=test_data.excluded_atoms,
+            data=test_data.excluded_frames,
             n_configurations=5,
         )
 
-        model1 = ips.GAP(data=train_data.atoms, soap={"n_max": 1})
-        model2 = ips.GAP(data=train_data.atoms, soap={"n_max": 2})
+        model1 = ips.GAP(data=train_data.frames, soap={"n_max": 1})
+        model2 = ips.GAP(data=train_data.frames, soap={"n_max": 2})
 
         ensemble_model = ips.EnsembleModel(models=[model1, model2])
 
         pred = ips.Prediction(
-            data=test_data.atoms,
+            data=test_data.frames,
             model=ensemble_model,
         )
         calibration = ips.CalibrationMetrics(
-            x=test_data.atoms,
-            y=pred.atoms,
+            x=test_data.frames,
+            y=pred.frames,
         )
 
     project.repro()

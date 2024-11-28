@@ -25,10 +25,10 @@ def test_AddData(proj_path, traj_file, atoms_list):
     assert isinstance(data.atoms, list)
     assert isinstance(data.atoms[0], ase.Atoms)
 
-    assert isinstance(data2.atoms, list)
-    assert isinstance(data2.atoms[0], ase.Atoms)
+    assert isinstance(data2.frames, list)
+    assert isinstance(data2.frames[0], ase.Atoms)
 
-    assert data.atoms == data2.atoms
+    assert data.atoms == data2.frames
 
     for loaded, given in zip(data.atoms[:], atoms_list):
         # Check that the atoms match
@@ -51,10 +51,10 @@ def test_AddDataH5MD(proj_path, atoms_list):
     project.repro()
     # data.load()
 
-    assert isinstance(data.atoms, list)
-    assert isinstance(data.atoms[0], ase.Atoms)
+    assert isinstance(data.frames, list)
+    assert isinstance(data.frames[0], ase.Atoms)
 
-    for loaded, given in zip(data.atoms[:], atoms_list):
+    for loaded, given in zip(data.frames[:], atoms_list):
         # Check that the atoms match
         assert loaded.get_potential_energy() == given.get_potential_energy()
         npt.assert_almost_equal(loaded.get_forces(), given.get_forces())

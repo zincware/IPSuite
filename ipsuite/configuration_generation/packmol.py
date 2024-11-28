@@ -48,7 +48,7 @@ class Packmol(base.IPSNode):
     box: list = zntrack.params(None)
     density: float = zntrack.params(None)
     structures: pathlib.Path = zntrack.outs_path(zntrack.nwd / "packmol")
-    atoms: list[ase.Atoms] = fields.Atoms()
+    frames: list[ase.Atoms] = fields.Atoms()
     pbc: bool = zntrack.params(True)
 
     def __post_init__(self):
@@ -96,7 +96,7 @@ class Packmol(base.IPSNode):
         if self.pbc:
             atoms.cell = self.box
             atoms.pbc = True
-        self.atoms = [atoms]
+        self.frames = [atoms]
 
     def _get_box_from_molar_volume(self):
         """Get the box size from the molar volume"""
@@ -104,7 +104,7 @@ class Packmol(base.IPSNode):
         log.info(f"estimated box size: {self.box}")
 
     def view(self) -> view:
-        return view(self.atoms, viewer="x3d")
+        return view(self.frames, viewer="x3d")
 
 
 class MultiPackmol(Packmol):
@@ -145,7 +145,7 @@ class MultiPackmol(Packmol):
 
     def run(self):
         np.random.seed(self.seed)
-        self.atoms = []
+        self.frames = []
 
         if self.density is not None:
             self._get_box_from_molar_volume()
@@ -187,4 +187,4 @@ class MultiPackmol(Packmol):
                 atoms.cell = self.box
                 atoms.pbc = True
 
-            self.atoms.append(atoms)
+            self.frames.append(atoms)

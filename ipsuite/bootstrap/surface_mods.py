@@ -102,7 +102,7 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
                     )
                     atoms_list[-1].extend(extension)
 
-        self.atoms = atoms_list
+        self.frames = atoms_list
 
 
 class SurfaceRasterMetrics(analysis.PredictionMetrics):

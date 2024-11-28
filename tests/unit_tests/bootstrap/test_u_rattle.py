@@ -27,7 +27,7 @@ def test_rattle_atoms(proj_path, traj_file, include_original):
 
     data.load()
     rattle.load()
-    rattled_atoms = rattle.atoms
+    rattled_atoms = rattle.frames
 
     desired_num_configs = n_configurations
     if include_original:
@@ -57,7 +57,7 @@ def test_translate_molecules(proj_path, traj_file, include_original):
 
     data.load()
     rattle.load()
-    rattled_atoms = rattle.atoms
+    rattled_atoms = rattle.frames
 
     desired_num_configs = n_configurations
     if include_original:
@@ -84,7 +84,7 @@ def test_rotate_molecules(proj_path, traj_file, include_original):
             seed=0,
         )
     project.repro()
-    rattled_atoms = rattle.atoms
+    rattled_atoms = rattle.frames
 
     desired_num_configs = n_configurations
     if include_original:
@@ -92,7 +92,7 @@ def test_rotate_molecules(proj_path, traj_file, include_original):
 
     assert len(rattled_atoms) == desired_num_configs
     with pytest.raises(RuntimeError):
-        assert rattle.atoms[1].get_potential_energy() != 0.0
+        assert rattle.frames[1].get_potential_energy() != 0.0
 
 
 def test_rotate_molecules_with_calc(proj_path, traj_file):
@@ -117,6 +117,6 @@ def test_rotate_molecules_with_calc(proj_path, traj_file):
 
     # assert all entries in the atoms[x] list have a different potential energy
 
-    energies = [atoms.get_potential_energy() for atoms in rattle.atoms]
+    energies = [atoms.get_potential_energy() for atoms in rattle.frames]
     assert len(set(energies)) == len(energies)  # all different
     assert energies[0] != 0.0

@@ -40,7 +40,7 @@ def download_data(url: str, data_path: Path):
 class MD22Dataset(ips.base.IPSNode):
     dataset: str = zntrack.params()
 
-    atoms: list[ase.Atoms] = fields.Atoms()
+    frames: list[ase.Atoms] = fields.Atoms()
 
     datasets = {
         "Ac-Ala3-NHMe": (
@@ -71,8 +71,8 @@ class MD22Dataset(ips.base.IPSNode):
 
         file_path = download_data(url, raw_data_dir)
 
-        self.atoms = ase.io.read(file_path, ":")
-        for atoms in self.atoms:
+        self.frames = ase.io.read(file_path, ":")
+        for atoms in self.frames:
             atoms.calc.results["energy"] *= units.kcal / units.mol
             atoms.calc.results["forces"] *= units.kcal / units.mol
         tmpdir.cleanup()

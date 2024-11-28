@@ -37,13 +37,13 @@ def test_ase_geoopt(proj_path, cu_box):
 
     project.repro()
 
-    assert len(opt.atoms) == n_iterations + 1
-    assert len(opt_max_step.atoms) == 3
+    assert len(opt.frames) == n_iterations + 1
+    assert len(opt_max_step.frames) == 3
 
-    forces = np.linalg.norm(opt.atoms[0].get_forces(), 2, 1)
+    forces = np.linalg.norm(opt.frames[0].get_forces(), 2, 1)
     fmax_start = np.max(forces)
 
-    forces = np.linalg.norm(opt.atoms[-1].get_forces(), 2, 1)
+    forces = np.linalg.norm(opt.frames[-1].get_forces(), 2, 1)
     fmax_end = np.max(forces)
 
     assert fmax_end < fmax_start

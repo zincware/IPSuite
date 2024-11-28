@@ -67,7 +67,7 @@ class BondStretchAnalyses(ProcessAtoms):
         e_uncertainties = []
         f_uncertainties = []
 
-        self.atoms = []
+        self.frames = []
         for i in range(self.n_steps):
             struct.set_distance(self.idxs[0], self.idxs[1], bond_lengths[i], mask=mask)
             ens_energies.append(struct.get_total_energy())
@@ -77,7 +77,7 @@ class BondStretchAnalyses(ProcessAtoms):
             if "forces_uncertainty" in struct.calc.results:
                 f_uncertainties.append(struct.calc.results.get("forces_uncertainty"))
 
-            self.atoms.append(struct.copy())
+            self.frames.append(struct.copy())
 
         results = {
             "energy": np.asarray(ens_energies),

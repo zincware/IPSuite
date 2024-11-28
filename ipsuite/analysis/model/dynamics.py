@@ -81,13 +81,13 @@ class RattleAnalysis(base.ProcessSingleAtom):
 
         energies = []
 
-        self.atoms = []
+        self.frames = []
 
         for stdev in tqdm.tqdm(stdev_space, ncols=70):
             atoms.positions = reference.positions
             atoms.rattle(stdev=stdev, seed=self.seed)
             energies.append(atoms.get_potential_energy())
-            self.atoms.append(freeze_copy_atoms(atoms))
+            self.frames.append(freeze_copy_atoms(atoms))
 
         self.energies = pd.DataFrame({"y": energies, "x": stdev_space})
 
@@ -134,7 +134,7 @@ class BoxScale(base.ProcessSingleAtom):
         original_atoms.calc = self.model.get_calculator(directory=self.model_outs)
 
         energies = []
-        self.atoms = []
+        self.frames = []
         if self.mapping is None:
             scaling_atoms = original_atoms
         else:
@@ -151,15 +151,15 @@ class BoxScale(base.ProcessSingleAtom):
                 eval_atoms.calc = original_atoms.calc
 
             energies.append(eval_atoms.get_potential_energy())
-            self.atoms.append(freeze_copy_atoms(eval_atoms))
+            self.frames.append(freeze_copy_atoms(eval_atoms))
 
         self.energies = pd.DataFrame({"y": energies, "x": scale_space})
 
-        if "energy_uncertainty" in self.atoms[0].calc.results:
+        if "energy_uncertainty" in self.frames[0].calc.results:
             fig, ax, _ = plot_with_uncertainty(
                 {
                     "std": np.std(
-                        [a.calc.results["energy_uncertainty"] for a in self.atoms]
+                        [a.calc.results["energy_uncertainty"] for a in self.frames]
                     ),
                     "mean": self.energies["y"],
                 },
@@ -246,7 +246,7 @@ class BoxHeatUp(base.ProcessSingleAtom):
         temperature, total_energy = utils.ase_sim.get_energy(atoms)
 
         energy = []
-        self.atoms = []
+        self.frames = []
 
         with tqdm.trange(
             self.steps,
@@ -269,7 +269,7 @@ class BoxHeatUp(base.ProcessSingleAtom):
                         f" {self.max_temperature} K. Simulation was stopped."
                     )
                     break
-                self.atoms.append(freeze_copy_atoms(atoms))
+                self.frames.append(freeze_copy_atoms(atoms))
 
         self.flux_data = pd.DataFrame(
             energy, columns=["meassured_temp", "energy", "set_temp"]
@@ -375,7 +375,7 @@ class MDStability(base.IPSNode):
     stable_steps_df: pd.DataFrame = zntrack.plots()
 
     @property
-    def atoms(self) -> typing.List[ase.Atoms]:
+    def frames(self) -> typing.List[ase.Atoms]:
         with self.state.fs.open(self.traj_file, "rb") as f:
             with h5py.File(f) as file:
                 return znh5md.IO(file_handle=file)[:]

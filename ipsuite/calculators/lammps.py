@@ -181,6 +181,6 @@ class LammpsSimulator(base.ProcessSingleAtom):
             yaml.dump({"sim_parameters": params}, file)
 
     @property
-    def atoms(self) -> list[ase.Atoms]:
+    def frames(self) -> list[ase.Atoms]:
         with self.state.fs.open(self.dump_file, mode="r") as file:
             return list(ase.io.iread(file, format="lammps-dump-text"))

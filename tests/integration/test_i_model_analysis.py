@@ -22,10 +22,10 @@ def trained_model(proj_path, traj_file) -> tuple:
         )
 
         validation_selection = ipsuite.configuration_selection.UniformEnergeticSelection(
-            data=train_selection @ "excluded_atoms", n_configurations=8, name="val_data"
+            data=train_selection.excluded_frames, n_configurations=8, name="val_data"
         )
 
-        model = ipsuite.models.GAP(soap={"cutoff": 0.7}, data=train_selection.atoms)
+        model = ipsuite.models.GAP(soap={"cutoff": 0.7}, data=train_selection.frames)
 
     project.repro()
 
@@ -69,7 +69,7 @@ def test_AnalysePrediction(trained_model):
             model=model, data=validation_selection.atoms
         )
         analysis = ipsuite.analysis.PredictionMetrics(
-            x=validation_selection.atoms, y=prediction.atoms
+            x=validation_selection.atoms, y=prediction.frames
         )
     project.repro()
 
@@ -84,7 +84,7 @@ def test_AnalyseForceAngles(trained_model):
             model=model, data=validation_selection.atoms
         )
         analysis = ipsuite.analysis.ForceAngles(
-            x=validation_selection.atoms, y=prediction.atoms
+            x=validation_selection.atoms, y=prediction.frames
         )
 
     project.repro()
