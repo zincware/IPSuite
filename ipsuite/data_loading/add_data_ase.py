@@ -41,36 +41,6 @@ def load_data(
         atoms.append(atom)
     return atoms
 
-
-class ReadData(base.IPSNode):
-    """Read data without converting it to H5MD.
-
-    This Node can be used instead of `AddData` to avoid
-    initial conversion to H5MD. Later Nodes might still
-    convert the data to H5MD.
-
-    Attributes
-    ----------
-    file: str|Path
-        path to the file that should be read.
-    lines_to_read: int, optional
-        maximal number of lines/configurations to read, None for read all
-    """
-
-    file: typing.Union[str, pathlib.Path] = zntrack.deps_path()
-    lines_to_read: int = zntrack.params(None)
-
-    def run(self):
-        pass
-
-    @functools.cached_property
-    def frames(self) -> typing.List[ase.Atoms]:
-        # TODO: can not use functools cached_property
-        # TODO: does not use dvc filesystem
-        # TODO: is this used by anyone?
-        return load_data(self.file, self.lines_to_read)
-
-
 class AddData(base.IPSNode):
     """Add data using ASE.
 

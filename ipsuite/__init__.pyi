@@ -89,7 +89,7 @@ from .configuration_selection import (
 )
 
 # Data
-from .data_loading import AddData, AddDataH5MD, ReadData
+from .data_loading import AddData, AddDataH5MD
 
 # Datasets
 from .datasets import MD22Dataset
@@ -131,7 +131,6 @@ __all__ = [
     # Data
     "AddData",
     "AddDataH5MD",
-    "ReadData",
     # Datasets
     "MD22Dataset",
     # Bootstrap

@@ -4,7 +4,6 @@ import subprocess
 
 import ase
 import numpy.testing as npt
-import pytest
 import znh5md
 
 import ipsuite
@@ -18,17 +17,11 @@ def test_AddData(proj_path, traj_file, atoms_list):
     subprocess.check_call(["dvc", "add", traj_file.name])
     with ipsuite.Project() as project:
         data = ipsuite.AddData(file=traj_file.name)
-        data2 = ipsuite.data_loading.ReadData(file=traj_file.name)
 
     project.repro()
 
     assert isinstance(data.atoms, list)
     assert isinstance(data.atoms[0], ase.Atoms)
-
-    assert isinstance(data2.frames, list)
-    assert isinstance(data2.frames[0], ase.Atoms)
-
-    assert data.atoms == data2.frames
 
     for loaded, given in zip(data.atoms[:], atoms_list):
         # Check that the atoms match
