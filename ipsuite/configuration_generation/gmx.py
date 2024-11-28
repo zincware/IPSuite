@@ -344,7 +344,7 @@ class Smiles2Gromacs(base.IPSNode):
         self.mdp_files = [pathlib.Path(mdp_file) for mdp_file in self.mdp_files]
 
     @property
-    def atoms(self):
+    def frames(self):
         with self.state.fs.open(self.traj_file, "rb") as f:
             with h5py.File(f) as file:
                 return znh5md.IO(file_handle=file)[:]

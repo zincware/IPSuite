@@ -21,8 +21,8 @@ def test_SmilesToConformers(proj_path):
 
     proj.repro()
 
-    assert len(ethanol.atoms) == 10
-    assert ethanol.atoms[0].get_chemical_formula() == "C2H6O"
+    assert len(ethanol.frames) == 10
+    assert ethanol.frames[0].get_chemical_formula() == "C2H6O"
     # iterate over all pairs of conformers and check that none are identical
-    for conf1, conf2 in itertools.combinations(ethanol.atoms, 2):
+    for conf1, conf2 in itertools.combinations(ethanol.frames, 2):
         assert not np.allclose(conf1.positions, conf2.positions)

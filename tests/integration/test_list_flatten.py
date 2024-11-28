@@ -26,7 +26,7 @@ def test_ase_md(proj_path, cu_box):
     with ips.Project() as project:
         data = ips.AddData(file="cu_box.xyz")
         mapped_md = zn.apply(ips.ASEMD, method="map")(
-            data=data.atoms,
+            data=data.frames,
             data_ids=[0, 1, 2],
             model=model,
             checks=[check],
@@ -40,4 +40,4 @@ def test_ase_md(proj_path, cu_box):
 
     project.repro()
 
-    assert len(mapped_md.atoms) == len(flat_md.atoms)
+    assert len(mapped_md.frames) == len(flat_md.frames)

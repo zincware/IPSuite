@@ -14,11 +14,11 @@ def test_ips_BarycenterMapping(data_repo):
         name="BMIM_BF4_363_15K", remote="https://github.com/IPSProjects/ips-examples"
     )
 
-    mapping = ips.geometry.BarycenterMapping()
+    mapping = ips.BarycenterMapping()
 
     frames = []
     all_molecules = []
-    for atoms in data.atoms:
+    for atoms in data.frames:
         cg_atoms, molecules = mapping.forward_mapping(atoms)
         frames.append(cg_atoms)
         all_molecules.extend(molecules)

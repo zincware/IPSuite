@@ -45,7 +45,7 @@ class SmilesToAtoms(base.IPSNode):
 
 
 class SmilesToConformers(base.IPSNode):
-    atoms: list[ase.Atoms] = fields.Atoms()
+    frames: list[ase.Atoms] = fields.Atoms()
 
     smiles: str = zntrack.params()
     numConfs: int = zntrack.params()
@@ -62,7 +62,7 @@ class SmilesToConformers(base.IPSNode):
             randomSeed=self.seed,
             maxAttempts=self.maxAttempts,
         )
-        self.atoms = []
+        self.frames = []
         for conf in mol.GetConformers():
             atoms = ase.Atoms(
                 positions=conf.GetPositions(),
@@ -74,4 +74,4 @@ class SmilesToConformers(base.IPSNode):
                 atoms.set_cell([self.cell, self.cell, self.cell])
                 atoms.center()
 
-            self.atoms.append(atoms)
+            self.frames.append(atoms)

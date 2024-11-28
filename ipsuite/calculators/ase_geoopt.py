@@ -95,7 +95,7 @@ class ASEGeoOpt(base.IPSNode):
         return atoms
 
     @property
-    def atoms(self) -> typing.List[ase.Atoms]:
+    def frames(self) -> typing.List[ase.Atoms]:
         with self.state.fs.open(self.traj_file, "rb") as f:
             with h5py.File(f) as file:
                 return znh5md.IO(file_handle=file)[:]

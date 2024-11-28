@@ -53,13 +53,13 @@ class Bootstrap(base.ProcessSingleAtom):
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
         if self.model is not None:
             calculator = self.model.get_calculator(directory=self.model_outs)
-            self.atoms = []
+            self.frames = []
             for atoms in tqdm.tqdm(atoms_list, ncols=120, desc="Applying model"):
                 atoms.calc = calculator
                 atoms.get_potential_energy()
-                self.atoms.append(freeze_copy_atoms(atoms))
+                self.frames.append(freeze_copy_atoms(atoms))
         else:
-            self.atoms = atoms_list
+            self.frames = atoms_list
 
     def bootstrap_configs(sefl, atoms: ase.Atoms, rng):
         raise NotImplementedError
@@ -101,7 +101,7 @@ class TranslateMolecules(Bootstrap):
         else:
             atoms_list = []
 
-        mapping = ips.geometry.BarycenterMapping()
+        mapping = ips.BarycenterMapping()
 
         _, molecules = mapping.forward_mapping(atoms)
         for _ in range(self.n_configurations):
@@ -139,7 +139,7 @@ class RotateMolecules(Bootstrap):
         if self.maximum > 2 * np.pi:
             log.warning("Setting maximum to 2 Pi.")
 
-        mapping = ips.geometry.BarycenterMapping()
+        mapping = ips.BarycenterMapping()
 
         _, molecules = mapping.forward_mapping(atoms.copy())
         for _ in range(self.n_configurations):

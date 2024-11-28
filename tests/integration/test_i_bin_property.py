@@ -9,8 +9,8 @@ def test_ips_bin_property(data_repo, traj_file):
 
     with ips.Project() as project:
         data = ips.AddData(file=traj_file)
-        e_hist = ips.EnergyHistogram(data=data.atoms)
-        f_hist = ips.ForcesHistogram(data=data.atoms, bins=100)
+        e_hist = ips.EnergyHistogram(data=data.frames)
+        f_hist = ips.ForcesHistogram(data=data.frames, bins=100)
 
     project.repro()
 

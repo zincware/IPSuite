@@ -20,8 +20,8 @@ def test_rattle_atoms(proj_path, traj_file, random, max_rattel_shift, cell_fract
     with ips.Project() as project:
         data = ips.AddData(file=traj_file.name)
 
-        scan = ips.bootstrap.SurfaceRasterScan(
-            data=data.atoms,
+        scan = ips.SurfaceRasterScan(
+            data=data.frames,
             symbol="O",
             n_conf_per_dist=n_conf_per_dist,
             z_dist_list=z_dist_list,
@@ -34,7 +34,7 @@ def test_rattle_atoms(proj_path, traj_file, random, max_rattel_shift, cell_fract
 
     data.load()
     scan.load()
-    atoms = scan.atoms
+    atoms = scan.frames
 
     desired_num_configs = len(z_dist_list) * n_conf_per_dist[0] * n_conf_per_dist[1]
     assert len(atoms) == desired_num_configs
@@ -48,8 +48,8 @@ def test_rattle_atoms(proj_path, traj_file, random, max_rattel_shift, cell_fract
         assert dist1 != dist2
 
     # check if bulk hase still the atom positions of the init structure
-    pos1 = data.atoms[0].positions[0, 0]
-    pos2 = scan.atoms[0].positions[0, 0]
+    pos1 = data.frames[0].positions[0, 0]
+    pos2 = scan.frames[0].positions[0, 0]
     if max_rattel_shift is None:
         assert pos1 == pos2
     else:
@@ -57,13 +57,13 @@ def test_rattle_atoms(proj_path, traj_file, random, max_rattel_shift, cell_fract
 
     # check if the additive just is added in the correct cell fraction
     pos_additive = []
-    for atom in scan.atoms:
+    for atom in scan.frames:
         pos_additive.append(atom.positions[-1, :2])
 
     max_x = max(pos_additive[0])
     max_y = max(pos_additive[1])
 
-    cell = data.atoms[0].cell
+    cell = data.frames[0].cell
 
     assert max_x * cell_fraction[0] <= cell[0, 0]
     assert max_y * cell_fraction[1] <= cell[1, 1]

@@ -4,7 +4,6 @@ import subprocess
 
 import ase
 import numpy.testing as npt
-import pytest
 import znh5md
 
 import ipsuite
@@ -18,19 +17,13 @@ def test_AddData(proj_path, traj_file, atoms_list):
     subprocess.check_call(["dvc", "add", traj_file.name])
     with ipsuite.Project() as project:
         data = ipsuite.AddData(file=traj_file.name)
-        data2 = ipsuite.data_loading.ReadData(file=traj_file.name)
 
     project.repro()
 
-    assert isinstance(data.atoms, list)
-    assert isinstance(data.atoms[0], ase.Atoms)
+    assert isinstance(data.frames, list)
+    assert isinstance(data.frames[0], ase.Atoms)
 
-    assert isinstance(data2.atoms, list)
-    assert isinstance(data2.atoms[0], ase.Atoms)
-
-    assert data.atoms == data2.atoms
-
-    for loaded, given in zip(data.atoms[:], atoms_list):
+    for loaded, given in zip(data.frames[:], atoms_list):
         # Check that the atoms match
         assert loaded.get_potential_energy() == given.get_potential_energy()
         npt.assert_almost_equal(loaded.get_forces(), given.get_forces())
@@ -51,10 +44,10 @@ def test_AddDataH5MD(proj_path, atoms_list):
     project.repro()
     # data.load()
 
-    assert isinstance(data.atoms, list)
-    assert isinstance(data.atoms[0], ase.Atoms)
+    assert isinstance(data.frames, list)
+    assert isinstance(data.frames[0], ase.Atoms)
 
-    for loaded, given in zip(data.atoms[:], atoms_list):
+    for loaded, given in zip(data.frames[:], atoms_list):
         # Check that the atoms match
         assert loaded.get_potential_energy() == given.get_potential_energy()
         npt.assert_almost_equal(loaded.get_forces(), given.get_forces())
