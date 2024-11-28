@@ -95,7 +95,7 @@ class CP2KYaml(base.ProcessSingleAtom):
     """Node for running CP2K Single point calculations."""
 
     cp2k_bin: str | None = zntrack.params(None)
-    cp2k_params: str = zntrack.params_path("cp2k.yaml")
+    cp2k_params: pathlib.Path = zntrack.params_path("cp2k.yaml")
     wfn_restart: str = zntrack.deps_path(None)
 
     cp2k_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "cp2k")

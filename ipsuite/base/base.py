@@ -1,17 +1,15 @@
 import abc
-import collections.abc
+import dataclasses
 import typing
 
 import ase
-import tqdm
-import znflow
 import zntrack
 
 from ipsuite import fields
 
 
 class IPSNode(zntrack.Node):
-    _module_ = "ipsuite.nodes"
+    """Base class for all IPSuite nodes."""
 
 
 class ProcessAtoms(IPSNode):
@@ -28,15 +26,6 @@ class ProcessAtoms(IPSNode):
 
     data: list[ase.Atoms] = zntrack.deps()
     atoms: list[ase.Atoms] = fields.Atoms()
-
-    def _post_init_(self):
-        if self.data is not None:
-            self.data = znflow.combine(self.data, attribute="atoms")
-
-    def update_data(self):
-        """Update the data attribute."""
-        if self.data is None:
-            self.data = self.get_data()
 
     def get_data(self) -> list[ase.Atoms]:
         """Get the atoms data to process."""
@@ -66,8 +55,8 @@ class ProcessSingleAtom(IPSNode):
         starting from a single atoms object.
     """
 
-    data: typing.Union[ase.Atoms, typing.List[ase.Atoms]] = zntrack.deps()
-    data_id: typing.Optional[int] = zntrack.params(0)
+    data: typing.List[ase.Atoms] = zntrack.deps()
+    data_id: int = zntrack.params(-1)
 
     atoms: typing.List[ase.Atoms] = fields.Atoms()
 
@@ -79,14 +68,7 @@ class ProcessSingleAtom(IPSNode):
         ase.Atoms
             The atoms object to process
         """
-        if self.data is not None:
-            if isinstance(self.data, (list, collections.abc.Sequence)):
-                atoms = self.data[self.data_id].copy()
-            else:
-                atoms = self.data.copy()
-        else:
-            raise ValueError("No data given.")
-        return atoms
+        return self.data[self.data_id]
 
 
 class AnalyseAtoms(IPSNode):
@@ -108,61 +90,8 @@ class ComparePredictions(IPSNode):
     y: list[ase.Atoms] = zntrack.deps()
 
 
-class Mapping(ProcessAtoms):
-    """Base class for transforming ASE `Atoms`.
-
-    `Mapping` nodes can be used in a more functional manner when initialized
-    with `data=None` outside the project graph.
-    In that case, one can use the mapping methods but the Node itself does not store
-    the transformed configurations.
-
-    Attributes
-    ----------
-    molecules: list[ase.Atoms]
-        A flat list of all molecules in the system.
-
-    Parameters
-    ----------
-    frozen: bool
-        If True, the neighbor list is only constructed for the first configuration.
-        The indices of the molecules will be frozen for all configurations.
-    """
-
-    molecules: list[ase.Atoms] = zntrack.outs()
-    frozen: bool = zntrack.params(False)
-
-    # TODO, should we allow to transfer the frozen mapping to another node?
-    #  mapping = Mapping(frozen=True, reference=mapping)
-
-    def run(self):
-        self.atoms = []
-        self.molecules = []
-        for atoms in tqdm.tqdm(self.get_data(), ncols=70):
-            cg_atoms, molecules = self.forward_mapping(atoms)
-            self.atoms.append(cg_atoms)
-            self.molecules.extend(molecules)
-
-    def get_molecules_per_configuration(self) -> typing.List[typing.List[ase.Atoms]]:
-        """Get a list of lists of molecules per configuration."""
-        molecules_per_configuration = []
-        start = 0
-        for atoms in self.atoms:
-            molecules_per_configuration.append(self.molecules[start : start + len(atoms)])
-            start += len(atoms)
-        return molecules_per_configuration
-
-    def forward_mapping(
-        self, atoms: ase.Atoms
-    ) -> typing.Tuple[ase.Atoms, list[ase.Atoms]]:
-        raise NotImplementedError
-
-    def backward_mapping(
-        self, cg_atoms: ase.Atoms, molecules: list[ase.Atoms]
-    ) -> list[ase.Atoms]:
-        raise NotImplementedError
-
-
-class Check(IPSNode):
+@dataclasses.dataclass
+class Check:
     """Base class for check nodes.
     These are callbacks that can be used to preemptively terminate
     a molecular dynamics simulation if a vertain condition is met.
@@ -194,16 +123,6 @@ class Check(IPSNode):
 
     def __str__(self):
         return self.status
-
-
-class Modifier(IPSNode):
-    """Base class for modifier nodes.
-    These are callbacks that can be used to alter the dynamics of an MD run.
-    This can be achieved by modifying the thermostat state or atoms in the system.
-    """
-
-    @abc.abstractmethod
-    def modify(self, thermostat: IPSNode, step: int, total_steps: int) -> None: ...
 
 
 class Flatten(ProcessAtoms):

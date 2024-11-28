@@ -90,7 +90,7 @@ class PredictionMetrics(base.ComparePredictions):
 
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
 
-    def _post_init_(self):
+    def __post_init__(self):
         self.content = {}
 
     def _post_load_(self):
@@ -259,6 +259,11 @@ class PredictionMetrics(base.ComparePredictions):
         self.get_metrics()
         self.get_plots(save=True)
 
+    def get_content(self):
+        with self.state.fs.open(self.data_file, mode="rb") as f:
+            content = dict(np.load(f))
+            return content
+
 
 class CalibrationMetrics(base.ComparePredictions):
     """Analyse the calibration of a models uncertainty estimate.
@@ -289,7 +294,7 @@ class CalibrationMetrics(base.ComparePredictions):
 
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
 
-    def _post_init_(self):
+    def __post_init__(self):
         self.content = {}
         self.force_dist_slices = []
 
@@ -579,7 +584,7 @@ class ForceDecomposition(base.ComparePredictions):
         fig.savefig(self.histogram_plt, bbox_inches="tight")
 
     def run(self):
-        mapping = BarycenterMapping(data=None)
+        mapping = BarycenterMapping()
         # TODO make the force_decomposition return full forces
         # TODO check if you sum the forces they yield the full forces
         # TODO make mapping a 'zn.nodes' with Mapping(species="BF4")

@@ -48,7 +48,7 @@ def test_AddDataH5MD(proj_path, atoms_list):
     with ipsuite.Project() as project:
         data = ipsuite.data_loading.AddDataH5MD(file="data.h5")
 
-    project.run()
+    project.repro()
     # data.load()
 
     assert isinstance(data.atoms, list)

@@ -1,10 +1,9 @@
 import tempfile
-import typing
-import urllib
+import urllib.request
 import zipfile
 from pathlib import Path
 
-import ase
+import ase.io
 import zntrack
 from ase import units
 
@@ -41,7 +40,7 @@ def download_data(url: str, data_path: Path):
 class MD22Dataset(ips.base.IPSNode):
     dataset: str = zntrack.params()
 
-    atoms: typing.List[ase.Atoms] = fields.Atoms()
+    atoms: list[ase.Atoms] = fields.Atoms()
 
     datasets = {
         "Ac-Ala3-NHMe": (

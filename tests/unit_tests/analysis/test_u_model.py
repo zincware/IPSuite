@@ -7,7 +7,7 @@ from ipsuite.geometry import BarycenterMapping
 def test_force_decomposition(atoms_with_composed_forces):
     atoms, ft, fr, fv = atoms_with_composed_forces
 
-    mapping = BarycenterMapping(data=None)
+    mapping = BarycenterMapping()
     atom_trans_forces, atom_rot_forces, atom_vib_forces = force_decomposition(
         atoms, mapping
     )

@@ -109,7 +109,7 @@ class BoxScale(base.ProcessSingleAtom):
 
     model: models.MLModel = zntrack.deps()
     model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model")
-    mapping: base.Mapping = zntrack.deps(None)
+    mapping: typing.Any | None = zntrack.deps(None)
 
     stop: float = zntrack.params(2.0)
     num: int = zntrack.params(100)
@@ -338,7 +338,7 @@ def run_stability_nve(
     return stable_steps, list(last_n_atoms)
 
 
-class MDStability(base.ProcessAtoms):
+class MDStability(base.IPSNode):
     """Perform NVE molecular dynamics for all supplied atoms using a trained model.
     Several stability checks can be supplied to judge whether a particular
     trajectory is stable.
@@ -357,6 +357,8 @@ class MDStability(base.ProcessAtoms):
     bins: number of bins in the histogram
     seed: seed for the MaxwellBoltzmann distribution
     """
+
+    data: list[ase.Atoms] = zntrack.deps()
 
     model: typing.Any = zntrack.deps()
     model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model_outs")
@@ -398,7 +400,7 @@ class MDStability(base.ProcessAtoms):
     def run(self) -> None:
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
-        data_lst = self.get_data()
+        data_lst = self.data
         calculator = self.model.get_calculator(directory=self.model_outs)
         rng = default_rng(self.seed)
 

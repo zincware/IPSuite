@@ -3,13 +3,14 @@ import pytest
 import ipsuite as ips
 
 
-def test_ips_bin_property(data_repo):
+def test_ips_bin_property(data_repo, traj_file):
     """Test the BarycenterMapping class."""
-    data = ips.AddData.from_rev(name="BMIM_BF4_363_15K")
+    # data = ips.AddData.from_rev(name="BMIM_BF4_363_15K")
 
     with ips.Project() as project:
-        e_hist = ips.analysis.EnergyHistogram(data=data.atoms)
-        f_hist = ips.analysis.ForcesHistogram(data=data.atoms, bins=100)
+        data = ips.AddData(file=traj_file)
+        e_hist = ips.EnergyHistogram(data=data.atoms)
+        f_hist = ips.ForcesHistogram(data=data.atoms, bins=100)
 
     project.repro()
 

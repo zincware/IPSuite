@@ -71,11 +71,9 @@ class ThresholdSelection(ConfigurationSelection):
     dim_reduction: str = zntrack.params(None)
     reduction_axis: list[int] = zntrack.params((1, 2))
 
-    def _post_init_(self):
+    def __post_init__(self):
         if self.threshold is None and self.n_configurations is None:
             raise ValueError("Either 'threshold' or 'n_configurations' must not be None.")
-
-        return super()._post_init_()
 
     def select_atoms(
         self, atoms_lst: typing.List[ase.Atoms], save_fig: bool = True
@@ -117,20 +115,15 @@ class ThresholdSelection(ConfigurationSelection):
             else:
                 indices = np.argsort(values)
 
-        selection = self.get_selection(indices)
-
-        return selection
-
-    def get_selection(self, indices):
-        selected = []
+        selection = []
         for val in indices:
             # If the value is close to any of the already selected values, skip it.
-            if not any(np.abs(val - np.array(selected)) < self.min_distance):
-                selected.append(val)
-            if len(selected) == self.n_configurations:
+            if not any(np.abs(val - np.array(selection)) < self.min_distance):
+                selection.append(int(val))
+            if len(selection) == self.n_configurations:
                 break
 
-        return selected
+        return selection
 
     def _get_plot(self, atoms_lst: typing.List[ase.Atoms], indices: typing.List[int]):
         indices = np.array(indices)

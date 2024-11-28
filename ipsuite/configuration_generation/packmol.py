@@ -51,7 +51,7 @@ class Packmol(base.IPSNode):
     atoms: list[ase.Atoms] = fields.Atoms()
     pbc: bool = zntrack.params(True)
 
-    def _post_init_(self):
+    def __post_init__(self):
         if self.box is None and self.density is None:
             raise ValueError("Either box or density must be set.")
         if len(self.data) != len(self.count):
@@ -119,14 +119,14 @@ class MultiPackmol(Packmol):
         >>> tmp_path = utils.docs.create_dvc_git_env_for_doctest()
 
     >>> import ipsuite as ips
-    >>> with ips.Project(automatic_node_names=True) as project:
-    ...     water = ips.configuration_generation.SmilesToConformers(
+    >>> with ips.Project() as project:
+    ...     water = ips.SmilesToConformers(
     ...         smiles='O', numConfs=100
     ...         )
-    ...     boxes = ips.configuration_generation.MultiPackmol(
+    ...     boxes = ips.MultiPackmol(
     ...         data=[water.atoms], count=[10], density=997, n_configurations=10
     ...         )
-    >>> project.run()
+    >>> project.repro()
 
     .. testcleanup::
         >>> tmp_path.cleanup()

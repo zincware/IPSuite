@@ -9,7 +9,7 @@ def test_model_training(proj_path, traj_file):
     with ipsuite.Project() as project:
         data = ipsuite.AddData(file=traj_file, name="data_1")
         train_selection = ipsuite.configuration_selection.UniformEnergeticSelection(
-            data=data, n_configurations=10, name="train_data"
+            data=data.atoms, n_configurations=10, name="train_data"
         )
 
         validation_selection = ipsuite.configuration_selection.UniformEnergeticSelection(
@@ -18,10 +18,7 @@ def test_model_training(proj_path, traj_file):
 
         model = ipsuite.models.GAP(soap={"cutoff": 0.7}, data=train_selection.atoms)
 
-    project.run()
-
-    model.load()
-    data.load()
+    project.repro()
 
     prediction = model.predict(data.atoms)
     assert isinstance(prediction, list)

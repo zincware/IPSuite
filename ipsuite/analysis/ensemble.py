@@ -50,6 +50,7 @@ def plot_with_uncertainty(value, ylabel: str, xlabel: str, x=None, **kwargs) -> 
 
 
 class ModelEnsembleAnalysis(base.AnalyseAtoms):
+    # TODO do we need this?
     """Attributes
     ----------
         models: list of models to ensemble

@@ -82,7 +82,7 @@ class AddData(base.IPSNode):
     file: typing.Union[str, pathlib.Path] = zntrack.deps_path()
     lines_to_read: int = zntrack.params(None)
 
-    def _post_init_(self):
+    def __post_init__(self):
         if not pathlib.Path(pathlib.Path(self.file).name + ".dvc").exists():
             log.warning(
                 f"Please run 'dvc add {self.file}' to track the file with DVC. Otherwise,"

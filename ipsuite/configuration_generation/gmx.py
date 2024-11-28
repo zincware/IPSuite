@@ -329,7 +329,7 @@ class Smiles2Gromacs(base.IPSNode):
 
     output_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "gromacs")
 
-    def _post_init_(self):
+    def __post_init__(self):
         if len(self.smiles) != len(self.count):
             raise ValueError("The number of smiles must match the number of counts")
         if len(self.smiles) != len(self.labels):
