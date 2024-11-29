@@ -34,6 +34,13 @@ def compute_rot_forces(mol, key: str = "forces"):
     mol_positions -= mol.get_center_of_mass()
     masses = mol.get_masses()
 
+    # TODO fix for n=2
+    if len(mol) <= 2:
+        result = np.zeros((len(mol),3))
+        if key == "forces_ensemble":
+            result = result[...,None] 
+        return result
+
     I_ab = compute_intertia_tensor(mol_positions, masses)
     I_ab_inv = np.linalg.inv(I_ab)
 
@@ -61,7 +68,6 @@ def compute_rot_forces(mol, key: str = "forces"):
 
 
 def force_decomposition(atom, mapping, key: str = "forces"):
-    # TODO we should only need to do the mapping once
 
     if key not in ["forces", "forces_ensemble"]:
         raise KeyError("Unknown force decomposition key")
@@ -76,8 +82,8 @@ def force_decomposition(atom, mapping, key: str = "forces"):
         n_atoms = len(molecule)
         mol_slice = slice(total_n_atoms, total_n_atoms + n_atoms)
         full_forces[mol_slice] = molecule.calc.results[key]
-        atom_trans_forces[mol_slice] = compute_trans_forces(molecule, key)
         atom_rot_forces[mol_slice] = compute_rot_forces(molecule, key)
+        atom_trans_forces[mol_slice] = compute_trans_forces(molecule, key)
         total_n_atoms += n_atoms
 
     atom_vib_forces = full_forces - atom_trans_forces - atom_rot_forces
@@ -137,6 +143,12 @@ def comptue_rll(inputs, std, target):
 
 
 def compute_uncertainty_metrics(pred, std, true):
+
+    mask = (std > 1e-7) | (pred > 1e-7) | (true > 1e-7)
+    pred = pred[mask]
+    std = std[mask]
+    true = true[mask]
+
     mace = uct.mean_absolute_calibration_error(pred, std, true)
     rmsce = uct.root_mean_squared_calibration_error(pred, std, true)
     miscal = uct.miscalibration_area(pred, std, true)

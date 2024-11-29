@@ -136,8 +136,10 @@ def get_calibration_figure(
     ax.plot(
         np.logspace(-10, 100.0), np.logspace(-10, 100.0), linestyle="--", color="grey"
     )
-    ax.set_xlim(np.min(std) / 1.5, np.max(std) * 1.5)
-    ax.set_ylim(np.min(error) / 1.5, np.max(error) * 1.5)
+    xlower = max(np.min(std) / 1.5, 1e-7)
+    ylower = max(np.min(std) / 1.5, 1e-7)
+    ax.set_xlim(xlower, np.max(std) * 1.5)
+    ax.set_ylim(ylower, np.max(error) * 1.5)
 
     if forces:
         xlabel = r"$\sigma_{f_{i\alpha}}(A)$ [meV/$\AA$] "

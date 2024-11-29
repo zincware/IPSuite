@@ -473,6 +473,9 @@ class ForceDecomposition(base.ComparePredictions):
     The implementation follows the method described in
     https://doi.org/10.26434/chemrxiv-2022-l4tb9
 
+    Currently, single atoms and diatomic molecules are simply filtered out.
+    Please raise an issue if you need those cases to be treated correctly
+    in your work.
 
     Attributes
     ----------
@@ -502,7 +505,7 @@ class ForceDecomposition(base.ComparePredictions):
             true_trans - pred_trans,            
             datalabel=rf"Trans. MAE: {self.trans_forces['mae']:.2f} meV$ / \AA$",
             xlabel=r"$ab~initio$ forces / meV$ \cdot \AA^{-1}$",
-            ylabel=r"$\Delta F_{alpha,i}_{trans}$ / meV$ \cdot \AA^{-1}$",
+            ylabel=r"$\Delta F_{alpha,i,trans}$ / meV$ \cdot \AA^{-1}$",
         )
         fig.savefig(self.trans_force_plt)
 
@@ -513,7 +516,7 @@ class ForceDecomposition(base.ComparePredictions):
             true_rot - pred_rot,            
             datalabel=rf"Rot. MAE: {self.rot_forces['mae']:.2f} meV$ / \AA$",
             xlabel=r"$ab~initio$ forces / meV$ \cdot \AA^{-1}$",
-            ylabel=r"$\Delta F_{alpha,i}_{rot}$ / meV$ \cdot \AA^{-1}$",
+            ylabel=r"$\Delta F_{alpha,i,rot}$ / meV$ \cdot \AA^{-1}$",
         )
         fig.savefig(self.rot_force_plt)
 
@@ -524,7 +527,7 @@ class ForceDecomposition(base.ComparePredictions):
             true_vib - pred_vib,            
             datalabel=rf"Vib. MAE: {self.vib_forces['mae']:.2f} meV$ / \AA$",
             xlabel=r"$ab~initio$ forces / meV$ \cdot \AA^{-1}$",
-            ylabel=r"$\Delta F_{alpha,i}_{vib}$ / meV$ \cdot \AA^{-1}$",
+            ylabel=r"$\Delta F_{alpha,i,vib}$ / meV$ \cdot \AA^{-1}$",
         )
         fig.savefig(self.vib_force_plt)
 
@@ -632,7 +635,7 @@ class ForceDecomposition(base.ComparePredictions):
 
 
 def decompose_force_uncertainty(atom_true, atom_pred):
-    mapping = BarycenterMapping(data=None, frozen=True)
+    mapping = BarycenterMapping(frozen=True)
 
     trans_true, rot_true, vib_true = force_decomposition(
         atom_true,
@@ -653,7 +656,6 @@ def decompose_force_uncertainty(atom_true, atom_pred):
     rot_unc = np.sum((rot_ens - rot_pred[:, :, None]) ** 2, axis=-1) / (n_ens - 1)
     vib_unc = np.sum((vib_ens - vib_pred[:, :, None]) ** 2, axis=-1) / (n_ens - 1)
 
-    # sum((forces_ens - forces_mean) ** 2, axis=0)
 
     true = (trans_true, rot_true, vib_true)
     pred = (trans_pred, rot_pred, vib_pred)
@@ -668,6 +670,10 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
     The implementation follows the method described in
     https://doi.org/10.26434/chemrxiv-2022-l4tb9
 
+    Currently, single atoms and diatomic molecules are simply filtered out.
+    Please raise an issue if you need those cases to be treated correctly
+    in your work.
+
     """
 
     trans_forces: dict = zntrack.metrics()
@@ -677,7 +683,6 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
 
     def get_plots(self):
-        #  TODO update figures
         self.plots_dir.mkdir(exist_ok=True)
         trans_err = np.abs(self.true["trans"] - self.pred["trans"])
         rot_err = np.abs(self.true["rot"] - self.pred["rot"])
@@ -686,7 +691,7 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
         trans_plot = get_calibration_figure(
             trans_err,
             self.uncertainties["trans"],
-            markersize=10,
+            markersize=5,
             datalabel=rf"RLL={self.trans_forces['rll']:.1f}",
             forces=True,
         )
@@ -699,7 +704,7 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
         rot_plot = get_calibration_figure(
             rot_err,
             self.uncertainties["rot"],
-            markersize=10,
+            markersize=5,
             datalabel=rf"RLL={self.rot_forces['rll']:.1f}",
             forces=True,
         )
@@ -712,7 +717,7 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
         vib_plot = get_calibration_figure(
             vib_err,
             self.uncertainties["vib"],
-            markersize=10,
+            markersize=5,
             datalabel=rf"RLL={self.vib_forces['rll']:.1f}",
             forces=True,
         )
@@ -754,9 +759,9 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
             leave=True,
             mininterval=0.25,
         )
-        # for result in process_pool.map(decompose_force_uncertainty, self.x, self.y):
-        for i in range(len(self.x)):
-            result = decompose_force_uncertainty(self.x[i], self.y[i])
+        for result in process_pool.map(decompose_force_uncertainty, self.x, self.y):
+        # for i in range(len(self.x)):
+        #     result = decompose_force_uncertainty(self.x[i], self.y[i])
             true, pred, unc = result
             trans_true, rot_true, vib_true = true
             trans_pred, rot_pred, vib_pred = pred
