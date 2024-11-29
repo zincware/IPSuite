@@ -502,7 +502,7 @@ class ForceDecomposition(base.ComparePredictions):
         pred_trans = np.reshape(self.pred_forces["trans"], -1)
         fig = get_figure(
             true_trans,
-            true_trans - pred_trans,            
+            true_trans - pred_trans,
             datalabel=rf"Trans. MAE: {self.trans_forces['mae']:.2f} meV$ / \AA$",
             xlabel=r"$ab~initio$ forces / meV$ \cdot \AA^{-1}$",
             ylabel=r"$\Delta F_{alpha,i,trans}$ / meV$ \cdot \AA^{-1}$",
@@ -513,7 +513,7 @@ class ForceDecomposition(base.ComparePredictions):
         pred_rot = np.reshape(self.pred_forces["rot"], -1)
         fig = get_figure(
             true_rot,
-            true_rot - pred_rot,            
+            true_rot - pred_rot,
             datalabel=rf"Rot. MAE: {self.rot_forces['mae']:.2f} meV$ / \AA$",
             xlabel=r"$ab~initio$ forces / meV$ \cdot \AA^{-1}$",
             ylabel=r"$\Delta F_{alpha,i,rot}$ / meV$ \cdot \AA^{-1}$",
@@ -524,7 +524,7 @@ class ForceDecomposition(base.ComparePredictions):
         pred_vib = np.reshape(self.pred_forces["vib"], -1)
         fig = get_figure(
             true_vib,
-            true_vib - pred_vib,            
+            true_vib - pred_vib,
             datalabel=rf"Vib. MAE: {self.vib_forces['mae']:.2f} meV$ / \AA$",
             xlabel=r"$ab~initio$ forces / meV$ \cdot \AA^{-1}$",
             ylabel=r"$\Delta F_{alpha,i,vib}$ / meV$ \cdot \AA^{-1}$",
@@ -656,7 +656,6 @@ def decompose_force_uncertainty(atom_true, atom_pred):
     rot_unc = np.sum((rot_ens - rot_pred[:, :, None]) ** 2, axis=-1) / (n_ens - 1)
     vib_unc = np.sum((vib_ens - vib_pred[:, :, None]) ** 2, axis=-1) / (n_ens - 1)
 
-
     true = (trans_true, rot_true, vib_true)
     pred = (trans_pred, rot_pred, vib_pred)
     unc = (trans_unc, rot_unc, vib_unc)
@@ -748,7 +747,7 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
         self.pred = {"trans": [], "rot": [], "vib": []}
         self.uncertainties = {"trans": [], "rot": [], "vib": []}
 
-        nproc = os.getenv("IPSUITE_NPROC", multiprocessing.cpu_count()-1)
+        nproc = os.getenv("IPSUITE_NPROC", multiprocessing.cpu_count() - 1)
         process_pool = ProcessPoolExecutor(nproc)
 
         pbar = tqdm.trange(
@@ -760,8 +759,8 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
             mininterval=0.25,
         )
         for result in process_pool.map(decompose_force_uncertainty, self.x, self.y):
-        # for i in range(len(self.x)):
-        #     result = decompose_force_uncertainty(self.x[i], self.y[i])
+            # for i in range(len(self.x)):
+            #     result = decompose_force_uncertainty(self.x[i], self.y[i])
             true, pred, unc = result
             trans_true, rot_true, vib_true = true
             trans_pred, rot_pred, vib_pred = pred

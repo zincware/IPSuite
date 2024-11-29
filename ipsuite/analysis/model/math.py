@@ -36,9 +36,9 @@ def compute_rot_forces(mol, key: str = "forces"):
 
     # TODO fix for n=2
     if len(mol) <= 2:
-        result = np.zeros((len(mol),3))
+        result = np.zeros((len(mol), 3))
         if key == "forces_ensemble":
-            result = result[...,None] 
+            result = result[..., None]
         return result
 
     I_ab = compute_intertia_tensor(mol_positions, masses)
@@ -68,7 +68,6 @@ def compute_rot_forces(mol, key: str = "forces"):
 
 
 def force_decomposition(atom, mapping, key: str = "forces"):
-
     if key not in ["forces", "forces_ensemble"]:
         raise KeyError("Unknown force decomposition key")
     _, molecules = mapping.forward_mapping(atom)
@@ -143,7 +142,6 @@ def comptue_rll(inputs, std, target):
 
 
 def compute_uncertainty_metrics(pred, std, true):
-
     mask = (std > 1e-7) | (pred > 1e-7) | (true > 1e-7)
     pred = pred[mask]
     std = std[mask]
