@@ -39,8 +39,8 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
 
     symbol: str = zntrack.params()
     z_dist_list: list[float] = zntrack.params()
-    n_conf_per_dist: list[int] = zntrack.params([5, 5])
-    cell_fraction: list[float] = zntrack.params([1, 1])
+    n_conf_per_dist: list[int] = zntrack.params((5, 5))
+    cell_fraction: list[float] = zntrack.params((1, 1))
     random: bool = zntrack.params(False)
     max_rattel_shift: float = zntrack.params(None)
     seed: int = zntrack.params(1)
@@ -102,7 +102,7 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
                     )
                     atoms_list[-1].extend(extension)
 
-        self.atoms = atoms_list
+        self.frames = atoms_list
 
 
 class SurfaceRasterMetrics(analysis.PredictionMetrics):

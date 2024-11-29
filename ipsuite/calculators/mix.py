@@ -1,19 +1,17 @@
 import typing
 
-import tqdm
 import zntrack
 from ase.calculators import mixing
 from ase.calculators.calculator import Calculator
 
 from ipsuite import base
-from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
 class CalculatorNode(typing.Protocol):
     def get_calculator(self) -> typing.Type[Calculator]: ...
 
 
-class MixCalculator(base.ProcessAtoms):
+class MixCalculator(base.IPSNode):
     """Combine multiple models or calculators into one.
 
     Attributes:
@@ -27,12 +25,7 @@ class MixCalculator(base.ProcessAtoms):
     method: str = zntrack.params("sum")
 
     def run(self) -> None:
-        calc = self.get_calculator()
-        self.atoms = []
-        for atoms in tqdm.tqdm(self.get_data(), ncols=70):
-            atoms.calc = calc
-            atoms.get_potential_energy()
-            self.atoms.append(freeze_copy_atoms(atoms))
+        pass
 
     def get_calculator(self, **kwargs) -> Calculator:
         """Property to return a model specific ase calculator object.

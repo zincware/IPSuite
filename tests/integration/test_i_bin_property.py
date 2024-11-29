@@ -3,19 +3,16 @@ import pytest
 import ipsuite as ips
 
 
-@pytest.mark.parametrize("eager", [True, False])
-def test_ips_bin_property(data_repo, eager):
+def test_ips_bin_property(data_repo, traj_file):
     """Test the BarycenterMapping class."""
-    data = ips.AddData.from_rev(name="BMIM_BF4_363_15K")
+    # data = ips.AddData.from_rev(name="BMIM_BF4_363_15K")
 
     with ips.Project() as project:
-        e_hist = ips.analysis.EnergyHistogram(data=data.atoms)
-        f_hist = ips.analysis.ForcesHistogram(data=data.atoms, bins=100)
+        data = ips.AddData(file=traj_file)
+        e_hist = ips.EnergyHistogram(data=data.frames)
+        f_hist = ips.ForcesHistogram(data=data.frames, bins=100)
 
-    project.run(eager=eager)
-    if not eager:
-        e_hist.load()
-        f_hist.load()
+    project.repro()
 
     assert e_hist.labels_df["bin_edges"].shape == (1,)
     assert f_hist.labels_df["bin_edges"].shape == (100,)

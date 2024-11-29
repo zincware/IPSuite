@@ -16,18 +16,18 @@ def test_rattle_atoms(proj_path, traj_file, include_original):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file.name)
 
-        rattle = ips.bootstrap.RattleAtoms(
-            data=data.atoms,
+        rattle = ips.RattleAtoms(
+            data=data.frames,
             maximum=0.1,
             n_configurations=n_configurations,
             include_original=include_original,
             seed=0,
         )
-    project.run()
+    project.repro()
 
     data.load()
     rattle.load()
-    rattled_atoms = rattle.atoms
+    rattled_atoms = rattle.frames
 
     desired_num_configs = n_configurations
     if include_original:
@@ -46,18 +46,18 @@ def test_translate_molecules(proj_path, traj_file, include_original):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file.name)
 
-        rattle = ips.bootstrap.TranslateMolecules(
-            data=data.atoms,
+        rattle = ips.TranslateMolecules(
+            data=data.frames,
             maximum=0.1,
             n_configurations=n_configurations,
             include_original=include_original,
             seed=0,
         )
-    project.run()
+    project.repro()
 
     data.load()
     rattle.load()
-    rattled_atoms = rattle.atoms
+    rattled_atoms = rattle.frames
 
     desired_num_configs = n_configurations
     if include_original:
@@ -76,18 +76,15 @@ def test_rotate_molecules(proj_path, traj_file, include_original):
     with ips.Project() as project:
         data = ips.AddData(file=traj_file.name)
 
-        rattle = ips.bootstrap.RotateMolecules(
-            data=data.atoms,
+        rattle = ips.RotateMolecules(
+            data=data.frames,
             maximum=0.1,
             n_configurations=n_configurations,
             include_original=include_original,
             seed=0,
         )
-    project.run()
-
-    data.load()
-    rattle.load()
-    rattled_atoms = rattle.atoms
+    project.repro()
+    rattled_atoms = rattle.frames
 
     desired_num_configs = n_configurations
     if include_original:
@@ -95,7 +92,7 @@ def test_rotate_molecules(proj_path, traj_file, include_original):
 
     assert len(rattled_atoms) == desired_num_configs
     with pytest.raises(RuntimeError):
-        assert rattle.atoms[0].get_potential_energy() != 0.0
+        assert rattle.frames[1].get_potential_energy() != 0.0
 
 
 def test_rotate_molecules_with_calc(proj_path, traj_file):
@@ -104,25 +101,22 @@ def test_rotate_molecules_with_calc(proj_path, traj_file):
 
     n_configurations = 10
 
-    model = ips.calculators.EMTSinglePoint(data=None)
-
+    model = ips.EMTSinglePoint()
     with ips.Project() as project:
         data = ips.AddData(file=traj_file.name)
 
-        rattle = ips.bootstrap.RotateMolecules(
-            data=data.atoms,
+        rattle = ips.RotateMolecules(
+            data=data.frames,
             maximum=0.1,
             n_configurations=n_configurations,
             include_original=False,
             seed=0,
             model=model,
         )
-    project.run()
-
-    rattle.load()
+    project.repro()
 
     # assert all entries in the atoms[x] list have a different potential energy
 
-    energies = [atoms.get_potential_energy() for atoms in rattle.atoms]
+    energies = [atoms.get_potential_energy() for atoms in rattle.frames]
     assert len(set(energies)) == len(energies)  # all different
     assert energies[0] != 0.0

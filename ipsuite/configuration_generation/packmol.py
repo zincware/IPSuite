@@ -47,11 +47,11 @@ class Packmol(base.IPSNode):
     tolerance: float = zntrack.params(2.0)
     box: list = zntrack.params(None)
     density: float = zntrack.params(None)
-    structures = zntrack.outs_path(zntrack.nwd / "packmol")
-    atoms = fields.Atoms()
+    structures: pathlib.Path = zntrack.outs_path(zntrack.nwd / "packmol")
+    frames: list[ase.Atoms] = fields.Atoms()
     pbc: bool = zntrack.params(True)
 
-    def _post_init_(self):
+    def __post_init__(self):
         if self.box is None and self.density is None:
             raise ValueError("Either box or density must be set.")
         if len(self.data) != len(self.count):
@@ -96,7 +96,7 @@ class Packmol(base.IPSNode):
         if self.pbc:
             atoms.cell = self.box
             atoms.pbc = True
-        self.atoms = [atoms]
+        self.frames = [atoms]
 
     def _get_box_from_molar_volume(self):
         """Get the box size from the molar volume"""
@@ -104,7 +104,7 @@ class Packmol(base.IPSNode):
         log.info(f"estimated box size: {self.box}")
 
     def view(self) -> view:
-        return view(self.atoms, viewer="x3d")
+        return view(self.frames, viewer="x3d")
 
 
 class MultiPackmol(Packmol):
@@ -119,14 +119,14 @@ class MultiPackmol(Packmol):
         >>> tmp_path = utils.docs.create_dvc_git_env_for_doctest()
 
     >>> import ipsuite as ips
-    >>> with ips.Project(automatic_node_names=True) as project:
-    ...     water = ips.configuration_generation.SmilesToConformers(
+    >>> with ips.Project() as project:
+    ...     water = ips.SmilesToConformers(
     ...         smiles='O', numConfs=100
     ...         )
-    ...     boxes = ips.configuration_generation.MultiPackmol(
+    ...     boxes = ips.MultiPackmol(
     ...         data=[water.atoms], count=[10], density=997, n_configurations=10
     ...         )
-    >>> project.run()
+    >>> project.repro()
 
     .. testcleanup::
         >>> tmp_path.cleanup()
@@ -145,7 +145,7 @@ class MultiPackmol(Packmol):
 
     def run(self):
         np.random.seed(self.seed)
-        self.atoms = []
+        self.frames = []
 
         if self.density is not None:
             self._get_box_from_molar_volume()
@@ -187,4 +187,4 @@ class MultiPackmol(Packmol):
                 atoms.cell = self.box
                 atoms.pbc = True
 
-            self.atoms.append(atoms)
+            self.frames.append(atoms)

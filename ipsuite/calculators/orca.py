@@ -12,7 +12,7 @@ from ipsuite import base
 class OrcaSinglePoint(base.ProcessAtoms):
     orcasimpleinput: str = zntrack.params("B3LYP def2-TZVP")
     orcablocks: str = zntrack.params("%pal nprocs 16 end")
-    ASE_ORCA_COMMAND: str = zntrack.meta.Environment("orca")
+    ASE_ORCA_COMMAND: str = zntrack.params("orca")
 
     orca_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "orca")
     output_file: str = zntrack.outs_path(zntrack.nwd / "structures.h5")
@@ -27,7 +27,7 @@ class OrcaSinglePoint(base.ProcessAtoms):
             db.append(atoms)
 
     @property
-    def atoms(self):
+    def frames(self):
         with self.state.fs.open(self.output_file, "rb") as f:
             with h5py.File(f) as file:
                 return znh5md.IO(file_handle=file)[:]
