@@ -75,28 +75,28 @@ class GPAWSinglePoint(base.ProcessAtoms):
         return calc
 
     def _get_calculator_kwargs(self) -> dict[str, typing.Any]:
-        kwargs = dict(
-            mode=self.mode,
-            xc=self.xc,
-            occupations=self.occupations,
-            poissonsolver=self.poissonsolver,
-            h=self.h,
-            gpts=self.gpts,
-            kpts=self.kpts,
-            nbands=self.nbands,
-            charge=self.charge,
-            setups=self.setups,
-            basis=self.basis,
-            spinpol=self.spinpol,
-            mixer=self.mixer,
-            eigensolver=self.eigensolver,
-            external=self.external,
-            random=self.random,
-            hund=self.hund,
-            maxiter=self.maxiter,
-            symmetry=self.symmetry,
-            convergence=self.convergence,
-        )
+        kwargs = {
+            "mode": self.mode,
+            "xc": self.xc,
+            "occupations": self.occupations,
+            "poissonsolver": self.poissonsolver,
+            "h": self.h,
+            "gpts": self.gpts,
+            "kpts": self.kpts,
+            "nbands": self.nbands,
+            "charge": self.charge,
+            "setups": self.setups,
+            "basis": self.basis,
+            "spinpol": self.spinpol,
+            "mixer": self.mixer,
+            "eigensolver": self.eigensolver,
+            "external": self.external,
+            "random": self.random,
+            "hund": self.hund,
+            "maxiter": self.maxiter,
+            "symmetry": self.symmetry,
+            "convergence": self.convergence,
+        }
 
         # let GPAW's initialization handle setting defaults
         return {k: v for k, v in kwargs.items() if v is not None}
