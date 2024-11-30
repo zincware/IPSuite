@@ -496,7 +496,6 @@ class ForceDecomposition(base.ComparePredictions):
     histogram_plt: pathlib.Path = zntrack.outs_path(zntrack.nwd / "histogram.png")
 
     def get_plots(self):
-
         true_trans = np.reshape(self.true_forces["trans"], -1)
         pred_trans = np.reshape(self.pred_forces["trans"], -1)
         fig = get_figure(
@@ -706,9 +705,7 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
             datalabel=rf"RLL={self.rot_forces['rll']:.1f}",
             forces=True,
         )
-        rot_gauss = get_gaussianicity_figure(
-            rot_err, self.f_unc["rot"], forces=True
-        )
+        rot_gauss = get_gaussianicity_figure(rot_err, self.f_unc["rot"], forces=True)
         rot_plot.savefig(self.plots_dir / "rot.png")
         rot_gauss.savefig(self.plots_dir / "rot_gauss.png")
 
@@ -719,9 +716,7 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
             datalabel=rf"RLL={self.vib_forces['rll']:.1f}",
             forces=True,
         )
-        vib_gauss = get_gaussianicity_figure(
-            vib_err, self.f_unc["vib"], forces=True
-        )
+        vib_gauss = get_gaussianicity_figure(vib_err, self.f_unc["vib"], forces=True)
         vib_plot.savefig(self.plots_dir / "vib.png")
         vib_gauss.savefig(self.plots_dir / "vib_gauss.png")
 
@@ -782,8 +777,7 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
             k: np.reshape(np.concatenate(v), (-1,)) * 1000 for k, v in self.f_pred.items()
         }
         self.f_unc = {
-            k: np.reshape(np.concatenate(v), (-1,)) * 1000
-            for k, v in self.f_unc.items()
+            k: np.reshape(np.concatenate(v), (-1,)) * 1000 for k, v in self.f_unc.items()
         }
         self.get_metrics()
         self.get_plots()
