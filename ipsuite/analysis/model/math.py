@@ -13,6 +13,9 @@ def compute_trans_forces(mol, key: str = "forces"):
         mu = (masses / mol_mas)[:, None]
     elif key == "forces_ensemble":
         mu = (masses / mol_mas)[:, None, None]
+    else:
+        m = "translational forces aceepts keys 'forces' and 'forces_ensemble'"
+        raise KeyError(m)
 
     result = mu * all_forces
     return result
