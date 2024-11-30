@@ -141,17 +141,17 @@ def comptue_rll(inputs, std, target):
     return rll * 100
 
 
-def compute_uncertainty_metrics(pred, std, true):
-    mask = (std > 1e-7) | (pred > 1e-7) | (true > 1e-7)
-    pred = pred[mask]
-    std = std[mask]
-    true = true[mask]
+def compute_uncertainty_metrics(y_pred, y_std, y_true):
+    mask = (y_std > 1e-7) | (y_pred > 1e-7) | (y_true > 1e-7)
+    y_pred = y_pred[mask]
+    y_std = y_std[mask]
+    y_true = y_true[mask]
 
-    mace = uct.mean_absolute_calibration_error(pred, std, true)
-    rmsce = uct.root_mean_squared_calibration_error(pred, std, true)
-    miscal = uct.miscalibration_area(pred, std, true)
-    nll = np.mean(nlls(pred, std, true))
-    rll = comptue_rll(pred, std, true)
+    mace = uct.mean_absolute_calibration_error(y_pred, y_std, y_true)
+    rmsce = uct.root_mean_squared_calibration_error(y_pred, y_std, y_true)
+    miscal = uct.miscalibration_area(y_pred, y_std, y_true)
+    nll = np.mean(nlls(y_pred, y_std, y_true))
+    rll = comptue_rll(y_pred, y_std, y_true)
 
     metrics = {
         "mace": mace,

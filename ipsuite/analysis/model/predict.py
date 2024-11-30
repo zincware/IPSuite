@@ -683,45 +683,45 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
 
     def get_plots(self):
         self.plots_dir.mkdir(exist_ok=True)
-        trans_err = np.abs(self.true["trans"] - self.pred["trans"])
-        rot_err = np.abs(self.true["rot"] - self.pred["rot"])
-        vib_err = np.abs(self.true["vib"] - self.pred["vib"])
+        trans_err = np.abs(self.f_true["trans"] - self.f_pred["trans"])
+        rot_err = np.abs(self.f_true["rot"] - self.f_pred["rot"])
+        vib_err = np.abs(self.f_true["vib"] - self.f_pred["vib"])
 
         trans_plot = get_calibration_figure(
             trans_err,
-            self.uncertainties["trans"],
+            self.f_unc["trans"],
             markersize=5,
             datalabel=rf"RLL={self.trans_forces['rll']:.1f}",
             forces=True,
         )
         trans_gauss = get_gaussianicity_figure(
-            trans_err, self.uncertainties["trans"], forces=True
+            trans_err, self.f_unc["trans"], forces=True
         )
         trans_plot.savefig(self.plots_dir / "trans.png")
         trans_gauss.savefig(self.plots_dir / "trans_gauss.png")
 
         rot_plot = get_calibration_figure(
             rot_err,
-            self.uncertainties["rot"],
+            self.f_unc["rot"],
             markersize=5,
             datalabel=rf"RLL={self.rot_forces['rll']:.1f}",
             forces=True,
         )
         rot_gauss = get_gaussianicity_figure(
-            rot_err, self.uncertainties["rot"], forces=True
+            rot_err, self.f_unc["rot"], forces=True
         )
         rot_plot.savefig(self.plots_dir / "rot.png")
         rot_gauss.savefig(self.plots_dir / "rot_gauss.png")
 
         vib_plot = get_calibration_figure(
             vib_err,
-            self.uncertainties["vib"],
+            self.f_unc["vib"],
             markersize=5,
             datalabel=rf"RLL={self.vib_forces['rll']:.1f}",
             forces=True,
         )
         vib_gauss = get_gaussianicity_figure(
-            vib_err, self.uncertainties["vib"], forces=True
+            vib_err, self.f_unc["vib"], forces=True
         )
         vib_plot.savefig(self.plots_dir / "vib.png")
         vib_gauss.savefig(self.plots_dir / "vib_gauss.png")
@@ -730,22 +730,22 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
         """Update the metrics."""
 
         metrics = compute_uncertainty_metrics(
-            self.pred["trans"], self.uncertainties["trans"], self.true["trans"]
+            self.f_pred["trans"], self.f_unc["trans"], self.f_true["trans"]
         )
         self.trans_forces = metrics
         metrics = compute_uncertainty_metrics(
-            self.pred["rot"], self.uncertainties["rot"], self.true["rot"]
+            self.f_pred["rot"], self.f_unc["rot"], self.f_true["rot"]
         )
         self.rot_forces = metrics
         metrics = compute_uncertainty_metrics(
-            self.pred["vib"], self.uncertainties["vib"], self.true["vib"]
+            self.f_pred["vib"], self.f_unc["vib"], self.f_true["vib"]
         )
         self.vib_forces = metrics
 
     def run(self):
-        self.true = {"trans": [], "rot": [], "vib": []}
-        self.pred = {"trans": [], "rot": [], "vib": []}
-        self.uncertainties = {"trans": [], "rot": [], "vib": []}
+        self.f_true = {"trans": [], "rot": [], "vib": []}
+        self.f_pred = {"trans": [], "rot": [], "vib": []}
+        self.f_unc = {"trans": [], "rot": [], "vib": []}
 
         nproc = os.getenv("IPSUITE_NPROC", multiprocessing.cpu_count() - 1)
         process_pool = ProcessPoolExecutor(nproc)
@@ -761,32 +761,32 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
         for result in process_pool.map(decompose_force_uncertainty, self.x, self.y):
             # for i in range(len(self.x)):
             #     result = decompose_force_uncertainty(self.x[i], self.y[i])
-            true, pred, unc = result
-            trans_true, rot_true, vib_true = true
-            trans_pred, rot_pred, vib_pred = pred
-            trans_unc, rot_unc, vib_unc = unc
+            y_true, y_pred, y_unc = result
+            trans_true, rot_true, vib_true = y_true
+            trans_pred, rot_pred, vib_pred = y_pred
+            trans_unc, rot_unc, vib_unc = y_unc
 
-            self.true["trans"].append(trans_true)
-            self.true["rot"].append(rot_true)
-            self.true["vib"].append(vib_true)
-            self.pred["trans"].append(trans_pred)
-            self.pred["rot"].append(rot_pred)
-            self.pred["vib"].append(vib_pred)
-            self.uncertainties["trans"].append(trans_unc)
-            self.uncertainties["rot"].append(rot_unc)
-            self.uncertainties["vib"].append(vib_unc)
+            self.f_true["trans"].append(trans_true)
+            self.f_true["rot"].append(rot_true)
+            self.f_true["vib"].append(vib_true)
+            self.f_pred["trans"].append(trans_pred)
+            self.f_pred["rot"].append(rot_pred)
+            self.f_pred["vib"].append(vib_pred)
+            self.f_unc["trans"].append(trans_unc)
+            self.f_unc["rot"].append(rot_unc)
+            self.f_unc["vib"].append(vib_unc)
 
             pbar.update(1)
 
-        self.true = {
-            k: np.reshape(np.concatenate(v), (-1,)) * 1000 for k, v in self.true.items()
+        self.f_true = {
+            k: np.reshape(np.concatenate(v), (-1,)) * 1000 for k, v in self.f_true.items()
         }
-        self.pred = {
-            k: np.reshape(np.concatenate(v), (-1,)) * 1000 for k, v in self.pred.items()
+        self.f_pred = {
+            k: np.reshape(np.concatenate(v), (-1,)) * 1000 for k, v in self.f_pred.items()
         }
-        self.uncertainties = {
+        self.f_unc = {
             k: np.reshape(np.concatenate(v), (-1,)) * 1000
-            for k, v in self.uncertainties.items()
+            for k, v in self.f_unc.items()
         }
         self.get_metrics()
         self.get_plots()
