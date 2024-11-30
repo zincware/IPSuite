@@ -401,6 +401,8 @@ class SVCRBarostat:
 
         if self.taup:
             taup = self.taup * units.fs
+        else:
+            taup = self.taup
 
         thermostat = StochasticVelocityCellRescaling(
             atoms=atoms,
