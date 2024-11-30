@@ -1,4 +1,5 @@
 import math
+from typing import Optional
 
 import numpy as np
 from ase import units
@@ -36,7 +37,7 @@ class StochasticVelocityCellRescaling(MolecularDynamics):
         betaT=4.57e-5 / units.bar,
         pressure_au=1.01325 * units.bar,
         taut=100 * units.fs,
-        taup=1000 * units.fs,
+        taup: Optional[float] = 1000 * units.fs,
         rng=np.random,
         **md_kwargs,
     ):
@@ -134,7 +135,8 @@ class StochasticVelocityCellRescaling(MolecularDynamics):
         if forces is None:
             forces = self.atoms.get_forces(md=True)
 
-        self.scale_positions_and_cell()
+        if self.taup:
+            self.scale_positions_and_cell()
 
         self.scale_velocities()
 
