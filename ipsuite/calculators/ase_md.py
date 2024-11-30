@@ -15,6 +15,7 @@ import zntrack
 from ase import units
 from ase.md.langevin import Langevin
 from ase.md.npt import NPT
+from ase.md.nvtberendsen import NVTBerendsen
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md.verlet import VelocityVerlet
 from tqdm import trange
@@ -394,9 +395,14 @@ class SVCRBarostat:
     betaT: float = 4.57e-5
     pressure_au: float = 1.01325
     taut: float = 100
-    taup: float = 1000
+    taup: typing.Optional[float] = None
 
     def get_thermostat(self, atoms):
+        if self.taup:
+            taup = self.taup * units.fs
+        else:
+            taup = self.taup
+
         thermostat = StochasticVelocityCellRescaling(
             atoms=atoms,
             timestep=self.time_step * units.fs,
@@ -404,7 +410,35 @@ class SVCRBarostat:
             betaT=self.betaT / units.bar,
             pressure_au=self.pressure_au * units.bar,
             taut=self.taut * units.fs,
-            taup=self.taup * units.fs,
+            taup=taup,
+        )
+        return thermostat
+
+
+@dataclasses.dataclass
+class Berendsen:
+    """Initialize the Berendsen thermostat
+
+    Attributes
+    ----------
+    time_step: float
+        time step of simulation
+    temperature: float
+        temperature in K to simulate at
+    taut: float
+        Temperature coupling time scale.
+    """
+
+    time_step: int
+    temperature: float
+    taut: float = 100
+
+    def get_thermostat(self, atoms):
+        thermostat = NVTBerendsen(
+            atoms=atoms,
+            timestep=self.time_step * units.fs,
+            temperature_K=self.temperature,
+            taut=self.taut * units.fs,
         )
         return thermostat
 
