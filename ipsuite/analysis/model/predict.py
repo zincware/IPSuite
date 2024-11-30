@@ -496,7 +496,6 @@ class ForceDecomposition(base.ComparePredictions):
     histogram_plt: pathlib.Path = zntrack.outs_path(zntrack.nwd / "histogram.png")
 
     def get_plots(self):
-        # TODO update plots true - pred y axis
 
         true_trans = np.reshape(self.true_forces["trans"], -1)
         pred_trans = np.reshape(self.pred_forces["trans"], -1)
@@ -759,8 +758,6 @@ class ForceUncertaintyDecomposition(base.ComparePredictions):
             mininterval=0.25,
         )
         for result in process_pool.map(decompose_force_uncertainty, self.x, self.y):
-            # for i in range(len(self.x)):
-            #     result = decompose_force_uncertainty(self.x[i], self.y[i])
             y_true, y_pred, y_unc = result
             trans_true, rot_true, vib_true = y_true
             trans_pred, rot_pred, vib_pred = y_pred
