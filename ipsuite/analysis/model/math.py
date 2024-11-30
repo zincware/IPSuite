@@ -37,7 +37,6 @@ def compute_rot_forces(mol, key: str = "forces"):
     mol_positions -= mol.get_center_of_mass()
     masses = mol.get_masses()
 
-    # TODO fix for n=2
     if len(mol) <= 2:
         result = np.zeros((len(mol), 3))
         if key == "forces_ensemble":
@@ -62,11 +61,14 @@ def compute_rot_forces(mol, key: str = "forces"):
     # Iinv_fxr = I_ab_inv @ f_x_r but batched for ensembles
     Iinv_fxr = np.einsum(contraction_idxs, I_ab_inv, f_x_r)
 
-    if key == "forces_ensemble":
+    if key == "forces":
+        result = np.cross(mi_ri, Iinv_fxr)
+    elif key == "forces_ensemble":
         result = np.cross(mi_ri[:, None, :], Iinv_fxr[None, :, :], axisa=2, axisb=2)
         result = np.transpose(result, (0, 2, 1))
     else:
-        result = np.cross(mi_ri, Iinv_fxr)
+        m = "rotational forces aceepts keys 'forces' and 'forces_ensemble'"
+        raise KeyError(m)
     return result
 
 
