@@ -416,7 +416,7 @@ class SVCRBarostat:
 
 
 @dataclasses.dataclass
-class NVTBerendsen:
+class Berendsen:
     """Initialize the Berendsen thermostat
 
     Attributes
@@ -434,8 +434,6 @@ class NVTBerendsen:
     taut: float = 100
 
     def get_thermostat(self, atoms):
-        if self.taup:
-            taup = self.taup * units.fs
 
         thermostat = NVTBerendsen(
             atoms=atoms,
