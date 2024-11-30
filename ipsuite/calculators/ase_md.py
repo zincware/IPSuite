@@ -434,7 +434,6 @@ class Berendsen:
     taut: float = 100
 
     def get_thermostat(self, atoms):
-
         thermostat = NVTBerendsen(
             atoms=atoms,
             timestep=self.time_step * units.fs,
