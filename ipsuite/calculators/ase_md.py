@@ -15,9 +15,9 @@ import zntrack
 from ase import units
 from ase.md.langevin import Langevin
 from ase.md.npt import NPT
+from ase.md.nvtberendsen import NVTBerendsen
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md.verlet import VelocityVerlet
-from ase.md.nvtberendsen import NVTBerendsen
 from tqdm import trange
 
 from ipsuite import base
@@ -398,7 +398,6 @@ class SVCRBarostat:
     taup: typing.Optional[float] = None
 
     def get_thermostat(self, atoms):
-
         if self.taup:
             taup = self.taup * units.fs
 
@@ -412,7 +411,7 @@ class SVCRBarostat:
             taup=taup,
         )
         return thermostat
-    
+
 
 @dataclasses.dataclass
 class NVTBerendsen:
@@ -433,7 +432,6 @@ class NVTBerendsen:
     taut: float = 100
 
     def get_thermostat(self, atoms):
-
         if self.taup:
             taup = self.taup * units.fs
 
