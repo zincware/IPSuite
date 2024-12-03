@@ -342,12 +342,13 @@ class Smiles2Gromacs(base.IPSNode):
         if isinstance(self.output_dir, str):
             self.output_dir = pathlib.Path(self.output_dir)
         self.mdp_files = [pathlib.Path(mdp_file) for mdp_file in self.mdp_files]
-        self.config_files = [pathlib.Path(config_file) for config_file in self.config_files]
+        self.config_files = [
+            pathlib.Path(config_file) for config_file in self.config_files
+        ]
         # check that the file name without suffix is unique between all files
         names = [file.stem for file in self.mdp_files + self.config_files]
         if len(names) != len(set(names)):
             raise ValueError("The file names must be unique")
-        
 
     @property
     def frames(self):
