@@ -111,7 +111,7 @@ class MultiPackmol(Packmol):
     """Create multiple configurations with packmol.
 
     This Node generates multiple configurations with packmol.
-    This is best used in conjunction with SmilesToConformers:
+    This is best used in conjunction with Smiles2Conformers:
 
     Example
     -------
@@ -120,7 +120,7 @@ class MultiPackmol(Packmol):
 
     >>> import ipsuite as ips
     >>> with ips.Project() as project:
-    ...     water = ips.SmilesToConformers(
+    ...     water = ips.Smiles2Conformers(
     ...         smiles='O', numConfs=100
     ...         )
     ...     boxes = ips.MultiPackmol(
