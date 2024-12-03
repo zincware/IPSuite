@@ -47,6 +47,7 @@ from .bootstrap import (
 from .calculators import (
     ASEMD,
     ASEGeoOpt,
+    Berendsen,
     BoxOscillatingRampModifier,
     CP2KSinglePoint,
     CP2KYaml,
@@ -181,6 +182,7 @@ __all__ = [
     "MixCalculator",
     "LangevinThermostat",
     "VelocityVerletDynamic",
+    "Berendsen",
     "NPTThermostat",
     "SVCRBarostat",
     "RescaleBoxModifier",
