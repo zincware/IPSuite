@@ -15,7 +15,7 @@ from .ase_md import (
     VelocityVerletDynamic,
 )
 from .ase_standard import EMTSinglePoint, LJSinglePoint
-from .cp2k import CP2KSinglePoint, CP2KYaml
+from .cp2k import CP2KSinglePoint
 from .lammps import LammpsSimulator
 from .mix import MixCalculator
 from .orca import OrcaSinglePoint
@@ -23,7 +23,6 @@ from .xtb import xTBSinglePoint
 
 __all__ = [
     "CP2KSinglePoint",
-    "CP2KYaml",
     "ASEGeoOpt",
     "ASEMD",
     "FixedSphereConstraint",
