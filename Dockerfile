@@ -44,9 +44,8 @@ RUN curl -fsSL https://bun.sh/install | bash
 RUN bun install -g @dvcorg/cml
 
 # Install IPSuite
-WORKDIR /opt/tools
-RUN git clone https://github.com/zincware/ipsuite
 WORKDIR /opt/tools/ipsuite
+COPY ./ ./
 RUN pip install .
 
 # Install apax
