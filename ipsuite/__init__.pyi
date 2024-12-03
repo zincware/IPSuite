@@ -47,6 +47,7 @@ from .bootstrap import (
 from .calculators import (
     ASEMD,
     ASEGeoOpt,
+    Berendsen,
     BoxOscillatingRampModifier,
     CP2KSinglePoint,
     CP2KYaml,
@@ -57,7 +58,6 @@ from .calculators import (
     LangevinThermostat,
     LJSinglePoint,
     MixCalculator,
-    Berendsen,
     NPTThermostat,
     OrcaSinglePoint,
     PressureRampModifier,
