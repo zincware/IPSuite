@@ -7,7 +7,6 @@ import subprocess
 import ase
 import ase.units
 import numpy as np
-import rdkit2ase
 import zntrack
 from ase.visualize import view
 
