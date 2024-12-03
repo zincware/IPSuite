@@ -1,4 +1,4 @@
-ARG MAKE_JOBS="8"
+ARG MAKE_JOBS="4"
 
 FROM python:3.11
 
