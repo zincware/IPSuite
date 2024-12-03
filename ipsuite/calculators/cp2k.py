@@ -3,7 +3,6 @@
 This interface is less restrictive than CP2K Single Point.
 """
 
-import contextlib
 import functools
 import logging
 import os
@@ -15,14 +14,11 @@ from unittest.mock import patch
 
 import ase.calculators.cp2k
 import ase.io
-import cp2k_output_tools
 import h5py
-import pandas as pd
 import tqdm
 import yaml
 import znh5md
 import zntrack
-from ase.calculators.singlepoint import SinglePointCalculator
 
 try:
     from cp2k_input_tools.generator import CP2KInputGenerator
@@ -146,7 +142,7 @@ class CP2KSinglePoint(base.IPSNode):
             if restart_wfn.exists():
                 pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
                 shutil.copy(restart_wfn, directory / "cp2k-RESTART.wfn")
-        
+
         for file in self.cp2k_files:
             shutil.copy(file, directory / pathlib.Path(file).name)
 
