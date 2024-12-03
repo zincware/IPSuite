@@ -21,14 +21,14 @@ class xTBSinglePoint(base.ProcessAtoms):
     method: str = zntrack.params("GFN1-xTB")
 
     def run(self):
-        self.atoms = []
+        self.frames = []
 
         calculator = self.get_calculator()
 
         for atom in tqdm.tqdm(self.get_data(), ncols=70):
             atom.calc = calculator
             atom.get_potential_energy()
-            self.atoms.append(freeze_copy_atoms(atom))
+            self.frames.append(freeze_copy_atoms(atom))
 
     def get_calculator(self, **kwargs):
         """Get an xtb ase calculator."""

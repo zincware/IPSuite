@@ -13,7 +13,7 @@ def atoms_list() -> List[ase.Atoms]:
 
 def test_iter(atoms_list):
     add_data = AddData(file="")
-    add_data.atoms = atoms_list
+    add_data.frames = atoms_list
 
     assert list(add_data) == atoms_list
 

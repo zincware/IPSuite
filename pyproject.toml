@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ipsuite"
-version = "0.1.2"
+version = "0.2.1"
 description = "A suite of tools for machine learned interatomic potentials."
 authors = ["zincwarecode <zincwarecode@gmail.com>"]
 keywords = ["data-version-control", "machine-learning", "reproducibility", "interatomic potentials"]
@@ -13,40 +13,26 @@ repository = "https://github.com/zincware/ipsuite"
 
 [tool.poetry.dependencies]
 # tensorflow-io-gcs-filesystem
-python = ">=3.10,<3.12"
+python = ">=3.10,<4.0.0"
 
-znh5md = "^0.3.2"
+znh5md = "^0.4"
 ase = "^3.23"
 
 seaborn = "^0.12.2"
 cp2k-input-tools = "^0.9"
 cp2k-output-tools = "^0.5.0"
 
-rdkit = "^2023"
-lazy-loader = "^0.2"
-znflow = "^0.1.11"
-zntrack = "^0.7.3"
-
-[tool.poetry.group.comparison.dependencies]
-h5py = "^3.8.0"
-tensorflow = "^2.11.0"
-dscribe = "^2.1.0"
+lazy-loader = "0.4"
+zntrack = "0.8.0"
+uncertainty-toolbox = "^0.1.1"
+rdkit2ase = "^0.1.4"
 
 [tool.poetry.group.GAP.dependencies]
 quippy-ase = "^0.9.12"
 xmltodict = "^0.13.0"
 
-[tool.poetry.group.nequip.dependencies]
-mir-allegro = { git = "https://github.com/mir-group/allegro.git"}
-nequip = "^0.5.6"
-
-[tool.poetry.group.mace.dependencies]
-mace-torch = "^0.3.4"
+[tool.poetry.group.d3.dependencies]
 torch-dftd = "^0.4.0"
-
-[tool.poetry.group.apax.dependencies]
-apax = "^0.5.0"
-
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.4.0"
@@ -69,10 +55,6 @@ sphinx-copybutton = "^0.5.2"
 [tool.poetry.extras]
 comparison = ["h5py", "tensorflow", "dscribe"]
 gap = ["quippy-ase", "xmltodict"]
-nequip = ["nequip"]
-apax = ["apax"]
-allegro = ["mir-allegro"]
-mace = ["mace-torch"]
 d3 = ["torch-dftd"]
 
 [build-system]

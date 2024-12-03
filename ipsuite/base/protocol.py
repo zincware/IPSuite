@@ -9,7 +9,7 @@ import ase
 class HasAtoms(typing.Protocol):
     """Protocol for objects that have an atoms attribute."""
 
-    atoms: list[ase.Atoms]
+    frames: list[ase.Atoms]
 
 
 class HasSelectedConfigurations(typing.Protocol):
@@ -30,7 +30,7 @@ class ProcessAtoms(typing.Protocol):
     """
 
     data: list[ase.Atoms]
-    atoms: list[ase.Atoms]
+    frames: list[ase.Atoms]
 
 
 # Collection of complex type hints

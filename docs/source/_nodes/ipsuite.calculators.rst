@@ -4,14 +4,6 @@ ipsuite.calculators package
 Submodules
 ----------
 
-ipsuite.calculators.apax\_jax\_md module
-----------------------------------------
-
-.. automodule:: ipsuite.calculators.apax_jax_md
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 ipsuite.calculators.ase\_geoopt module
 --------------------------------------
 

@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 from scipy.interpolate import interpn
+from scipy.optimize import curve_fit
+from scipy.stats import foldnorm, gaussian_kde
 
 
 def density_scatter(ax, x, y, bins, **kwargs) -> None:
@@ -53,6 +55,7 @@ def get_figure(
     ylabel: str,
     ymax: typing.Optional[float] = None,
     figsize: tuple = (10, 7),
+    density=True,
 ) -> plt.Figure:
     """Create a correlation plot for true, prediction values.
 
@@ -74,7 +77,7 @@ def get_figure(
     fig, ax = plt.subplots(figsize=figsize)
     ax.plot(true, np.zeros_like(true), color="grey", zorder=0)
     bins = 25
-    if true.shape[0] < 20:
+    if true.shape[0] < 20 or not density:
         # don't use density for very small datasets
         ax.scatter(true, prediction, marker="x", s=20.0, label=datalabel)
     else:
@@ -89,24 +92,135 @@ def get_figure(
     return fig
 
 
-def get_cdf_figure(x, y, figsize: tuple = (10, 7)):
-    """Computes the cumulative distribution function of x and y,
-    then creates a calibration curve for the two variables.
+def get_calibration_figure(
+    error,
+    std,
+    markersize: float = 3.0,
+    datalabel=None,
+    forces=False,
+    figsize: tuple = (10, 7),
+):
+    """Log-log plot of errors vs predicted standard deviations with quantiles
+    for a linearly increasing noise level.
     """
-    idxs = np.argsort(x)
-    x_sorted = x[idxs]
-    y_sorted = y[np.argsort(y)]
-    x_scaleshift = x_sorted - np.min(x_sorted)
-    x_scaleshift /= np.max(x_scaleshift)
-    y_scaleshift = y_sorted - np.min(y_sorted)
-    y_scaleshift /= np.max(y_scaleshift)
+    fig, ax = plt.subplots(1, 1, figsize=figsize, dpi=300)
 
-    fig, ax = plt.subplots(figsize=figsize)
-    diag = np.linspace(0, 1.0, 2)
-    ax.plot(diag, diag, "grey", alpha=0.5)
-    ax.plot(x_scaleshift, y_scaleshift)
-    ax.set_xlabel("expected CDF")
-    ax.set_ylabel("observed CDF")
+    x = np.linspace(1e-6, 5e3, 5)
+    noise_level_2 = x
+
+    quantiles_lower_01 = [foldnorm.ppf(0.15, 0.0, 0.0, i) for i in noise_level_2]
+    quantiles_upper_01 = [foldnorm.ppf(0.85, 0.0, 0.0, i) for i in noise_level_2]
+    quantiles_lower_05 = [foldnorm.ppf(0.05, 0.0, 0.0, i) for i in noise_level_2]
+    quantiles_upper_05 = [foldnorm.ppf(0.95, 0.0, 0.0, i) for i in noise_level_2]
+    quantiles_lower_005 = [foldnorm.ppf(0.005, 0.0, 0.0, i) for i in noise_level_2]
+    quantiles_upper_005 = [foldnorm.ppf(0.995, 0.0, 0.0, i) for i in noise_level_2]
+
+    ax.scatter(
+        std,
+        error,
+        s=markersize,
+        alpha=0.3,
+        color="tab:blue",
+        rasterized=True,
+        linewidth=0.0,
+        label=datalabel,
+    )
+    ax.loglog()
+    ax.plot(x, quantiles_upper_05, color="gray", alpha=0.5)
+    ax.plot(x, quantiles_lower_05, color="gray", alpha=0.5)
+    ax.plot(x, quantiles_upper_01, color="gray", alpha=0.5)
+    ax.plot(x, quantiles_lower_01, color="gray", alpha=0.5)
+    ax.plot(x, quantiles_upper_005, color="gray", alpha=0.5)
+    ax.plot(x, quantiles_lower_005, color="gray", alpha=0.5)
+
+    ax.plot(
+        np.logspace(-10, 100.0), np.logspace(-10, 100.0), linestyle="--", color="grey"
+    )
+    xlower = max(np.min(std) / 1.5, 1e-7)
+    ylower = max(np.min(std) / 1.5, 1e-7)
+    ax.set_xlim(xlower, np.max(std) * 1.5)
+    ax.set_ylim(ylower, np.max(error) * 1.5)
+
+    if forces:
+        xlabel = r"$\sigma_{f_{i\alpha}}(A)$ [meV/$\AA$] "
+        ylabel = r"$|\Delta f_{i\alpha}(A)|$ [meV/$\AA$] "
+    else:
+        xlabel = r"$\sigma_{E_{i}}(A)$ [meV/atom] "
+        ylabel = r"$|\Delta E_{i}(A)|$ [meV/atom] "
+
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    if datalabel:
+        ax.legend()
+    return fig
+
+
+def gauss(x, *p):
+    m, s = p
+    return np.exp(-(((x - m) / s) ** 2) * 0.5) / np.sqrt(2 * np.pi * s**2)
+
+
+def slice_ensemble_uncertainty(true, pred_ens, slice_start, slice_end):
+    pred_mean = np.mean(pred_ens, axis=1)
+    pred_std = np.std(pred_ens, axis=1)
+
+    isel = np.where((slice_start < pred_std) & (pred_std < slice_end))[0]
+
+    error_true = np.reshape(true[isel] - pred_mean[isel], -1)
+    error_pred = np.reshape(pred_ens[isel, :] - pred_mean[isel, np.newaxis], -1)
+    return error_true, error_pred
+
+
+def slice_uncertainty(true, pred_mean, pred_std, slice_start, slice_end):
+    isel = np.where((slice_start < pred_std) & (pred_std < slice_end))[0]
+
+    error_true = np.reshape(true[isel] - pred_mean[isel], -1)
+    error_pred = pred_std[isel]
+    return error_true, error_pred
+
+
+def get_gaussianicity_figure(error_true, error_pred, forces=True):
+    """Plots empirical and predicted error distributions.
+    If possible, it also tries to fit a gaussian to the empirical distribution.
+    """
+    true_kde_sel = gaussian_kde(error_true)
+    ens_kde_sel = gaussian_kde(error_pred)
+
+    bounds = 1.5 * max(np.max(np.abs(error_true)), np.max(np.abs(error_pred)))
+
+    fig, ax = plt.subplots()
+
+    xgrid = np.linspace(-bounds, bounds, 400)
+    ax.set_xlim([-bounds, bounds])
+
+    ens_sel = ens_kde_sel(xgrid)
+    true_sel = true_kde_sel(xgrid)
+
+    try:
+        guess = [0.0, 100]
+        coeff, _ = curve_fit(gauss, xgrid, true_sel, p0=guess)
+        std = coeff[1]
+        ax.semilogy(xgrid, gauss(xgrid, 0, std), "k--", label="Gaussian")
+
+    except RuntimeError:
+        print("Curve fit failed, only plotting distributions")
+
+    ax.semilogy(xgrid, true_sel, "r-", label="empirical")
+    ax.semilogy(xgrid, ens_sel, "b-", label="predicted")
+    ymax = 5 * max(np.max(true_sel), np.max(ens_sel))
+    ax.set_ylim(1e-6, ymax)
+    ax.set_yscale("log")
+
+    if forces:
+        xlabel = r"$\Delta (S)$ / meV/Ang"
+        ylabel = r"$p(\Delta | S)$"
+    else:
+        xlabel = r"$\Delta (S)$ / meV/atom"
+        ylabel = r"$p(\Delta | S)$"
+
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.legend()
     return fig
 
 
