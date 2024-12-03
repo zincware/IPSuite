@@ -1,7 +1,6 @@
 ARG MAKE_JOBS="8"
 
 FROM python:3.11
-SHELL ["/bin/bash", "--login", "-c"]
 
 RUN apt update -y
 RUN apt install -y gfortran build-essential zip cmake-data
@@ -36,6 +35,9 @@ RUN make install
 # Cleanup files
 RUN rm /opt/tools/gromacs-2024.4.tar.gz
 RUN rm /opt/tools/v20.15.3.tar.gz
+
+# Change the default shell to login shell
+SHELL ["/bin/bash", "--login", "-c"]
 
 # Install Node.js and npm from NodeSource
 RUN curl -fsSL https://bun.sh/install | bash
