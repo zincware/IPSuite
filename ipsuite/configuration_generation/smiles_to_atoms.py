@@ -1,6 +1,6 @@
 import ase
-import zntrack
 import rdkit2ase
+import zntrack
 
 from ipsuite import base, fields
 

@@ -73,9 +73,9 @@ from .calculators import (
 from .configuration_generation import (
     MultiPackmol,
     Packmol,
-    Smiles2Gromacs,
     Smiles2Atoms,
     Smiles2Conformers,
+    Smiles2Gromacs,
 )
 
 # Configuration Selection

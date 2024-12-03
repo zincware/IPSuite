@@ -1,19 +1,15 @@
 """Use packmole to create a periodic box"""
 
 import logging
-import pathlib
-import subprocess
 import random
 
 import ase
 import ase.units
 import numpy as np
+import rdkit2ase
 import zntrack
 
 from ipsuite import base, fields
-from ipsuite.utils.ase_sim import get_box_from_density
-
-import rdkit2ase
 
 log = logging.getLogger(__name__)
 
@@ -60,14 +56,16 @@ class Packmol(base.IPSNode):
                 data.append([frames[idx]])
         else:
             data = self.data
-        
-        self.frames = [rdkit2ase.pack(
-            data=data,
-            counts=self.count,
-            tolerance=self.tolerance,
-            density=self.density,
-            pbc=self.pbc,
-        )]
+
+        self.frames = [
+            rdkit2ase.pack(
+                data=data,
+                counts=self.count,
+                tolerance=self.tolerance,
+                density=self.density,
+                pbc=self.pbc,
+            )
+        ]
 
 
 class MultiPackmol(Packmol):
@@ -114,11 +112,13 @@ class MultiPackmol(Packmol):
             for frames in self.data:
                 random.shuffle(frames)
                 data.append(frames)
-                
-            self.frames.append(rdkit2ase.pack(
-                data=data,
-                counts=self.count,
-                tolerance=self.tolerance,
-                density=self.density,
-                pbc=self.pbc,
-            ))
+
+            self.frames.append(
+                rdkit2ase.pack(
+                    data=data,
+                    counts=self.count,
+                    tolerance=self.tolerance,
+                    density=self.density,
+                    pbc=self.pbc,
+                )
+            )
