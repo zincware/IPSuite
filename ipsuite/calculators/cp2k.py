@@ -165,7 +165,7 @@ class CP2KYaml(base.ProcessSingleAtom):
         return atoms
 
 
-class CP2KSinglePoint(base.ProcessAtoms):
+class CP2KSinglePoint(base.IPSNode):
     """Node for running CP2K Single point calculations.
 
     Parameters
@@ -183,6 +183,8 @@ class CP2KSinglePoint(base.ProcessAtoms):
     wfn_restart_node : str, optional
         A cp2k Node that has a wfn restart file.
     """
+
+    data: list[ase.Atoms] = zntrack.deps()
 
     cp2k_shell: str | None = zntrack.params(None)
     cp2k_params: str = zntrack.params_path("cp2k.yaml")
