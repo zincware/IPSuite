@@ -325,9 +325,15 @@ class Smiles2Gromacs(base.IPSNode):
     cleanup: bool = zntrack.params(True)
 
     mdp_files: t.Sequence[str | pathlib.Path] = zntrack.deps_path(default_factory=list)
-    config_files: t.Sequence[str | pathlib.Path] = zntrack.params_path(default_factory=list)
-    itp_files: t.Sequence[str | pathlib.Path | None] = zntrack.deps_path(default_factory=list)
-    pdb_files: t.Sequence[str | pathlib.Path | None] = zntrack.deps_path(default_factory=list)
+    config_files: t.Sequence[str | pathlib.Path] = zntrack.params_path(
+        default_factory=list
+    )
+    itp_files: t.Sequence[str | pathlib.Path | None] = zntrack.deps_path(
+        default_factory=list
+    )
+    pdb_files: t.Sequence[str | pathlib.Path | None] = zntrack.deps_path(
+        default_factory=list
+    )
 
     traj_file: list[Atoms] = zntrack.outs_path(zntrack.nwd / "structures.h5")
 

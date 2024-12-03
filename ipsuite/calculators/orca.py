@@ -1,12 +1,12 @@
 import pathlib
 
+import ase
 import h5py
 import tqdm
 import znh5md
 import zntrack
 from ase.calculators.orca import ORCA, OrcaProfile
 
-import ase
 from ipsuite import base
 
 
