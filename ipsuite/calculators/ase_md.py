@@ -730,7 +730,7 @@ class ASEMD(base.IPSNode):
                     current_step += 1
 
         if not self.pop_last and self.steps_before_stopping != -1:
-            metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks)
+            metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks, current_step)
             atoms_cache.append(freeze_copy_atoms(atoms))
             current_step += 1
 
