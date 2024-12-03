@@ -1,6 +1,7 @@
 from .ase_geoopt import ASEGeoOpt
 from .ase_md import (
     ASEMD,
+    Berendsen,
     BoxOscillatingRampModifier,
     FixedLayerConstraint,
     FixedSphereConstraint,
@@ -8,6 +9,7 @@ from .ase_md import (
     NPTThermostat,
     PressureRampModifier,
     RescaleBoxModifier,
+    SVCRBarostat,
     TemperatureOscillatingRampModifier,
     TemperatureRampModifier,
     VelocityVerletDynamic,
@@ -35,9 +37,11 @@ __all__ = [
     "TemperatureRampModifier",
     "PressureRampModifier",
     "TemperatureOscillatingRampModifier",
+    "Berendsen",
     "NPTThermostat",
     "OrcaSinglePoint",
     "LammpsSimulator",
     "FixedLayerConstraint",
     "MixCalculator",
+    "SVCRBarostat",
 ]

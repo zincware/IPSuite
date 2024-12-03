@@ -9,35 +9,32 @@ def test_model_training(proj_path, traj_file):
     with ipsuite.Project() as project:
         data = ipsuite.AddData(file=traj_file, name="data_1")
         train_selection = ipsuite.configuration_selection.UniformEnergeticSelection(
-            data=data, n_configurations=10, name="train_data"
+            data=data.frames, n_configurations=10, name="train_data"
         )
 
         validation_selection = ipsuite.configuration_selection.UniformEnergeticSelection(
-            data=train_selection @ "excluded_atoms", n_configurations=8, name="val_data"
+            data=train_selection.excluded_frames, n_configurations=8, name="val_data"
         )
 
-        model = ipsuite.models.GAP(soap={"cutoff": 0.7}, data=train_selection.atoms)
+        model = ipsuite.GAP(soap={"cutoff": 0.7}, data=train_selection.frames)
 
-    project.run()
+    project.repro()
 
-    model.load()
-    data.load()
-
-    prediction = model.predict(data.atoms)
+    prediction = model.predict(data.frames)
     assert isinstance(prediction, list)
     assert isinstance(prediction[0], ase.Atoms)
 
-    data.atoms[0].calc = model.get_calculator()
+    data.frames[0].calc = model.get_calculator()
     with open(model.model_directory.resolve() / "model.xml", "r") as file:
         second_line = file.readlines()[1]
     content_as_dict = xmltodict.parse(second_line)
     gap_xml_label = f"{content_as_dict['Potential']['@label']}"
 
-    assert isinstance(data.atoms[0].get_potential_energy(), float)
-    assert data.atoms[0].get_potential_energy() != 0.0
+    assert isinstance(data.frames[0].get_potential_energy(), float)
+    assert data.frames[0].get_potential_energy() != 0.0
 
-    assert isinstance(data.atoms[0].get_forces(), np.ndarray)
-    assert data.atoms[0].get_forces()[0, 0] != 0.0
+    assert isinstance(data.frames[0].get_forces(), np.ndarray)
+    assert data.frames[0].get_forces()[0, 0] != 0.0
 
     assert model.lammps_pair_style == "quip"
     assert (

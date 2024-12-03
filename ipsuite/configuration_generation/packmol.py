@@ -48,10 +48,11 @@ class Packmol(base.IPSNode):
     tolerance: float = zntrack.params(2.0)
     box: list = zntrack.params(None)
     density: float = zntrack.params(None)
-    atoms = fields.Atoms()
+    structures: pathlib.Path = zntrack.outs_path(zntrack.nwd / "packmol")
+    frames: list[ase.Atoms] = fields.Atoms()
     pbc: bool = zntrack.params(True)
 
-    def _post_init_(self):
+    def __post_init__(self):
         if self.box is None and self.density is None:
             raise ValueError("Either box or density must be set.")
         if len(self.data) != len(self.count):
@@ -62,13 +63,41 @@ class Packmol(base.IPSNode):
             self.box = [self.box, self.box, self.box]
 
     def run(self):
-        self.atoms = [
-            rdkit2ase.pack(
-                data=self.data, counts=self.count, density=self.density, verbose=True
-            )
-        ]
-        self.atoms[0].arrays.pop("residuenames")
-        self.atoms[0].arrays.pop("atomtypes")
+        self.structures.mkdir(exist_ok=True, parents=True)
+        for idx, atoms in enumerate(self.data):
+            atoms = atoms[-1] if self.data_ids is None else atoms[self.data_ids[idx]]
+            ase.io.write(self.structures / f"{idx}.xyz", atoms)
+
+        if self.density is not None:
+            self._get_box_from_molar_volume()
+
+        if self.pbc:
+            scaled_box = [x - self.tolerance for x in self.box]
+        else:
+            scaled_box = self.box
+
+        file = f"""
+        tolerance {self.tolerance}
+        filetype xyz
+        output mixture.xyz
+        """
+        for idx, count in enumerate(self.count):
+            file += f"""
+            structure {idx}.xyz
+                number {count}
+                inside box 0 0 0 {" ".join([f"{x:.4f}" for x in scaled_box])}
+            end structure
+            """
+        with pathlib.Path(self.structures / "packmole.inp").open("w") as f:
+            f.write(file)
+
+        subprocess.check_call("packmol < packmole.inp", shell=True, cwd=self.structures)
+
+        atoms = ase.io.read(self.structures / "mixture.xyz")
+        if self.pbc:
+            atoms.cell = self.box
+            atoms.pbc = True
+        self.frames = [atoms]
 
     def _get_box_from_molar_volume(self):
         """Get the box size from the molar volume"""
@@ -76,7 +105,7 @@ class Packmol(base.IPSNode):
         log.info(f"estimated box size: {self.box}")
 
     def view(self) -> view:
-        return view(self.atoms, viewer="x3d")
+        return view(self.frames, viewer="x3d")
 
 
 class MultiPackmol(Packmol):
@@ -91,14 +120,14 @@ class MultiPackmol(Packmol):
         >>> tmp_path = utils.docs.create_dvc_git_env_for_doctest()
 
     >>> import ipsuite as ips
-    >>> with ips.Project(automatic_node_names=True) as project:
-    ...     water = ips.configuration_generation.SmilesToConformers(
+    >>> with ips.Project() as project:
+    ...     water = ips.SmilesToConformers(
     ...         smiles='O', numConfs=100
     ...         )
-    ...     boxes = ips.configuration_generation.MultiPackmol(
+    ...     boxes = ips.MultiPackmol(
     ...         data=[water.atoms], count=[10], density=997, n_configurations=10
     ...         )
-    >>> project.run()
+    >>> project.repro()
 
     .. testcleanup::
         >>> tmp_path.cleanup()
@@ -117,7 +146,7 @@ class MultiPackmol(Packmol):
 
     def run(self):
         np.random.seed(self.seed)
-        self.atoms = []
+        self.frames = []
 
         if self.density is not None:
             self._get_box_from_molar_volume()
@@ -159,4 +188,4 @@ class MultiPackmol(Packmol):
                 atoms.cell = self.box
                 atoms.pbc = True
 
-            self.atoms.append(atoms)
+            self.frames.append(atoms)

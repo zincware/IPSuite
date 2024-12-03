@@ -19,7 +19,7 @@ import xmltodict
 import znflow
 import zntrack
 from jinja2 import Template
-from znjson import ConverterBase, config
+from znjson import ConverterBase
 
 from ipsuite import static_data
 from ipsuite.models import MLModel
@@ -171,7 +171,7 @@ class GapParameterConverter(ConverterBase):
         return GapParameter(**value)
 
 
-config.register([SOAPConverter, DistanceNbConverter, GapParameterConverter])
+# config.register([SOAPConverter, DistanceNbConverter, GapParameterConverter])
 
 
 class GAP(MLModel):
@@ -198,11 +198,18 @@ class GAP(MLModel):
     """
 
     # SOAP
-    soap: typing.Union[dict, SOAP] = zntrack.params(SOAP())
+    soap: typing.Union[dict, SOAP] = zntrack.params(
+        default_factory=lambda: dataclasses.asdict(SOAP())
+    )
+    zntrack.deps()
     # DistanceNb
-    distance_nb: typing.Union[dict, DistanceNb] = zntrack.params(DistanceNb())
+    distance_nb: typing.Union[dict, DistanceNb] = zntrack.params(
+        default_factory=lambda: dataclasses.asdict(DistanceNb())
+    )
     # GAP
-    gap: typing.Union[dict, GapParameter] = zntrack.params(GapParameter())
+    gap: typing.Union[dict, GapParameter] = zntrack.params(
+        default_factory=lambda: dataclasses.asdict(GapParameter())
+    )
     # #
     model_directory: Path = zntrack.outs_path(zntrack.nwd / "model")
     train_data_file: Path = zntrack.outs_path(zntrack.nwd / "train_atoms.extxyz")
@@ -210,24 +217,24 @@ class GAP(MLModel):
     _train_idx_file: Path = zntrack.outs_path(zntrack.nwd / "train_atoms.extxyz.idx")
 
     #
-    OPENBLAS_NUM_THREADS = zntrack.meta.Environment(None)
+    OPENBLAS_NUM_THREADS: str | None = zntrack.params(None)
 
     #
-    def _post_init_(self):
-        if not self.state.loaded:
-            if self.soap is None:
-                self.soap = {}
-            if self.gap is None:
-                self.gap = {}
-            if self.distance_nb is None:
-                self.distance_nb = {}
+    def __post_init__(self):
+        # if not self.state.state == NodeStatusEnum.CREATED:
+        #     if self.soap is None:
+        #         self.soap = {}
+        #     if self.gap is None:
+        #         self.gap = {}
+        #     if self.distance_nb is None:
+        #         self.distance_nb = {}
 
-            if isinstance(self.soap, dict):
-                self.soap = SOAP(**self.soap)
-            if isinstance(self.gap, dict):
-                self.gap = GapParameter(**self.gap)
-            if isinstance(self.distance_nb, dict):
-                self.distance_nb = DistanceNb(**self.distance_nb)
+        if isinstance(self.soap, dict):
+            self.soap = dataclasses.asdict(SOAP(**self.soap))
+        if isinstance(self.gap, dict):
+            self.gap = dataclasses.asdict(GapParameter(**self.gap))
+        if isinstance(self.distance_nb, dict):
+            self.distance_nb = dataclasses.asdict(DistanceNb(**self.distance_nb))
 
     def run(self):
         """Create output directory and train the model."""

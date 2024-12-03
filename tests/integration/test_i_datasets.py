@@ -3,17 +3,16 @@ import requests
 import ipsuite as ips
 
 
-def test_md22():
-    for url in ips.datasets.MD22Dataset.datasets.values():
+def test_md22(proj_path):
+    for url in ips.MD22Dataset.datasets.values():
         response = requests.get(url)
         assert response.status_code == 200
 
-    project = ips.Project(automatic_node_names=True)
+    project = ips.Project()
 
     with project:
-        data = ips.datasets.MD22Dataset("AT-AT")
+        data = ips.MD22Dataset(dataset="AT-AT")
 
-    project.run()
+    project.repro()
 
-    data.load()
-    assert len(data.atoms) > 0
+    assert len(data.frames) > 0

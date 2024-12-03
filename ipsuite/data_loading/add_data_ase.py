@@ -1,6 +1,5 @@
 """ipsuite data loading with ASE."""
 
-import functools
 import logging
 import pathlib
 import typing
@@ -32,40 +31,14 @@ def load_data(
     if isinstance(file, str):
         file = pathlib.Path(file)
 
-    atoms = []
-    for config, atom in enumerate(
+    frames = []
+    for config, atoms in enumerate(
         tqdm.tqdm(ase.io.iread(file.as_posix()), desc="Reading File", ncols=70)
     ):
         if lines_to_read is not None and config >= lines_to_read:
             break
-        atoms.append(atom)
-    return atoms
-
-
-class ReadData(base.IPSNode):
-    """Read data without converting it to H5MD.
-
-    This Node can be used instead of `AddData` to avoid
-    initial conversion to H5MD. Later Nodes might still
-    convert the data to H5MD.
-
-    Attributes
-    ----------
-    file: str|Path
-        path to the file that should be read.
-    lines_to_read: int, optional
-        maximal number of lines/configurations to read, None for read all
-    """
-
-    file: typing.Union[str, pathlib.Path] = zntrack.deps_path()
-    lines_to_read: int = zntrack.params(None)
-
-    def run(self):
-        pass
-
-    @functools.cached_property
-    def atoms(self) -> typing.List[ase.Atoms]:
-        return load_data(self.file, self.lines_to_read)
+        frames.append(atoms)
+    return frames
 
 
 class AddData(base.IPSNode):
@@ -78,11 +51,11 @@ class AddData(base.IPSNode):
         to track the file with DVC.
     """
 
-    atoms: typing.List[ase.Atoms] = fields.Atoms()
-    file: typing.Union[str, pathlib.Path] = zntrack.dvc.deps()
+    frames: typing.List[ase.Atoms] = fields.Atoms()
+    file: typing.Union[str, pathlib.Path] = zntrack.deps_path()
     lines_to_read: int = zntrack.params(None)
 
-    def _post_init_(self):
+    def __post_init__(self):
         if not pathlib.Path(pathlib.Path(self.file).name + ".dvc").exists():
             log.warning(
                 f"Please run 'dvc add {self.file}' to track the file with DVC. Otherwise,"
@@ -93,21 +66,21 @@ class AddData(base.IPSNode):
         """ZnTrack run method."""
         if self.lines_to_read == -1:  # backwards compatibility
             self.lines_to_read = None
-        self.atoms = load_data(file=self.file, lines_to_read=self.lines_to_read)
+        self.frames = load_data(file=self.file, lines_to_read=self.lines_to_read)
 
     def __iter__(self) -> ase.Atoms:
         """Get iterable object."""
-        yield from self.atoms
+        yield from self.frames
 
     def __len__(self) -> int:
         """Get the number of atoms."""
-        return len(self.atoms)
+        return len(self.frames)
 
     def __getitem__(self, item):
         """Access atoms objects directly and via advanced slicing."""
         if isinstance(item, list):
-            return [self.atoms[idx] for idx in item]
-        return self.atoms[item]
+            return [self.frames[idx] for idx in item]
+        return self.frames[item]
 
     @classmethod
     def save_atoms_to_file(cls, atoms: typing.List[ase.Atoms], file: str):
