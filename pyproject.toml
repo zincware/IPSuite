@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ipsuite"
-version = "0.2.0"
+version = "0.2.1"
 description = "A suite of tools for machine learned interatomic potentials."
 authors = ["zincwarecode <zincwarecode@gmail.com>"]
 keywords = ["data-version-control", "machine-learning", "reproducibility", "interatomic potentials"]
