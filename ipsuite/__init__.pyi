@@ -73,9 +73,9 @@ from .calculators import (
 from .configuration_generation import (
     MultiPackmol,
     Packmol,
+    Smiles2Atoms,
+    Smiles2Conformers,
     Smiles2Gromacs,
-    SmilesToAtoms,
-    SmilesToConformers,
 )
 
 # Configuration Selection
@@ -127,8 +127,8 @@ __all__ = [
     # Configuration Generation
     "Packmol",
     "MultiPackmol",
-    "SmilesToAtoms",
-    "SmilesToConformers",
+    "Smiles2Atoms",
+    "Smiles2Conformers",
     "Smiles2Gromacs",
     # Data
     "AddData",

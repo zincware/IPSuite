@@ -5,9 +5,9 @@ import numpy as np
 import ipsuite as ips
 
 
-def test_SmilesToAtoms(proj_path):
+def test_Smiles2Atoms(proj_path):
     with ips.Project() as proj:
-        ethanol = ips.SmilesToAtoms(smiles="CCO")
+        ethanol = ips.Smiles2Atoms(smiles="CCO")
 
     proj.repro()
 
@@ -15,9 +15,9 @@ def test_SmilesToAtoms(proj_path):
     assert ethanol.atoms[0].get_chemical_formula() == "C2H6O"
 
 
-def test_SmilesToConformers(proj_path):
+def test_Smiles2Conformers(proj_path):
     with ips.Project() as proj:
-        ethanol = ips.SmilesToConformers(smiles="CCO", numConfs=10)
+        ethanol = ips.Smiles2Conformers(smiles="CCO", numConfs=10)
 
     proj.repro()
 
