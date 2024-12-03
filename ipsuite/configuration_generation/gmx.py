@@ -324,10 +324,10 @@ class Smiles2Gromacs(base.IPSNode):
     production_indices: list[int] = zntrack.params(None)
     cleanup: bool = zntrack.params(True)
 
-    mdp_files: list[str | pathlib.Path] = zntrack.deps_path(default_factory=list)
-    config_files: list[str | pathlib.Path] = zntrack.params_path(default_factory=list)
-    itp_files: list[str | None] = zntrack.deps_path(default_factory=list)
-    pdb_files: list[str | pathlib.Path] = zntrack.deps_path(default_factory=list)
+    mdp_files: t.Sequence[str | pathlib.Path] = zntrack.deps_path(default_factory=list)
+    config_files: t.Sequence[str | pathlib.Path] = zntrack.params_path(default_factory=list)
+    itp_files: t.Sequence[str | pathlib.Path | None] = zntrack.deps_path(default_factory=list)
+    pdb_files: t.Sequence[str | pathlib.Path | None] = zntrack.deps_path(default_factory=list)
 
     traj_file: list[Atoms] = zntrack.outs_path(zntrack.nwd / "structures.h5")
 
@@ -353,7 +353,7 @@ class Smiles2Gromacs(base.IPSNode):
             raise ValueError("The file names must be unique")
 
     @property
-    def frames(self):
+    def frames(self) -> list[Atoms]:
         with self.state.fs.open(self.traj_file, "rb") as f:
             with h5py.File(f) as file:
                 return znh5md.IO(file_handle=file)[:]

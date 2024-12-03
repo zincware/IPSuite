@@ -62,7 +62,7 @@ class FilterOutlier(base.IPSNode):
         fig.savefig(self.histogram, bbox_inches="tight")
 
     @property
-    def frames(self):
+    def frames(self) -> list[ase.Atoms]:
         return [
             self.data[i] for i in range(len(self.data)) if i not in self.filtered_indices
         ]

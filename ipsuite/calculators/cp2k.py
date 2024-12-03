@@ -146,7 +146,7 @@ class CP2KYaml(base.ProcessSingleAtom):
             raise RuntimeError(f"CP2K failed with return code {proc.returncode}:")
 
     @property
-    def frames(self):
+    def frames(self) -> typing.List[ase.Atoms]:
         """Return the atoms object."""
         # TODO this is for single point, what about MD
         data = {}
@@ -176,7 +176,7 @@ class CP2KSinglePoint(base.IPSNode):
     cp2k_params : str
         The path to the cp2k yaml input file. cp2k-input-tools is used to
         generate the input file from the yaml file.
-    cp2k_files : str
+    cp2k_files : list[str]
         Additional dependencies for the cp2k calculation.
     wfn_restart_file : str, optional
         The path to the wfn restart file.
@@ -188,7 +188,7 @@ class CP2KSinglePoint(base.IPSNode):
 
     cp2k_shell: str | None = zntrack.params(None)
     cp2k_params: str = zntrack.params_path("cp2k.yaml")
-    cp2k_files: str = zntrack.deps_path(None)
+    cp2k_files: list[str] = zntrack.deps_path(None)
 
     wfn_restart_file: str = zntrack.deps_path(None)
     wfn_restart_node: zntrack.Node = zntrack.deps(None)

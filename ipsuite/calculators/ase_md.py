@@ -429,7 +429,7 @@ class Berendsen:
         Temperature coupling time scale.
     """
 
-    time_step: int
+    time_step: float
     temperature: float
     taut: float = 100
 
