@@ -339,8 +339,6 @@ class Smiles2Gromacs(base.IPSNode):
 
         if isinstance(self.output_dir, str):
             self.output_dir = pathlib.Path(self.output_dir)
-        if self.output_dir.exists():
-            shutil.rmtree(self.output_dir)
         self.mdp_files = [pathlib.Path(mdp_file) for mdp_file in self.mdp_files]
 
     @property
