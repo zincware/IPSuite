@@ -9,7 +9,7 @@ from rdkit.Chem import AllChem, Draw
 from ipsuite import base, fields
 
 
-class SmilesToAtoms(base.IPSNode):
+class Smiles2Atoms(base.IPSNode):
     atoms: list[ase.Atoms] = fields.Atoms()
 
     smiles: str = zntrack.params()

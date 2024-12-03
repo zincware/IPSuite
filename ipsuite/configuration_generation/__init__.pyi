@@ -2,10 +2,10 @@
 
 from .gmx import Smiles2Gromacs
 from .packmol import MultiPackmol, Packmol
-from .smiles_to_atoms import SmilesToAtoms, SmilesToConformers
+from .smiles_to_atoms import Smiles2Atoms, SmilesToConformers
 
 __all__ = [
-    "SmilesToAtoms",
+    "Smiles2Atoms",
     "Packmol",
     "SmilesToConformers",
     "MultiPackmol",

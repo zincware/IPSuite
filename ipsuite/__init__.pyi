@@ -74,7 +74,7 @@ from .configuration_generation import (
     MultiPackmol,
     Packmol,
     Smiles2Gromacs,
-    SmilesToAtoms,
+    Smiles2Atoms,
     SmilesToConformers,
 )
 
@@ -127,7 +127,7 @@ __all__ = [
     # Configuration Generation
     "Packmol",
     "MultiPackmol",
-    "SmilesToAtoms",
+    "Smiles2Atoms",
     "SmilesToConformers",
     "Smiles2Gromacs",
     # Data

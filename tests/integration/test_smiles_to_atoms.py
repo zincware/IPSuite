@@ -5,9 +5,9 @@ import numpy as np
 import ipsuite as ips
 
 
-def test_SmilesToAtoms(proj_path):
+def test_Smiles2Atoms(proj_path):
     with ips.Project() as proj:
-        ethanol = ips.SmilesToAtoms(smiles="CCO")
+        ethanol = ips.Smiles2Atoms(smiles="CCO")
 
     proj.repro()
 
