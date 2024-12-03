@@ -31,14 +31,14 @@ def load_data(
     if isinstance(file, str):
         file = pathlib.Path(file)
 
-    atoms = []
-    for config, atom in enumerate(
+    frames = []
+    for config, atoms in enumerate(
         tqdm.tqdm(ase.io.iread(file.as_posix()), desc="Reading File", ncols=70)
     ):
         if lines_to_read is not None and config >= lines_to_read:
             break
-        atoms.append(atom)
-    return atoms
+        frames.append(atoms)
+    return frames
 
 
 class AddData(base.IPSNode):

@@ -1,4 +1,7 @@
+import multiprocessing
+import os
 import pathlib
+from concurrent.futures import ProcessPoolExecutor
 from typing import List, Optional
 
 import ase
@@ -325,12 +328,12 @@ class CalibrationMetrics(base.ComparePredictions):
 
         if "forces" in pred_keys:
             true_forces = [a.get_forces() for a in self.x]
-            true_forces = np.array(true_forces) * 1000
+            true_forces = np.concatenate(true_forces, axis=0) * 1000
             pred_forces = [a.get_forces() for a in self.y]
-            pred_forces = np.array(pred_forces) * 1000
+            pred_forces = np.concatenate(pred_forces, axis=0) * 1000
 
             forces_uncertainty = [a.calc.results["forces_uncertainty"] for a in self.y]
-            forces_uncertainty = np.array(forces_uncertainty) * 1000
+            forces_uncertainty = np.concatenate(forces_uncertainty, axis=0) * 1000
 
             self.content["forces_true"] = np.reshape(true_forces, (-1,))
             self.content["forces_pred"] = np.reshape(pred_forces, (-1,))
@@ -339,13 +342,10 @@ class CalibrationMetrics(base.ComparePredictions):
             if "forces_ensemble" in self.y[0].calc.results.keys():
                 n_ens = self.y[0].calc.results["forces_ensemble"].shape[2]
                 forces_ensemble = [
-                    np.reshape(a.calc.results["forces_ensemble"], (n_ens, -1))
+                    np.reshape(a.calc.results["forces_ensemble"], (-1, n_ens))
                     for a in self.y
                 ]
-                forces_ensemble = np.array(forces_ensemble) * 1000
-                forces_ensemble = np.transpose(forces_ensemble, (0, 2, 1))
-                forces_ensemble = np.reshape(forces_ensemble, (-1, n_ens))
-
+                forces_ensemble = np.concatenate(forces_ensemble, axis=0) * 1000
                 self.content["forces_ensemble"] = forces_ensemble
 
     def get_metrics(self):
@@ -473,6 +473,9 @@ class ForceDecomposition(base.ComparePredictions):
     The implementation follows the method described in
     https://doi.org/10.26434/chemrxiv-2022-l4tb9
 
+    Currently, single atoms and diatomic molecules are simply filtered out.
+    Please raise an issue if you need those cases to be treated correctly
+    in your work.
 
     Attributes
     ----------
@@ -493,30 +496,36 @@ class ForceDecomposition(base.ComparePredictions):
     histogram_plt: pathlib.Path = zntrack.outs_path(zntrack.nwd / "histogram.png")
 
     def get_plots(self):
+        true_trans = np.reshape(self.true_forces["trans"], -1)
+        pred_trans = np.reshape(self.pred_forces["trans"], -1)
         fig = get_figure(
-            np.reshape(self.true_forces["trans"], -1),
-            np.reshape(self.pred_forces["trans"], -1),
+            true_trans,
+            true_trans - pred_trans,
             datalabel=rf"Trans. MAE: {self.trans_forces['mae']:.2f} meV$ / \AA$",
             xlabel=r"$ab~initio$ forces / meV$ \cdot \AA^{-1}$",
-            ylabel=r"predicted forces / meV$ \cdot \AA^{-1}$",
+            ylabel=r"$\Delta F_{alpha,i,trans}$ / meV$ \cdot \AA^{-1}$",
         )
         fig.savefig(self.trans_force_plt)
 
+        true_rot = np.reshape(self.true_forces["rot"], -1)
+        pred_rot = np.reshape(self.pred_forces["rot"], -1)
         fig = get_figure(
-            np.reshape(self.true_forces["rot"], -1),
-            np.reshape(self.pred_forces["rot"], -1),
+            true_rot,
+            true_rot - pred_rot,
             datalabel=rf"Rot. MAE: {self.rot_forces['mae']:.2f} meV$ / \AA$",
             xlabel=r"$ab~initio$ forces / meV$ \cdot \AA^{-1}$",
-            ylabel=r"predicted forces / meV$ \cdot \AA^{-1}$",
+            ylabel=r"$\Delta F_{alpha,i,rot}$ / meV$ \cdot \AA^{-1}$",
         )
         fig.savefig(self.rot_force_plt)
 
+        true_vib = np.reshape(self.true_forces["vib"], -1)
+        pred_vib = np.reshape(self.pred_forces["vib"], -1)
         fig = get_figure(
-            np.reshape(self.true_forces["vib"], -1),
-            np.reshape(self.pred_forces["vib"], -1),
+            true_vib,
+            true_vib - pred_vib,
             datalabel=rf"Vib. MAE: {self.vib_forces['mae']:.2f} meV$ / \AA$",
             xlabel=r"$ab~initio$ forces / meV$ \cdot \AA^{-1}$",
-            ylabel=r"predicted forces / meV$ \cdot \AA^{-1}$",
+            ylabel=r"$\Delta F_{alpha,i,vib}$ / meV$ \cdot \AA^{-1}$",
         )
         fig.savefig(self.vib_force_plt)
 
@@ -524,15 +533,15 @@ class ForceDecomposition(base.ComparePredictions):
         """Update the metrics."""
 
         self.trans_forces = utils.metrics.get_full_metrics(
-            np.array(self.true_forces["trans"]), np.array(self.pred_forces["trans"])
+            self.true_forces["trans"], self.pred_forces["trans"]
         )
 
         self.rot_forces = utils.metrics.get_full_metrics(
-            np.array(self.true_forces["rot"]), np.array(self.pred_forces["rot"])
+            self.true_forces["rot"], self.pred_forces["rot"]
         )
 
         self.vib_forces = utils.metrics.get_full_metrics(
-            np.array(self.true_forces["vib"]), np.array(self.pred_forces["vib"])
+            self.true_forces["vib"], self.pred_forces["vib"]
         )
 
     def get_histogram(self):
@@ -602,11 +611,6 @@ class ForceDecomposition(base.ComparePredictions):
             self.true_forces["rot"].append(atom_rot_forces)
             self.true_forces["vib"].append(atom_vib_forces)
 
-        self.true_forces["all"] = np.concatenate(self.true_forces["all"]) * 1000
-        self.true_forces["trans"] = np.concatenate(self.true_forces["trans"]) * 1000
-        self.true_forces["rot"] = np.concatenate(self.true_forces["rot"]) * 1000
-        self.true_forces["vib"] = np.concatenate(self.true_forces["vib"]) * 1000
-
         for atom in tqdm.tqdm(self.y, ncols=70):
             atom_trans_forces, atom_rot_forces, atom_vib_forces = force_decomposition(
                 atom, mapping
@@ -616,11 +620,164 @@ class ForceDecomposition(base.ComparePredictions):
             self.pred_forces["rot"].append(atom_rot_forces)
             self.pred_forces["vib"].append(atom_vib_forces)
 
-        self.pred_forces["all"] = np.concatenate(self.pred_forces["all"]) * 1000
-        self.pred_forces["trans"] = np.concatenate(self.pred_forces["trans"]) * 1000
-        self.pred_forces["rot"] = np.concatenate(self.pred_forces["rot"]) * 1000
-        self.pred_forces["vib"] = np.concatenate(self.pred_forces["vib"]) * 1000
+        self.pred_forces = {
+            k: np.concatenate(v) * 1000 for k, v in self.pred_forces.items()
+        }
+        self.true_forces = {
+            k: np.concatenate(v) * 1000 for k, v in self.true_forces.items()
+        }
 
         self.get_metrics()
         self.get_plots()
         self.get_histogram()
+
+
+def decompose_force_uncertainty(atom_true, atom_pred):
+    mapping = BarycenterMapping(frozen=True)
+
+    trans_true, rot_true, vib_true = force_decomposition(
+        atom_true,
+        mapping,
+        key="forces",
+    )
+
+    trans_ens, rot_ens, vib_ens = force_decomposition(
+        atom_pred,
+        mapping,
+        key="forces_ensemble",
+    )
+    n_ens = trans_ens.shape[2]
+    trans_pred = np.mean(trans_ens, axis=-1)
+    rot_pred = np.mean(rot_ens, axis=-1)
+    vib_pred = np.mean(vib_ens, axis=-1)
+    trans_unc = np.sum((trans_ens - trans_pred[:, :, None]) ** 2, axis=-1) / (n_ens - 1)
+    rot_unc = np.sum((rot_ens - rot_pred[:, :, None]) ** 2, axis=-1) / (n_ens - 1)
+    vib_unc = np.sum((vib_ens - vib_pred[:, :, None]) ** 2, axis=-1) / (n_ens - 1)
+
+    true = (trans_true, rot_true, vib_true)
+    pred = (trans_pred, rot_pred, vib_pred)
+    unc = (trans_unc, rot_unc, vib_unc)
+    return true, pred, unc
+
+
+class ForceUncertaintyDecomposition(base.ComparePredictions):
+    """Node for decomposing force uncertainties in a system of molecular units into
+    translational, rotational and vibrational components.
+
+    The implementation follows the method described in
+    https://doi.org/10.26434/chemrxiv-2022-l4tb9
+
+    Currently, single atoms and diatomic molecules are simply filtered out.
+    Please raise an issue if you need those cases to be treated correctly
+    in your work.
+
+    """
+
+    trans_forces: dict = zntrack.metrics()
+    rot_forces: dict = zntrack.metrics()
+    vib_forces: dict = zntrack.metrics()
+
+    plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
+
+    def get_plots(self):
+        self.plots_dir.mkdir(exist_ok=True)
+        trans_err = np.abs(self.f_true["trans"] - self.f_pred["trans"])
+        rot_err = np.abs(self.f_true["rot"] - self.f_pred["rot"])
+        vib_err = np.abs(self.f_true["vib"] - self.f_pred["vib"])
+
+        trans_plot = get_calibration_figure(
+            trans_err,
+            self.f_unc["trans"],
+            markersize=5,
+            datalabel=rf"RLL={self.trans_forces['rll']:.1f}",
+            forces=True,
+        )
+        trans_gauss = get_gaussianicity_figure(
+            trans_err, self.f_unc["trans"], forces=True
+        )
+        trans_plot.savefig(self.plots_dir / "trans.png")
+        trans_gauss.savefig(self.plots_dir / "trans_gauss.png")
+
+        rot_plot = get_calibration_figure(
+            rot_err,
+            self.f_unc["rot"],
+            markersize=5,
+            datalabel=rf"RLL={self.rot_forces['rll']:.1f}",
+            forces=True,
+        )
+        rot_gauss = get_gaussianicity_figure(rot_err, self.f_unc["rot"], forces=True)
+        rot_plot.savefig(self.plots_dir / "rot.png")
+        rot_gauss.savefig(self.plots_dir / "rot_gauss.png")
+
+        vib_plot = get_calibration_figure(
+            vib_err,
+            self.f_unc["vib"],
+            markersize=5,
+            datalabel=rf"RLL={self.vib_forces['rll']:.1f}",
+            forces=True,
+        )
+        vib_gauss = get_gaussianicity_figure(vib_err, self.f_unc["vib"], forces=True)
+        vib_plot.savefig(self.plots_dir / "vib.png")
+        vib_gauss.savefig(self.plots_dir / "vib_gauss.png")
+
+    def get_metrics(self):
+        """Update the metrics."""
+
+        metrics = compute_uncertainty_metrics(
+            self.f_pred["trans"], self.f_unc["trans"], self.f_true["trans"]
+        )
+        self.trans_forces = metrics
+        metrics = compute_uncertainty_metrics(
+            self.f_pred["rot"], self.f_unc["rot"], self.f_true["rot"]
+        )
+        self.rot_forces = metrics
+        metrics = compute_uncertainty_metrics(
+            self.f_pred["vib"], self.f_unc["vib"], self.f_true["vib"]
+        )
+        self.vib_forces = metrics
+
+    def run(self):
+        self.f_true = {"trans": [], "rot": [], "vib": []}
+        self.f_pred = {"trans": [], "rot": [], "vib": []}
+        self.f_unc = {"trans": [], "rot": [], "vib": []}
+
+        nproc = os.getenv("IPSUITE_NPROC", multiprocessing.cpu_count() - 1)
+        process_pool = ProcessPoolExecutor(nproc)
+
+        pbar = tqdm.trange(
+            0,
+            len(self.x),
+            desc="structures",
+            ncols=70,
+            leave=True,
+            mininterval=0.25,
+        )
+        for result in process_pool.map(decompose_force_uncertainty, self.x, self.y):
+            y_true, y_pred, y_unc = result
+            trans_true, rot_true, vib_true = y_true
+            trans_pred, rot_pred, vib_pred = y_pred
+            trans_unc, rot_unc, vib_unc = y_unc
+
+            self.f_true["trans"].append(trans_true)
+            self.f_true["rot"].append(rot_true)
+            self.f_true["vib"].append(vib_true)
+            self.f_pred["trans"].append(trans_pred)
+            self.f_pred["rot"].append(rot_pred)
+            self.f_pred["vib"].append(vib_pred)
+            self.f_unc["trans"].append(trans_unc)
+            self.f_unc["rot"].append(rot_unc)
+            self.f_unc["vib"].append(vib_unc)
+
+            pbar.update(1)
+
+        self.f_true = {
+            k: np.reshape(np.concatenate(v), (-1,)) * 1000 for k, v in self.f_true.items()
+        }
+        self.f_pred = {
+            k: np.reshape(np.concatenate(v), (-1,)) * 1000 for k, v in self.f_pred.items()
+        }
+        self.f_unc = {
+            k: np.reshape(np.concatenate(v), (-1,)) * 1000 for k, v in self.f_unc.items()
+        }
+        self.get_metrics()
+        self.get_plots()
