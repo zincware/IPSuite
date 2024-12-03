@@ -50,7 +50,6 @@ from .calculators import (
     Berendsen,
     BoxOscillatingRampModifier,
     CP2KSinglePoint,
-    CP2KYaml,
     EMTSinglePoint,
     FixedLayerConstraint,
     FixedSphereConstraint,
@@ -171,7 +170,6 @@ __all__ = [
     "AnalyseDensity",
     # Calculators
     "CP2KSinglePoint",
-    "CP2KYaml",
     "ASEGeoOpt",
     "ASEMD",
     "xTBSinglePoint",
