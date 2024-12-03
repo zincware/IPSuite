@@ -4,6 +4,7 @@ import pathlib
 import re
 import shutil
 import subprocess
+import typing as t
 
 import h5py
 import MDAnalysis as mda
@@ -51,7 +52,7 @@ def params_to_mdp(file: pathlib.Path, target: pathlib.Path):
     target.write_text(data)
 
 
-def timestep_to_atoms(u: mda.Universe, ts: Timestep) -> Atoms:
+def timestep_to_atoms(u: mda.Universe, ts: Timestep) -> t.Tuple[Atoms, float]:
     """Convert an MDAnalysis timestep to an ASE atoms object.
 
     Parameters
@@ -65,6 +66,8 @@ def timestep_to_atoms(u: mda.Universe, ts: Timestep) -> Atoms:
     -------
     ase.Atoms
         The converted ASE Atoms object.
+    float
+        The time of the timestep in femtoseconds.
     """
     # Set the universe's trajectory to the provided timestep
     u.trajectory.ts = ts
@@ -104,7 +107,6 @@ def timestep_to_atoms(u: mda.Universe, ts: Timestep) -> Atoms:
 
     atoms = Atoms(symbols, positions=positions, cell=cell, pbc=True)
     atoms.calc = SinglePointCalculator(atoms, energy=energy, forces=forces)
-    atoms.info["h5md_time"] = (ts.time * ureg.picosecond).to(ureg.femtosecond).magnitude
 
     with contextlib.suppress(KeyError):
         atoms.info["temperature"] = ts.aux["Temperature"].item()
@@ -113,7 +115,7 @@ def timestep_to_atoms(u: mda.Universe, ts: Timestep) -> Atoms:
     with contextlib.suppress(KeyError):
         atoms.info["density"] = ts.aux["Density"].item()
 
-    return atoms
+    return atoms, (ts.time * ureg.picosecond).to(ureg.femtosecond).magnitude
 
 
 def smiles_to_pdb(
@@ -494,11 +496,20 @@ class Smiles2Gromacs(base.IPSNode):
             aux = mda.auxiliary.EDR.EDRReader(edr)
             u.trajectory.add_auxiliary(auxdata=aux)
 
-            images = []
-            for ts in u.trajectory:
-                images.append(timestep_to_atoms(u, ts))
+            atoms_list = []
+            timesteps = []
 
-            io.extend(images)
+            for ts in u.trajectory:
+                atoms, timestep = timestep_to_atoms(u, ts)
+                atoms_list.append(atoms)
+                timesteps.append(timestep)
+
+            if len(timesteps) > 1:
+                io.timestep = timesteps[-1] - timesteps[-2]  # Assuming constant timestep
+            else:
+                io.timestep = 1
+
+            io.extend(atoms_list)
 
     def run(self):
         self.output_dir.mkdir(exist_ok=True, parents=True)
