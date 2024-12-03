@@ -283,8 +283,9 @@ class Smiles2Gromacs(base.IPSNode):
         Density of the packed box in g/cm^3.
     mdp_files: list[str | pathlib.Path]
         List of paths to the Gromacs MDP files.
-        Can also be "json" or "yaml" files, which
-        will be converted to MDP files (preferred).
+    config_files: list[str | pathlib.Path]
+        Same like mdp_files but in the json or yaml format.
+        These will run BEFORE the MDP files.
     itp_files: list[str | None]|None
         if given, for each label either the path to the
         ITP file or None.  The order must match the order
@@ -321,9 +322,10 @@ class Smiles2Gromacs(base.IPSNode):
     production_indices: list[int] = zntrack.params(None)
     cleanup: bool = zntrack.params(True)
 
-    mdp_files: list[str | pathlib.Path] = zntrack.params_path()
-    itp_files: list[str | None] = zntrack.deps_path(None)
-    pdb_files: list[str | pathlib.Path] = zntrack.deps_path(None)
+    mdp_files: list[str | pathlib.Path] = zntrack.deps_path(default_factory=list)
+    config_files: list[str | pathlib.Path] = zntrack.params_path(default_factory=list)
+    itp_files: list[str | None] = zntrack.deps_path(default_factory=list)
+    pdb_files: list[str | pathlib.Path] = zntrack.deps_path(default_factory=list)
 
     traj_file: list[Atoms] = zntrack.outs_path(zntrack.nwd / "structures.h5")
 
@@ -335,11 +337,17 @@ class Smiles2Gromacs(base.IPSNode):
         if len(self.smiles) != len(self.labels):
             raise ValueError("The number of smiles must match the number of labels")
         if self.production_indices is None:
-            self.production_indices = [len(self.mdp_files) - 1]
+            self.production_indices = [len(self.mdp_files) + len(self.config_files) - 1]
 
         if isinstance(self.output_dir, str):
             self.output_dir = pathlib.Path(self.output_dir)
         self.mdp_files = [pathlib.Path(mdp_file) for mdp_file in self.mdp_files]
+        self.config_files = [pathlib.Path(config_file) for config_file in self.config_files]
+        # check that the file name without suffix is unique between all files
+        names = [file.stem for file in self.mdp_files + self.config_files]
+        if len(names) != len(set(names)):
+            raise ValueError("The file names must be unique")
+        
 
     @property
     def frames(self):
@@ -349,7 +357,7 @@ class Smiles2Gromacs(base.IPSNode):
 
     def _run_acpype(self):
         for idx, (label, charge) in enumerate(zip(self.labels, self.charges)):
-            if self.itp_files is not None and self.itp_files[idx] is not None:
+            if len(self.itp_files) and self.itp_files[idx] is not None:
                 path = self.output_dir / f"{label}.acpype"
                 path.mkdir(exist_ok=True)
                 shutil.copy(self.itp_files[idx], path / f"{label}_GMX.itp")
@@ -375,7 +383,7 @@ class Smiles2Gromacs(base.IPSNode):
 
     def _create_species_top_atomtypes(self):
         for idx, label in enumerate(self.labels):
-            if self.itp_files is not None and self.itp_files[idx] is not None:
+            if len(self.itp_files) and self.itp_files[idx] is not None:
                 file = self.itp_files[idx]
             else:
                 file = self.output_dir / f"{label}.acpype/{label}_GMX.itp"
@@ -418,10 +426,10 @@ class Smiles2Gromacs(base.IPSNode):
                 f.write(f"{label} {count}\n")
 
     def _run_gmx(self):
-        for file in self.mdp_files:
+        for file in self.config_files + self.mdp_files:
             params_to_mdp(file, self.output_dir / file.with_suffix(".mdp").name)
 
-        for mdp_file in self.mdp_files:
+        for mdp_file in self.config_files + self.mdp_files:
             cmd = [
                 "gmx",
                 "grompp",
@@ -444,7 +452,7 @@ class Smiles2Gromacs(base.IPSNode):
         mols = []
         charges = []
         for idx, (smiles, label) in enumerate(zip(self.smiles, self.labels)):
-            if self.pdb_files is not None and self.pdb_files[idx] is not None:
+            if len(self.pdb_files) and self.pdb_files[idx] is not None:
                 shutil.copy(self.pdb_files[idx], self.output_dir / f"{label}.pdb")
                 m = Chem.MolFromSmiles(smiles)
                 m = Chem.AddHs(m)
@@ -473,7 +481,7 @@ class Smiles2Gromacs(base.IPSNode):
     def _convert_trajectory(self):
         io = znh5md.IO(self.traj_file, store="time")
         for idx in sorted(self.production_indices):
-            if idx == len(self.mdp_files) - 1:
+            if idx == len(self.mdp_files) + len(self.config_files) - 1:
                 gro = self.output_dir / "box.gro"
                 trr = self.output_dir / "box.trr"
                 edr = self.output_dir / "box.edr"
@@ -493,7 +501,8 @@ class Smiles2Gromacs(base.IPSNode):
 
     def run(self):
         self.output_dir.mkdir(exist_ok=True, parents=True)
-        validate_mdp(self.mdp_files[-1])
+        files = self.config_files + self.mdp_files
+        validate_mdp(files[-1])
 
         self._pack_box()
         self._create_box_gro()
