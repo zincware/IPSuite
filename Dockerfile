@@ -53,6 +53,8 @@ RUN pip install .
 
 # Create a working directory
 RUN mkdir -m 1777 /work
+RUN git config --global --add safe.directory /work
+
 WORKDIR /work
 
 ENTRYPOINT [ "/bin/bash" ]
