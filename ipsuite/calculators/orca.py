@@ -1,5 +1,6 @@
 import pathlib
 
+import ase
 import h5py
 import tqdm
 import znh5md
@@ -27,7 +28,7 @@ class OrcaSinglePoint(base.ProcessAtoms):
             db.append(atoms)
 
     @property
-    def frames(self):
+    def frames(self) -> list[ase.Atoms]:
         with self.state.fs.open(self.output_file, "rb") as f:
             with h5py.File(f) as file:
                 return znh5md.IO(file_handle=file)[:]

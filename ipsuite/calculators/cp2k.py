@@ -59,7 +59,7 @@ class CP2KSinglePoint(base.IPSNode):
     cp2k_params : str
         The path to the cp2k yaml input file. cp2k-input-tools is used to
         generate the input file from the yaml file.
-    cp2k_files : str
+    cp2k_files : list[str]
         Additional dependencies for the cp2k calculation.
     wfn_restart_file : str, optional
         The path to the wfn restart file.

@@ -15,7 +15,7 @@ repository = "https://github.com/zincware/ipsuite"
 # tensorflow-io-gcs-filesystem
 python = ">=3.10,<4.0.0"
 
-znh5md = "^0.4"
+znh5md = "^0.4.1"
 ase = "^3.23"
 
 seaborn = "^0.12.2"
