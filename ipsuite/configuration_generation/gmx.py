@@ -323,6 +323,7 @@ class Smiles2Gromacs(base.IPSNode):
     tolerance: float = zntrack.params(2.0)
     production_indices: list[int] = zntrack.params(None)
     cleanup: bool = zntrack.params(True)
+    maxwarn: int = zntrack.params(0)
 
     mdp_files: t.Sequence[str | pathlib.Path] = zntrack.deps_path(default_factory=list)
     config_files: t.Sequence[str | pathlib.Path] = zntrack.params_path(
@@ -451,6 +452,8 @@ class Smiles2Gromacs(base.IPSNode):
                 "-o",
                 "box.tpr",
                 "-v",
+                "-maxwarn",
+                str(self.maxwarn),
             ]
             print(f"Running {' '.join(cmd)}")
             subprocess.run(cmd, check=True, cwd=self.output_dir)
