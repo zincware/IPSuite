@@ -5,6 +5,7 @@ import re
 import shutil
 import subprocess
 import typing as t
+import os
 
 import h5py
 import MDAnalysis as mda
@@ -457,7 +458,8 @@ class Smiles2Gromacs(base.IPSNode):
             ]
             print(f"Running {' '.join(cmd)}")
             subprocess.run(cmd, check=True, cwd=self.output_dir)
-            cmd = ["gmx", "mdrun", "-ntmpi", "1", "-v", "-deffnm", "box"]
+            NTMPI = os.environ.get("IPSUITE_GMX_NTMPI", "1")
+            cmd = ["gmx", "mdrun", "-ntmpi", NTMPI, "-v", "-deffnm", "box"]
             subprocess.run(cmd, check=True, cwd=self.output_dir)
 
     def _pack_box(self):
