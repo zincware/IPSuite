@@ -21,8 +21,14 @@ class OrcaSinglePoint(base.ProcessAtoms):
     def run(self):
         db = znh5md.IO(self.output_file)
 
+        skip = 0
+        if self.state.restarted:
+            skip = len(db)
+
         calc = self.get_calculator()
-        for atoms in tqdm.tqdm(self.get_data(), ncols=70):
+        for idx, atoms in tqdm.tqdm(enumerate(self.data), ncols=70):
+            if idx < skip:
+                continue
             atoms.calc = calc
             atoms.get_potential_energy()
             db.append(atoms)
