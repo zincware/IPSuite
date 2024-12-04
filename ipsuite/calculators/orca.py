@@ -4,6 +4,7 @@ import ase
 import h5py
 import tqdm
 import znh5md
+import contextlib
 import zntrack
 from ase.calculators.orca import ORCA, OrcaProfile
 
@@ -22,7 +23,7 @@ class OrcaSinglePoint(base.ProcessAtoms):
         db = znh5md.IO(self.output_file)
 
         skip = 0
-        if self.state.restarted:
+        with contextlib.suppress(FileNotFoundError):
             skip = len(db)
 
         calc = self.get_calculator()
