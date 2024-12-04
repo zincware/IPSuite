@@ -1,11 +1,11 @@
 import contextlib
 import json
+import os
 import pathlib
 import re
 import shutil
 import subprocess
 import typing as t
-import os
 
 import h5py
 import MDAnalysis as mda
