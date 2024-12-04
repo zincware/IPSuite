@@ -2,15 +2,16 @@
 ARG PYTHON_VERSION="3.11"
 FROM python:${PYTHON_VERSION}
 
+# Build arguments for dynamic version configuration
+ARG MAKE_JOBS="4"
+ARG CP2K_VERSION="v2024.3"
+ARG PACKMOL_VERSION="20.15.3"
+ARG GROMACS_VERSION="2024.4"
+
 # Set environment variables for non-interactive installs
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="/opt/tools/cp2k/exe/local:/opt/tools/packmol-${PACKMOL_VERSION}:/opt/tools/gromacs-${GROMACS_VERSION}/build/bin:$PATH"
 
-# Build arguments for dynamic version configuration
-ARG MAKE_JOBS="4"
-ARG CP2K_VERSION="v2024.1"
-ARG PACKMOL_VERSION="20.15.3"
-ARG GROMACS_VERSION="2024.4"
 
 # Update and install essential packages
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
