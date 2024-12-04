@@ -1,10 +1,10 @@
+import contextlib
 import pathlib
 
 import ase
 import h5py
 import tqdm
 import znh5md
-import contextlib
 import zntrack
 from ase.calculators.orca import ORCA, OrcaProfile
 
