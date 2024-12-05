@@ -27,7 +27,7 @@ class OrcaSinglePoint(base.ProcessAtoms):
             skip = len(db)
 
         calc = self.get_calculator()
-        for idx, atoms in tqdm.tqdm(enumerate(self.data), ncols=70):
+        for idx, atoms in tqdm.tqdm(enumerate(self.data), ncols=70, total=len(self.data)):
             if idx < skip:
                 continue
             atoms.calc = calc
