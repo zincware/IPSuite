@@ -248,8 +248,6 @@ class ThresholdCheck(base.Check):
     def __post_init__(self):
         if self.max_std is None and self.max_value is None:
             raise ValueError("Either max_std or max_value must be set")
-
-    def _post_load_(self) -> None:
         self.values = collections.deque(maxlen=self.window_size)
 
     def get_value(self, atoms):
