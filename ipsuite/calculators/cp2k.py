@@ -97,12 +97,12 @@ class CP2KSinglePoint(base.IPSNode):
             atoms.calc = calc
             try:
                 atoms.get_potential_energy()
+                db.append(atoms)
             except Exception as err:
                 if self.failure_policy == "fail":
                     raise err
                 log.warning(f"Skipping calculation: {err}")
                 continue
-            db.append(atoms)
 
         for file in self.cp2k_directory.glob("cp2k-RESTART.wfn.*"):
             # we don't need all restart files
