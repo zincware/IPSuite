@@ -78,6 +78,7 @@ class CP2KSinglePoint(base.IPSNode):
     output_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
     cp2k_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "cp2k")
     failure_policy: t.Literal["skip", "fail"] = zntrack.params("fail")
+    failed_configs: dict = zntrack.metrics()
 
     def run(self):
         """ZnTrack run method.
@@ -92,8 +93,9 @@ class CP2KSinglePoint(base.IPSNode):
 
         db = znh5md.IO(self.output_file)
         calc = self.get_calculator()
+        self.failed_configs = {"skipped": []}
 
-        for atoms in tqdm.tqdm(self.data, ncols=70):
+        for idx, atoms in tqdm.tqdm(enumerate(self.data), ncols=70):
             atoms.calc = calc
             try:
                 atoms.get_potential_energy()
@@ -102,6 +104,7 @@ class CP2KSinglePoint(base.IPSNode):
                 if self.failure_policy == "fail":
                     raise err
                 log.warning(f"Skipping calculation: {err}")
+                self.failed_configs["skipped"].append(idx)
                 continue
 
         for file in self.cp2k_directory.glob("cp2k-RESTART.wfn.*"):
