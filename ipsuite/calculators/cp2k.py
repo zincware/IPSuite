@@ -105,6 +105,7 @@ class CP2KSinglePoint(base.IPSNode):
                     raise err
                 log.warning(f"Skipping calculation: {err}")
                 self.failed_configs["skipped"].append(idx)
+                calc = self.get_calculator()
                 continue
 
         for file in self.cp2k_directory.glob("cp2k-RESTART.wfn.*"):
