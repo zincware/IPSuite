@@ -95,7 +95,7 @@ class CP2KSinglePoint(base.IPSNode):
         calc = self.get_calculator()
         self.failed_configs = {"skipped": []}
 
-        for idx, atoms in tqdm.tqdm(enumerate(self.data), ncols=70):
+        for idx, atoms in enumerate(tqdm.tqdm(self.data, ncols=70)):
             atoms.calc = calc
             try:
                 atoms.get_potential_energy()
