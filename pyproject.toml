@@ -23,7 +23,7 @@ cp2k-input-tools = "^0.9"
 cp2k-output-tools = "^0.5.0"
 
 lazy-loader = "0.4"
-zntrack = "0.8.0"
+zntrack = "0.8.1"
 uncertainty-toolbox = "^0.1.1"
 rdkit2ase = "^0.1.4"
 
