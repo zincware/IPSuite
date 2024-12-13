@@ -254,7 +254,7 @@ class ThresholdCheck(base.Check):
         """Get the value of the property to check.
         Extracted into method so it can be subclassed.
         """
-        return np.max(atoms.calc.results[self.value])
+        return np.max(atoms.calc.results[self.key])
 
     def get_quantity(self):
         if self.max_value is None:
@@ -277,7 +277,7 @@ class ThresholdCheck(base.Check):
 
         if self.max_value is not None and np.max(value) > self.max_value:
             self.status = (
-                f"StandardDeviationCheck for {self.value} triggered by"
+                f"StandardDeviationCheck for {self.key} triggered by"
                 f" '{np.max(self.values[-1]):.3f}' > max_value {self.max_value}"
             )
             return True
