@@ -48,7 +48,7 @@ class CollectMDSteps(base.IPSNode):
         steps: list[int] = [x.steps_before_stopping for x in self.mds]
 
         self.metrics = {
-            "total": np.sum(steps),
-            "mean": np.mean(steps),
-            "std": np.std(steps),
+            "total": int(np.sum(steps)),
+            "mean": float(np.mean(steps)),
+            "std": float(np.std(steps)),
         }
