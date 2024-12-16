@@ -6,9 +6,8 @@ import pandas as pd
 import zntrack
 
 from ipsuite import base
-from ipsuite.utils.ase_sim import get_density_from_atoms
-
 from ipsuite.calculators.ase_md import ASEMD
+from ipsuite.utils.ase_sim import get_density_from_atoms
 
 
 class AnalyseDensity(base.AnalyseAtoms):
@@ -41,7 +40,7 @@ class AnalyseDensity(base.AnalyseAtoms):
 
 
 class CollectMDSteps(base.IPSNode):
-    mds: list[ASEMD] =  zntrack.deps()
+    mds: list[ASEMD] = zntrack.deps()
     metrics: dict = zntrack.metrics()
 
     def run(self):

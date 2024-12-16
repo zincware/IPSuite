@@ -8,6 +8,7 @@ from .analysis import (
     BoxHeatUp,
     BoxScale,
     CalibrationMetrics,
+    CollectMDSteps,
     ConnectivityCheck,
     DebugCheck,
     DipoleHistogram,
@@ -29,7 +30,6 @@ from .analysis import (
     StressHistogram,
     TemperatureCheck,
     ThresholdCheck,
-    CollectMDSteps,
 )
 
 # Base imports
