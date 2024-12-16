@@ -29,6 +29,7 @@ from .analysis import (
     StressHistogram,
     TemperatureCheck,
     ThresholdCheck,
+    CollectMDSteps,
 )
 
 # Base imports
@@ -168,6 +169,7 @@ __all__ = [
     "ThresholdCheck",
     "TemperatureCheck",
     "AnalyseDensity",
+    "CollectMDSteps",
     # Calculators
     "CP2KSinglePoint",
     "ASEGeoOpt",
