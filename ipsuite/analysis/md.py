@@ -50,4 +50,6 @@ class CollectMDSteps(base.IPSNode):
             "total": int(np.sum(steps)),
             "mean": float(np.mean(steps)),
             "std": float(np.std(steps)),
+            "max": int(np.max(steps)),
+            "min": int(np.min(steps)),
         }
