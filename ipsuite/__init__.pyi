@@ -30,6 +30,7 @@ from .analysis import (
     StressHistogram,
     TemperatureCheck,
     ThresholdCheck,
+    FindAllowedMolecules,   
 )
 
 # Base imports
@@ -170,6 +171,7 @@ __all__ = [
     "TemperatureCheck",
     "AnalyseDensity",
     "CollectMDSteps",
+    "FindAllowedMolecules",
     # Calculators
     "CP2KSinglePoint",
     "ASEGeoOpt",

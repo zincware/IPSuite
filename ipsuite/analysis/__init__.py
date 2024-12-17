@@ -33,6 +33,8 @@ from ipsuite.analysis.sensitivity import (
     MoveSingleParticle,
 )
 
+from ipsuite.analysis.molecules import FindAllowedMolecules
+
 __all__ = [
     "EnergyHistogram",
     "ForcesHistogram",
@@ -63,4 +65,5 @@ __all__ = [
     "EnergyUncertaintyHistogram",
     "AnalyseDensity",
     "CollectMDSteps",
+    "FindAllowedMolecules",
 ]
