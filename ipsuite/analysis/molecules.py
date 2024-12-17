@@ -7,7 +7,7 @@ from ipsuite import base
 from ipsuite.geometry import BarycenterMapping
 
 
-class AllowedMoleculeValidator(base.IPSNode):
+class AllowedStructuresFilter(base.IPSNode):
     """Search a given dataset for outliers.
 
     Iterates all structures in the dataset, uses covalent radii to determine
@@ -47,3 +47,12 @@ class AllowedMoleculeValidator(base.IPSNode):
                 else:
                     print(f"Outlier found at index {idx} for molecule {mol}")
                 self.outliers.append(idx)
+
+    
+    @property
+    def excluded_frames(self) -> list[ase.Atoms]:
+        return [self.data[idx] for idx in self.outliers]
+    
+    @property
+    def included_frames(self) -> list[ase.Atoms]:
+        return [self.data[idx] for idx in range(len(self.data)) if idx not in self.outliers]

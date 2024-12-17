@@ -27,7 +27,7 @@ from ipsuite.analysis.model import (
     TemperatureCheck,
     ThresholdCheck,
 )
-from ipsuite.analysis.molecules import AllowedMoleculeValidator
+from ipsuite.analysis.molecules import AllowedStructuresFilter
 from ipsuite.analysis.sensitivity import (
     AnalyseGlobalForceSensitivity,
     AnalyseSingleForceSensitivity,
@@ -64,5 +64,5 @@ __all__ = [
     "EnergyUncertaintyHistogram",
     "AnalyseDensity",
     "CollectMDSteps",
-    "AllowedMoleculeValidator",
+    "AllowedStructuresFilter",
 ]
