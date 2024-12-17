@@ -48,11 +48,12 @@ class AllowedStructuresFilter(base.IPSNode):
                     print(f"Outlier found at index {idx} for molecule {mol}")
                 self.outliers.append(idx)
 
-    
     @property
     def excluded_frames(self) -> list[ase.Atoms]:
         return [self.data[idx] for idx in self.outliers]
-    
+
     @property
     def included_frames(self) -> list[ase.Atoms]:
-        return [self.data[idx] for idx in range(len(self.data)) if idx not in self.outliers]
+        return [
+            self.data[idx] for idx in range(len(self.data)) if idx not in self.outliers
+        ]
