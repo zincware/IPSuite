@@ -15,7 +15,7 @@ from .analysis import (
     EnergyHistogram,
     EnergySpikeCheck,
     EnergyUncertaintyHistogram,
-    FindAllowedMolecules,
+    AllowedMoleculeValidator,
     ForceAngles,
     ForceDecomposition,
     ForcesHistogram,
@@ -171,7 +171,7 @@ __all__ = [
     "TemperatureCheck",
     "AnalyseDensity",
     "CollectMDSteps",
-    "FindAllowedMolecules",
+    "AllowedMoleculeValidator",
     # Calculators
     "CP2KSinglePoint",
     "ASEGeoOpt",

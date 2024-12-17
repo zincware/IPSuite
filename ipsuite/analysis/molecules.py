@@ -7,7 +7,7 @@ from ipsuite import base
 from ipsuite.geometry import BarycenterMapping
 
 
-class FindAllowedMolecules(base.IPSNode):
+class AllowedMoleculeValidator(base.IPSNode):
     """Search a given dataset for outliers.
 
     Iterates all structures in the dataset, uses covalent radii to determine
