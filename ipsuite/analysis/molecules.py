@@ -26,12 +26,14 @@ class FindAllowedMolecules(base.IPSNode):
     data: list[ase.Atoms] = zntrack.deps()
     molecules: list[ase.Atoms] = zntrack.deps(default_factory=list)
     smiles: list[str] = zntrack.params(default_factory=list)
+    fail: bool = zntrack.params(False)
 
     outliers: list[int] = zntrack.outs()
 
     def run(self):
         molecules = self.molecules + [rdkit2ase.smiles2atoms(s) for s in self.smiles]
         mapping = BarycenterMapping()
+        self.outliers = []
         for idx, atoms in enumerate(tqdm.tqdm(self.data)):
             _, mols = mapping.forward_mapping(atoms)
             for mol in mols:
@@ -40,4 +42,8 @@ class FindAllowedMolecules(base.IPSNode):
                     sorted(m.get_atomic_numbers()) for m in molecules
                 ]:
                     continue
+                if self.fail:
+                    raise ValueError(f"Outlier found at index {idx} for molecule {mol}")
+                else:
+                    print(f"Outlier found at index {idx} for molecule {mol}")
                 self.outliers.append(idx)
