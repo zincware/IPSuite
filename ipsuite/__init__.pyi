@@ -15,6 +15,7 @@ from .analysis import (
     EnergyHistogram,
     EnergySpikeCheck,
     EnergyUncertaintyHistogram,
+    FindAllowedMolecules,
     ForceAngles,
     ForceDecomposition,
     ForcesHistogram,
@@ -30,7 +31,6 @@ from .analysis import (
     StressHistogram,
     TemperatureCheck,
     ThresholdCheck,
-    FindAllowedMolecules,   
 )
 
 # Base imports

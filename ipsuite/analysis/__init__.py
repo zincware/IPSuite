@@ -27,13 +27,12 @@ from ipsuite.analysis.model import (
     TemperatureCheck,
     ThresholdCheck,
 )
+from ipsuite.analysis.molecules import FindAllowedMolecules
 from ipsuite.analysis.sensitivity import (
     AnalyseGlobalForceSensitivity,
     AnalyseSingleForceSensitivity,
     MoveSingleParticle,
 )
-
-from ipsuite.analysis.molecules import FindAllowedMolecules
 
 __all__ = [
     "EnergyHistogram",
