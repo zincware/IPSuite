@@ -2,6 +2,7 @@ from . import base
 
 # Analysis
 from .analysis import (
+    AllowedMoleculeValidator,
     AnalyseDensity,
     AnalyseGlobalForceSensitivity,
     AnalyseSingleForceSensitivity,
@@ -15,7 +16,6 @@ from .analysis import (
     EnergyHistogram,
     EnergySpikeCheck,
     EnergyUncertaintyHistogram,
-    AllowedMoleculeValidator,
     ForceAngles,
     ForceDecomposition,
     ForcesHistogram,
