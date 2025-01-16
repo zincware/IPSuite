@@ -248,15 +248,13 @@ class ThresholdCheck(base.Check):
     def __post_init__(self):
         if self.max_std is None and self.max_value is None:
             raise ValueError("Either max_std or max_value must be set")
-
-    def _post_load_(self) -> None:
         self.values = collections.deque(maxlen=self.window_size)
 
     def get_value(self, atoms):
         """Get the value of the property to check.
         Extracted into method so it can be subclassed.
         """
-        return np.max(atoms.calc.results[self.value])
+        return np.max(atoms.calc.results[self.key])
 
     def get_quantity(self):
         if self.max_value is None:
@@ -279,7 +277,7 @@ class ThresholdCheck(base.Check):
 
         if self.max_value is not None and np.max(value) > self.max_value:
             self.status = (
-                f"StandardDeviationCheck for {self.value} triggered by"
+                f"StandardDeviationCheck for {self.key} triggered by"
                 f" '{np.max(self.values[-1]):.3f}' > max_value {self.max_value}"
             )
             return True

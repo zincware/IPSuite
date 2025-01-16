@@ -9,7 +9,7 @@ import os
 import pathlib
 import shutil
 import subprocess
-import typing
+import typing as t
 from unittest.mock import patch
 
 import ase.calculators.cp2k
@@ -77,6 +77,8 @@ class CP2KSinglePoint(base.IPSNode):
     wfn_restart_node: zntrack.Node = zntrack.deps(None)
     output_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
     cp2k_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "cp2k")
+    failure_policy: t.Literal["skip", "fail"] = zntrack.params("fail")
+    failed_configs: dict = zntrack.metrics()
 
     def run(self):
         """ZnTrack run method.
@@ -91,18 +93,30 @@ class CP2KSinglePoint(base.IPSNode):
 
         db = znh5md.IO(self.output_file)
         calc = self.get_calculator()
+        self.failed_configs = {"skipped": []}
 
-        for atoms in tqdm.tqdm(self.data, ncols=70):
+        for idx, atoms in enumerate(tqdm.tqdm(self.data, ncols=70)):
             atoms.calc = calc
-            atoms.get_potential_energy()
-            db.append(atoms)
+            try:
+                atoms.get_potential_energy()
+                db.append(atoms)
+            except Exception as err:
+                if self.failure_policy == "fail":
+                    raise err
+                log.warning(f"Skipping calculation: {err}")
+                self.failed_configs["skipped"].append(idx)
+                # remove restart files after non-converged runs
+                for file in self.cp2k_directory.glob("*wfn"):
+                    file.unlink()
+                calc = self.get_calculator()
+                continue
 
         for file in self.cp2k_directory.glob("cp2k-RESTART.wfn.*"):
             # we don't need all restart files
             file.unlink()
 
     @property
-    def frames(self) -> typing.List[ase.Atoms]:
+    def frames(self) -> list[ase.Atoms]:
         with self.state.fs.open(self.output_file, "rb") as f:
             with h5py.File(f) as file:
                 return znh5md.IO(file_handle=file)[:]

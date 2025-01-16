@@ -51,6 +51,7 @@ RUN pip install dvc-s3 jax[cuda12] MDAnalysis pyedr apax
 WORKDIR /opt/tools/ipsuite
 COPY ./ ./
 RUN pip install .
+RUN chmod +x entrypoint.sh
 
 # Create a working directory
 RUN mkdir -m 1777 /work
@@ -58,4 +59,4 @@ RUN git config --global --add safe.directory /work
 
 WORKDIR /work
 
-ENTRYPOINT [ "/bin/bash" ]
+ENTRYPOINT ["/opt/tools/ipsuite/entrypoint.sh"]

@@ -2,12 +2,14 @@ from . import base
 
 # Analysis
 from .analysis import (
+    AllowedStructuresFilter,
     AnalyseDensity,
     AnalyseGlobalForceSensitivity,
     AnalyseSingleForceSensitivity,
     BoxHeatUp,
     BoxScale,
     CalibrationMetrics,
+    CollectMDSteps,
     ConnectivityCheck,
     DebugCheck,
     DipoleHistogram,
@@ -168,6 +170,8 @@ __all__ = [
     "ThresholdCheck",
     "TemperatureCheck",
     "AnalyseDensity",
+    "CollectMDSteps",
+    "AllowedStructuresFilter",
     # Calculators
     "CP2KSinglePoint",
     "ASEGeoOpt",
