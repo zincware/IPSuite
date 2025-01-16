@@ -31,7 +31,9 @@ class BarycenterMapping:
 
     _components: t.Any | None = None
 
-    def forward_mapping(self, atoms: ase.Atoms, forces = None) -> tuple[ase.Atoms, list[ase.Atoms]]:
+    def forward_mapping(
+        self, atoms: ase.Atoms, forces=None
+    ) -> tuple[ase.Atoms, list[ase.Atoms]]:
         if self._components is None:
             components = graphs.identify_molecules(atoms)
         else:
