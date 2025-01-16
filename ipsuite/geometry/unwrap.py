@@ -40,7 +40,7 @@ def unwrap(atoms, edges, idx):
         displace_neighbors(atoms, e)
 
 
-def unwrap_system(atoms: ase.Atoms, components: list[np.ndarray]) -> list[ase.Atom]:
+def unwrap_system(atoms: ase.Atoms, components: list[np.ndarray], forces=None) -> list[ase.Atom]:
     """Molecules in a system which extend across periodic boundaries are mapped such that
     they are connected but dangle out of the cell.
     Mapping to the side where the fragment of molecule is closest
@@ -51,7 +51,11 @@ def unwrap_system(atoms: ase.Atoms, components: list[np.ndarray]) -> list[ase.At
     molecules = []
     for component in components:
         mol = atoms[component].copy()
-        if atoms.calc is not None:
+        if forces is not None:
+            results = {"forces": forces[component]}
+            mol.calc = SinglePointCalculator(mol, **results)
+            
+        elif atoms.calc is not None:
             results = {"forces": atoms.get_forces()[component]}
             if "forces_uncertainty" in atoms.calc.results.keys():
                 f_unc = atoms.calc.results["forces_uncertainty"][component]

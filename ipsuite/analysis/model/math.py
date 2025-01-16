@@ -71,14 +71,19 @@ def compute_rot_forces(mol, key: str = "forces"):
         raise KeyError(m)
     return result
 
-
-def force_decomposition(atom, mapping, key: str = "forces"):
+def force_decomposition(atom, mapping, full_forces, key: str = "forces"):
     if key not in ["forces", "forces_ensemble"]:
         raise KeyError("Unknown force decomposition key")
-    _, molecules = mapping.forward_mapping(atom)
-    full_forces = np.zeros_like(atom.calc.results[key])
-    atom_trans_forces = np.zeros_like(atom.calc.results[key])
-    atom_rot_forces = np.zeros_like(atom.calc.results[key])
+    _, molecules = mapping.forward_mapping(atom, forces=full_forces)
+    
+    if full_forces is not None:
+        atom_trans_forces = np.zeros_like(full_forces)
+        atom_rot_forces = np.zeros_like(full_forces)
+
+    elif atom.calc is not None:
+        full_forces = np.zeros_like(atom.calc.results[key])
+        atom_trans_forces = np.zeros_like(atom.calc.results[key])
+        atom_rot_forces = np.zeros_like(atom.calc.results[key])
 
     total_n_atoms = 0
 
