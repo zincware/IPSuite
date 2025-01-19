@@ -71,7 +71,10 @@ def compute_rot_forces(mol, key: str = "forces"):
         raise KeyError(m)
     return result
 
-def force_decomposition(atom, mapping, full_forces: np.ndarray|None = None, key: str = "forces"):
+
+def force_decomposition(
+    atom, mapping, full_forces: np.ndarray | None = None, key: str = "forces"
+):
     if key not in ["forces", "forces_ensemble"]:
         raise KeyError("Unknown force decomposition key")
     _, molecules = mapping.forward_mapping(atom, forces=full_forces.copy())
