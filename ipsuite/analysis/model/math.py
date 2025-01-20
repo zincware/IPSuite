@@ -105,7 +105,6 @@ def force_decomposition(
     return atom_trans_forces, atom_rot_forces, atom_vib_forces
 
 
-
 def decompose_stress_tensor(stresses):
     hydrostatic_stresses = []
     deviatoric_stresses = []
