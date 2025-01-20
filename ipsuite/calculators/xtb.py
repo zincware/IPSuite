@@ -51,7 +51,6 @@ class xTBSinglePoint(base.ProcessAtoms):
             )
             raise
 
-
         calc = TBLite(
             method=self.method,
             charge=self.charge,
