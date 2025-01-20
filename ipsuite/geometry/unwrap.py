@@ -52,13 +52,13 @@ def unwrap_system(
     """
     molecules = []
     for component in components:
-        mol = atoms[component].copy()
+        component = np.sort(component)
+        mol = atoms[component]
         if forces is not None:
             results = {"forces": forces[component].copy()}
             mol.calc = SinglePointCalculator(mol, **results)
 
         elif atoms.calc is not None:
-            print("dotn execute")
             results = {"forces": atoms.get_forces()[component]}
             if "forces_uncertainty" in atoms.calc.results.keys():
                 f_unc = atoms.calc.results["forces_uncertainty"][component]
@@ -73,5 +73,5 @@ def unwrap_system(
         closest_atom = closest_atom_to_center(mol)
         unwrap(mol, edges, idx=closest_atom)
         molecules.append(mol)
-
+        
     return molecules

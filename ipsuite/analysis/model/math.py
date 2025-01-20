@@ -77,14 +77,15 @@ def force_decomposition(
 ):
     if key not in ["forces", "forces_ensemble"]:
         raise KeyError("Unknown force decomposition key")
-    _, molecules = mapping.forward_mapping(atom, forces=full_forces.copy())
 
     if full_forces is not None:
+        _, molecules = mapping.forward_mapping(atom, forces=full_forces)
         atom_trans_forces = np.zeros_like(full_forces)
         atom_rot_forces = np.zeros_like(full_forces)
         full_forces = np.zeros_like(full_forces)
 
     elif atom.calc is not None:
+        _, molecules = mapping.forward_mapping(atom)
         full_forces = np.zeros_like(atom.calc.results[key])
         atom_trans_forces = np.zeros_like(atom.calc.results[key])
         atom_rot_forces = np.zeros_like(atom.calc.results[key])
@@ -94,15 +95,15 @@ def force_decomposition(
     for molecule in molecules:
         n_atoms = len(molecule)
         mol_slice = slice(total_n_atoms, total_n_atoms + n_atoms)
+        # TODO: What if molecule indices are not ordered?
         full_forces[mol_slice] = molecule.calc.results[key]
-
         atom_rot_forces[mol_slice] = compute_rot_forces(molecule, key)
         atom_trans_forces[mol_slice] = compute_trans_forces(molecule, key)
         total_n_atoms += n_atoms
 
     atom_vib_forces = full_forces - atom_trans_forces - atom_rot_forces
-
     return atom_trans_forces, atom_rot_forces, atom_vib_forces
+
 
 
 def decompose_stress_tensor(stresses):
