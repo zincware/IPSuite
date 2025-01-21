@@ -4,6 +4,7 @@ import dataclasses
 import typing as t
 
 import ase
+import numpy as np
 
 from ipsuite.geometry import barycenter_coarse_grain, graphs, unwrap
 
@@ -31,7 +32,9 @@ class BarycenterMapping:
 
     _components: t.Any | None = None
 
-    def forward_mapping(self, atoms: ase.Atoms) -> tuple[ase.Atoms, list[ase.Atoms]]:
+    def forward_mapping(
+        self, atoms: ase.Atoms, forces: np.ndarray | None = None
+    ) -> tuple[ase.Atoms, list[ase.Atoms]]:
         if self._components is None:
             components = graphs.identify_molecules(atoms)
         else:
@@ -39,7 +42,7 @@ class BarycenterMapping:
 
         if self.frozen:
             self._components = components
-        molecules = unwrap.unwrap_system(atoms, components)
+        molecules = unwrap.unwrap_system(atoms, components, forces=forces.copy())
         cg_atoms = barycenter_coarse_grain.coarse_grain_to_barycenter(molecules)
         return cg_atoms, molecules
 
