@@ -6,6 +6,9 @@ import numpy as np
 import zntrack
 from ase.cell import Cell
 from numpy.random import default_rng
+import znh5md
+import typing
+import h5py
 
 from ipsuite import analysis, base
 
@@ -196,3 +199,124 @@ def plot_ture_vs_pred(x, y, z, name, height, plots_dir):
 
     fig.suptitle(rf"Additive {height} $\AA$ over the surface")
     fig.savefig(plots_dir / f"{name}-{height}-heat.png")
+
+
+
+def y_rot_mat(angle_radians):
+    rotation_matrix = np.array([[np.cos(angle_radians), 0, -np.sin(angle_radians)],
+                                [0, 1, 0],
+                                [np.sin(angle_radians), 0, np.cos(angle_radians)],
+                                ])
+    return rotation_matrix
+
+def z_rot_mat(angle_radians):
+    rotation_matrix = np.array([[np.cos(angle_radians), -np.sin(angle_radians), 0],
+                                [np.sin(angle_radians), np.cos(angle_radians), 0],
+                                [0, 0, 1],
+                                ])
+    return rotation_matrix
+
+def position_velocitie_rotation(pos, velo, angle_degrees, rot_axis):
+    rot_matrix = {"y": y_rot_mat,
+                     "z": z_rot_mat}
+    
+    # Convert angle from degrees to radians
+    angle_radians = np.radians(angle_degrees)
+    
+    rotation_matrix = rot_matrix[rot_axis](angle_radians)
+    
+    # Apply the rotation matrix to the vector
+    rotated_pos = np.dot(rotation_matrix, pos)
+    rotate_velo = np.dot(rotation_matrix, velo)
+    return rotated_pos, rotate_velo
+
+class PosVeloRotation(base.ProcessSingleAtom):
+    """This class generates 
+    """
+
+    symbol: str = zntrack.params()
+    y_rotation_angles: list[float] = zntrack.params()
+    z_rotation_angles: list[float] = zntrack.params()
+    additive_hight: float = zntrack.params()           #np.array([0., 0., 8.0*Ang,])
+    velocitie:  list[float] = zntrack.params()          #np.array([0., 0., -8000.0*m/s,])
+    impact_position: list[float] = zntrack.params(None)           #np.array([0., 0.])
+    n_conf_per_dist: list[int] = zntrack.params([5, 5])
+    cell_fraction: list[float] = zntrack.params([1, 1])
+    seed: int = zntrack.params(42)
+    output_file = zntrack.outs_path(zntrack.nwd / "structures.h5")
+
+    def run(self) -> None:
+        np.random.seed(self.seed)
+        self.y_rotation_angles = np.array(self.y_rotation_angles)
+        self.z_rotation_angles = np.array(self.z_rotation_angles)
+        self.velocitie = np.array(self.velocitie)
+        
+        db = znh5md.IO(self.output_file)
+        
+        atoms = self.get_data()
+        cell = atoms.cell
+        cellpar = cell.cellpar()
+
+        z_max = max(atoms.get_positions()[:, 2])
+        if cellpar[2] < self.additive_hight + 10:
+            cellpar[2] = self.additive_hight + 10
+            new_cell = Cell.fromcellpar(cellpar)
+            atoms.set_cell(new_cell)
+            log.warning("vacuum was extended")
+
+        cell = np.array(atoms.cell)  
+                
+        if self.impact_position is None:
+            position = np.array([0, 0, self.additive_hight])
+            a_scaling = np.random.uniform(0, 1, self.n_conf_per_dist[0])
+            b_scaling = np.random.uniform(0, 1, self.n_conf_per_dist[1])
+        else:
+            fraction = [(2*(self.n_conf_per_dist[0]))**-1, (2*(self.n_conf_per_dist[1]))**-1]
+            position = np.array([self.impact_position[0], self.impact_position[1], self.additive_hight])
+            a_scaling = np.linspace(fraction[0], 1-fraction[0], self.n_conf_per_dist[0])
+            b_scaling = np.linspace(fraction[1], 1-fraction[1], self.n_conf_per_dist[1])
+
+        a_vec = cell[0, :2] * self.cell_fraction[0]
+        scaled_a_vecs = a_scaling[:, np.newaxis] * a_vec
+        b_vec = cell[1, :2] * self.cell_fraction[1]
+        scaled_b_vecs = b_scaling[:, np.newaxis] * b_vec
+
+        structures = []
+        
+        for z_angle in self.z_rotation_angles:
+            for y_angle in self.y_rotation_angles:
+                if self.impact_position is None:
+                    position = np.array([0, 0, self.additive_hight])
+                    a_scaling = np.random.uniform(0, 1, self.n_conf_per_dist[0])
+                    b_scaling = np.random.uniform(0, 1, self.n_conf_per_dist[1])
+                    
+                    a_vec = cell[0, :2] * self.cell_fraction[0]
+                    scaled_a_vecs = a_scaling[:, np.newaxis] * a_vec
+                    b_vec = cell[1, :2] * self.cell_fraction[1]
+                    scaled_b_vecs = b_scaling[:, np.newaxis] * b_vec
+                    
+                for a in scaled_a_vecs:
+                    for b in scaled_b_vecs:
+                        xy_impact_pos = np.array(a + b)
+
+
+                        structures.append(atoms.copy())
+                        
+                        rot_pos, rot_velo = position_velocitie_rotation(position, self.velocitie, y_angle, "y")
+                        rot_pos_z, rot_velo_z = position_velocitie_rotation(rot_pos, rot_velo, z_angle, "z")
+
+                        final_pos = rot_pos_z + np.array([xy_impact_pos[0], xy_impact_pos[1], z_max])
+                        additive = ase.Atoms(
+                                self.symbol,
+                                [final_pos],
+                                velocities=rot_velo_z,
+                        )
+                        structures[-1].extend(additive)
+
+        db.extend(structures)
+        
+    @property         
+    def frames(self) -> typing.List[ase.Atoms]:
+        with self.state.fs.open(self.output_file, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]

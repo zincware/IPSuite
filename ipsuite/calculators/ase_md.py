@@ -515,6 +515,24 @@ class FixedLayerConstraint:
 
         return ase.constraints.FixAtoms(indices=self.indices)
 
+@dataclasses.dataclass
+class FixedAtomsConstraint:
+    """Class to fix a layer of atoms within a MD
+        simulation
+
+    Attributes
+    ----------
+    indices: List[int]
+        all atoms that will be fixed.
+    """
+
+    indices = typing.List[int]
+
+    def get_constraint(self, atoms):
+
+        return ase.constraints.FixAtoms(indices=self.indices)
+
+
 
 class ASEMD(base.IPSNode):
     """Class to run a MD simulation with ASE.
@@ -534,7 +552,7 @@ class ASEMD(base.IPSNode):
         The ids of the atoms object to process. Only relevant if the
         mapped function is used.
         ```
-        mapped_asemd = zn.apply(ips.ASEMD, method='map')(**kwargs)
+        mapped_asemd = zn.apply(ips.nodes.ASEMD, method='map')(**kwargs)
         ```
     checks: list[Check]
         checks, which track various metrics and stop the
@@ -586,14 +604,15 @@ class ASEMD(base.IPSNode):
     use_momenta: bool = zntrack.params(False)
     seed: int = zntrack.params(42)
     wrap: bool = zntrack.params(False)
+    safe_traj: bool = zntrack.params(True)
 
-    metrics_dict: pd.DataFrame = zntrack.plots()
+    # metrics_dict = zntrack.plots()
 
     steps_before_stopping: dict = zntrack.metrics()
 
-    structures: typing.Any = zntrack.outs()
     traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
-
+    metrics: pathlib.Path = zntrack.outs_path(zntrack.nwd / "metrics.npz")
+    
     def get_atoms(self, method="run") -> ase.Atoms | typing.List[ase.Atoms]:
         """Get the atoms object to process given the 'data' and 'data_id'.
 
@@ -637,9 +656,13 @@ class ASEMD(base.IPSNode):
         self.db = znh5md.IO(self.traj_file)
 
     def run_md(self, atoms):  # noqa: C901
+        import time
+        start = time.time()
+        
         atoms.repeat(self.repeat)
         atoms.calc = self.model.get_calculator(directory=self.model_outs)
-
+        _ = atoms.get_potential_energy()
+        
         if not self.use_momenta:
             init_temperature = self.thermostat.temperature
             MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
@@ -654,10 +677,10 @@ class ASEMD(base.IPSNode):
             "temperature": [],
             "step": [],
         }
-        for check in self.checks:
-            check.initialize(atoms)
-            if check.get_quantity() is not None:
-                metrics_dict[check.get_quantity()] = []
+        for checker in self.checks:
+            checker.initialize(atoms)
+            if checker.get_quantity() is not None:
+                metrics_dict[checker.get_quantity()] = []
 
         # Run simulation
         sampling_iterations = self.steps / self.sampling_rate
@@ -674,7 +697,7 @@ class ASEMD(base.IPSNode):
         for constraint in self.constraints:
             atoms.set_constraint(constraint.get_constraint(atoms))
 
-        atoms_cache = []
+        atoms_cache = [freeze_copy_atoms(atoms)]
         self.steps_before_stopping = -1
         current_step = 0
         with trange(
@@ -699,10 +722,10 @@ class ASEMD(base.IPSNode):
 
                     thermostat.run(1)
 
-                    for check in self.checks:
-                        stop.append(check.check(atoms))
+                    for checker in self.checks:
+                        stop.append(checker.check(atoms))
                         if stop[-1]:
-                            log.critical(str(check))
+                            log.critical(str(checker))
 
                     if any(stop):
                         break
@@ -716,27 +739,29 @@ class ASEMD(base.IPSNode):
                     metrics_dict = update_metrics_dict(
                         atoms, metrics_dict, self.checks, current_step
                     )
-                    atoms_cache.append(freeze_copy_atoms(atoms))
-                    if len(atoms_cache) == self.dump_rate:
-                        self.db.extend(atoms_cache)
-                        atoms_cache = []
+                    if self.safe_traj:
+                        atoms_cache.append(freeze_copy_atoms(atoms))
+                        if len(atoms_cache) == self.dump_rate:
+                            self.db.extend(atoms_cache)
+                            atoms_cache = []
 
-                    time = (idx_outer + 1) * self.sampling_rate * time_step
+                    timing = (idx_outer + 1) * self.sampling_rate * time_step
                     temperature = metrics_dict["temperature"][-1]
                     energy = metrics_dict["energy"][-1]
-                    desc = get_desc(temperature, energy, time, total_fs)
+                    desc = get_desc(temperature, energy, timing, total_fs)
                     pbar.set_description(desc)
                     pbar.update(self.sampling_rate)
                     current_step += 1
 
         if not self.pop_last and self.steps_before_stopping != -1:
-            metrics_dict = update_metrics_dict(
-                atoms, metrics_dict, self.checks, current_step
-            )
+            metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks, current_step)
             atoms_cache.append(freeze_copy_atoms(atoms))
             current_step += 1
-
+            
         self.db.extend(atoms_cache)
+            
+        end = time.time()
+        log.info(f"Simulation took {end-start} seconds")
         return metrics_dict, current_step
 
     def run(self):
@@ -746,10 +771,9 @@ class ASEMD(base.IPSNode):
         atoms = self.get_atoms()
         metrics_dict, _ = self.run_md(atoms=atoms)
 
-        self.structures = []
-
-        self.metrics_dict = pd.DataFrame(metrics_dict)
-
+        # self.metrics_dict = pd.DataFrame(metrics_dict)
+        np.savez(self.metrics, **metrics_dict)
+        
     def map(self):  # noqa: A003
         self.initialize_md()
 
@@ -759,24 +783,19 @@ class ASEMD(base.IPSNode):
         else:
             structures = self.get_atoms(method="map")
 
-        self.structures = []
         for atoms in structures:
             metrics, current_step = self.run_md(atoms=atoms)
             metrics_list.append(metrics)
-            self.structures.append(self.frames[-current_step:])
-
-        # Flatten metrics dictionary
+        
         flattened_metrics = {}
-        for key in metrics_list[0].keys():
-            flattened_metrics[key] = []
+        for idx, m in enumerate(metrics_list):
+            for key, value in m.items():
+                flattened_metrics[f'{key}_{idx}'] = value
+                
+        # self.metrics_dict = pd.DataFrame(flattened_metrics)
+        np.savez(self.metrics, **flattened_metrics)            
 
-        for metrics in metrics_list:
-            for key, value in metrics.items():
-                flattened_metrics[key].extend(value)
-
-        self.metrics_dict = pd.DataFrame(flattened_metrics)
-
-
+            
 def get_desc(temperature: float, total_energy: float, time: float, total_time: float):
     """TQDM description."""
     return (
@@ -790,9 +809,9 @@ def update_metrics_dict(atoms, metrics_dict, checks, step):
     metrics_dict["energy"].append(energy)
     metrics_dict["temperature"].append(temperature)
     metrics_dict["step"].append(step)
-    for check in checks:
-        metric = check.get_value(atoms)
+    for checker in checks:
+        metric = checker.get_value(atoms)
         if metric is not None:
-            metrics_dict[check.get_quantity()].append(metric)
+            metrics_dict[checker.get_quantity()].append(metric)
 
     return metrics_dict

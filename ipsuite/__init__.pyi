@@ -142,6 +142,7 @@ __all__ = [
     "RotateMolecules",
     "SurfaceRasterScan",
     "SurfaceRasterMetrics",
+    "PosVeloRotation",
     # Analysis
     "DipoleHistogram",
     "EnergyHistogram",
@@ -161,6 +162,7 @@ __all__ = [
     "NaNCheck",
     "ConnectivityCheck",
     "EnergySpikeCheck",
+    "ReflectionCheck",
     "MDStability",
     "MoveSingleParticle",
     "AnalyseGlobalForceSensitivity",
@@ -193,6 +195,7 @@ __all__ = [
     "TemperatureOscillatingRampModifier",
     "FixedSphereConstraint",
     "FixedLayerConstraint",
+    "FixedAtomsConstraint",
     "PressureRampModifier",
     # Geometry
     "BarycenterMapping",

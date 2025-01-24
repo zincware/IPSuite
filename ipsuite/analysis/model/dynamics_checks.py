@@ -1,5 +1,6 @@
 import collections
 import dataclasses
+import typing
 
 import ase
 import numpy as np
@@ -296,3 +297,103 @@ class ThresholdCheck(base.Check):
                 f" {std:.3f}' and max value '{self.max_value}'"
             )
             return False
+
+
+@dataclasses.dataclass
+class ReflectionCheck(base.Check):
+    """
+    A class to check and handle the reflection of atoms in a simulation.
+
+    Parameters
+    ----------
+    cutoff_plane : float
+        The z-coordinate of the cutoff plane. If None, `cutoff_plane_dist` must be specified.
+    additive_idx : int
+        Index of the additive atom to monitor. If None, all atoms are considered for penetration check.
+    cutoff_plane_dist : float
+        Distance from the maximum z-coordinate of atoms to define the cutoff plane. Used if `cutoff_plane` is None.
+    cutoff_plane_skin : float
+        Skin distance added to the cutoff plane for determining reflection criteria.
+        
+    Attributes:
+    ----------
+    reflected : bool
+        Indicates if atoms have been reflected.
+    cutoff_penetrated : bool
+        Indicates if the cutoff plane has been penetrated by atoms.
+    z_max : float
+        Maximum z-coordinate of atoms in the initial configuration.
+    """
+    cutoff_plane_height: float = None
+    additive_idx: typing.List[int] = None
+    cutoff_plane_dist: float = None
+    cutoff_plane_skin: float = 1.5
+    
+    def initialize(self, atoms: ase.Atoms) -> None:
+        self.reflected = False
+        self.cutoff_penetrated = False
+        
+        z_pos = atoms.positions[:,2]
+        if self.additive_idx is None:
+            z_max = np.max(z_pos)
+        else:
+            z_max = np.max(np.delete(z_pos, self.additive_idx))
+            
+        if self.cutoff_plane_height is None and self.cutoff_plane_dist is None:
+            raise ValueError("Either cutoff_plane or cutoff_plane_dist has to be specified.")
+        elif self.cutoff_plane_dist is not None:
+            if self.cutoff_plane_height is not None:
+                raise ValueError("Specify either cutoff_plane or cutoff_plane_dist, not both.")
+            self.cutoff_plane = z_max + self.cutoff_plane_dist
+        else:
+            self.cutoff_plane = self.cutoff_plane_height
+        
+    def check(self, atoms) -> bool:
+        z_pos = atoms.positions[:,2]
+        idxs = np.where(z_pos > self.cutoff_plane)[0]
+        
+        if self.additive_idx is None:
+            self.cutoff_penetrated = True
+        else:
+            additive_z_pos = z_pos[self.additive_idx]
+            if not self.cutoff_penetrated and additive_z_pos < self.cutoff_plane:
+                self.cutoff_penetrated = True
+            
+        if self.cutoff_penetrated and len(idxs) != 0:
+            self.reflected = True
+            
+        if self.reflected:
+            nl = build_neighbor_list(atoms, self_interaction=False)
+            matrix = nl.get_connectivity_matrix()
+            n_components, component_list = sparse.csgraph.connected_components(matrix)
+
+            self.del_atom_idxs = []
+            del_mol_idxs = []
+            for atom_idx in idxs:
+                mol_idx = component_list[atom_idx]
+                if mol_idx not in del_mol_idxs:
+                    del_mol_idxs.append(mol_idx)
+                    self.del_atom_idxs.extend([i for i in range(len(component_list)) if component_list[i] == mol_idx])
+                    
+            self.out_velo = atoms.get_velocities()[self.del_atom_idxs]
+            self.status = (
+                    f"Molecule/s {del_mol_idxs} with Atom(s) {self.del_atom_idxs} was/were reflected and deleted.\n"
+                    f"Atoms idx = {self.del_atom_idxs}: v = {self.out_velo}"
+                )
+            del atoms[self.del_atom_idxs]
+
+            return True
+
+        return False
+    
+    def get_value(self, atoms):
+        """Get the value of the property to check.
+        Extracted into method so it can be subclassed.
+        """
+        if self.reflected:
+            return self.out_velo
+        else:
+            return None#[np.NaN, np.NaN, np.NaN]
+
+    def get_quantity(self):
+            return f"out_velo"
