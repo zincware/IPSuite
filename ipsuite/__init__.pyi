@@ -31,6 +31,7 @@ from .analysis import (
     StressHistogram,
     TemperatureCheck,
     ThresholdCheck,
+    ReflectionCheck,
 )
 
 # Base imports
@@ -43,6 +44,7 @@ from .bootstrap import (
     SurfaceRasterMetrics,
     SurfaceRasterScan,
     TranslateMolecules,
+    PosVeloRotation,
 )
 
 # Calculators
@@ -68,6 +70,7 @@ from .calculators import (
     TemperatureRampModifier,
     VelocityVerletDynamic,
     xTBSinglePoint,
+    FixedAtomsConstraint,
 )
 
 # Configuration Generation

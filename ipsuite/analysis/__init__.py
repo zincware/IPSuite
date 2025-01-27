@@ -26,6 +26,7 @@ from ipsuite.analysis.model import (
     RattleAnalysis,
     TemperatureCheck,
     ThresholdCheck,
+    ReflectionCheck,
 )
 from ipsuite.analysis.molecules import AllowedStructuresFilter
 from ipsuite.analysis.sensitivity import (
@@ -65,4 +66,5 @@ __all__ = [
     "AnalyseDensity",
     "CollectMDSteps",
     "AllowedStructuresFilter",
+    "ReflectionCheck",
 ]

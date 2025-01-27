@@ -26,11 +26,11 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
     ----------
     symbol: str
         ASE symbol representing the additives.
-    z_dist_list: list[float]
+    z_dist_list: typing.List[float]
          A list of z-distances at which additives will be added.
-    n_conf_per_dist: list[int]
+    n_conf_per_dist: typing.List[int]
         The number of configurations to generate per z-distance.
-    cell_fraction: list[float]
+    cell_fraction: typing.List[float]
         Fractional scaling of the unit cell in x and y directions.
     random: bool
        If True, additives are placed randomly within the specified cell_fraction.
@@ -41,9 +41,9 @@ class SurfaceRasterScan(base.ProcessSingleAtom):
     """
 
     symbol: str = zntrack.params()
-    z_dist_list: list[float] = zntrack.params()
-    n_conf_per_dist: list[int] = zntrack.params((5, 5))
-    cell_fraction: list[float] = zntrack.params((1, 1))
+    z_dist_list: typing.List[float] = zntrack.params()
+    n_conf_per_dist: typing.List[int] = zntrack.params((5, 5))
+    cell_fraction: typing.List[float] = zntrack.params((1, 1))
     random: bool = zntrack.params(False)
     max_rattel_shift: float = zntrack.params(None)
     seed: int = zntrack.params(1)
@@ -235,15 +235,15 @@ class PosVeloRotation(base.ProcessSingleAtom):
     """
 
     symbol: str = zntrack.params()
-    y_rotation_angles: list[float] = zntrack.params()
-    z_rotation_angles: list[float] = zntrack.params()
+    y_rotation_angles: typing.List[float] = zntrack.params()
+    z_rotation_angles: typing.List[float] = zntrack.params()
     additive_hight: float = zntrack.params()           #np.array([0., 0., 8.0*Ang,])
-    velocitie:  list[float] = zntrack.params()          #np.array([0., 0., -8000.0*m/s,])
-    impact_position: list[float] = zntrack.params(None)           #np.array([0., 0.])
-    n_conf_per_dist: list[int] = zntrack.params([5, 5])
-    cell_fraction: list[float] = zntrack.params([1, 1])
+    velocitie: typing.List[float] = zntrack.params()          #np.array([0., 0., -8000.0*m/s,])
+    n_conf_per_dist: typing.List[int] = zntrack.params() #(5, 5)
+    cell_fraction: typing.List[float] = zntrack.params() #[1, 1]
+    impact_position: typing.List[float] = zntrack.params(None)           #np.array([0., 0.])
     seed: int = zntrack.params(42)
-    output_file = zntrack.outs_path(zntrack.nwd / "structures.h5")
+    # output_file: str = zntrack.outs_path(zntrack.nwd / "frames.h5")
 
     def run(self) -> None:
         np.random.seed(self.seed)
@@ -251,7 +251,7 @@ class PosVeloRotation(base.ProcessSingleAtom):
         self.z_rotation_angles = np.array(self.z_rotation_angles)
         self.velocitie = np.array(self.velocitie)
         
-        db = znh5md.IO(self.output_file)
+        # db = znh5md.IO(self.output_file)
         
         atoms = self.get_data()
         cell = atoms.cell
@@ -313,10 +313,11 @@ class PosVeloRotation(base.ProcessSingleAtom):
                         )
                         structures[-1].extend(additive)
 
-        db.extend(structures)
+        # db.extend(structures)
+        self.frames = structures
         
-    @property         
-    def frames(self) -> typing.List[ase.Atoms]:
-        with self.state.fs.open(self.output_file, "rb") as f:
-            with h5py.File(f) as file:
-                return znh5md.IO(file_handle=file)[:]
+    # @property         
+    # def frames(self) -> typing.List[ase.Atoms]:
+    #     with self.state.fs.open(self.output_file, "rb") as f:
+    #         with h5py.File(f) as file:
+    #             return znh5md.IO(file_handle=file)[:]

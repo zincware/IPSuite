@@ -526,7 +526,7 @@ class FixedAtomsConstraint:
         all atoms that will be fixed.
     """
 
-    indices = typing.List[int]
+    indices: typing.List[int]
 
     def get_constraint(self, atoms):
 

@@ -9,6 +9,7 @@ from ase.neighborlist import build_neighbor_list, natural_cutoffs
 
 from ipsuite import base
 from ipsuite.utils.ase_sim import get_energy
+from scipy import sparse
 
 
 @dataclasses.dataclass
