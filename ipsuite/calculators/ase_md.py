@@ -629,10 +629,8 @@ class ASEMD(base.IPSNode):
         else:
             raise ValueError("No data given.")
 
-        if method == "run":
-            return atoms[self.data_id]
-        else:
-            return atoms
+        return atoms[self.data_id] if method == "run" else atoms
+
 
     @property
     def frames(self) -> typing.List[ase.Atoms]:
@@ -654,7 +652,9 @@ class ASEMD(base.IPSNode):
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
 
         self.db = znh5md.IO(self.traj_file)
-
+        self.frames_cache = []
+    
+    
     def run_md(self, atoms):  # noqa: C901
         import time
         start = time.time()
@@ -664,23 +664,18 @@ class ASEMD(base.IPSNode):
         _ = atoms.get_potential_energy()
         
         if not self.use_momenta:
-            init_temperature = self.thermostat.temperature
-            MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
+            MaxwellBoltzmannDistribution(atoms, temperature_K=self.thermostat.temperature)
 
         # initialize thermostat
         time_step = self.thermostat.time_step
         thermostat = self.thermostat.get_thermostat(atoms=atoms)
 
         # initialize Atoms calculator and metrics_dict
-        metrics_dict = {
-            "energy": [],
-            "temperature": [],
-            "step": [],
-        }
-        for checker in self.checks:
-            checker.initialize(atoms)
-            if checker.get_quantity() is not None:
-                metrics_dict[checker.get_quantity()] = []
+        metrics_dict = {"energy": [], "temperature": [], "step": []}
+        for check in self.checks:
+            check.initialize(atoms)
+            if check.get_quantity() is not None:
+                metrics_dict[check.get_quantity()] = []
 
         # Run simulation
         sampling_iterations = self.steps / self.sampling_rate
@@ -697,16 +692,12 @@ class ASEMD(base.IPSNode):
         for constraint in self.constraints:
             atoms.set_constraint(constraint.get_constraint(atoms))
 
-        atoms_cache = [freeze_copy_atoms(atoms)]
+        self.frames_cache.append(freeze_copy_atoms(atoms))
         self.steps_before_stopping = -1
         current_step = 0
-        with trange(
-            self.steps,
-            leave=True,
-            ncols=120,
-        ) as pbar:
+        
+        with trange(self.steps, leave=True, ncols=120) as pbar:
             for idx_outer in range(sampling_iterations):
-                desc = []
                 stop = []
 
                 # run MD for sampling_rate steps
@@ -721,29 +712,28 @@ class ASEMD(base.IPSNode):
                         atoms.wrap()
 
                     thermostat.run(1)
-
-                    for checker in self.checks:
-                        stop.append(checker.check(atoms))
+                    
+                    for check in self.checks:
+                        stop.append(check.check(atoms))
                         if stop[-1]:
-                            log.critical(str(checker))
+                            log.critical(str(check))
 
                     if any(stop):
                         break
 
                 if any(stop):
-                    self.steps_before_stopping = (
-                        idx_outer * self.sampling_rate + idx_inner
-                    )
+                    self.steps_before_stopping = idx_outer * self.sampling_rate + idx_inner
                     break
                 else:
                     metrics_dict = update_metrics_dict(
                         atoms, metrics_dict, self.checks, current_step
                     )
                     if self.safe_traj:
-                        atoms_cache.append(freeze_copy_atoms(atoms))
-                        if len(atoms_cache) == self.dump_rate:
-                            self.db.extend(atoms_cache)
-                            atoms_cache = []
+                        self.frames_cache.append(freeze_copy_atoms(atoms))
+                        if len(self.frames_cache) >= self.dump_rate:
+                            self.db.extend(self.frames_cache)
+                            log.info(f"Safed frames cache {len(self.frames_cache)}")
+                            self.frames_cache = []
 
                     timing = (idx_outer + 1) * self.sampling_rate * time_step
                     temperature = metrics_dict["temperature"][-1]
@@ -752,26 +742,35 @@ class ASEMD(base.IPSNode):
                     pbar.set_description(desc)
                     pbar.update(self.sampling_rate)
                     current_step += 1
-
-        if not self.pop_last and self.steps_before_stopping != -1:
+                
+        if not self.pop_last and self.steps_before_stopping != -1:         
             metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks, current_step)
-            atoms_cache.append(freeze_copy_atoms(atoms))
+            self.frames_cache.append(freeze_copy_atoms(atoms))
             current_step += 1
             
-        self.db.extend(atoms_cache)
+            if any(check.mod_atoms(atoms) for check in self.checks):
+                self.frames_cache.append(freeze_copy_atoms(atoms))
             
+        if len(self.frames_cache) >= self.dump_rate:
+            self.db.extend(self.frames_cache)
+            log.info(f"Safed frames cache {len(self.frames_cache)}")
+            self.frames_cache = []
+                        
         end = time.time()
         log.info(f"Simulation took {end-start} seconds")
-        return metrics_dict, current_step
+        return metrics_dict
 
     def run(self):
         """Run the simulation."""
         self.initialize_md()
 
         atoms = self.get_atoms()
-        metrics_dict, _ = self.run_md(atoms=atoms)
+        metrics_dict = self.run_md(atoms=atoms)
 
-        # self.metrics_dict = pd.DataFrame(metrics_dict)
+        self.db.extend(self.frames_cache)
+        log.info(f"2. Safed frames cache {len(self.frames_cache)}")
+        self.frames_cache = []
+            
         np.savez(self.metrics, **metrics_dict)
         
     def map(self):  # noqa: A003
@@ -784,23 +783,26 @@ class ASEMD(base.IPSNode):
             structures = self.get_atoms(method="map")
 
         for atoms in structures:
-            metrics, current_step = self.run_md(atoms=atoms)
-            metrics_list.append(metrics)
-        
+            metrics = self.run_md(atoms=atoms)
+            metrics_list = metrics # maybe save just last 
+            # metrics_list.append(metrics)
+            
+        self.db.extend(self.frames_cache)
+        log.info(f"3. Safed frames cache {len(self.frames_cache)}")
+        self.frames_cache = []  
+           
         flattened_metrics = {}
         for idx, m in enumerate(metrics_list):
             for key, value in m.items():
                 flattened_metrics[f'{key}_{idx}'] = value
                 
-        # self.metrics_dict = pd.DataFrame(flattened_metrics)
         np.savez(self.metrics, **flattened_metrics)            
 
             
 def get_desc(temperature: float, total_energy: float, time: float, total_time: float):
     """TQDM description."""
     return (
-        f"Temp.: {temperature:.3f} K \t Energy {total_energy:.3f} eV \t Time"
-        f" {time:.1f}/{total_time:.1f} fs"
+        f"Temp.: {temperature:.3f} K \t Energy {total_energy:.3f} eV \t Time {time:.1f}/{total_time:.1f} fs"
     )
 
 
@@ -809,9 +811,9 @@ def update_metrics_dict(atoms, metrics_dict, checks, step):
     metrics_dict["energy"].append(energy)
     metrics_dict["temperature"].append(temperature)
     metrics_dict["step"].append(step)
-    for checker in checks:
-        metric = checker.get_value(atoms)
+    for check in checks:
+        metric = check.get_value(atoms)
         if metric is not None:
-            metrics_dict[checker.get_quantity()].append(metric)
+            metrics_dict[check.get_quantity()].append(metric)
 
     return metrics_dict

@@ -329,6 +329,7 @@ class ReflectionCheck(base.Check):
     additive_idx: typing.List[int] = None
     cutoff_plane_dist: float = None
     cutoff_plane_skin: float = 1.5
+    del_reflected_atoms: bool = False
     
     def initialize(self, atoms: ase.Atoms) -> None:
         self.reflected = False
@@ -381,20 +382,24 @@ class ReflectionCheck(base.Check):
                     f"Molecule/s {del_mol_idxs} with Atom(s) {self.del_atom_idxs} was/were reflected and deleted.\n"
                     f"Atoms idx = {self.del_atom_idxs}: v = {self.out_velo}"
                 )
-            del atoms[self.del_atom_idxs]
 
             return True
 
         return False
     
+    def mod_atoms(self, atoms):
+        if self.reflected and self.del_reflected_atoms:
+            del atoms[self.del_atom_idxs]
+            return True
+        else:
+            return False
+    
+    
     def get_value(self, atoms):
         """Get the value of the property to check.
         Extracted into method so it can be subclassed.
         """
-        if self.reflected:
-            return self.out_velo
-        else:
-            return None#[np.NaN, np.NaN, np.NaN]
+        return self.out_velo if self.reflected else None
 
     def get_quantity(self):
             return f"out_velo"
