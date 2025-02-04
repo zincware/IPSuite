@@ -1,4 +1,5 @@
 from .ase_geoopt import ASEGeoOpt
+from .ase_cellopt import ASECellOpt
 from .ase_md import (
     ASEMD,
     Berendsen,
@@ -25,6 +26,7 @@ from .xtb import xTBSinglePoint
 __all__ = [
     "CP2KSinglePoint",
     "ASEGeoOpt",
+    "ASECellOpt",
     "ASEMD",
     "FixedSphereConstraint",
     "FixedAtomsConstraint",
