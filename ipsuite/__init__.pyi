@@ -51,6 +51,7 @@ from .bootstrap import (
 from .calculators import (
     ASEMD,
     ASEGeoOpt,
+    ASECellOpt,
     Berendsen,
     BoxOscillatingRampModifier,
     CP2KSinglePoint,
@@ -92,6 +93,7 @@ from .configuration_selection import (
     UniformArangeSelection,
     UniformEnergeticSelection,
     UniformTemporalSelection,
+    PropertyFilter,
 )
 
 # Data
@@ -128,6 +130,7 @@ __all__ = [
     "UniformTemporalSelection",
     "ThresholdSelection",
     "FilterOutlier",
+    "PropertyFilter",
     # Configuration Generation
     "Packmol",
     "MultiPackmol",
@@ -180,6 +183,7 @@ __all__ = [
     # Calculators
     "CP2KSinglePoint",
     "ASEGeoOpt",
+    "ASECellOpt",
     "ASEMD",
     "xTBSinglePoint",
     "LJSinglePoint",

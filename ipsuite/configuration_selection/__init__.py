@@ -1,7 +1,7 @@
 """Configuration Selection Nodes."""
 
 from ipsuite.configuration_selection.base import ConfigurationSelection
-from ipsuite.configuration_selection.filter import FilterOutlier
+from ipsuite.configuration_selection.filter import FilterOutlier, PropertyFilter
 from ipsuite.configuration_selection.index import IndexSelection
 from ipsuite.configuration_selection.random import RandomSelection
 from ipsuite.configuration_selection.split import SplitSelection
@@ -20,4 +20,5 @@ __all__ = [
     "ThresholdSelection",
     "SplitSelection",
     "FilterOutlier",
+    "PropertyFilter",
 ]
