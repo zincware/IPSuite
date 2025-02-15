@@ -699,13 +699,11 @@ class ASEMD(base.IPSNode):
 
                     thermostat.run(1)
 
-                    for check in self.checks:
-                        stop.append(check.check(atoms))
-                        if stop[-1]:
-                            log.critical(str(check))
+                for check in self.checks:
+                    stop.append(check.check(atoms))
+                    if stop[-1]:
+                        log.critical(str(check))
 
-                    if any(stop):
-                        break
 
                 if any(stop):
                     self.steps_before_stopping = (
