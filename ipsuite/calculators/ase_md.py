@@ -516,6 +516,45 @@ class FixedLayerConstraint:
         return ase.constraints.FixAtoms(indices=self.indices)
 
 
+
+
+def get_desc(temperature: float, total_energy: float, time: float, total_time: float):
+    """TQDM description."""
+    return (
+        f"Temp.: {temperature:.3f} K \t Energy {total_energy:.3f} eV \t Time"
+        f" {time:.1f}/{total_time:.1f} fs"
+    )
+
+
+def update_metrics_dict(atoms, metrics_dict, checks, step):
+    temperature, energy = get_energy(atoms)
+    metrics_dict["energy"].append(energy)
+    metrics_dict["temperature"].append(temperature)
+    metrics_dict["step"].append(step)
+    for check in checks:
+        metric = check.get_value(atoms)
+        if metric is not None:
+            metrics_dict[check.get_quantity()].append(metric)
+
+    return metrics_dict
+
+
+
+class ModifierCollection:
+    def __init__(self, modifiers, steps):
+        self.modifiers = modifiers
+        self.steps = steps
+
+    def modify(self, thermostat, current_step):
+        for modifier in self.modifiers:
+            modifier.modify(
+                thermostat,
+                step=current_step,
+                total_steps=self.steps,
+            )
+        
+
+
 class ASEMD(base.IPSNode):
     """Class to run a MD simulation with ASE.
 
@@ -636,19 +675,7 @@ class ASEMD(base.IPSNode):
 
         self.db = znh5md.IO(self.traj_file)
 
-    def run_md(self, atoms):  # noqa: C901
-        atoms.repeat(self.repeat)
-        atoms.calc = self.model.get_calculator(directory=self.model_outs)
-
-        if not self.use_momenta:
-            init_temperature = self.thermostat.temperature
-            MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
-
-        # initialize thermostat
-        time_step = self.thermostat.time_step
-        thermostat = self.thermostat.get_thermostat(atoms=atoms)
-
-        # initialize Atoms calculator and metrics_dict
+    def initialize_metrics(self, atoms):
         metrics_dict = {
             "energy": [],
             "temperature": [],
@@ -658,8 +685,10 @@ class ASEMD(base.IPSNode):
             check.initialize(atoms)
             if check.get_quantity() is not None:
                 metrics_dict[check.get_quantity()] = []
-
-        # Run simulation
+        
+        return metrics_dict
+    
+    def adjust_sim_time(self, time_step):
         sampling_iterations = self.steps / self.sampling_rate
         if sampling_iterations % 1 != 0:
             sampling_iterations = np.round(sampling_iterations)
@@ -670,10 +699,29 @@ class ASEMD(base.IPSNode):
             )
         sampling_iterations = int(sampling_iterations)
         total_fs = self.steps * time_step
+        return sampling_iterations, total_fs
+
+    def run_md(self, atoms):  # noqa: C901
+        atoms.repeat(self.repeat)
+        atoms.calc = self.model.get_calculator(directory=self.model_outs)
+
+        init_temperature = self.thermostat.temperature
+        if not self.use_momenta:
+            MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
+
+        # initialize thermostat
+        time_step = self.thermostat.time_step
+        thermostat = self.thermostat.get_thermostat(atoms=atoms)
+
+        metrics_dict = self.initialize_metrics(atoms)
+        sampling_iterations, total_fs = self.adjust_sim_time(time_step)
+
+        modifiers = ModifierCollection(self.modifiers, self.steps)
 
         for constraint in self.constraints:
             atoms.set_constraint(constraint.get_constraint(atoms))
 
+        # Run simulation
         atoms_cache = []
         self.steps_before_stopping = -1
         current_step = 0
@@ -688,12 +736,8 @@ class ASEMD(base.IPSNode):
 
                 # run MD for sampling_rate steps
                 for idx_inner in range(self.sampling_rate):
-                    for modifier in self.modifiers:
-                        modifier.modify(
-                            thermostat,
-                            step=idx_outer * self.sampling_rate + idx_inner,
-                            total_steps=self.steps,
-                        )
+                    modifiers.modify(thermostat, idx_outer * self.sampling_rate + idx_inner)
+
                     if self.wrap:
                         atoms.wrap()
 
@@ -775,22 +819,96 @@ class ASEMD(base.IPSNode):
         self.metrics_dict = pd.DataFrame(flattened_metrics)
 
 
-def get_desc(temperature: float, total_energy: float, time: float, total_time: float):
-    """TQDM description."""
-    return (
-        f"Temp.: {temperature:.3f} K \t Energy {total_energy:.3f} eV \t Time"
-        f" {time:.1f}/{total_time:.1f} fs"
-    )
+class ASEMDSafeSampling(ASEMD):
+
+    temperature_reduction_factor: float = zntrack.params(0.9)
 
 
-def update_metrics_dict(atoms, metrics_dict, checks, step):
-    temperature, energy = get_energy(atoms)
-    metrics_dict["energy"].append(energy)
-    metrics_dict["temperature"].append(temperature)
-    metrics_dict["step"].append(step)
-    for check in checks:
-        metric = check.get_value(atoms)
-        if metric is not None:
-            metrics_dict[check.get_quantity()].append(metric)
+    def run_md(self, atoms):  # noqa: C901
+        atoms.repeat(self.repeat)
+        original_atoms = atoms.copy()
 
-    return metrics_dict
+
+        atoms.calc = self.model.get_calculator(directory=self.model_outs)
+
+        init_temperature = self.thermostat.temperature
+        # if not self.use_momenta:
+        MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
+
+        # initialize thermostat
+        time_step = self.thermostat.time_step
+        thermostat = self.thermostat.get_thermostat(atoms=atoms)
+
+        metrics_dict = self.initialize_metrics(atoms)
+        sampling_iterations, total_fs = self.adjust_sim_time(time_step)
+
+        modifiers = ModifierCollection(self.modifiers, self.steps)
+
+        for constraint in self.constraints:
+            atoms.set_constraint(constraint.get_constraint(atoms))
+
+        print("pos", atoms.positions[0])
+        # Run simulation
+        atoms_cache = []
+        self.steps_before_stopping = -1
+        current_step = 0
+        with trange(
+            self.steps,
+            leave=True,
+            ncols=120,
+        ) as pbar:
+            for idx_outer in range(sampling_iterations):
+                desc = []
+                stop = []
+
+                # run MD for sampling_rate steps
+                for idx_inner in range(self.sampling_rate):
+                    modifiers.modify(thermostat, idx_outer * self.sampling_rate + idx_inner)
+
+                    if self.wrap:
+                        atoms.wrap()
+
+                    thermostat.run(1)
+
+                for check in self.checks:
+                    stop.append(check.check(atoms))
+                    if stop[-1]:
+                        log.critical(str(check))
+
+
+                if any(stop):
+                    atoms = original_atoms.copy()
+                    atoms.calc = self.model.get_calculator(directory=self.model_outs)
+                    init_temperature *= self.temperature_reduction_factor
+                    MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
+                    thermostat = self.thermostat.get_thermostat(atoms=atoms)
+                    thermostat.set_temperature(temperature_K=init_temperature)
+
+
+                else:
+                    metrics_dict = update_metrics_dict(
+                        atoms, metrics_dict, self.checks, current_step
+                    )
+                    atoms_cache.append(freeze_copy_atoms(atoms))
+                    if len(atoms_cache) == self.dump_rate:
+                        self.db.extend(atoms_cache)
+                        atoms_cache = []
+
+                    time = (idx_outer + 1) * self.sampling_rate * time_step
+                    temperature = metrics_dict["temperature"][-1]
+                    energy = metrics_dict["energy"][-1]
+                    desc = get_desc(temperature, energy, time, total_fs)
+                    pbar.set_description(desc)
+                    pbar.update(self.sampling_rate)
+                    current_step += 1
+
+        if not self.pop_last and self.steps_before_stopping != -1:
+            metrics_dict = update_metrics_dict(
+                atoms, metrics_dict, self.checks, current_step
+            )
+            atoms_cache.append(freeze_copy_atoms(atoms))
+            current_step += 1
+
+        self.db.extend(atoms_cache)
+        return metrics_dict, current_step
+
