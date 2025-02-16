@@ -16,6 +16,7 @@ from .ase_md import (
 )
 from .ase_standard import EMTSinglePoint, LJSinglePoint
 from .cp2k import CP2KSinglePoint
+from .enhanced_sampling import InterIntraMD
 from .lammps import LammpsSimulator
 from .mix import MixCalculator
 from .orca import OrcaSinglePoint
@@ -43,4 +44,5 @@ __all__ = [
     "FixedLayerConstraint",
     "MixCalculator",
     "SVCRBarostat",
+    "InterIntraMD",
 ]

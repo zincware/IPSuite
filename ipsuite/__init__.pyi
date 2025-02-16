@@ -55,6 +55,7 @@ from .calculators import (
     EMTSinglePoint,
     FixedLayerConstraint,
     FixedSphereConstraint,
+    InterIntraMD,
     LammpsSimulator,
     LangevinThermostat,
     LJSinglePoint,
@@ -194,6 +195,7 @@ __all__ = [
     "FixedSphereConstraint",
     "FixedLayerConstraint",
     "PressureRampModifier",
+    "InterIntraMD",
     # Geometry
     "BarycenterMapping",
     # Project
