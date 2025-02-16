@@ -71,7 +71,7 @@ class BiasedCalc(Calculator):
         self.weights = weights
         self.counter: int = 0
         self.mols_index = None
-        self.map = None
+        self.mol_map = None
 
     def calculate(
         self,
@@ -90,7 +90,7 @@ class BiasedCalc(Calculator):
         mapping = BarycenterMapping(frozen=True)
 
         atom_trans_forces, atom_rot_forces, atom_vib_forces, self.mol_map = (
-            force_decomposition(atoms, mapping, forces.copy(), map=self.mol_map)
+            force_decomposition(atoms, mapping, forces.copy(), mol_map=self.mol_map)
         )
         f_ges = (
             self.weights[0] * atom_trans_forces
