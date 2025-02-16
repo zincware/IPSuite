@@ -55,6 +55,7 @@ from .calculators import (
     EMTSinglePoint,
     FixedLayerConstraint,
     FixedSphereConstraint,
+    InterIntraMD,
     LammpsSimulator,
     LangevinThermostat,
     LJSinglePoint,
@@ -68,7 +69,6 @@ from .calculators import (
     TemperatureRampModifier,
     VelocityVerletDynamic,
     xTBSinglePoint,
-    InterIntraMD,
 )
 
 # Configuration Generation
