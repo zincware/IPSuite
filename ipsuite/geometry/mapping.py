@@ -33,7 +33,11 @@ class BarycenterMapping:
     _components: t.Any | None = None
 
     def forward_mapping(
-        self, atoms: ase.Atoms, forces: np.ndarray | None = None, map: np.ndarray | None = None) -> tuple[ase.Atoms, list[ase.Atoms]]:
+        self,
+        atoms: ase.Atoms,
+        forces: np.ndarray | None = None,
+        map: np.ndarray | None = None,
+    ) -> tuple[ase.Atoms, list[ase.Atoms]]:
         if map is None:
             components = graphs.identify_molecules(atoms)
             print("recompute")
@@ -46,12 +50,12 @@ class BarycenterMapping:
         else:
             components = self._components
             print("\n using frozen comps")
-            
+
         if self.frozen:
             print("\n is frozen")
             self._components = components"""
 
-        #components = np.arange(0, 3*40).reshape(-1,3)
+        # components = np.arange(0, 3*40).reshape(-1,3)
         if forces is not None:
             molecules = unwrap.unwrap_system(atoms, components, forces=forces.copy())
         else:

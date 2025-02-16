@@ -51,7 +51,7 @@ def unwrap_system(
     and calling the `atoms.wrap()` method.
     """
     molecules = []
-    
+
     for component in components:
         component = np.sort(component)
         mol = atoms[component]

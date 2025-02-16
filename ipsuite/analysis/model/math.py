@@ -73,7 +73,12 @@ def compute_rot_forces(mol, key: str = "forces"):
 
 
 def force_decomposition(
-    atom, mapping, full_forces: np.ndarray | None = None, key: str = "forces", map: np.ndarray | None = None):
+    atom,
+    mapping,
+    full_forces: np.ndarray | None = None,
+    key: str = "forces",
+    map: np.ndarray | None = None,
+):
     if key not in ["forces", "forces_ensemble"]:
         raise KeyError("Unknown force decomposition key")
 
@@ -105,7 +110,7 @@ def force_decomposition(
         atom_rot_forces[mol_slice] = compute_rot_forces(molecule, key)
         atom_trans_forces[mol_slice] = compute_trans_forces(molecule, key)
         total_n_atoms += n_atoms
-    #print(full_forces-test)
+    # print(full_forces-test)
     atom_vib_forces = full_forces - atom_trans_forces - atom_rot_forces
     return atom_trans_forces, atom_rot_forces, atom_vib_forces, map
 
