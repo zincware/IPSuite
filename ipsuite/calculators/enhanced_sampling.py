@@ -76,9 +76,10 @@ class BiasedCalc(Calculator):
     def calculate(
         self,
         atoms: ase.Atoms = None,
-        properties=["energy", "forces"],
+        properties=None,
         system_changes=all_changes,
     ):
+        properties = ["energy", "forces"]
         Calculator.calculate(self, atoms, properties, system_changes)
 
         energy = self.calc.get_potential_energy(atoms)
@@ -88,8 +89,8 @@ class BiasedCalc(Calculator):
             raise Exception("System Broken")
         mapping = BarycenterMapping(frozen=True)
 
-        atom_trans_forces, atom_rot_forces, atom_vib_forces, self.map = (
-            force_decomposition(atoms, mapping, forces.copy(), map=self.map)
+        atom_trans_forces, atom_rot_forces, atom_vib_forces, self.mol_map = (
+            force_decomposition(atoms, mapping, forces.copy(), map=self.mol_map)
         )
         f_ges = (
             self.weights[0] * atom_trans_forces

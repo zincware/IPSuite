@@ -73,24 +73,24 @@ def compute_rot_forces(mol, key: str = "forces"):
 
 
 def force_decomposition(
-    atom, mapping, full_forces: np.ndarray | None = None, key: str = "forces", map: np.ndarray | None = None):
+    atom, mapping, full_forces: np.ndarray | None = None, key: str = "forces", mol_map: np.ndarray | None = None):
     if key not in ["forces", "forces_ensemble"]:
         raise KeyError("Unknown force decomposition key")
 
     if full_forces is not None:
-        if map is None:
-            _, molecules, map = mapping.forward_mapping(atom, forces=full_forces)
+        if mol_map is None:
+            _, molecules, mol_map = mapping.forward_mapping(atom, forces=full_forces)
         else:
-            _, molecules, map = mapping.forward_mapping(atom, forces=full_forces, map=map)
+            _, molecules, mol_map = mapping.forward_mapping(atom, forces=full_forces, mol_map=mol_map)
         atom_trans_forces = np.zeros_like(full_forces)
         atom_rot_forces = np.zeros_like(full_forces)
         full_forces = np.zeros_like(full_forces)
 
     elif atom.calc is not None:
         try:
-            _, molecules, map = mapping.forward_mapping(atom, map=map)
+            _, molecules, mol_map = mapping.forward_mapping(atom, mol_map=mol_map)
         except NameError:
-            _, molecules, map = mapping.forward_mapping(atom)
+            _, molecules, mol_map = mapping.forward_mapping(atom)
         full_forces = np.zeros_like(atom.calc.results[key])
         atom_trans_forces = np.zeros_like(atom.calc.results[key])
         atom_rot_forces = np.zeros_like(atom.calc.results[key])
@@ -107,7 +107,7 @@ def force_decomposition(
         total_n_atoms += n_atoms
     #print(full_forces-test)
     atom_vib_forces = full_forces - atom_trans_forces - atom_rot_forces
-    return atom_trans_forces, atom_rot_forces, atom_vib_forces, map
+    return atom_trans_forces, atom_rot_forces, atom_vib_forces, mol_map
 
 
 def decompose_stress_tensor(stresses):
