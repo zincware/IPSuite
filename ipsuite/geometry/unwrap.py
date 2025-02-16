@@ -51,6 +51,7 @@ def unwrap_system(
     and calling the `atoms.wrap()` method.
     """
     molecules = []
+    
     for component in components:
         component = np.sort(component)
         mol = atoms[component]
@@ -73,5 +74,4 @@ def unwrap_system(
         closest_atom = closest_atom_to_center(mol)
         unwrap(mol, edges, idx=closest_atom)
         molecules.append(mol)
-
     return molecules
