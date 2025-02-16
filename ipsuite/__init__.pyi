@@ -68,6 +68,7 @@ from .calculators import (
     TemperatureRampModifier,
     VelocityVerletDynamic,
     xTBSinglePoint,
+    InterIntraMD,
 )
 
 # Configuration Generation
@@ -194,6 +195,7 @@ __all__ = [
     "FixedSphereConstraint",
     "FixedLayerConstraint",
     "PressureRampModifier",
+    "InterIntraMD",
     # Geometry
     "BarycenterMapping",
     # Project

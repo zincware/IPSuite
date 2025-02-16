@@ -20,6 +20,7 @@ from .lammps import LammpsSimulator
 from .mix import MixCalculator
 from .orca import OrcaSinglePoint
 from .xtb import xTBSinglePoint
+from .enhanced_sampling import InterIntraMD
 
 __all__ = [
     "CP2KSinglePoint",
@@ -43,4 +44,5 @@ __all__ = [
     "FixedLayerConstraint",
     "MixCalculator",
     "SVCRBarostat",
+    "InterIntraMD",
 ]
