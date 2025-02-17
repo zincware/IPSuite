@@ -44,9 +44,6 @@ gap = [
     "quippy-ase>=0.9.14",
     "xmltodict>=0.14.2",
 ]
-d3 = [
-    "torch-dftd>=0.5.1",
-]
 dev = [
     "dvc-s3>=3.2.0",
     "imageio>=2.37.0",
