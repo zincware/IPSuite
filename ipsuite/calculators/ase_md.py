@@ -516,8 +516,6 @@ class FixedLayerConstraint:
         return ase.constraints.FixAtoms(indices=self.indices)
 
 
-
-
 def get_desc(temperature: float, total_energy: float, time: float, total_time: float):
     """TQDM description."""
     return (
@@ -539,7 +537,6 @@ def update_metrics_dict(atoms, metrics_dict, checks, step):
     return metrics_dict
 
 
-
 class ModifierCollection:
     def __init__(self, modifiers, steps):
         self.modifiers = modifiers
@@ -552,7 +549,6 @@ class ModifierCollection:
                 step=current_step,
                 total_steps=self.steps,
             )
-        
 
 
 class ASEMD(base.IPSNode):
@@ -685,9 +681,9 @@ class ASEMD(base.IPSNode):
             check.initialize(atoms)
             if check.get_quantity() is not None:
                 metrics_dict[check.get_quantity()] = []
-        
+
         return metrics_dict
-    
+
     def adjust_sim_time(self, time_step):
         sampling_iterations = self.steps / self.sampling_rate
         if sampling_iterations % 1 != 0:
@@ -736,7 +732,9 @@ class ASEMD(base.IPSNode):
 
                 # run MD for sampling_rate steps
                 for idx_inner in range(self.sampling_rate):
-                    modifiers.modify(thermostat, idx_outer * self.sampling_rate + idx_inner)
+                    modifiers.modify(
+                        thermostat, idx_outer * self.sampling_rate + idx_inner
+                    )
 
                     if self.wrap:
                         atoms.wrap()
@@ -747,7 +745,6 @@ class ASEMD(base.IPSNode):
                     stop.append(check.check(atoms))
                     if stop[-1]:
                         log.critical(str(check))
-
 
                 if any(stop):
                     self.steps_before_stopping = (
@@ -820,14 +817,11 @@ class ASEMD(base.IPSNode):
 
 
 class ASEMDSafeSampling(ASEMD):
-
     temperature_reduction_factor: float = zntrack.params(0.9)
-
 
     def run_md(self, atoms):  # noqa: C901
         atoms.repeat(self.repeat)
         original_atoms = atoms.copy()
-
 
         atoms.calc = self.model.get_calculator(directory=self.model_outs)
 
@@ -863,7 +857,9 @@ class ASEMDSafeSampling(ASEMD):
 
                 # run MD for sampling_rate steps
                 for idx_inner in range(self.sampling_rate):
-                    modifiers.modify(thermostat, idx_outer * self.sampling_rate + idx_inner)
+                    modifiers.modify(
+                        thermostat, idx_outer * self.sampling_rate + idx_inner
+                    )
 
                     if self.wrap:
                         atoms.wrap()
@@ -875,7 +871,6 @@ class ASEMDSafeSampling(ASEMD):
                     if stop[-1]:
                         log.critical(str(check))
 
-
                 if any(stop):
                     atoms = original_atoms.copy()
                     atoms.calc = self.model.get_calculator(directory=self.model_outs)
@@ -883,7 +878,6 @@ class ASEMDSafeSampling(ASEMD):
                     MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
                     thermostat = self.thermostat.get_thermostat(atoms=atoms)
                     thermostat.set_temperature(temperature_K=init_temperature)
-
 
                 else:
                     metrics_dict = update_metrics_dict(
@@ -911,4 +905,3 @@ class ASEMDSafeSampling(ASEMD):
 
         self.db.extend(atoms_cache)
         return metrics_dict, current_step
-
