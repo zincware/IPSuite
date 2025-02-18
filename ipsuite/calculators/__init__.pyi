@@ -1,5 +1,5 @@
 from .ase_geoopt import ASEGeoOpt
-from .ase_cellopt import ASECellOpt
+from .ase_cellopt import ASECellOpt, VCSQMN
 from .ase_md import (
     ASEMD,
     Berendsen,
@@ -27,6 +27,7 @@ __all__ = [
     "CP2KSinglePoint",
     "ASEGeoOpt",
     "ASECellOpt",
+    "VCSQMN",
     "ASEMD",
     "FixedSphereConstraint",
     "FixedAtomsConstraint",
