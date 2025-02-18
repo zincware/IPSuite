@@ -792,9 +792,9 @@ class ASEMD(base.IPSNode):
         self.frames_cache = []  
            
         flattened_metrics = {}
-        for idx, m in enumerate(metrics_list):
-            for key, value in m.items():
-                flattened_metrics[f'{key}_{idx}'] = value
+        # for idx, m in enumerate(metrics_list):
+        #     for key, value in m.items():
+        #         flattened_metrics[f'{key}_{idx}'] = value
                 
         np.savez(self.metrics, **flattened_metrics)            
 
