@@ -104,7 +104,11 @@ class BoxOscillatingRampModifier:
             self._initial_cell = thermostat.atoms.get_cell()
             if isinstance(self.end_cell, (float, int)):
                 self.end_cell = np.array(
-                    [[self.end_cell, 0, 0], [0, self.end_cell, 0], [0, 0, self.end_cell]]
+                    [
+                        [self.end_cell, 0, 0],
+                        [0, self.end_cell, 0],
+                        [0, 0, self.end_cell],
+                    ]
                 )
             elif isinstance(self.end_cell, list):
                 self.end_cell = np.array(
