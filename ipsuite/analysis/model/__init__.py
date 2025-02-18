@@ -21,6 +21,7 @@ from ipsuite.analysis.model.dynamics_checks import (
     TemperatureCheck,
     ThresholdCheck,
     ReflectionCheck,
+    PlanePenetrationCheck,
 )
 from ipsuite.analysis.model.predict import (
     CalibrationMetrics,
@@ -49,4 +50,5 @@ __all__ = [
     "TemperatureCheck",
     "ThresholdCheck",
     "ReflectionCheck",
+    "PlanePenetrationCheck",
 ]
