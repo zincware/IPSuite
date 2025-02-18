@@ -27,6 +27,7 @@ from ipsuite.analysis.model import (
     TemperatureCheck,
     ThresholdCheck,
     ReflectionCheck,
+    PlanePenetrationCheck,
 )
 from ipsuite.analysis.molecules import AllowedStructuresFilter
 from ipsuite.analysis.sensitivity import (
@@ -67,4 +68,5 @@ __all__ = [
     "CollectMDSteps",
     "AllowedStructuresFilter",
     "ReflectionCheck",
+    "PlanePenetrationCheck",
 ]

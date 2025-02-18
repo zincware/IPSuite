@@ -32,6 +32,7 @@ from .analysis import (
     TemperatureCheck,
     ThresholdCheck,
     ReflectionCheck,
+    PlanePenetrationCheck,
 )
 
 # Base imports
@@ -170,6 +171,7 @@ __all__ = [
     "ConnectivityCheck",
     "EnergySpikeCheck",
     "ReflectionCheck",
+    "PlanePenetrationCheck",
     "MDStability",
     "MoveSingleParticle",
     "AnalyseGlobalForceSensitivity",
