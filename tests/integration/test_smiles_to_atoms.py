@@ -11,8 +11,8 @@ def test_Smiles2Atoms(proj_path):
 
     proj.repro()
 
-    assert len(ethanol.atoms) == 1
-    assert ethanol.atoms[0].get_chemical_formula() == "C2H6O"
+    assert len(ethanol.frames) == 1
+    assert ethanol.frames[0].get_chemical_formula() == "C2H6O"
 
 
 def test_Smiles2Conformers(proj_path):

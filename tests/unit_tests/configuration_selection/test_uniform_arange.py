@@ -1,6 +1,7 @@
 import numpy as np
 
-from ipsuite.configuration_selection.uniform_arange import UniformArangeSelection
+from ipsuite.configuration_selection.uniform_arange import \
+    UniformArangeSelection
 
 
 def test_get_selected_atoms(atoms_list):

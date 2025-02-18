@@ -19,7 +19,10 @@ def traj_file_1(tmp_path_factory) -> str:
 
     atoms = [
         ase.Atoms(
-            "CO", positions=[(0, 0, 0), (0, 0, random.random())], cell=(1, 1, 1), pbc=True
+            "CO",
+            positions=[(0, 0, 0), (0, 0, random.random())],
+            cell=(1, 1, 1),
+            pbc=True,
         )
         for _ in range(30)
     ]
@@ -45,9 +48,9 @@ def test_gap_input():
     sparse_jitter=1e-10energy_parameter_name=energy
     force_parameter_name=forcesstress_parameter_name=stress
     virial_parameter_name=DUMMY>>nodes/GAP/model/GAP_dump.txt"""
-    assert gap.gap_input[0].replace(" ", "") == reference_string.replace(" ", "").replace(
-        "\n", ""
-    )
+    assert gap.gap_input[0].replace(" ", "") == reference_string.replace(
+        " ", ""
+    ).replace("\n", "")
 
 
 def test_write_gap_training_data(traj_file_1, tmp_path):

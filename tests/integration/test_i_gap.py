@@ -12,8 +12,12 @@ def test_model_training(proj_path, traj_file):
             data=data.frames, n_configurations=10, name="train_data"
         )
 
-        validation_selection = ipsuite.configuration_selection.UniformEnergeticSelection(
-            data=train_selection.excluded_frames, n_configurations=8, name="val_data"
+        validation_selection = (
+            ipsuite.configuration_selection.UniformEnergeticSelection(
+                data=train_selection.excluded_frames,
+                n_configurations=8,
+                name="val_data",
+            )
         )
 
         model = ipsuite.GAP(soap={"cutoff": 0.7}, data=train_selection.frames)

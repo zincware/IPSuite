@@ -1,6 +1,7 @@
 import numpy as np
 
-from ipsuite.configuration_selection.uniform_temporal import UniformTemporalSelection
+from ipsuite.configuration_selection.uniform_temporal import \
+    UniformTemporalSelection
 
 
 def test_get_selected_atoms(atoms_list):
