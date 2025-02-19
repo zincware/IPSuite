@@ -686,7 +686,7 @@ class ASEMD(base.IPSNode):
         sampling_iterations = int(sampling_iterations)
         total_fs = self.steps * time_step
         return sampling_iterations, total_fs
-    
+
     def apply_modifiers(self, thermostat, current_inner_step):
         for modifier in self.modifiers:
             modifier.modify(
@@ -729,7 +729,9 @@ class ASEMD(base.IPSNode):
 
                 # run MD for sampling_rate steps
                 for idx_inner in range(self.sampling_rate):
-                    self.apply_modifiers(thermostat, idx_outer * self.sampling_rate + idx_inner)
+                    self.apply_modifiers(
+                        thermostat, idx_outer * self.sampling_rate + idx_inner
+                    )
 
                     if self.wrap:
                         atoms.wrap()
@@ -850,7 +852,9 @@ class ASEMDSafeSampling(ASEMD):
 
                 # run MD for sampling_rate steps
                 for idx_inner in range(self.sampling_rate):
-                    self.apply_modifiers(thermostat, idx_outer * self.sampling_rate + idx_inner)
+                    self.apply_modifiers(
+                        thermostat, idx_outer * self.sampling_rate + idx_inner
+                    )
 
                     if self.wrap:
                         atoms.wrap()
@@ -866,7 +870,9 @@ class ASEMDSafeSampling(ASEMD):
                     atoms = original_atoms.copy()
                     atoms.calc = self.model.get_calculator(directory=self.model_outs)
                     init_temperature *= self.temperature_reduction_factor
-                    MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature, rng=rng)
+                    MaxwellBoltzmannDistribution(
+                        atoms, temperature_K=init_temperature, rng=rng
+                    )
                     thermostat = self.thermostat.get_thermostat(atoms=atoms)
                     thermostat.set_temperature(temperature_K=init_temperature)
 
