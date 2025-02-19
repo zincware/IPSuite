@@ -647,8 +647,6 @@ class ASEMD(base.IPSNode):
                 return znh5md.IO(file_handle=file)[:]
 
     def initialize_md(self):
-        # np.random.seed(self.seed)
-
         if self.checks is None:
             self.checks = []
         if self.modifiers is None:
