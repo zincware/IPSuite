@@ -539,22 +539,6 @@ def update_metrics_dict(atoms, metrics_dict, checks, step):
     return metrics_dict
 
 
-
-class ModifierCollection:
-    def __init__(self, modifiers, steps):
-        self.modifiers = modifiers
-        self.steps = steps
-
-    def modify(self, thermostat, current_step):
-        for modifier in self.modifiers:
-            modifier.modify(
-                thermostat,
-                step=current_step,
-                total_steps=self.steps,
-            )
-        
-
-
 class ASEMD(base.IPSNode):
     """Class to run a MD simulation with ASE.
 
@@ -661,7 +645,7 @@ class ASEMD(base.IPSNode):
                 return znh5md.IO(file_handle=file)[:]
 
     def initialize_md(self):
-        np.random.seed(self.seed)
+        # np.random.seed(self.seed)
 
         if self.checks is None:
             self.checks = []
@@ -700,14 +684,23 @@ class ASEMD(base.IPSNode):
         sampling_iterations = int(sampling_iterations)
         total_fs = self.steps * time_step
         return sampling_iterations, total_fs
+    
+    def apply_modifiers(self, thermostat, current_inner_step):
+        for modifier in self.modifiers:
+            modifier.modify(
+                thermostat,
+                step=current_inner_step,
+                total_steps=self.steps,
+            )
 
     def run_md(self, atoms):  # noqa: C901
+        rng = np.random.default_rng(self.seed)
         atoms.repeat(self.repeat)
         atoms.calc = self.model.get_calculator(directory=self.model_outs)
 
         init_temperature = self.thermostat.temperature
         if not self.use_momenta:
-            MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
+            MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature, rng=rng)
 
         # initialize thermostat
         time_step = self.thermostat.time_step
@@ -715,8 +708,6 @@ class ASEMD(base.IPSNode):
 
         metrics_dict = self.initialize_metrics(atoms)
         sampling_iterations, total_fs = self.adjust_sim_time(time_step)
-
-        modifiers = ModifierCollection(self.modifiers, self.steps)
 
         for constraint in self.constraints:
             atoms.set_constraint(constraint.get_constraint(atoms))
@@ -736,7 +727,7 @@ class ASEMD(base.IPSNode):
 
                 # run MD for sampling_rate steps
                 for idx_inner in range(self.sampling_rate):
-                    modifiers.modify(thermostat, idx_outer * self.sampling_rate + idx_inner)
+                    self.apply_modifiers(thermostat, idx_outer * self.sampling_rate + idx_inner)
 
                     if self.wrap:
                         atoms.wrap()
@@ -825,6 +816,7 @@ class ASEMDSafeSampling(ASEMD):
 
 
     def run_md(self, atoms):  # noqa: C901
+        rng = np.random.default_rng(self.seed)
         atoms.repeat(self.repeat)
         original_atoms = atoms.copy()
 
@@ -842,12 +834,9 @@ class ASEMDSafeSampling(ASEMD):
         metrics_dict = self.initialize_metrics(atoms)
         sampling_iterations, total_fs = self.adjust_sim_time(time_step)
 
-        modifiers = ModifierCollection(self.modifiers, self.steps)
-
         for constraint in self.constraints:
             atoms.set_constraint(constraint.get_constraint(atoms))
 
-        print("pos", atoms.positions[0])
         # Run simulation
         atoms_cache = []
         self.steps_before_stopping = -1
@@ -863,7 +852,7 @@ class ASEMDSafeSampling(ASEMD):
 
                 # run MD for sampling_rate steps
                 for idx_inner in range(self.sampling_rate):
-                    modifiers.modify(thermostat, idx_outer * self.sampling_rate + idx_inner)
+                    self.apply_modifiers(thermostat, idx_outer * self.sampling_rate + idx_inner)
 
                     if self.wrap:
                         atoms.wrap()
@@ -880,7 +869,7 @@ class ASEMDSafeSampling(ASEMD):
                     atoms = original_atoms.copy()
                     atoms.calc = self.model.get_calculator(directory=self.model_outs)
                     init_temperature *= self.temperature_reduction_factor
-                    MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature)
+                    MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature, rng=rng)
                     thermostat = self.thermostat.get_thermostat(atoms=atoms)
                     thermostat.set_temperature(temperature_K=init_temperature)
 
