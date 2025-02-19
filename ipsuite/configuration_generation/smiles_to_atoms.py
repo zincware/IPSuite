@@ -6,7 +6,7 @@ from ipsuite import base, fields
 
 
 class Smiles2Atoms(base.IPSNode):
-    atoms: list[ase.Atoms] = fields.Atoms()
+    frames: list[ase.Atoms] = fields.Atoms()
 
     smiles: str = zntrack.params()
     cell: float = zntrack.params(None)
@@ -20,7 +20,7 @@ class Smiles2Atoms(base.IPSNode):
         if self.cell:
             atoms.set_cell([self.cell, self.cell, self.cell])
             atoms.center()
-        self.atoms = [atoms]
+        self.frames = [atoms]
 
 
 class Smiles2Conformers(base.IPSNode):

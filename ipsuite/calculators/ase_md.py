@@ -104,7 +104,11 @@ class BoxOscillatingRampModifier:
             self._initial_cell = thermostat.atoms.get_cell()
             if isinstance(self.end_cell, (float, int)):
                 self.end_cell = np.array(
-                    [[self.end_cell, 0, 0], [0, self.end_cell, 0], [0, 0, self.end_cell]]
+                    [
+                        [self.end_cell, 0, 0],
+                        [0, self.end_cell, 0],
+                        [0, 0, self.end_cell],
+                    ]
                 )
             elif isinstance(self.end_cell, list):
                 self.end_cell = np.array(
@@ -516,8 +520,6 @@ class FixedLayerConstraint:
         return ase.constraints.FixAtoms(indices=self.indices)
 
 
-
-
 def get_desc(temperature: float, total_energy: float, time: float, total_time: float):
     """TQDM description."""
     return (
@@ -669,9 +671,9 @@ class ASEMD(base.IPSNode):
             check.initialize(atoms)
             if check.get_quantity() is not None:
                 metrics_dict[check.get_quantity()] = []
-        
+
         return metrics_dict
-    
+
     def adjust_sim_time(self, time_step):
         sampling_iterations = self.steps / self.sampling_rate
         if sampling_iterations % 1 != 0:
@@ -738,7 +740,6 @@ class ASEMD(base.IPSNode):
                     stop.append(check.check(atoms))
                     if stop[-1]:
                         log.critical(str(check))
-
 
                 if any(stop):
                     self.steps_before_stopping = (
@@ -811,15 +812,12 @@ class ASEMD(base.IPSNode):
 
 
 class ASEMDSafeSampling(ASEMD):
-
     temperature_reduction_factor: float = zntrack.params(0.9)
-
 
     def run_md(self, atoms):  # noqa: C901
         rng = np.random.default_rng(self.seed)
         atoms.repeat(self.repeat)
         original_atoms = atoms.copy()
-
 
         atoms.calc = self.model.get_calculator(directory=self.model_outs)
 
@@ -864,7 +862,6 @@ class ASEMDSafeSampling(ASEMD):
                     if stop[-1]:
                         log.critical(str(check))
 
-
                 if any(stop):
                     atoms = original_atoms.copy()
                     atoms.calc = self.model.get_calculator(directory=self.model_outs)
@@ -872,7 +869,6 @@ class ASEMDSafeSampling(ASEMD):
                     MaxwellBoltzmannDistribution(atoms, temperature_K=init_temperature, rng=rng)
                     thermostat = self.thermostat.get_thermostat(atoms=atoms)
                     thermostat.set_temperature(temperature_K=init_temperature)
-
 
                 else:
                     metrics_dict = update_metrics_dict(
@@ -900,4 +896,3 @@ class ASEMDSafeSampling(ASEMD):
 
         self.db.extend(atoms_cache)
         return metrics_dict, current_step
-
