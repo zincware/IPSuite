@@ -2,6 +2,7 @@
 
 import logging
 import random
+import os
 
 import ase
 import ase.units
@@ -64,6 +65,7 @@ class Packmol(base.IPSNode):
                 tolerance=self.tolerance,
                 density=self.density,
                 pbc=self.pbc,
+                verbose=bool(os.environ.get("IPSUITE_PACKMOL_VERBOSE", False))
             )
         ]
 
@@ -120,5 +122,6 @@ class MultiPackmol(Packmol):
                     tolerance=self.tolerance,
                     density=self.density,
                     pbc=self.pbc,
+                    verbose=bool(os.environ.get("IPSUITE_PACKMOL_VERBOSE", False))
                 )
             )
