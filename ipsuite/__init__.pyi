@@ -48,6 +48,7 @@ from .bootstrap import (
 # Calculators
 from .calculators import (
     ASEMD,
+    ASEMDSafeSampling,
     ASEGeoOpt,
     Berendsen,
     BoxOscillatingRampModifier,
@@ -176,6 +177,7 @@ __all__ = [
     "CP2KSinglePoint",
     "ASEGeoOpt",
     "ASEMD",
+    "ASEMDSafeSampling",
     "xTBSinglePoint",
     "LJSinglePoint",
     "EMTSinglePoint",
