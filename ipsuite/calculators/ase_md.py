@@ -811,7 +811,6 @@ class ASEMD(base.IPSNode):
         self.metrics_dict = pd.DataFrame(flattened_metrics)
 
 
-
 class ASEMDSafeSampling(ASEMD):
     """Similar to the ASEMD node. Instead of terminating the trajectory upon triggering a check,
     the system is reverted to the initial structure and the simulation continues with new momenta.
@@ -826,6 +825,7 @@ class ASEMDSafeSampling(ASEMD):
         Turning this on may cause problems for certain calculators (e.g. xTB, Apax).
 
     """
+
     temperature_reduction_factor: float = zntrack.params(0.9)
     refresh_calculator: bool = zntrack.params(False)
 

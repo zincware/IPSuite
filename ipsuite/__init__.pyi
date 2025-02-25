@@ -48,8 +48,8 @@ from .bootstrap import (
 # Calculators
 from .calculators import (
     ASEMD,
-    ASEMDSafeSampling,
     ASEGeoOpt,
+    ASEMDSafeSampling,
     Berendsen,
     BoxOscillatingRampModifier,
     CP2KSinglePoint,
