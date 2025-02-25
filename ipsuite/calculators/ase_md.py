@@ -811,15 +811,31 @@ class ASEMD(base.IPSNode):
         self.metrics_dict = pd.DataFrame(flattened_metrics)
 
 
+
 class ASEMDSafeSampling(ASEMD):
+    """Similar to the ASEMD node. Instead of terminating the trajectory upon triggering a check,
+    the system is reverted to the initial structure and the simulation continues with new momenta.
+    This is repeated until the maximum number of outer steps is reached.
+
+    Attributes
+    ----------
+    temperature_reduction_factor: float
+        Factor by which the temperature is decreased every time the simulation restarts.
+    refresh_calculator: bool
+        Whether or not to reinitialize the calculator each time the simulation restarts.
+        Turning this on may cause problems for certain calculators (e.g. xTB, Apax).
+
+    """
     temperature_reduction_factor: float = zntrack.params(0.9)
+    refresh_calculator: bool = zntrack.params(False)
 
     def run_md(self, atoms):  # noqa: C901
         rng = np.random.default_rng(self.seed)
         atoms.repeat(self.repeat)
         original_atoms = atoms.copy()
 
-        atoms.calc = self.model.get_calculator(directory=self.model_outs)
+        calc = self.model.get_calculator(directory=self.model_outs)
+        atoms.calc = calc
 
         init_temperature = self.thermostat.temperature
         # if not self.use_momenta:
@@ -866,7 +882,10 @@ class ASEMDSafeSampling(ASEMD):
 
                 if any(stop):
                     atoms = original_atoms.copy()
-                    atoms.calc = self.model.get_calculator(directory=self.model_outs)
+                    if self.refresh_calculator:
+                        atoms.calc = self.model.get_calculator(directory=self.model_outs)
+                    else:
+                        atoms.calc = calc
                     init_temperature *= self.temperature_reduction_factor
                     MaxwellBoltzmannDistribution(
                         atoms, temperature_K=init_temperature, rng=rng
