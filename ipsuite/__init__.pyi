@@ -51,6 +51,7 @@ from .bootstrap import (
 # Calculators
 from .calculators import (
     ASEMD,
+    ASEMDSafeSampling,
     ASEGeoOpt,
     ASECellOpt,
     VCSQMN,
@@ -189,6 +190,7 @@ __all__ = [
     "ASECellOpt",
     "VCSQMN",
     "ASEMD",
+    "ASEMDSafeSampling",
     "xTBSinglePoint",
     "LJSinglePoint",
     "EMTSinglePoint",

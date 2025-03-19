@@ -113,10 +113,27 @@ class PropertyFilter(base.IPSNode):
 
         return super()._post_init_()
 
+    def pad_list(self, inputs):
+        max_rows = max(val.shape[0] for val in inputs)
+        
+        # Ensure all arrays are (N, 3)
+        padded_list = []
+        for arr in inputs:
+            pad_rows = max_rows - arr.shape[0]
+            if pad_rows > 0:
+                # Pad with the given value along axis 0
+                padding = np.full((pad_rows, 3), 0)
+                padded_arr = np.vstack([arr, padding])
+            else:
+                padded_arr = arr  # Already the max size
+            padded_list.append(padded_arr)
+        return np.array(padded_list)
+    
     def run(self) -> t.List[int]:
         self.reduction_axis = tuple(self.reduction_axis)
-        values = np.array([atoms.calc.results[self.reference] for atoms in self.data])
-
+        values = [atoms.calc.results[self.reference] for atoms in self.data]
+        values = self.pad_list(values)
+        print(values.shape)
         if self.dim_reduction is not None:
             reduction_fn = REDUCTIONS[self.dim_reduction]
             values = reduction_fn(values, self.reduction_axis)
@@ -124,6 +141,7 @@ class PropertyFilter(base.IPSNode):
         check_dimension(values)
 
         lower_limit, upper_limit = self.cutoffs[0], self.cutoffs[1]
+        self.outlier = True
 
         if self.direction == "above":
             pre_selection = np.array([i for i, x in enumerate(values) if x > upper_limit])
@@ -132,38 +150,48 @@ class PropertyFilter(base.IPSNode):
             pre_selection = np.array([i for i, x in enumerate(values) if x < lower_limit])
             sorting_idx = np.argsort(values[pre_selection])
         else:
-            pre_selection = np.array(
-                [i for i, x in enumerate(values) if x < lower_limit or x > upper_limit]
+            pre_selection = [i for i, x in enumerate(values) if x < lower_limit or x > upper_limit]
+            if pre_selection:
+                pre_selection = np.array(pre_selection)
+                mean = (lower_limit + upper_limit) / 2
+                dist_to_mean = abs(values[pre_selection] - mean)
+                sorting_idx = np.argsort(dist_to_mean)[::-1]
+            else:
+                self.outlier = False
+                print('no outlier')
+        
+        if self.outlier:
+            self.filtered_indices = self.get_selection(pre_selection[sorting_idx])
+            selection_idx = np.array(self.filtered_indices)
+
+            values = [atoms.calc.results[self.reference] for atoms in self.data]
+            values = self.pad_list(values)
+
+            if self.dim_reduction is not None:
+                reduction_fn = REDUCTIONS[self.dim_reduction]
+                values = reduction_fn(values, self.reduction_axis)
+
+            fig, ax = plt.subplots()
+            ax.plot(values, label=self.reference)
+            ax.plot(selection_idx, values[selection_idx], "x", color="red")
+            ax.fill_between(
+                np.arange(len(values)),
+                self.cutoffs[0],
+                self.cutoffs[1],
+                color="black",
+                alpha=0.2,
+                label=f"{self.reference} +- std",
             )
-            mean = (lower_limit + upper_limit) / 2
-            dist_to_mean = abs(values[pre_selection] - mean)
-            sorting_idx = np.argsort(dist_to_mean)[::-1]
+            ax.set_ylabel(self.reference)
+            ax.set_xlabel("configuration")
 
-        self.filtered_indices = self.get_selection(pre_selection[sorting_idx])
-        selection_idx = np.array(self.filtered_indices)
-        
-        values = np.array([atoms.calc.results[self.reference] for atoms in self.data])
-
-        if self.dim_reduction is not None:
-            reduction_fn = REDUCTIONS[self.dim_reduction]
-            values = reduction_fn(values, self.reduction_axis)
-
-        fig, ax = plt.subplots()
-        ax.plot(values, label=self.reference)
-        ax.plot(selection_idx, values[selection_idx], "x", color="red")
-        ax.fill_between(
-            np.arange(len(values)),
-            self.cutoffs[0],
-            self.cutoffs[1],
-            color="black",
-            alpha=0.2,
-            label=f"{self.reference} +- std",
-        )
-        ax.set_ylabel(self.reference)
-        ax.set_xlabel("configuration")
-
-        fig.savefig(self.selection_plot, bbox_inches="tight")
-        
+            fig.savefig(self.selection_plot, bbox_inches="tight")
+        else:
+            self.filtered_indices = [len(self.data)+1]
+            fig, ax = plt.subplots()
+            ax.plot(1, 1, label=self.reference)
+            fig.savefig(self.selection_plot, bbox_inches="tight")
+            
     def get_selection(self, indices):
         selection = []
         for idx in indices:
@@ -182,9 +210,12 @@ class PropertyFilter(base.IPSNode):
     @property
     def frames(self) -> list[ase.Atoms]:
         return [
-            self.data[i] for i in range(len(self.data)) if i not in self.filtered_indices
+                self.data[i] for i in range(len(self.data)) if i not in self.filtered_indices
         ]
 
     @property
     def excluded_frames(self):
-        return [self.data[i] for i in self.filtered_indices]
+        if self.outlier:
+            return [self.data[i] for i in self.filtered_indices]
+        else:
+            return []

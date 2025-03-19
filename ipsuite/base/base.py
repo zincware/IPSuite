@@ -121,6 +121,11 @@ class Check:
     @abc.abstractmethod
     def get_quantity(self) -> str: ...
 
+    @abc.abstractmethod
+    def mod_atoms(self, atoms: ase.Atoms):
+        """Returns the metric that is tracked for stopping."""
+        ...
+    
     def __str__(self):
         return self.status
 

@@ -2,6 +2,7 @@ from .ase_geoopt import ASEGeoOpt
 from .ase_cellopt import ASECellOpt, VCSQMN
 from .ase_md import (
     ASEMD,
+    ASEMDSafeSampling,
     Berendsen,
     BoxOscillatingRampModifier,
     FixedLayerConstraint,
@@ -29,6 +30,7 @@ __all__ = [
     "ASECellOpt",
     "VCSQMN",
     "ASEMD",
+    "ASEMDSafeSampling",
     "FixedSphereConstraint",
     "FixedAtomsConstraint",
     "xTBSinglePoint",
