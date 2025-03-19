@@ -106,8 +106,15 @@ class PredictionMetrics(base.ComparePredictions):
 
     def get_data(self):
         """Create dict of all data."""
-        true_keys = self.x[0].calc.results.keys()
-        pred_keys = self.y[0].calc.results.keys()
+        
+        true_keys = set(self.x[0].calc.results.keys())
+        for atoms in self.x[1:]:
+            true_keys &= set(atoms.calc.results.keys())
+        for atoms in self.y:
+            true_keys &= set(atoms.calc.results.keys())
+         
+        # true_keys = self.x[0].calc.results.keys()
+        # pred_keys = self.y[0].calc.results.keys()
 
         energy_true = [x.get_potential_energy() / len(x) for x in self.x]
         energy_true = np.array(energy_true) * 1000
