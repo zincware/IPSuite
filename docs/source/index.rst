@@ -14,10 +14,14 @@ Welcome to IPSuite's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   What is IPS? <_get_started/ips>
-   Getting Started <_get_started/quickstart>
-   IPSuite <_nodes/ipsuite>
-   Modules <_nodes/modlules>
+   _get_started/ips
+   _get_started/installation
+   _get_started/quickstart
+
+   _examples/01_relaxation
+
+   glossary
+   nodes
 
 
 Indices and tables
@@ -25,4 +29,3 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`

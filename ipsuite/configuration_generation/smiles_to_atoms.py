@@ -22,12 +22,33 @@ class Smiles2Atoms(base.IPSNode):
             atoms.center()
         self.frames = [atoms]
 
-
 class Smiles2Conformers(base.IPSNode):
+    """
+    Generate molecular conformers from a SMILES string and store them as ASE Atoms objects.
+
+    Parameters
+    ----------
+    smiles : str
+        The SMILES string representing the molecular structure.
+    numConfs : int, optional
+        The number of conformers to generate (default is 1).
+    seed : int, optional
+        Random seed for conformer generation (default is 42).
+    maxAttempts : int, optional
+        Maximum number of attempts to generate conformers (default is 1000).
+    cell : float, optional
+        Size of the cubic unit cell to assign to the generated conformers (default is 100).
+
+    Attributes
+    ----------
+    frames : list[ase.Atoms]
+        A list of generated molecular conformers as ASE Atoms objects.
+    """
+
     frames: list[ase.Atoms] = fields.Atoms()
 
     smiles: str = zntrack.params()
-    numConfs: int = zntrack.params()
+    numConfs: int = zntrack.params(1)
     seed: int = zntrack.params(42)
     maxAttempts: int = zntrack.params(1000)
     cell: float = zntrack.params(100)
