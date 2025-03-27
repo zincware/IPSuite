@@ -1,6 +1,7 @@
 from .ase_geoopt import ASEGeoOpt
 from .ase_md import (
     ASEMD,
+    ASEMDSafeSampling,
     Berendsen,
     BoxOscillatingRampModifier,
     FixedLayerConstraint,
@@ -25,6 +26,7 @@ __all__ = [
     "CP2KSinglePoint",
     "ASEGeoOpt",
     "ASEMD",
+    "ASEMDSafeSampling",
     "FixedSphereConstraint",
     "xTBSinglePoint",
     "LJSinglePoint",
