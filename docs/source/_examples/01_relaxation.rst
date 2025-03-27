@@ -32,7 +32,7 @@ Add the following to your main.py file:
 To build the project, run the file using :code:`python main.py`.
 
 .. note::
-    
+
     This will construct the workflow, but not execute.
 
 To execute the workflow now constructed, run :code:`dvc repro`.

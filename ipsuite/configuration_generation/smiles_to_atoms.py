@@ -22,6 +22,7 @@ class Smiles2Atoms(base.IPSNode):
             atoms.center()
         self.frames = [atoms]
 
+
 class Smiles2Conformers(base.IPSNode):
     """
     Generate molecular conformers from a SMILES string and store them as ASE Atoms objects.

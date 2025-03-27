@@ -37,4 +37,3 @@ In a file :code:`main.py` try importing IPS to check if everything is working co
 .. code-block:: python
 
     import ipsuite as ips
-
