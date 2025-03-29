@@ -69,6 +69,7 @@ from .calculators import (
     TemperatureRampModifier,
     VelocityVerletDynamic,
     xTBSinglePoint,
+    PlumedCalculator,
 )
 
 # Configuration Generation
