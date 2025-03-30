@@ -197,6 +197,7 @@ __all__ = [
     "FixedSphereConstraint",
     "FixedLayerConstraint",
     "PressureRampModifier",
+    "PlumedCalculator",
     # Geometry
     "BarycenterMapping",
     # Project
