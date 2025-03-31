@@ -812,8 +812,9 @@ class ASEMD(base.IPSNode):
 
 
 class ASEMDSafeSampling(ASEMD):
-    """Similar to the ASEMD node. Instead of terminating the trajectory upon triggering a check,
-    the system is reverted to the initial structure and the simulation continues with new momenta.
+    """Similar to the ASEMD node. Instead of terminating the trajectory upon 
+    triggering a check, the system is reverted to the initial structure and 
+    the simulation continues with new momenta.
     This is repeated until the maximum number of outer steps is reached.
 
     Attributes
