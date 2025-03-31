@@ -10,6 +10,40 @@ import ipsuite as ips
 
 
 class PlumedCalculator(ips.base.IPSNode):
+    """Interface for the enhanced-sampling software PLUMED.
+
+    Parameters
+    ----------
+    data : list[ase.Atoms]
+        List of `ase.Atoms` objects representing the system, which will be used
+        in combination with the calculator.
+
+    data_id : int, default=-1
+        Index of the `ase.Atoms` object from the `data` list that will be used
+        to initialize the PLUMED calculator.
+
+    model : typing.Any
+        The model to be used with the PLUMED calculator. (Provide a more detailed
+        description if applicable.)
+
+    input_script_path : str
+        Path to the input script required for PLUMED. Instructions for PLUMED
+        can be provided either as a dedicated file (e.g., `plumed.dat`) or as
+        a string (see `input_string`). If `input_string` is used, this parameter
+        should not be set.
+
+    input_string : str
+        Instructions for PLUMED provided as a string instead of a file.
+        This parameter must not be set simultaneously with `input_script_path`.
+
+    temperature_K : float
+        Simulation temperature in Kelvin. This parameter is required, even if
+        not directly used, and is particularly important for metadynamics.
+
+    timestep : float
+        Timestep used in the simulation, in femtoseconds (fs).
+    """
+
     data: list[ase.Atoms] = (
         zntrack.deps()
     )  # Plumed only works with a single ase.Atoms object!!!
