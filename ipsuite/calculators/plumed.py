@@ -25,15 +25,7 @@ class PlumedCalculator(ips.base.IPSNode):
     timestep: float = zntrack.params(None)
 
     plumed_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plumed")
-    plumed_logfile: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plumed.log")
-    output_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
-
-    @property
-    def frames(self) -> list[ase.Atoms]:
-        with self.state.fs.open(self.output_file, "rb") as f:
-            with h5py.File(f) as file:
-                return znh5md.IO(file_handle=file)[:]
-
+            
     def check_input_instructions(self):
         if self.input_script_path is None and self.input_string is None:
             raise ValueError(
@@ -53,27 +45,28 @@ class PlumedCalculator(ips.base.IPSNode):
             self.setup = self.input_string
 
         # needed for ase units:
-        units_string = f"""UNITS LENGTH=A TIME={1/(1000 * units.fs)} 
-                        ENERGY={units.mol/units.kJ}"""
+        units_string = f"""UNITS LENGTH=A TIME={1/(1000 * units.fs)} ENERGY={units.mol/units.kJ}"""
+        print_string = f"""PRINT ARG=d FILE={(self.plumed_directory / "COLVAR").as_posix()} STRIDE=1"""
         self.setup.insert(0, units_string)
+        self.setup.append(print_string)
+        with open((self.plumed_directory / "setup.dat").as_posix(), "w") as file:
+            for line in self.setup:
+                file.write(line + "\n")
 
     def run(self):
-        self.check_input_instructions()
-        self.atoms = self.data[self.data_id]
-        db = znh5md.IO(self.output_file)
-        self.atoms.calc = self.get_calculator(atoms=self.atoms)
-        db.append(self.atoms)
+        self.plumed_directory.mkdir(parents=True, exist_ok=True)
+        (self.plumed_directory / "outs.txt").write_text("Lorem Ipsum")
 
-    def get_calculator(self, atoms: ase.Atoms = None, directory: str = None):
-        if directory is None:
-            directory = self.plumed_directory
-            pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
 
+    def get_calculator(self, directory: str = None):
+        print("2")
+        self.check_input_instructions() # get setup instructions
+        print("3")
         return Plumed(
-            calc=self.model,
-            atoms=atoms,
+            calc=self.model.get_calculator(),
+            atoms=self.data[self.data_id],
             input=self.setup,
             timestep=self.timestep,
             kT=self.temperature_K * units.kB,
-            log=self.plumed_logfile.as_posix(),
+            log=(self.plumed_directory / "plumed.log").as_posix(),
         )
