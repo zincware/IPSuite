@@ -4,10 +4,11 @@ import typing
 import ase
 import zntrack
 from ase import units
+from ase.calculators.calculator import Calculator, all_changes
 from ase.calculators.plumed import Plumed
 
 import ipsuite as ips
-from ase.calculators.calculator import Calculator, all_changes
+
 
 class NonOverwritingPlumed(Plumed):
     def calculate(
@@ -21,6 +22,7 @@ class NonOverwritingPlumed(Plumed):
         # This line ensures the preservation of important model results!
         self.results = {f"model_{k}": v for k, v in self.calc.results.items()}
         self.results["energy"], self.results["forces"] = energy, forces
+
 
 class PlumedCalculator(ips.base.IPSNode):
     """Interface for the enhanced-sampling software PLUMED.
