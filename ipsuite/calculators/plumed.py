@@ -2,8 +2,6 @@ import pathlib
 import typing
 
 import ase
-import h5py
-import znh5md
 import zntrack
 from ase import units
 from ase.calculators.plumed import Plumed
@@ -25,7 +23,7 @@ class PlumedCalculator(ips.base.IPSNode):
     timestep: float = zntrack.params(None)
 
     plumed_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plumed")
-            
+
     def check_input_instructions(self):
         if self.input_script_path is None and self.input_string is None:
             raise ValueError(
@@ -45,7 +43,7 @@ class PlumedCalculator(ips.base.IPSNode):
             self.setup = self.input_string
 
         # needed for ase units:
-        units_string = f"""UNITS LENGTH=A TIME={1/(1000 * units.fs)} ENERGY={units.mol/units.kJ}"""
+        units_string = f"""UNITS LENGTH=A TIME={1 / (1000 * units.fs)} ENERGY={units.mol / units.kJ}"""
         self.setup.insert(0, units_string)
         with open((self.plumed_directory / "setup.dat").as_posix(), "w") as file:
             for line in self.setup:
@@ -56,7 +54,7 @@ class PlumedCalculator(ips.base.IPSNode):
         (self.plumed_directory / "outs.txt").write_text("Lorem Ipsum")
 
     def get_calculator(self, directory: str = None):
-        self.check_input_instructions() # get setup instructions
+        self.check_input_instructions()  # get setup instructions
         return Plumed(
             calc=self.model.get_calculator(),
             atoms=self.data[self.data_id],

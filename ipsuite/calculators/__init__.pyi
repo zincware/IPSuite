@@ -20,8 +20,8 @@ from .cp2k import CP2KSinglePoint
 from .lammps import LammpsSimulator
 from .mix import MixCalculator
 from .orca import OrcaSinglePoint
-from .xtb import xTBSinglePoint
 from .plumed import PlumedCalculator
+from .xtb import xTBSinglePoint
 
 __all__ = [
     "CP2KSinglePoint",
