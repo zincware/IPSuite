@@ -7,7 +7,20 @@ from ase import units
 from ase.calculators.plumed import Plumed
 
 import ipsuite as ips
+from ase.calculators.calculator import Calculator, all_changes
 
+class NonOverwritingPlumed(Plumed):
+    def calculate(
+        self, atoms=None, properties=["energy", "forces"], system_changes=all_changes
+    ):
+        Calculator.calculate(self, atoms, properties, system_changes)
+
+        comp = self.compute_energy_and_forces(self.atoms.get_positions(), self.istep)
+        energy, forces = comp
+        self.istep += 1
+        # This line ensures the preservation of important model results!
+        self.results = {f"model_{k}": v for k, v in self.calc.results.items()}
+        self.results["energy"], self.results["forces"] = energy, forces
 
 class PlumedCalculator(ips.base.IPSNode):
     """Interface for the enhanced-sampling software PLUMED.
@@ -92,7 +105,7 @@ class PlumedCalculator(ips.base.IPSNode):
     def get_calculator(self, directory: str = None):
         self.check_input_instructions()  # get setup instructions
         self.check_input_instructions()  # get setup instructions
-        return Plumed(
+        return NonOverwritingPlumed(
             calc=self.model.get_calculator(),
             atoms=self.data[self.data_id],
             input=self.setup,
