@@ -62,6 +62,7 @@ from .calculators import (
     MixCalculator,
     NPTThermostat,
     OrcaSinglePoint,
+    PlumedCalculator,
     PressureRampModifier,
     RescaleBoxModifier,
     SVCRBarostat,
@@ -69,7 +70,6 @@ from .calculators import (
     TemperatureRampModifier,
     VelocityVerletDynamic,
     xTBSinglePoint,
-    PlumedCalculator,
 )
 
 # Configuration Generation

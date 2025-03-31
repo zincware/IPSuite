@@ -58,6 +58,7 @@ class PlumedCalculator(ips.base.IPSNode):
 
     plumed_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plumed")
 
+
     def check_input_instructions(self):
         if self.input_script_path is None and self.input_string is None:
             raise ValueError(
@@ -92,6 +93,7 @@ class PlumedCalculator(ips.base.IPSNode):
         (self.plumed_directory / "outs.txt").write_text("Lorem Ipsum")
 
     def get_calculator(self, directory: str = None):
+        self.check_input_instructions()  # get setup instructions
         self.check_input_instructions()  # get setup instructions
         return Plumed(
             calc=self.model.get_calculator(),
