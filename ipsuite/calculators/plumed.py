@@ -58,7 +58,6 @@ class PlumedCalculator(ips.base.IPSNode):
 
     plumed_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plumed")
 
-
     def check_input_instructions(self):
         if self.input_script_path is None and self.input_string is None:
             raise ValueError(
@@ -78,9 +77,7 @@ class PlumedCalculator(ips.base.IPSNode):
             self.setup = self.input_string
 
         # needed for ase units:
-        units_string = (
-            f"""UNITS LENGTH=A TIME={1/(1000 * units.fs)} ENERGY={units.mol/units.kJ}"""
-        )
+        units_string = f"""UNITS LENGTH=A TIME={1 / (1000 * units.fs)} ENERGY={units.mol / units.kJ}"""
         self.setup.insert(0, units_string)
         with pathlib.Path.open(
             (self.plumed_directory / "setup.dat").as_posix(), "w"
