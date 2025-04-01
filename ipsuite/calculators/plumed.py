@@ -48,7 +48,7 @@ class PlumedCalculator(ips.base.IPSNode):
         should not be set.
 
     input_string : str
-        Instructions for PLUMED provided as a string instead of a file.
+        Instructions for PLUMED provided as a list of strings instead of a file.
         This parameter must not be set simultaneously with `input_script_path`.
 
     temperature_K : float
@@ -66,7 +66,7 @@ class PlumedCalculator(ips.base.IPSNode):
     model: typing.Any = zntrack.deps()
 
     input_script_path: str = zntrack.deps_path(None)  # plumed.dat
-    input_string: str = zntrack.params(None)
+    input_string: list[str] = zntrack.params(None)
 
     temperature_K: float = zntrack.params(None)  # in Kelvin! Important for Metadynamics
     timestep: float = zntrack.params(None)
