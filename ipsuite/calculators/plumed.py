@@ -92,7 +92,9 @@ class PlumedCalculator(ips.base.IPSNode):
             self.setup = self.input_string
 
         # needed for ase units:
-        units_string = f"""UNITS LENGTH=A TIME={1 / (1000 * units.fs)} ENERGY={units.mol / units.kJ}"""
+        units_string = f"""UNITS LENGTH=A TIME={1 / (1000 * units.fs)} \
+                        ENERGY={units.mol / units.kJ}"""
+
         self.setup.insert(0, units_string)
         with pathlib.Path.open(
             (self.plumed_directory / "setup.dat").as_posix(), "w"
@@ -105,7 +107,6 @@ class PlumedCalculator(ips.base.IPSNode):
         (self.plumed_directory / "outs.txt").write_text("Lorem Ipsum")
 
     def get_calculator(self, directory: str = None):
-        self.check_input_instructions()  # get setup instructions
         self.check_input_instructions()  # get setup instructions
         return NonOverwritingPlumed(
             calc=self.model.get_calculator(),
