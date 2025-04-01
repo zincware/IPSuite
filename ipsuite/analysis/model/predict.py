@@ -481,7 +481,7 @@ class ForceDecomposition(base.ComparePredictions):
     ----------
     wasserstein_distance: float
         Compute the wasserstein distance between the distributions of the
-        prediced and true forces for each trans, rot, vib component.
+        predicted and true forces for each trans, rot, vib component.
     """
 
     trans_forces: dict = zntrack.metrics()
