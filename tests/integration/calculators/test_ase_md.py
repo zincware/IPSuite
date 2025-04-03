@@ -267,20 +267,18 @@ def test_locality_test(proj_path, cu_box):
 
 
 def test_ase_md_FixedBondLengthConstraint(proj_path):
-    constraint = ips.calculators.FixedBondLengthConstraint(0, 1)
-    thermostat = ips.calculators.LangevinThermostat(
+    thermostat = ips.LangevinThermostat(
         time_step=1,
         temperature=100,
         friction=1,
     )
-    model = ips.calculators.EMTSinglePoint(data=None)
-    with ips.Project() as project:
-        hydroxide = ips.configuration_generation.SmilesToAtoms(
-            smiles="[OH-]", name="Hydroxide"
-        )
+    model = ips.calculators.EMTSinglePoint()
+    constraint = ips.FixedBondLengthConstraint(atom_id_1 = 0, atom_id_2 = 1)
 
+    with ips.Project() as project:
+        hydroxide = ips.Smiles2Atoms(smiles="[OH-]")
         md = ips.calculators.ASEMD(
-            data=hydroxide.atoms,
+            data=hydroxide.frames,
             model=model,
             steps=5,
             thermostat=thermostat,
@@ -288,11 +286,9 @@ def test_ase_md_FixedBondLengthConstraint(proj_path):
             dump_rate=33,
             constraints=[constraint],
         )
+        
+    project.repro()
 
-    project.run()
-
-    md.load()
-
-    d1 = np.linalg.norm(md.atoms[0][0].position - md.atoms[0][1].position)
-    d2 = np.linalg.norm(md.atoms[-1][0].position - md.atoms[-1][1].position)
+    d1 = np.linalg.norm(md.frames[0][0].position - md.frames[0][1].position)
+    d2 = np.linalg.norm(md.frames[-1][0].position - md.frames[-1][1].position)
     assert np.abs(d2 - d1) < 1e-6

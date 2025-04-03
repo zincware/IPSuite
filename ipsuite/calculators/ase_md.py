@@ -519,8 +519,8 @@ class FixedLayerConstraint:
 
         return ase.constraints.FixAtoms(indices=self.indices)
 
-
-class FixedBondLengthConstraint(base.IPSNode):
+@dataclasses.dataclass
+class FixedBondLengthConstraint:
     """Fix the Bondlength between two atoms
 
     Attributes
@@ -536,22 +536,23 @@ class FixedBondLengthConstraint(base.IPSNode):
         Constraint that fixes the bond Length between atom_id_1 and atom_id_2
     """
 
-    atom_id_1 = zntrack.params()
-    atom_id_2 = zntrack.params()
+    atom_id_1: int
+    atom_id_2: int
 
     def get_constraint(self, atoms: ase.Atoms):
         return ase.constraints.FixBondLength(self.atom_id_1, self.atom_id_2)
 
-
-class HookeanConstraint(base.IPSNode):
-    """Applies a Hookean (spring) force between a pair of atoms.
+@dataclasses.dataclass
+class HookeanConstraint:
+    """Applies a Hookean (spring) force between pairs of atoms.
 
     Attributes
     ----------
     atom_ids: list[tuple]
-        list of atom indices that need to be contraind.
-        example: Fix only atoms with bonds if the IDs are as followed:  H=0, H=1, O=2
-        then the following atom_ids list is needed: [(0, 2), (1, 2)]
+        List of atom indices that need to be constrained.
+        Example: Fix only atoms in water with bonds if the IDs are 
+        as follows:  H=0, H=1, O=2
+        Then the following atom_ids list is needed: [(0, 2), (1, 2)]
     k: float
         Hookes law (spring) constant to apply when distance exceeds threshold_length.
         Units of eV A^-2.
@@ -568,9 +569,9 @@ class HookeanConstraint(base.IPSNode):
         molecules in the atom_id tuples.
     """
 
-    atom_ids = zntrack.params()
-    k = zntrack.params()
-    rt = zntrack.params(None)
+    atom_ids: list[tuple]
+    k: float
+    rt: float
 
     def get_pairs(self, molecule: tuple):
         atoms = len(molecule)

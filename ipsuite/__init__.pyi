@@ -55,6 +55,7 @@ from .calculators import (
     CP2KSinglePoint,
     EMTSinglePoint,
     FixedLayerConstraint,
+    FixedBondLengthConstraint,
     FixedSphereConstraint,
     LammpsSimulator,
     LangevinThermostat,
@@ -195,6 +196,7 @@ __all__ = [
     "TemperatureOscillatingRampModifier",
     "FixedSphereConstraint",
     "FixedLayerConstraint",
+    "FixedBondLengthConstraint",
     "PressureRampModifier",
     # Geometry
     "BarycenterMapping",
