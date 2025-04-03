@@ -90,9 +90,9 @@ class PlumedCalculator(ips.base.IPSNode):
                 self.setup = file.read().splitlines()
         elif self.input_string is not None:
             self.setup = self.input_string
-        print("got here!!!!")
+
         # needed for ase units:
-        units_string = f"""UNITS LENGTH=A TIME={1 / (1000 * units.fs)} \
+        units_string = f"""UNITS LENGTH=A TIME=1 \
             ENERGY={units.mol / units.kJ}"""
 
         self.setup.insert(0, units_string)
@@ -101,19 +101,18 @@ class PlumedCalculator(ips.base.IPSNode):
         ) as file:
             for line in self.setup:
                 file.write(line + "\n")
-        print(self.setup)
 
     def run(self):
         self.plumed_directory.mkdir(parents=True, exist_ok=True)
         (self.plumed_directory / "outs.txt").write_text("Lorem Ipsum")
 
     def get_calculator(self, directory: str = None):
-        self.check_input_instructions()  # get setup instructions
+        self.check_input_instructions()
         return NonOverwritingPlumed(
             calc=self.model.get_calculator(),
             atoms=self.data[self.data_id],
             input=self.setup,
             timestep=self.timestep,
-            kT=self.temperature_K * units.kB,
+            kT=self.temperature * units.kB,
             log=(self.plumed_directory / "plumed.log").as_posix(),
         )
