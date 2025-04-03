@@ -286,7 +286,7 @@ def test_ase_md_FixedBondLengthConstraint(proj_path):
             dump_rate=33,
             constraints=[constraint],
         )
-        
+
     project.repro()
 
     d1 = np.linalg.norm(md.frames[0][0].position - md.frames[0][1].position)

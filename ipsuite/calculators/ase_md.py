@@ -519,6 +519,7 @@ class FixedLayerConstraint:
 
         return ase.constraints.FixAtoms(indices=self.indices)
 
+
 @dataclasses.dataclass
 class FixedBondLengthConstraint:
     """Fix the Bondlength between two atoms
@@ -542,6 +543,7 @@ class FixedBondLengthConstraint:
     def get_constraint(self, atoms: ase.Atoms):
         return ase.constraints.FixBondLength(self.atom_id_1, self.atom_id_2)
 
+
 @dataclasses.dataclass
 class HookeanConstraint:
     """Applies a Hookean (spring) force between pairs of atoms.
@@ -550,7 +552,7 @@ class HookeanConstraint:
     ----------
     atom_ids: list[tuple]
         List of atom indices that need to be constrained.
-        Example: Fix only atoms in water with bonds if the IDs are 
+        Example: Fix only atoms in water with bonds if the IDs are
         as follows:  H=0, H=1, O=2
         Then the following atom_ids list is needed: [(0, 2), (1, 2)]
     k: float
