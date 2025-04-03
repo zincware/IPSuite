@@ -1,4 +1,3 @@
-import functools
 import logging
 import pathlib
 import typing
@@ -48,7 +47,7 @@ class RattleAnalysis(base.ProcessSingleAtom):
     """
 
     model: models.MLModel = zntrack.deps()
-    model_outs = zntrack.outs_path(zntrack.nwd / "model/")
+    model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model/")
 
     logspace: bool = zntrack.params(True)
     stop: float = zntrack.params(3.0)
@@ -82,13 +81,13 @@ class RattleAnalysis(base.ProcessSingleAtom):
 
         energies = []
 
-        self.atoms = []
+        self.frames = []
 
         for stdev in tqdm.tqdm(stdev_space, ncols=70):
             atoms.positions = reference.positions
             atoms.rattle(stdev=stdev, seed=self.seed)
             energies.append(atoms.get_potential_energy())
-            self.atoms.append(freeze_copy_atoms(atoms))
+            self.frames.append(freeze_copy_atoms(atoms))
 
         self.energies = pd.DataFrame({"y": energies, "x": stdev_space})
 
@@ -109,14 +108,14 @@ class BoxScale(base.ProcessSingleAtom):
     """
 
     model: models.MLModel = zntrack.deps()
-    model_outs = zntrack.outs_path(zntrack.nwd / "model")
-    mapping: base.Mapping = zntrack.deps(None)
+    model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model")
+    mapping: typing.Any | None = zntrack.deps(None)
 
     stop: float = zntrack.params(2.0)
     num: int = zntrack.params(100)
     start: float = zntrack.params(1)
 
-    plot = zntrack.outs_path(zntrack.nwd / "energy.png")
+    plot: pathlib.Path = zntrack.outs_path(zntrack.nwd / "energy.png")
 
     energies: pd.DataFrame = zntrack.plots(
         x="x",
@@ -135,7 +134,7 @@ class BoxScale(base.ProcessSingleAtom):
         original_atoms.calc = self.model.get_calculator(directory=self.model_outs)
 
         energies = []
-        self.atoms = []
+        self.frames = []
         if self.mapping is None:
             scaling_atoms = original_atoms
         else:
@@ -152,15 +151,15 @@ class BoxScale(base.ProcessSingleAtom):
                 eval_atoms.calc = original_atoms.calc
 
             energies.append(eval_atoms.get_potential_energy())
-            self.atoms.append(freeze_copy_atoms(eval_atoms))
+            self.frames.append(freeze_copy_atoms(eval_atoms))
 
         self.energies = pd.DataFrame({"y": energies, "x": scale_space})
 
-        if "energy_uncertainty" in self.atoms[0].calc.results:
+        if "energy_uncertainty" in self.frames[0].calc.results:
             fig, ax, _ = plot_with_uncertainty(
                 {
                     "std": np.std(
-                        [a.calc.results["energy_uncertainty"] for a in self.atoms]
+                        [a.calc.results["energy_uncertainty"] for a in self.frames]
                     ),
                     "mean": self.energies["y"],
                 },
@@ -196,17 +195,17 @@ class BoxHeatUp(base.ProcessSingleAtom):
     stop_temperature: float = zntrack.params()
     steps: int = zntrack.params()
     time_step: float = zntrack.params(0.5)
-    friction = zntrack.params()
-    repeat = zntrack.params((1, 1, 1))
+    friction: float = zntrack.params()
+    repeat: bool = zntrack.params((1, 1, 1))
 
     max_temperature: float = zntrack.params(None)
 
-    flux_data = zntrack.plots()
+    flux_data: pd.DataFrame = zntrack.plots()
 
-    model = zntrack.deps()
-    model_outs = zntrack.outs_path(zntrack.nwd / "model")
+    model: typing.Any = zntrack.deps()
+    model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model")
 
-    plots = zntrack.outs_path(zntrack.nwd / "temperature.png")
+    plots: pathlib.Path = zntrack.outs_path(zntrack.nwd / "temperature.png")
 
     def get_atoms(self) -> ase.Atoms:
         atoms: ase.Atoms = self.get_data()
@@ -247,7 +246,7 @@ class BoxHeatUp(base.ProcessSingleAtom):
         temperature, total_energy = utils.ase_sim.get_energy(atoms)
 
         energy = []
-        self.atoms = []
+        self.frames = []
 
         with tqdm.trange(
             self.steps,
@@ -270,7 +269,7 @@ class BoxHeatUp(base.ProcessSingleAtom):
                         f" {self.max_temperature} K. Simulation was stopped."
                     )
                     break
-                self.atoms.append(freeze_copy_atoms(atoms))
+                self.frames.append(freeze_copy_atoms(atoms))
 
         self.flux_data = pd.DataFrame(
             energy, columns=["meassured_temp", "energy", "set_temp"]
@@ -323,23 +322,23 @@ def run_stability_nve(
     ) as pbar:
         for idx in range(max_steps):
             dyn.run(1)
-            last_n_atoms.append(freeze_copy_atoms(atoms))
-            etot, ekin, epot = get_energy_terms(atoms)
 
             if idx % pbar_update == 0:
+                etot, ekin, epot = get_energy_terms(atoms)
                 pbar.set_description(get_desc())
                 pbar.update(pbar_update)
 
             check_results = [check.check(atoms) for check in checks]
             unstable = any(check_results)
+            last_n_atoms.append(freeze_copy_atoms(atoms))
             if unstable:
-                stable_steps = idx
                 break
 
+    stable_steps = idx
     return stable_steps, list(last_n_atoms)
 
 
-class MDStability(base.ProcessAtoms):
+class MDStability(base.IPSNode):
     """Perform NVE molecular dynamics for all supplied atoms using a trained model.
     Several stability checks can be supplied to judge whether a particular
     trajectory is stable.
@@ -359,10 +358,12 @@ class MDStability(base.ProcessAtoms):
     seed: seed for the MaxwellBoltzmann distribution
     """
 
-    model = zntrack.deps()
-    model_outs = zntrack.outs_path(zntrack.nwd / "model_outs")
+    data: list[ase.Atoms] = zntrack.deps()
+
+    model: typing.Any = zntrack.deps()
+    model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model_outs")
     max_steps: int = zntrack.params()
-    checks: list[zntrack.Node] = zntrack.deps()
+    checks: list[zntrack.Node] = zntrack.deps(None)
     time_step: float = zntrack.params(0.5)
     initial_temperature: float = zntrack.params(300)
     save_last_n: int = zntrack.params(1)
@@ -374,17 +375,10 @@ class MDStability(base.ProcessAtoms):
     stable_steps_df: pd.DataFrame = zntrack.plots()
 
     @property
-    def atoms(self) -> typing.List[ase.Atoms]:
-        def file_handle(filename):
-            file = self.state.fs.open(filename, "rb")
-            return h5py.File(file)
-
-        return znh5md.ASEH5MD(
-            self.traj_file,
-            format_handler=functools.partial(
-                znh5md.FormatHandler, file_handle=file_handle
-            ),
-        ).get_atoms_list()
+    def frames(self) -> typing.List[ase.Atoms]:
+        with self.state.fs.open(self.traj_file, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
 
     def get_plots(self, stable_steps: int) -> None:
         """Create figures for all available data."""
@@ -406,14 +400,13 @@ class MDStability(base.ProcessAtoms):
     def run(self) -> None:
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
-        data_lst = self.get_data()
+        data_lst = self.data
         calculator = self.model.get_calculator(directory=self.model_outs)
         rng = default_rng(self.seed)
 
         stable_steps = []
 
-        db = znh5md.io.DataWriter(self.traj_file)
-        db.initialize_database_groups()
+        db = znh5md.IO(self.traj_file)
         unstable_atoms = []
 
         for ii in tqdm.trange(
@@ -432,13 +425,7 @@ class MDStability(base.ProcessAtoms):
             )
             unstable_atoms.extend(last_n_atoms)
             stable_steps.append(n_steps)
-        db.add(
-            znh5md.io.AtomsReader(
-                unstable_atoms,
-                frames_per_chunk=self.save_last_n,
-                step=1,
-            )
-        )
+        db.extend(unstable_atoms)
 
         self.get_plots(stable_steps)
         self.stable_steps_df = pd.DataFrame({"stable_steps": np.array(stable_steps)})

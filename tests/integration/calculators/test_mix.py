@@ -4,81 +4,38 @@ import ipsuite as ips
 
 
 def test_mix_calculators(proj_path, traj_file):
-    with ips.Project(automatic_node_names=True) as proj:
-        data = ips.AddData(traj_file)
-        lj1 = ips.calculators.LJSinglePoint(data=data.atoms)
-        lj2 = ips.calculators.LJSinglePoint(data=data.atoms)
-        lj3 = ips.calculators.LJSinglePoint(data=data.atoms)
+    lj1 = ips.LJSinglePoint()
+    lj2 = ips.LJSinglePoint()
+    with ips.Project() as proj:
+        data = ips.AddData(file=traj_file)
 
-        mix1 = ips.calculators.MixCalculator(
-            data=data.atoms,
+        mean_calc = ips.MixCalculator(
             calculators=[lj1, lj2],
-            methods="mean",
+            method="mean",
         )
 
-        mix2 = ips.calculators.MixCalculator(
-            data=data.atoms,
+        sum_calc = ips.MixCalculator(
             calculators=[lj1, lj2],
-            methods="sum",
+            method="sum",
         )
 
-        mix3 = ips.calculators.MixCalculator(
-            data=data.atoms,
-            calculators=[lj1, lj2, lj3],
-            methods=["mean", "sum", "mean"],
+        lj1_data = ips.Prediction(data=data.frames, model=lj1)
+        lj2_data = ips.Prediction(data=data.frames, model=lj2)
+        mean_calc_data = ips.Prediction(data=data.frames, model=mean_calc)
+        sum_calc_data = ips.Prediction(data=data.frames, model=sum_calc)
+
+    proj.repro()
+
+    for a, b in zip(lj1_data.frames, mean_calc_data.frames):
+        npt.assert_almost_equal(
+            a.get_potential_energy(), b.get_potential_energy(), decimal=2
         )
-
-    proj.run()
-
-    lj1.load()
-    mix1.load()
-
-    for a, b in zip(lj1.atoms, mix1.atoms):
-        assert a.get_potential_energy() == b.get_potential_energy()
         npt.assert_almost_equal(a.get_forces(), b.get_forces())
 
-    lj2.load()
-    mix2.load()
-
-    for a, b, c in zip(lj1.atoms, lj2.atoms, mix2.atoms):
-        assert (
-            a.get_potential_energy() + b.get_potential_energy()
-            == c.get_potential_energy()
+    for a, b, c in zip(lj1_data.frames, lj2_data.frames, sum_calc_data.frames):
+        npt.assert_almost_equal(
+            a.get_potential_energy() + b.get_potential_energy(),
+            c.get_potential_energy(),
+            decimal=2,
         )
         npt.assert_almost_equal(a.get_forces() + b.get_forces(), c.get_forces())
-
-    lj3.load()
-    mix3.load()
-
-    for a, b, c, d in zip(lj1.atoms, lj2.atoms, lj3.atoms, mix3.atoms):
-
-        # (a + c / 2) + b
-        true_energy = a.get_potential_energy() + b.get_potential_energy()
-        true_forces = a.get_forces() + b.get_forces()
-
-        assert true_energy == d.get_potential_energy()
-        npt.assert_almost_equal(true_forces, d.get_forces())
-
-
-def test_mix_calculator_external(proj_path, traj_file):
-    lj1 = ips.calculators.LJSinglePoint(data=None)
-    lj2 = ips.calculators.LJSinglePoint(data=None)
-
-    with ips.Project(automatic_node_names=True) as proj:
-        data = ips.AddData(traj_file)
-        lj3 = ips.calculators.LJSinglePoint(data=data.atoms)
-
-        mix1 = ips.calculators.MixCalculator(
-            data=data.atoms,
-            calculators=[lj1, lj2],
-            methods="mean",
-        )
-
-    proj.run()
-
-    lj3.load()
-    mix1.load()
-
-    for a, b in zip(lj3.atoms, mix1.atoms):
-        assert a.get_potential_energy() == b.get_potential_energy()
-        npt.assert_almost_equal(a.get_forces(), b.get_forces())

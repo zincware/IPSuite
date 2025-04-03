@@ -1,17 +1,15 @@
 """Use packmole to create a periodic box"""
 
 import logging
-import pathlib
-import subprocess
+import random
 
 import ase
 import ase.units
 import numpy as np
+import rdkit2ase
 import zntrack
-from ase.visualize import view
 
 from ipsuite import base, fields
-from ipsuite.utils.ase_sim import get_box_from_density
 
 log = logging.getLogger(__name__)
 
@@ -31,8 +29,6 @@ class Packmol(base.IPSNode):
         Number of molecules to add for each entry in data.
     tolerance : float
         Tolerance for the distance of atoms in angstrom.
-    box : list[float]
-        Box size in angstrom. Either density or box is required.
     density : float
         Density of the system in kg/m^3. Either density or box is required.
     pbc : bool
@@ -45,73 +41,38 @@ class Packmol(base.IPSNode):
     data_ids: list[int] = zntrack.params(None)
     count: list = zntrack.params()
     tolerance: float = zntrack.params(2.0)
-    box: list = zntrack.params(None)
-    density: float = zntrack.params(None)
-    structures = zntrack.outs_path(zntrack.nwd / "packmol")
-    atoms = fields.Atoms()
+    density: float = zntrack.params()
+    frames: list[ase.Atoms] = fields.Atoms()
     pbc: bool = zntrack.params(True)
 
-    def _post_init_(self):
-        if self.box is None and self.density is None:
-            raise ValueError("Either box or density must be set.")
+    def __post_init__(self):
         if len(self.data) != len(self.count):
             raise ValueError("The number of data and count must be the same.")
-        if self.data_ids is not None and len(self.data) != len(self.data_ids):
-            raise ValueError("The number of data and data_ids must be the same.")
-        if self.box is not None and isinstance(self.box, (int, float)):
-            self.box = [self.box, self.box, self.box]
 
     def run(self):
-        self.structures.mkdir(exist_ok=True, parents=True)
-        for idx, atoms in enumerate(self.data):
-            atoms = atoms[-1] if self.data_ids is None else atoms[self.data_ids[idx]]
-            ase.io.write(self.structures / f"{idx}.xyz", atoms)
-
-        if self.density is not None:
-            self._get_box_from_molar_volume()
-
-        if self.pbc:
-            scaled_box = [x - self.tolerance for x in self.box]
+        data = []
+        if self.data_ids is not None:
+            for idx, frames in zip(self.data_ids, self.data):
+                data.append([frames[idx]])
         else:
-            scaled_box = self.box
+            data = self.data
 
-        file = f"""
-        tolerance {self.tolerance}
-        filetype xyz
-        output mixture.xyz
-        """
-        for idx, count in enumerate(self.count):
-            file += f"""
-            structure {idx}.xyz
-                number {count}
-                inside box 0 0 0 {" ".join([f"{x:.4f}" for x in scaled_box])}
-            end structure
-            """
-        with pathlib.Path(self.structures / "packmole.inp").open("w") as f:
-            f.write(file)
-
-        subprocess.check_call("packmol < packmole.inp", shell=True, cwd=self.structures)
-
-        atoms = ase.io.read(self.structures / "mixture.xyz")
-        if self.pbc:
-            atoms.cell = self.box
-            atoms.pbc = True
-        self.atoms = [atoms]
-
-    def _get_box_from_molar_volume(self):
-        """Get the box size from the molar volume"""
-        self.box = get_box_from_density(self.data, self.count, self.density)
-        log.info(f"estimated box size: {self.box}")
-
-    def view(self) -> view:
-        return view(self.atoms, viewer="x3d")
+        self.frames = [
+            rdkit2ase.pack(
+                data=data,
+                counts=self.count,
+                tolerance=self.tolerance,
+                density=self.density,
+                pbc=self.pbc,
+            )
+        ]
 
 
 class MultiPackmol(Packmol):
     """Create multiple configurations with packmol.
 
     This Node generates multiple configurations with packmol.
-    This is best used in conjunction with SmilesToConformers:
+    This is best used in conjunction with Smiles2Conformers:
 
     Example
     -------
@@ -119,14 +80,14 @@ class MultiPackmol(Packmol):
         >>> tmp_path = utils.docs.create_dvc_git_env_for_doctest()
 
     >>> import ipsuite as ips
-    >>> with ips.Project(automatic_node_names=True) as project:
-    ...     water = ips.configuration_generation.SmilesToConformers(
+    >>> with ips.Project() as project:
+    ...     water = ips.Smiles2Conformers(
     ...         smiles='O', numConfs=100
     ...         )
-    ...     boxes = ips.configuration_generation.MultiPackmol(
+    ...     boxes = ips.MultiPackmol(
     ...         data=[water.atoms], count=[10], density=997, n_configurations=10
     ...         )
-    >>> project.run()
+    >>> project.repro()
 
     .. testcleanup::
         >>> tmp_path.cleanup()
@@ -141,50 +102,23 @@ class MultiPackmol(Packmol):
 
     n_configurations: int = zntrack.params()
     seed: int = zntrack.params(42)
-    data_ids = None
 
     def run(self):
         np.random.seed(self.seed)
-        self.atoms = []
+        self.frames = []
+        for _ in range(self.n_configurations):
+            # shuffle each data entry
+            data = []
+            for frames in self.data:
+                random.shuffle(frames)
+                data.append(frames)
 
-        if self.density is not None:
-            self._get_box_from_molar_volume()
-
-        if self.pbc:
-            scaled_box = [x - self.tolerance for x in self.box]
-        else:
-            scaled_box = self.box
-
-        self.structures.mkdir(exist_ok=True, parents=True)
-        for idx, atoms_list in enumerate(self.data):
-            for jdx, atoms in enumerate(atoms_list):
-                ase.io.write(self.structures / f"{idx}_{jdx}.xyz", atoms)
-
-        for idx in range(self.n_configurations):
-            file = f"""
-            tolerance {self.tolerance}
-            filetype xyz
-            output mixture_{idx}.xyz
-            """
-            for jdx, count in enumerate(self.count):
-                choices = np.random.choice(len(self.data[jdx]), count)
-                for kdx in choices:
-                    file += f"""
-                    structure {jdx}_{kdx}.xyz
-                        number 1
-                        inside box 0 0 0 {" ".join([f"{x:.4f}" for x in scaled_box])}
-                    end structure
-                    """
-            with pathlib.Path(self.structures / f"packmole_{idx}.inp").open("w") as f:
-                f.write(file)
-
-            subprocess.check_call(
-                f"packmol < packmole_{idx}.inp", shell=True, cwd=self.structures
+            self.frames.append(
+                rdkit2ase.pack(
+                    data=data,
+                    counts=self.count,
+                    tolerance=self.tolerance,
+                    density=self.density,
+                    pbc=self.pbc,
+                )
             )
-
-            atoms = ase.io.read(self.structures / f"mixture_{idx}.xyz")
-            if self.pbc:
-                atoms.cell = self.box
-                atoms.pbc = True
-
-            self.atoms.append(atoms)

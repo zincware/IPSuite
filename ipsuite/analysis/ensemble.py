@@ -1,4 +1,5 @@
 import typing
+from pathlib import Path
 
 import ase.calculators.singlepoint
 import matplotlib.pyplot as plt
@@ -49,6 +50,7 @@ def plot_with_uncertainty(value, ylabel: str, xlabel: str, x=None, **kwargs) -> 
 
 
 class ModelEnsembleAnalysis(base.AnalyseAtoms):
+    # TODO do we need this?
     """Attributes
     ----------
         models: list of models to ensemble
@@ -57,11 +59,11 @@ class ModelEnsembleAnalysis(base.AnalyseAtoms):
 
     models: list = zntrack.deps()
 
-    normal_plot_path = zntrack.outs_path(zntrack.nwd / "normal_plot.png")
-    sorted_plot_path = zntrack.outs_path(zntrack.nwd / "sorted_plot.png")
-    histogram = zntrack.outs_path(zntrack.nwd / "histogram.png")
+    normal_plot_path: Path = zntrack.outs_path(zntrack.nwd / "normal_plot.png")
+    sorted_plot_path: Path = zntrack.outs_path(zntrack.nwd / "sorted_plot.png")
+    histogram: Path = zntrack.outs_path(zntrack.nwd / "histogram.png")
 
-    prediction_list = zntrack.outs()
+    prediction_list: list = zntrack.outs()
     predictions: typing.List[ase.Atoms] = zntrack.outs()
 
     bins: int = zntrack.params(100)

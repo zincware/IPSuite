@@ -25,10 +25,7 @@ class LabelHistogram(base.AnalyseAtoms):
     y_lim: tuple = zntrack.params(None)
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
     labels_df: pd.DataFrame = zntrack.plots()
-    datalabel: str = None
-    xlabel: str = None
-    ylabel: str = "Occurrences"
-    logy_scale: bool = True
+    logy_scale: bool = zntrack.params(True)
 
     metrics: float = zntrack.metrics()
 
@@ -53,14 +50,15 @@ class LabelHistogram(base.AnalyseAtoms):
 
     def get_plots(self, counts, bin_edges):
         """Create figures for all available data."""
-        self.plots_dir.mkdir()
+        self.plots_dir.mkdir(exist_ok=True)
+        ylabel = "Occurrences"
 
         label_hist = get_histogram_figure(
             bin_edges,
             counts,
             datalabel=self.datalabel,
             xlabel=self.xlabel,
-            ylabel=self.ylabel,
+            ylabel=ylabel,
             x_lim=self.x_lim,
             y_lim=self.y_lim,
             logy_scale=self.logy_scale,
@@ -77,8 +75,8 @@ class LabelHistogram(base.AnalyseAtoms):
 class EnergyHistogram(LabelHistogram):
     """Creates a histogram of all energy labels contained in a dataset."""
 
-    datalabel = "energy"
-    xlabel = r"$E$ / eV"
+    datalabel: str = zntrack.params("energy")
+    xlabel: str = zntrack.params(r"$E$ / eV")
 
     def get_labels(self):
         return [x.get_potential_energy() for x in self.data]
@@ -87,8 +85,8 @@ class EnergyHistogram(LabelHistogram):
 class ForcesHistogram(LabelHistogram):
     """Creates a histogram of all force labels contained in a dataset."""
 
-    datalabel = "energy"
-    xlabel = r"$F$ / eV/Ang"
+    datalabel: str = zntrack.params("forces")
+    xlabel: str = zntrack.params(r"$F$ / eV/Ang")
 
     def get_labels(self):
         labels = np.concatenate([x.get_forces() for x in self.data], axis=0)
@@ -100,8 +98,8 @@ class ForcesHistogram(LabelHistogram):
 class ForcesUncertaintyHistogram(LabelHistogram):
     """Creates a histogram of all force uncertainties in a prediction."""
 
-    datalabel = "forces-uncertainty"
-    xlabel = r"$F$ / eV/Ang"
+    datalabel: str = zntrack.params("forces-uncertainty")
+    xlabel: str = zntrack.params(r"$\sigma(F)$ / eV/Ang")
 
     def get_labels(self):
         labels = np.concatenate(
@@ -114,8 +112,8 @@ class ForcesUncertaintyHistogram(LabelHistogram):
 class EnergyUncertaintyHistogram(LabelHistogram):
     """Creates a histogram of all energy uncertainties in a prediction."""
 
-    datalabel = "energy-uncertainty"
-    xlabel = r"$F$ / eV/Ang"
+    datalabel: str = zntrack.params("energy-uncertainty")
+    xlabel: str = zntrack.params(r"$\sigma(E)$ / eV")
 
     def get_labels(self):
         return np.reshape([x.calc.results["energy_uncertainty"] for x in self.data], (-1))
@@ -124,8 +122,8 @@ class EnergyUncertaintyHistogram(LabelHistogram):
 class DipoleHistogram(LabelHistogram):
     """Creates a histogram of all dipole labels contained in a dataset."""
 
-    datalabel = "dipole"
-    xlabel = r"$\mu$ / eV Ang"
+    datalabel: str = zntrack.params("dipole")
+    xlabel: str = zntrack.params(r"$\mu$ / eV Ang")
 
     def get_labels(self):
         labels = np.array([x.calc.results["dipole"] for x in self.data])
@@ -149,8 +147,7 @@ class StressHistogram(base.AnalyseAtoms):
     bins: int = zntrack.params(None)
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
     labels_df: pd.DataFrame = zntrack.plots()
-    ylabel: str = "Occurrences"
-    logy_scale: bool = True
+    logy_scale: bool = zntrack.params(True)
 
     def get_labels(self):
         labels = np.array([x.get_stress(voigt=False) for x in self.data])
@@ -185,7 +182,7 @@ class StressHistogram(base.AnalyseAtoms):
             counts,
             datalabel=datalabel,
             xlabel=xlabel,
-            ylabel=self.ylabel,
+            ylabel="Occurrences",
             logy_scale=self.logy_scale,
         )
         label_hist.savefig(self.plots_dir / fname)

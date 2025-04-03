@@ -5,28 +5,24 @@ import numpy as np
 import ipsuite as ips
 
 
-def test_SmilesToAtoms(proj_path):
+def test_Smiles2Atoms(proj_path):
     with ips.Project() as proj:
-        ethanol = ips.configuration_generation.SmilesToAtoms(smiles="CCO")
+        ethanol = ips.Smiles2Atoms(smiles="CCO")
 
-    proj.run()
-    proj.load()
+    proj.repro()
 
-    assert len(ethanol.atoms) == 1
-    assert ethanol.atoms[0].get_chemical_formula() == "C2H6O"
+    assert len(ethanol.frames) == 1
+    assert ethanol.frames[0].get_chemical_formula() == "C2H6O"
 
 
-def test_SmilesToConformers(proj_path):
+def test_Smiles2Conformers(proj_path):
     with ips.Project() as proj:
-        ethanol = ips.configuration_generation.SmilesToConformers(
-            smiles="CCO", numConfs=10
-        )
+        ethanol = ips.Smiles2Conformers(smiles="CCO", numConfs=10)
 
-    proj.run()
-    proj.load()
+    proj.repro()
 
-    assert len(ethanol.atoms) == 10
-    assert ethanol.atoms[0].get_chemical_formula() == "C2H6O"
+    assert len(ethanol.frames) == 10
+    assert ethanol.frames[0].get_chemical_formula() == "C2H6O"
     # iterate over all pairs of conformers and check that none are identical
-    for conf1, conf2 in itertools.combinations(ethanol.atoms, 2):
+    for conf1, conf2 in itertools.combinations(ethanol.frames, 2):
         assert not np.allclose(conf1.positions, conf2.positions)

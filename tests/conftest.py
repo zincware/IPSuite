@@ -51,6 +51,7 @@ def atoms_list() -> typing.List[ase.Atoms]:
             atoms=atom,
             energy=idx / 21,
             forces=np.random.randn(2, 3),
+            stress=np.random.randn(6),
             energy_uncertainty=idx + 2,
             forces_uncertainty=np.full((2, 3), 2.0) + idx,
         )
@@ -104,7 +105,9 @@ def proj_path(tmp_path, request) -> pathlib.Path:
 
 
 @pytest.fixture
-def proj_w_data(proj_path, traj_file, request) -> typing.Tuple[ips.Project, ips.AddData]:
+def proj_w_data(
+    proj_path, traj_file, request
+) -> typing.Tuple[ips.Project, ips.AddData]:
     data = []
     with ips.Project() as proj:
         for idx in range(request.param):

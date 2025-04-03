@@ -43,7 +43,8 @@ def get_desc(temperature: float, total_energy: float):
 def freeze_copy_atoms(atoms) -> ase.Atoms:
     # TODO can we add the name of the original calculator?
     result = atoms.copy()
-    result.calc = SinglePointCalculator(result, **atoms.calc.results)
+    result.calc = SinglePointCalculator(result)
+    result.calc.results.update(atoms.calc.results)
     return result
 
 

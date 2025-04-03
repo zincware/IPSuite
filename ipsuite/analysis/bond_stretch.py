@@ -32,14 +32,14 @@ class BondStretchAnalyses(ProcessAtoms):
         size of the plot
     """
 
-    ase_calculator = zntrack.deps()
+    ase_calculator: typing.Any = zntrack.deps()
 
-    idxs = zntrack.params()
-    r_min = zntrack.params()
-    r_max = zntrack.params()
-    n_steps = zntrack.params()
+    idxs: typing.Tuple[int, int] = zntrack.params()
+    r_min: float = zntrack.params()
+    r_max: float = zntrack.params()
+    n_steps: int = zntrack.params()
     data_id: typing.Optional[int] = zntrack.params(0)
-    fig_size = zntrack.params((10, 7))
+    fig_size: typing.Tuple[int, int] = zntrack.params((10, 7))
 
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
 
@@ -67,7 +67,7 @@ class BondStretchAnalyses(ProcessAtoms):
         e_uncertainties = []
         f_uncertainties = []
 
-        self.atoms = []
+        self.frames = []
         for i in range(self.n_steps):
             struct.set_distance(self.idxs[0], self.idxs[1], bond_lengths[i], mask=mask)
             ens_energies.append(struct.get_total_energy())
@@ -77,7 +77,7 @@ class BondStretchAnalyses(ProcessAtoms):
             if "forces_uncertainty" in struct.calc.results:
                 f_uncertainties.append(struct.calc.results.get("forces_uncertainty"))
 
-            self.atoms.append(struct.copy())
+            self.frames.append(struct.copy())
 
         results = {
             "energy": np.asarray(ens_energies),
