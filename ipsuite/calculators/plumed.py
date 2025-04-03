@@ -51,7 +51,7 @@ class PlumedCalculator(ips.base.IPSNode):
         Instructions for PLUMED provided as a list of strings instead of a file.
         This parameter must not be set simultaneously with `input_script_path`.
 
-    temperature_K : float
+    temperature : float
         Simulation temperature in Kelvin. This parameter is required, even if
         not directly used, and is particularly important for metadynamics.
 
@@ -68,7 +68,7 @@ class PlumedCalculator(ips.base.IPSNode):
     input_script_path: str = zntrack.deps_path(None)  # plumed.dat
     input_string: list[str] = zntrack.params(None)
 
-    temperature_K: float = zntrack.params(None)  # in Kelvin! Important for Metadynamics
+    temperature: float = zntrack.params(None)  # in Kelvin! Important for Metadynamics
     timestep: float = zntrack.params(None)
 
     plumed_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plumed")
@@ -90,10 +90,10 @@ class PlumedCalculator(ips.base.IPSNode):
                 self.setup = file.read().splitlines()
         elif self.input_string is not None:
             self.setup = self.input_string
-
+        print("got here!!!!")
         # needed for ase units:
         units_string = f"""UNITS LENGTH=A TIME={1 / (1000 * units.fs)} \
-                        ENERGY={units.mol / units.kJ}"""
+            ENERGY={units.mol / units.kJ}"""
 
         self.setup.insert(0, units_string)
         with pathlib.Path.open(
@@ -101,6 +101,7 @@ class PlumedCalculator(ips.base.IPSNode):
         ) as file:
             for line in self.setup:
                 file.write(line + "\n")
+        print(self.setup)
 
     def run(self):
         self.plumed_directory.mkdir(parents=True, exist_ok=True)
