@@ -3,7 +3,7 @@ name = "ipsuite"
 version = "0.2.4"
 description = "A suite of tools for machine learned interatomic potentials."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.10,<4.0"
 keywords = ["data-version-control", "machine-learning", "reproducibility", "interatomic potentials"]
 dependencies = [
     "ase>=3.24.0",

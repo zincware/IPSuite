@@ -20,6 +20,7 @@ from .cp2k import CP2KSinglePoint
 from .lammps import LammpsSimulator
 from .mix import MixCalculator
 from .orca import OrcaSinglePoint
+from .plumed import PlumedCalculator
 from .xtb import xTBSinglePoint
 
 __all__ = [
@@ -45,4 +46,5 @@ __all__ = [
     "FixedLayerConstraint",
     "MixCalculator",
     "SVCRBarostat",
+    "PlumedCalculator",
 ]
