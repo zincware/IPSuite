@@ -275,7 +275,7 @@ class LangevinThermostat:
 
     """
 
-    time_step: int
+    time_step: float
     temperature: float
     friction: float
 
