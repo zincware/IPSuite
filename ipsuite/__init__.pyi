@@ -54,6 +54,7 @@ from .calculators import (
     BoxOscillatingRampModifier,
     CP2KSinglePoint,
     EMTSinglePoint,
+    FixedBondLengthConstraint,
     FixedLayerConstraint,
     FixedSphereConstraint,
     LammpsSimulator,
@@ -196,6 +197,7 @@ __all__ = [
     "TemperatureOscillatingRampModifier",
     "FixedSphereConstraint",
     "FixedLayerConstraint",
+    "FixedBondLengthConstraint",
     "PressureRampModifier",
     "PlumedCalculator",
     # Geometry

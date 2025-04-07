@@ -21,3 +21,5 @@
 - add `density` to `RescaleBoxModifier`
 - add `fraction_traceless` parameter to `NPTThermostat`
 - add `TorchD3NL` calculator
+- add `HookeanConstraint` calculator
+- add `FixedBondLengthConstraint` calculator

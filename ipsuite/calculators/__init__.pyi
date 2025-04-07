@@ -4,8 +4,10 @@ from .ase_md import (
     ASEMDSafeSampling,
     Berendsen,
     BoxOscillatingRampModifier,
+    FixedBondLengthConstraint,
     FixedLayerConstraint,
     FixedSphereConstraint,
+    HookeanConstraint,
     LangevinThermostat,
     NPTThermostat,
     PressureRampModifier,
@@ -47,4 +49,6 @@ __all__ = [
     "MixCalculator",
     "SVCRBarostat",
     "PlumedCalculator",
+    "FixedBondLengthConstraint",
+    "HookeanConstraint",
 ]
