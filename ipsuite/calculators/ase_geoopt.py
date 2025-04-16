@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 class ASEGeoOpt(base.IPSNode):
     """Perform a structure relaxation using ASE.
 
-    Use any ASE calculator to perform a geometry optimization on 
+    Use any ASE calculator to perform a geometry optimization on
     a given structure.
 
     Parameters
@@ -50,7 +50,7 @@ class ASEGeoOpt(base.IPSNode):
     dump_rate: int, optional
         Number of steps to perform before dumping the current state.
         Default is ``1000``.
-    
+
     Attributes
     ----------
     model_outs: pathlib.Path
