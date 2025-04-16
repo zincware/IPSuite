@@ -1,8 +1,6 @@
 Nodes
 =====
 
-.. autoclass:: ipsuite.Smiles2Conformers
-    :show-inheritance:
-
-.. autoclass:: ipsuite.MultiPackmol
-    :show-inheritance:
+.. automodule:: ipsuite
+    :members:
+    :exclude-members:  # Exclude specific methods if needed
