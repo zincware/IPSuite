@@ -449,7 +449,14 @@ class Berendsen:
 
 @dataclasses.dataclass
 class FixedSphereConstraint:
-    """Attributes
+    """Freeze all atoms within a sphere.
+
+    Constraint to freeze all atoms within a sphere of a given radius
+    around a given atom. The atom to freeze can be specified
+    by its id or type. If both are given, the id is used.
+    
+    
+    Attributes
     ----------
     atom_id: int
         The id to use as the center of the sphere to fix.
@@ -460,6 +467,7 @@ class FixedSphereConstraint:
         hydrogen atom will be fixed. If None,
         the first atom will be fixed, no matter the type.
     radius: float
+        The radius of the sphere to fix.
     """
 
     radius: float
