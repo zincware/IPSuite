@@ -53,6 +53,8 @@ class CP2KSinglePoint(base.IPSNode):
 
     Parameters
     ----------
+    data: list[ase.Atoms]
+        The list of ASE Atoms objects to run the calculation on.
     cp2k_shell : str, default=None
         The cmd to run cp2k. If None, the environment variable
         IPSUITE_CP2K_SHELL is used.
@@ -65,6 +67,23 @@ class CP2KSinglePoint(base.IPSNode):
         The path to the wfn restart file.
     wfn_restart_node : str, optional
         A cp2k Node that has a wfn restart file.
+    failure_policy : str, default="fail"
+        The failure policy for the cp2k calculation. If "fail", the
+        calculation will fail if any of the calculations fail. If "skip",
+        the calculation will skip the failed calculations and continue
+        with the next one.
+
+    Attributes
+    ----------
+    frames : list[ase.Atoms]
+        The list of ASE Atoms objects that were successfully calculated.
+    cp2k_directory : pathlib.Path
+        The directory where the cp2k calculation is run and all the 
+        cp2k output files are stored.
+    output_file : pathlib.Path
+        The path to the output trajectory file.
+    failed_configs : dict
+        A dictionary with the indices of the failed configurations.
     """
 
     data: list[ase.Atoms] = zntrack.deps()
