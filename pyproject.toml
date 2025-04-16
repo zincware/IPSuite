@@ -8,7 +8,6 @@ keywords = ["data-version-control", "machine-learning", "reproducibility", "inte
 dependencies = [
     "ase>=3.24.0",
     "cp2k-input-tools>=0.9.1",
-    "cp2k-output-tools>=0.5.0",
     "lazy-loader>=0.4",
     "rdkit2ase>=0.1.4",
     "seaborn>=0.13.2",
@@ -46,6 +45,7 @@ gap = [
     "xmltodict>=0.14.2",
 ]
 dev = [
+    "cp2k-output-tools",
     "dvc-s3>=3.2.0",
     "imageio>=2.37.0",
     "mdanalysis>=2.8.0",
@@ -95,3 +95,6 @@ ignore = [
 [tool.codespell]
 ignore-words-list = "dscribe"
 skip = "poetry.lock,ipsuite/static_data/*,docs/source/examples/06_Bootstrapping_Datasets.ipynb"
+
+[tool.uv.sources]
+cp2k-output-tools = { git = "https://github.com/cp2k/cp2k-output-tools" }
