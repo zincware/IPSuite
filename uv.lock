@@ -677,15 +677,13 @@ wheels = [
 [[package]]
 name = "cp2k-output-tools"
 version = "0.5.0"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/cp2k/cp2k-output-tools#8260e709c86a0bc1636e3ddae9bb8a17d52b09de" }
 dependencies = [
     { name = "click" },
     { name = "numpy" },
+    { name = "pint" },
     { name = "regex" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/49/c6/29ae884189bcb3b30ecc5506afc1a65bf5bb1218fb7829e15665a0267d73/cp2k-output-tools-0.5.0.tar.gz", hash = "sha256:c71786a6e0e99f1d706eea355977bc5d6771b40cb7d84afc7921ee9d5e9a0420", size = 20417 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/6f/f6/e711eb52478b1b63baf856f4efd8d6a9c4238a7e96c340250fd1d30cbe1e/cp2k_output_tools-0.5.0-py3-none-any.whl", hash = "sha256:8269ede667cf2eeaa1a55c8651a1c1921a549df796e098e52d68ef90815c8986", size = 22691 },
+    { name = "rich" },
 ]
 
 [[package]]
@@ -1371,12 +1369,11 @@ wheels = [
 
 [[package]]
 name = "ipsuite"
-version = "0.2.5"
+version = "0.2.4"
 source = { editable = "." }
 dependencies = [
     { name = "ase" },
     { name = "cp2k-input-tools" },
-    { name = "cp2k-output-tools" },
     { name = "lazy-loader" },
     { name = "rdkit2ase" },
     { name = "seaborn" },
@@ -1387,6 +1384,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "cp2k-output-tools" },
     { name = "dvc-s3" },
     { name = "imageio" },
     { name = "mdanalysis" },
@@ -1407,7 +1405,6 @@ gap = [
 requires-dist = [
     { name = "ase", specifier = ">=3.24.0" },
     { name = "cp2k-input-tools", specifier = ">=0.9.1" },
-    { name = "cp2k-output-tools", specifier = ">=0.5.0" },
     { name = "lazy-loader", specifier = ">=0.4" },
     { name = "rdkit2ase", specifier = ">=0.1.4" },
     { name = "seaborn", specifier = ">=0.13.2" },
@@ -1418,6 +1415,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "cp2k-output-tools", git = "https://github.com/cp2k/cp2k-output-tools" },
     { name = "dvc-s3", specifier = ">=3.2.0" },
     { name = "imageio", specifier = ">=2.37.0" },
     { name = "mdanalysis", specifier = ">=2.8.0" },
