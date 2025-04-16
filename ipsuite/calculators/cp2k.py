@@ -78,7 +78,7 @@ class CP2KSinglePoint(base.IPSNode):
     frames : list[ase.Atoms]
         The list of ASE Atoms objects that were successfully calculated.
     cp2k_directory : pathlib.Path
-        The directory where the cp2k calculation is run and all the 
+        The directory where the cp2k calculation is run and all the
         cp2k output files are stored.
     output_file : pathlib.Path
         The path to the output trajectory file.
