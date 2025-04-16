@@ -57,6 +57,25 @@ class ASEGeoOpt(base.IPSNode):
         Path to the directory where the model outputs are stored.
     traj_file: pathlib.Path
         Path to the file where the trajectory is stored.
+
+
+    Example
+    -------
+
+    >>> import ipsuite as ips
+    >>> project = ips.Project()
+    >>> model = ips.LJSinglePoint()
+    >>> with project:
+    ...     etoh = ips.Smiles2Conformers(
+    ...         smiles="CCO", numConfs=1
+    ...     )
+    ...     opt = ips.ASEGeoOpt(
+    ...         data=etoh,
+    ...         model=model,
+    ...         optimizer="FIRE",
+    ...         run_kwargs={"fmax": 0.05},
+    ...     )
+    >>> project.build()
     """
 
     data: list[ase.Atoms] = zntrack.deps()
