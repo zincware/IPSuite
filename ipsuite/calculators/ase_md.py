@@ -454,8 +454,8 @@ class FixedSphereConstraint:
     Constraint to freeze all atoms within a sphere of a given radius
     around a given atom. The atom to freeze can be specified
     by its id or type. If both are given, the id is used.
-    
-    
+
+
     Attributes
     ----------
     atom_id: int
