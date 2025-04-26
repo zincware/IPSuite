@@ -75,6 +75,7 @@ from .calculators import (
     VelocityVerletDynamic,
     xTBSinglePoint,
     FixedAtomsConstraint,
+    PlumedCalc,
 )
 
 # Configuration Generation
@@ -84,6 +85,11 @@ from .configuration_generation import (
     Smiles2Atoms,
     Smiles2Conformers,
     Smiles2Gromacs,
+)
+
+# Configuration Modification
+from .configuration_modification import (
+    ModFrames,
 )
 
 # Configuration Selection
@@ -140,6 +146,8 @@ __all__ = [
     "Smiles2Atoms",
     "Smiles2Conformers",
     "Smiles2Gromacs",
+    # Configuration Modification
+    "ModFrames"
     # Data
     "AddData",
     "AddDataH5MD",
@@ -210,6 +218,7 @@ __all__ = [
     "FixedLayerConstraint",
     "FixedAtomsConstraint",
     "PressureRampModifier",
+    "PlumedCalc",
     # Geometry
     "BarycenterMapping",
     # Project
