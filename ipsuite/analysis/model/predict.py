@@ -112,7 +112,8 @@ class PredictionMetrics(base.ComparePredictions):
             true_keys &= set(atoms.calc.results.keys())
         for atoms in self.y:
             true_keys &= set(atoms.calc.results.keys())
-         
+        
+        pred_keys = true_keys
         # true_keys = self.x[0].calc.results.keys()
         # pred_keys = self.y[0].calc.results.keys()
 
