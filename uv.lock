@@ -1,4 +1,5 @@
 version = 1
+revision = 1
 requires-python = ">=3.10"
 resolution-markers = [
     "python_full_version >= '3.12' and sys_platform == 'win32'",
@@ -1369,7 +1370,7 @@ wheels = [
 
 [[package]]
 name = "ipsuite"
-version = "0.2.4"
+version = "0.2.5"
 source = { editable = "." }
 dependencies = [
     { name = "ase" },
@@ -1410,7 +1411,7 @@ requires-dist = [
     { name = "seaborn", specifier = ">=0.13.2" },
     { name = "uncertainty-toolbox", specifier = ">=0.1.1" },
     { name = "znh5md", specifier = ">=0.4.4" },
-    { name = "zntrack", specifier = ">=0.8.3" },
+    { name = "zntrack", specifier = ">=0.8.5" },
 ]
 
 [package.metadata.requires-dev]
@@ -3503,14 +3504,14 @@ wheels = [
 
 [[package]]
 name = "znflow"
-version = "0.2.4"
+version = "0.2.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "networkx" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e5/df/cd72edaa8a635f820c920e169afb4ae64bb96cfcf77012b4bfb53a1dd4d2/znflow-0.2.4.tar.gz", hash = "sha256:1ec2c0c261a03e5e7dcb6d28e63163ee9f0af85987132bd5f8975561e4193006", size = 20577 }
+sdist = { url = "https://files.pythonhosted.org/packages/8e/bc/6317d604bfafe626a59e5b3e83605e49735ccf5ac4483e6f9d026a1e9661/znflow-0.2.5.tar.gz", hash = "sha256:6e6773fe29333041292046785efbd9e83ddafac9a9345d153cd7e077b62544d5", size = 209711 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a8/78/d7d3776955868abb3492bed066c35f4fada5a724984e993b9db86298977a/znflow-0.2.4-py3-none-any.whl", hash = "sha256:85fd2dd695202d55a7ea320f2937a3cd1074669a252d24f7812d8fb5fde163fe", size = 22971 },
+    { url = "https://files.pythonhosted.org/packages/7e/ea/a3f7ddeec7ac3f4a3f501f762c403c8c64be63e0323e49148b2c09b77473/znflow-0.2.5-py3-none-any.whl", hash = "sha256:5cf25a022068e8353b69ad7a968eab6cee7c5999b30317bbdcfda5bc675f1178", size = 23050 },
 ]
 
 [[package]]
@@ -3539,7 +3540,7 @@ wheels = [
 
 [[package]]
 name = "zntrack"
-version = "0.8.3"
+version = "0.8.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "dvc" },
@@ -3551,7 +3552,7 @@ dependencies = [
     { name = "znflow" },
     { name = "znjson" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/2e/24/94a927f8395e4174f60b3c1a59c51f07b32e9375dca1fc8a32efd4a8bd28/zntrack-0.8.3.tar.gz", hash = "sha256:48424bb031c2b8e6bdde823f6fc00e8d9fd7dbf1674d62552306d2d68f00e32f", size = 326899 }
+sdist = { url = "https://files.pythonhosted.org/packages/d0/45/e82f034b99f2782b03522ee03be0f356108c7f09156f69c9282b0eafd614/zntrack-0.8.5.tar.gz", hash = "sha256:c118845efaf1e379c3045c6e5de3e3db14e97980a1af025e11babb3fedd97793", size = 341821 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e1/98/1fa0ffb47e78f494e987ae9d95f9aa9f9f5f40490e9bdc97c8a382f171ff/zntrack-0.8.3-py3-none-any.whl", hash = "sha256:8b207219ab1789e99af1a812e066f979e867838d8a61711b77bb4740ecbaeb7f", size = 58354 },
+    { url = "https://files.pythonhosted.org/packages/ef/6e/eeb93f3f4f19479e1e1241952f10ab50d8c8f47857becfc95d11b9aff0a2/zntrack-0.8.5-py3-none-any.whl", hash = "sha256:813b4750b8191f15b39941d92f7407c697dbf2cb34c6854266994fbbf34efc57", size = 59377 },
 ]

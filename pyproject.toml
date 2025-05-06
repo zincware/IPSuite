@@ -1,6 +1,6 @@
 [project]
 name = "ipsuite"
-version = "0.2.4"
+version = "0.2.5"
 description = "A suite of tools for machine learned interatomic potentials."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -13,7 +13,7 @@ dependencies = [
     "seaborn>=0.13.2",
     "uncertainty-toolbox>=0.1.1",
     "znh5md>=0.4.4",
-    "zntrack>=0.8.3",
+    "zntrack>=0.8.5",
 ]
 
 
