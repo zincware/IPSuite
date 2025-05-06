@@ -85,10 +85,10 @@ class CP2KSinglePoint(base.IPSNode):
 
         self.cp2k_shell = _update_cmd(self.cp2k_shell)
 
-        worker = Laufband(self.data, ncols=70)
+        worker = Laufband(self.data, ncols=70, com=self.cp2k_directory / "laufband.sqlite")
         with worker.lock:
             db = znh5md.IO(self.output_file)
-        calc = self.get_calculator()
+        calc = self.get_calculator(idx=os.getpid())
         self.failed_configs = {"skipped": []}
 
         for idx, atoms in enumerate(worker):
@@ -119,34 +119,17 @@ class CP2KSinglePoint(base.IPSNode):
                 return znh5md.IO(file_handle=file)[:]
 
     def get_input_script(self):
-        """Return the input script.
-
-        We use cached_property, because this will also copy the restart file
-        to the cp2k directory.
-        """
-        if not self.cp2k_directory.exists():
-            self.cp2k_directory.mkdir(exist_ok=True)
-
-            if self.wfn_restart_file is not None:
-                shutil.copy(
-                    self.wfn_restart_file, self.cp2k_directory / "cp2k-RESTART.wfn"
-                )
-            if self.wfn_restart_node is not None:
-                shutil.copy(
-                    self.wfn_restart_node.cp2k_directory / "cp2k-RESTART.wfn",
-                    self.cp2k_directory / "cp2k-RESTART.wfn",
-                )
-
+        """Return the input script."""
         with pathlib.Path(self.cp2k_params).open("r") as file:
             cp2k_input_dict = yaml.safe_load(file)
 
         return "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
 
-    def get_calculator(self, directory: str = None):
+    def get_calculator(self, directory: t.Optional[str] = None, idx: int = 0):
         self.cp2k_shell = _update_cmd(self.cp2k_shell)
 
         if directory is None:
-            directory = self.cp2k_directory
+            directory = self.cp2k_directory / f"run_{idx}"
             pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
         else:
             restart_wfn = self.cp2k_directory / "cp2k-RESTART.wfn"
@@ -154,8 +137,23 @@ class CP2KSinglePoint(base.IPSNode):
                 pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
                 shutil.copy(restart_wfn, directory / "cp2k-RESTART.wfn")
 
-        for file in self.cp2k_files:
-            shutil.copy(file, directory / pathlib.Path(file).name)
+        if self.cp2k_files is not None:
+            for file in self.cp2k_files:
+                shutil.copy(file, directory / pathlib.Path(file).name)
+
+        if self.wfn_restart_file is not None:
+            shutil.copy(
+                self.wfn_restart_file, directory / "cp2k-RESTART.wfn"
+            )
+        if self.wfn_restart_node is not None:
+            raise ValueError(
+                "wfn_restart_node is not implemented yet. "
+                "Please use wfn_restart_file instead."
+            )
+            # shutil.copy(
+            #     self.wfn_restart_node.cp2k_directory / "cp2k-RESTART.wfn",
+            #     self.cp2k_directory / "cp2k-RESTART.wfn",
+            # )
 
         patch(
             "ase.calculators.cp2k.subprocess.Popen",
@@ -176,5 +174,5 @@ class CP2KSinglePoint(base.IPSNode):
             stress_tensor=True,
             xc=None,
             print_level=None,
-            label="cp2k",
+            label=f"cp2k_{idx}",
         )
