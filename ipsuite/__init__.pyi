@@ -6,6 +6,7 @@ from .analysis import (
     AnalyseDensity,
     AnalyseGlobalForceSensitivity,
     AnalyseSingleForceSensitivity,
+    AnalyseStructureMeanForce,
     BoxHeatUp,
     BoxScale,
     CalibrationMetrics,
@@ -31,7 +32,6 @@ from .analysis import (
     StressHistogram,
     TemperatureCheck,
     ThresholdCheck,
-    AnalyseStructureMeanForce,
 )
 
 # Base imports

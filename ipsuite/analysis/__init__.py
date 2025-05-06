@@ -8,6 +8,7 @@ from ipsuite.analysis.bin_property import (
 )
 from ipsuite.analysis.bond_stretch import BondStretchAnalyses
 from ipsuite.analysis.ensemble import ModelEnsembleAnalysis
+from ipsuite.analysis.forces import AnalyseStructureMeanForce
 from ipsuite.analysis.md import AnalyseDensity, CollectMDSteps
 from ipsuite.analysis.model import (
     BoxHeatUp,
@@ -33,7 +34,6 @@ from ipsuite.analysis.sensitivity import (
     AnalyseSingleForceSensitivity,
     MoveSingleParticle,
 )
-from ipsuite.analysis.forces import AnalyseStructureMeanForce
 
 __all__ = [
     "EnergyHistogram",
