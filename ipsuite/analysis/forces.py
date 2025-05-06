@@ -37,21 +37,24 @@ class AnalyseStructureMeanForce(base.AnalyseAtoms):
         samples = np.arange(len(force_magnitude_per_atoms))
 
         # Create a Pandas DataFrame
-        df = pd.DataFrame({'Sample': samples, 'Mean Force Norm (eV/Å)': force_magnitude_per_atoms})
+        df = pd.DataFrame({'Sample': samples, "Mean Force Norm  / eV/Å": force_magnitude_per_atoms})
 
         # Create the joint plot focusing the marginal on the 'Force Magnitude'
         joint_plot = sns.jointplot(
             data=df,
             x='Sample',
-            y='Mean Force Norm (eV/Å)',
-            marginal_kws={"bins": 30, "color": "gray", "alpha": 0.6},
+            y="Mean Force Norm  / eV/Å",
+            marginal_kws={"bins": 30},
             kind='scatter',
-            joint_kws={'s': 20, 'alpha': 0.7} # Adjust scatter plot aesthetics
         )
 
-        # Overlay the line plot
-        joint_plot.ax_joint.plot(df['Sample'], df['Mean Force Norm (eV/Å)'], color='C0', linewidth=2)
-        joint_plot.ax_joint.set_ylabel("Mean Force Norm /eV/Å")
+        # Overlay the line plot with the defined color
+        joint_plot.ax_joint.plot(df['Sample'], df["Mean Force Norm  / eV/Å"])
+
+        # Add a dashed line for the mean force
+        mean_force = self.forces["mean"]
+        joint_plot.ax_joint.axhline(mean_force, color='r', linestyle='--', linewidth=1.5, label=f'Mean: {mean_force:.2f} eV/Å')
+        joint_plot.ax_joint.legend(loc='upper right')
 
         # Remove the marginal distribution on the x-axis (Samples)
         joint_plot.ax_marg_x.remove()
