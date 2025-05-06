@@ -6,6 +6,7 @@ from .analysis import (
     AnalyseDensity,
     AnalyseGlobalForceSensitivity,
     AnalyseSingleForceSensitivity,
+    AnalyseStructureMeanForce,
     BoxHeatUp,
     BoxScale,
     CalibrationMetrics,
@@ -174,6 +175,7 @@ __all__ = [
     "AnalyseDensity",
     "CollectMDSteps",
     "AllowedStructuresFilter",
+    "AnalyseStructureMeanForce",
     # Calculators
     "CP2KSinglePoint",
     "ASEGeoOpt",
