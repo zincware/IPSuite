@@ -83,7 +83,9 @@ class CP2KSinglePoint(base.IPSNode):
 
         self.cp2k_shell = _update_cmd(self.cp2k_shell)
 
-        worker = Laufband(self.data, ncols=70, com=self.cp2k_directory / "laufband.sqlite")
+        worker = Laufband(
+            self.data, ncols=70, com=self.cp2k_directory / "laufband.sqlite"
+        )
         with worker.lock:
             db = znh5md.IO(self.output_file)
         calc = self.get_calculator(idx=os.getpid())
@@ -140,9 +142,7 @@ class CP2KSinglePoint(base.IPSNode):
                 shutil.copy(file, directory / pathlib.Path(file).name)
 
         if self.wfn_restart_file is not None:
-            shutil.copy(
-                self.wfn_restart_file, directory / "cp2k-RESTART.wfn"
-            )
+            shutil.copy(self.wfn_restart_file, directory / "cp2k-RESTART.wfn")
         if self.wfn_restart_node is not None:
             raise ValueError(
                 "wfn_restart_node is not implemented yet. "
