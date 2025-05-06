@@ -15,12 +15,10 @@ from unittest.mock import patch
 import ase.calculators.cp2k
 import ase.io
 import h5py
-import tqdm
 import yaml
 import znh5md
 import zntrack
 from cp2k_input_tools.generator import CP2KInputGenerator
-
 from laufband import Laufband
 
 from ipsuite import base
