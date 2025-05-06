@@ -1375,6 +1375,7 @@ source = { editable = "." }
 dependencies = [
     { name = "ase" },
     { name = "cp2k-input-tools" },
+    { name = "laufband" },
     { name = "lazy-loader" },
     { name = "rdkit2ase" },
     { name = "seaborn" },
@@ -1406,6 +1407,7 @@ gap = [
 requires-dist = [
     { name = "ase", specifier = ">=3.24.0" },
     { name = "cp2k-input-tools", specifier = ">=0.9.1" },
+    { name = "laufband", specifier = ">=0.1.2" },
     { name = "lazy-loader", specifier = ">=0.4" },
     { name = "rdkit2ase", specifier = ">=0.1.4" },
     { name = "seaborn", specifier = ">=0.13.2" },
@@ -1577,6 +1579,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/38/4d/b93fcb353d279839cc35d0012bee805ed0cf61c07587916bfc35dbfddaf1/kombu-5.4.2.tar.gz", hash = "sha256:eef572dd2fd9fc614b37580e3caeafdd5af46c1eff31e7fba89138cdb406f2cf", size = 442858 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/87/ec/7811a3cf9fdfee3ee88e54d08fcbc3fabe7c1b6e4059826c59d7b795651c/kombu-5.4.2-py3-none-any.whl", hash = "sha256:14212f5ccf022fc0a70453bb025a1dcc32782a588c49ea866884047d66e14763", size = 201349 },
+]
+
+[[package]]
+name = "laufband"
+version = "0.1.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "flufl-lock" },
+    { name = "tqdm" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/23/4a/86730ab2fe2f1bced2ea18066e97f04682953c80675bdd0959016ba97488/laufband-0.1.2.tar.gz", hash = "sha256:73a365832b072292e74eba561f9013209567024fa2475d0401e7f01f4d05d1a2", size = 93309 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/12/19/70c29a25da16b150ad91fa575301152c8bdae82d6405a9fb9a4986312071/laufband-0.1.2-py3-none-any.whl", hash = "sha256:47b786122f8a88d3a96a480f44046ca068500b82d7acae9603b2a705a72bb3e7", size = 6704 },
 ]
 
 [[package]]
