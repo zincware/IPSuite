@@ -19,15 +19,9 @@ import tqdm
 import yaml
 import znh5md
 import zntrack
+from cp2k_input_tools.generator import CP2KInputGenerator
 
-try:
-    from cp2k_input_tools.generator import CP2KInputGenerator
-except ImportError as err:
-    raise ImportError(
-        "Please install the newest development version of cp2k-input-tools: 'pip install"
-        " git+https://github.com/cp2k/cp2k-input-tools.git'"
-    ) from err
-
+from laufband import Laufband
 
 from ipsuite import base
 
@@ -91,15 +85,18 @@ class CP2KSinglePoint(base.IPSNode):
 
         self.cp2k_shell = _update_cmd(self.cp2k_shell)
 
-        db = znh5md.IO(self.output_file)
+        worker = Laufband(self.data, ncols=70)
+        with worker.lock:
+            db = znh5md.IO(self.output_file)
         calc = self.get_calculator()
         self.failed_configs = {"skipped": []}
 
-        for idx, atoms in enumerate(tqdm.tqdm(self.data, ncols=70)):
+        for idx, atoms in enumerate(worker):
             atoms.calc = calc
             try:
                 atoms.get_potential_energy()
-                db.append(atoms)
+                with worker.lock:
+                    db.append(atoms)
             except Exception as err:
                 if self.failure_policy == "fail":
                     raise err
