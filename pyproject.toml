@@ -1,6 +1,6 @@
 [project]
 name = "ipsuite"
-version = "0.2.5"
+version = "0.2.6"
 description = "A suite of tools for machine learned interatomic potentials."
 readme = "README.md"
 requires-python = ">=3.10"

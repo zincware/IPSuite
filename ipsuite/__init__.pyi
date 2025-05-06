@@ -31,6 +31,7 @@ from .analysis import (
     StressHistogram,
     TemperatureCheck,
     ThresholdCheck,
+    AnalyseStructureMeanForce,
 )
 
 # Base imports
@@ -174,6 +175,7 @@ __all__ = [
     "AnalyseDensity",
     "CollectMDSteps",
     "AllowedStructuresFilter",
+    "AnalyseStructureMeanForce",
     # Calculators
     "CP2KSinglePoint",
     "ASEGeoOpt",

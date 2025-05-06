@@ -33,6 +33,7 @@ from ipsuite.analysis.sensitivity import (
     AnalyseSingleForceSensitivity,
     MoveSingleParticle,
 )
+from ipsuite.analysis.forces import AnalyseStructureMeanForce
 
 __all__ = [
     "EnergyHistogram",
@@ -65,4 +66,5 @@ __all__ = [
     "AnalyseDensity",
     "CollectMDSteps",
     "AllowedStructuresFilter",
+    "AnalyseStructureMeanForce",
 ]
