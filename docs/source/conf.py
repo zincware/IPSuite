@@ -6,19 +6,16 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-import sys
-from pathlib import Path
+import ipsuite
+import typing as t
 
 project = "IPSuite"
-project_copyright = "2024, zincwarecode"
+project_copyright = "2025, zincwarecode"
 author = "zincwarecode"
-release = "0.1.1"
+release = ipsuite.__version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-
-
-sys.path.insert(0, Path("../../ipsuite/").resolve().as_posix())
 
 extensions = [
     "sphinx.ext.autodoc",
@@ -37,3 +34,25 @@ exclude_patterns = []
 
 html_theme = "furo"
 html_static_path = ["_static"]
+html_title = "IPSuite"
+html_short_title = "ipsuite"
+
+html_theme_options: t.Dict[str, t.Any] = {
+    "footer_icons": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/zincware/ipsuite",
+            "html": "",
+            "class": "fa-brands fa-github fa-2x",
+        },
+    ],
+    "source_repository": "https://github.com/zincware/ipsuite/",
+    "source_branch": "main",
+    "source_directory": "docs/source/",
+    "navigation_with_keys": True,
+}
+
+# font-awesome logos
+html_css_files = [
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/brands.min.css",
+]
