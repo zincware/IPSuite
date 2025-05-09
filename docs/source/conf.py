@@ -6,8 +6,9 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-import ipsuite
 import typing as t
+
+import ipsuite
 
 project = "IPSuite"
 project_copyright = "2025, zincwarecode"
