@@ -2,8 +2,9 @@ import dataclasses
 import importlib
 import typing as t
 from pathlib import Path
-from ase.calculators.calculator import Calculator
+
 import zntrack
+from ase.calculators.calculator import Calculator
 
 
 class Device:
@@ -48,7 +49,7 @@ class GenericASECalculator:
     class_name: str
     kwargs: dict[str, t.Any] | None = None
     device: t.Literal["auto", "cpu", "cuda"] | None = None
-    parameter_paths: str |Path| list[str|Path] | None = zntrack.params_path(None)
+    parameter_paths: str | Path | list[str | Path] | None = zntrack.params_path(None)
     file_paths: str | Path | list[str | Path] | None = zntrack.deps_path(None)
 
     def get_calculator(self, **kwargs) -> Calculator:

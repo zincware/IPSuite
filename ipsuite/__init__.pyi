@@ -45,6 +45,7 @@ from .bootstrap import (
     SurfaceRasterScan,
     TranslateMolecules,
 )
+from .calc import ApplyCalculator, GenericASECalculator
 
 # Calculators
 from .calculators import (
@@ -105,8 +106,6 @@ from .geometry import BarycenterMapping
 
 # Models
 from .models import GAP, EnsembleModel
-
-from .calc import ApplyCalculator, GenericASECalculator 
 
 # Project
 from .project import Project

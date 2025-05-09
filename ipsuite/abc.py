@@ -1,4 +1,5 @@
 """Abstract base classes and type hints."""
+
 import typing as t
 
 import zntrack
