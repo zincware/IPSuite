@@ -1,6 +1,6 @@
 [project]
 name = "ipsuite"
-version = "0.2.4"
+version = "0.2.6"
 description = "A suite of tools for machine learned interatomic potentials."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -8,12 +8,13 @@ keywords = ["data-version-control", "machine-learning", "reproducibility", "inte
 dependencies = [
     "ase>=3.24.0",
     "cp2k-input-tools>=0.9.1",
+    "laufband>=0.1.2",
     "lazy-loader>=0.4",
     "rdkit2ase>=0.1.4",
     "seaborn>=0.13.2",
     "uncertainty-toolbox>=0.1.1",
     "znh5md>=0.4.4",
-    "zntrack>=0.8.3",
+    "zntrack>=0.8.5",
 ]
 
 
