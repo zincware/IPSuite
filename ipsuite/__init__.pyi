@@ -106,6 +106,8 @@ from .geometry import BarycenterMapping
 # Models
 from .models import GAP, EnsembleModel
 
+from .calc import ApplyCalculator, GenericASECalculator 
+
 # Project
 from .project import Project
 from .version import __version__
@@ -204,4 +206,7 @@ __all__ = [
     "BarycenterMapping",
     # Project
     "Project",
+    # Calc
+    "ApplyCalculator",
+    "GenericASECalculator",
 ]
