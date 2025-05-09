@@ -64,6 +64,7 @@ from .calculators import (
     MixCalculator,
     NPTThermostat,
     OrcaSinglePoint,
+    PlumedCalculator,
     PressureRampModifier,
     RescaleBoxModifier,
     SVCRBarostat,
@@ -200,6 +201,7 @@ __all__ = [
     "FixedLayerConstraint",
     "FixedBondLengthConstraint",
     "PressureRampModifier",
+    "PlumedCalculator",
     # Geometry
     "BarycenterMapping",
     # Project
