@@ -45,6 +45,7 @@ from .bootstrap import (
     SurfaceRasterScan,
     TranslateMolecules,
 )
+from .calc import ApplyCalculator, GenericASECalculator
 
 # Calculators
 from .calculators import (
@@ -204,4 +205,7 @@ __all__ = [
     "BarycenterMapping",
     # Project
     "Project",
+    # Calc
+    "ApplyCalculator",
+    "GenericASECalculator",
 ]
