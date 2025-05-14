@@ -19,29 +19,34 @@ class ApplyCalculator(zntrack.Node):
     ----------
     data : list[ase.Atoms]
         List of atoms objects to calculate.
-    model : NodeWithCalculator, optional
+    model : NodeWithCalculator
         Node providing the calculator object to apply to the data.
+    frames_path : pathlib.Path, optional
+        Path to the H5MD file where the results will be stored.
     """
 
     data: list[ase.Atoms] = zntrack.deps()
     model: NodeWithCalculator = zntrack.deps()
+    dump_rate: int|None = zntrack.params(None)
 
     frames_path: pathlib.Path = zntrack.outs_path(zntrack.nwd / "frames.h5")
 
     def run(self):
         frames = []
         calc = self.model.get_calculator()
+        io = znh5md.IO(self.frames_path)
 
-        # # Some calculators, e.g. MACE do not follow the ASE API correctly.
-        # #  and we need to fix some keys in `all_properties`
-        # all_properties.append("node_energy")
+        # TODO: use laufband
 
         for atoms in tqdm.tqdm(self.data):
             atoms.calc = calc
             atoms.get_potential_energy()
             frames.append(freeze_copy_atoms(atoms))
+            if self.dump_rate is not None:
+                if len(frames) % self.dump_rate == 0:
+                    io.extend(frames)
+                    frames = []
 
-        io = znh5md.IO(self.frames_path)
         io.extend(frames)
 
     @property
