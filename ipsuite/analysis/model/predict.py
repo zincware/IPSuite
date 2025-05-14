@@ -28,7 +28,10 @@ from ipsuite.analysis.model.plots import (  # get_cdf_figure,
 from ipsuite.geometry import BarycenterMapping
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
+import typing_extensions as tyex
 
+@tyex.deprecated("Use `ipsuite.ApplyCalculator` instead."
+                 " Reason: Generalization and missleading node name.")
 class Prediction(base.ProcessAtoms):
     """Create and Save the predictions from model on atoms.
 

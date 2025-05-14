@@ -1,27 +1,22 @@
-import typing
-
 import zntrack
 from ase.calculators import mixing
 from ase.calculators.calculator import Calculator
 
 from ipsuite import base
-
-
-class CalculatorNode(typing.Protocol):
-    def get_calculator(self) -> typing.Type[Calculator]: ...
+from ipsuite.abc import NodeWithCalculator
 
 
 class MixCalculator(base.IPSNode):
     """Combine multiple models or calculators into one.
 
     Attributes:
-        calculators: list[CalculatorNode]
+        calculators: list[NodeWithCalculator]
             List of calculators to combine.
         method: str
             choose from "mean" or "sum" to combine the calculators.
     """
 
-    calculators: typing.List[CalculatorNode] = zntrack.deps()
+    calculators: list[NodeWithCalculator] = zntrack.deps()
     method: str = zntrack.params("sum")
 
     def run(self) -> None:
