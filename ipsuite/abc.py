@@ -2,11 +2,11 @@
 
 import typing as t
 
-import zntrack
 from ase.calculators.calculator import Calculator
 
-T = t.TypeVar("T", bound=zntrack.Node, covariant=True)
+T = t.TypeVar("T", covariant=True)
 
 
 class NodeWithCalculator(t.Protocol[T]):
+    """Any @dataclass, including zntrack.Node that provides a calculator."""
     def get_calculator(self, **kwargs) -> Calculator: ...
