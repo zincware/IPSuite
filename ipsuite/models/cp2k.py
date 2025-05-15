@@ -64,7 +64,8 @@ class CP2KModel:
                 log.info(f"Using IPSUITE_CP2K_SHELL={self.cmd}")
             except KeyError as err:
                 raise RuntimeError(
-                    "Please set the environment variable 'IPSUITE_CP2K_SHELL' or set the cp2k executable."
+                    "Please set the environment variable "
+                    "'IPSUITE_CP2K_SHELL' or set the cp2k executable."
                 ) from err
 
     def get_input_script(self):
