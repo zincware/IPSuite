@@ -32,7 +32,7 @@ from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 @tyex.deprecated(
     "Use `ipsuite.ApplyCalculator` instead."
-    " Reason: Generalization and missleading node name."
+    " Reason: Generalization and misleading node name."
 )
 class Prediction(base.ProcessAtoms):
     """Create and Save the predictions from model on atoms.

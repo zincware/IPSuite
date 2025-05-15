@@ -46,5 +46,5 @@ class TBLiteModel:
             )
             raise
 
-        calc = TBLite(methode=self.method, verbosity=self.verbosity)
+        calc = TBLite(method=self.method, verbosity=self.verbosity)
         return calc
