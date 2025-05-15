@@ -3,5 +3,6 @@ from .tblite import TBLiteModel
 from .cp2k import CP2KModel
 from .ensemble import EnsembleModel
 from .gap import GAP
+from .orca import ORCAModel
 
-__all__ = ["MLModel", "EnsembleModel", "GAP", "CP2KModel", "TBLiteModel"]
+__all__ = ["MLModel", "EnsembleModel", "GAP", "CP2KModel", "TBLiteModel", "ORCAModel"]

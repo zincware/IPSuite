@@ -105,7 +105,7 @@ from .datasets import MD22Dataset
 from .geometry import BarycenterMapping
 
 # Models
-from .models import GAP, CP2KModel, EnsembleModel, TBLiteModel
+from .models import GAP, CP2KModel, EnsembleModel, TBLiteModel, ORCAModel
 
 # Project
 from .project import Project
@@ -122,6 +122,7 @@ __all__ = [
     "EnsembleModel",
     "CP2KModel",
     "TBLiteModel",
+    "ORCAModel",
     # Configuration Selection
     "IndexSelection",
     "RandomSelection",
