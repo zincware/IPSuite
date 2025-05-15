@@ -14,7 +14,7 @@ dependencies = [
     "seaborn>=0.13.2",
     "uncertainty-toolbox>=0.1.1",
     "znh5md>=0.4.4",
-    "zntrack>=0.8.5",
+    "zntrack>=0.8.7",
 ]
 
 
@@ -46,9 +46,7 @@ gap = [
     "xmltodict>=0.14.2",
 ]
 dev = [
-    "cp2k-output-tools",
     "dvc-s3>=3.2.0",
-    "imageio>=2.37.0",
     "mdanalysis>=2.8.0",
     "pytest>=8.3.4",
     "pytest-cov>=6.0.0",
@@ -99,4 +97,3 @@ skip = "poetry.lock,ipsuite/static_data/*,docs/source/examples/06_Bootstrapping_
 
 [tool.uv.sources]
 cp2k-output-tools = { git = "https://github.com/cp2k/cp2k-output-tools" }
-zntrack = { git = "https://github.com/zincware/zntrack" } # TODO: rollback before merging!

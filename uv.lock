@@ -676,18 +676,6 @@ wheels = [
 ]
 
 [[package]]
-name = "cp2k-output-tools"
-version = "0.5.0"
-source = { git = "https://github.com/cp2k/cp2k-output-tools#8260e709c86a0bc1636e3ddae9bb8a17d52b09de" }
-dependencies = [
-    { name = "click" },
-    { name = "numpy" },
-    { name = "pint" },
-    { name = "regex" },
-    { name = "rich" },
-]
-
-[[package]]
 name = "cryptography"
 version = "44.0.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1338,19 +1326,6 @@ wheels = [
 ]
 
 [[package]]
-name = "imageio"
-version = "2.37.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "numpy" },
-    { name = "pillow" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/0c/47/57e897fb7094afb2d26e8b2e4af9a45c7cf1a405acdeeca001fdf2c98501/imageio-2.37.0.tar.gz", hash = "sha256:71b57b3669666272c818497aebba2b4c5f20d5b37c81720e5e1a56d59c492996", size = 389963 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/cb/bd/b394387b598ed84d8d0fa90611a90bee0adc2021820ad5729f7ced74a8e2/imageio-2.37.0-py3-none-any.whl", hash = "sha256:11efa15b87bc7871b61590326b2d635439acc321cf7f8ce996f812543ce10eed", size = 315796 },
-]
-
-[[package]]
 name = "imagesize"
 version = "1.4.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1386,9 +1361,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "cp2k-output-tools" },
     { name = "dvc-s3" },
-    { name = "imageio" },
     { name = "mdanalysis" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -1413,14 +1386,12 @@ requires-dist = [
     { name = "seaborn", specifier = ">=0.13.2" },
     { name = "uncertainty-toolbox", specifier = ">=0.1.1" },
     { name = "znh5md", specifier = ">=0.4.4" },
-    { name = "zntrack", git = "https://github.com/zincware/zntrack" },
+    { name = "zntrack", specifier = ">=0.8.7" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "cp2k-output-tools", git = "https://github.com/cp2k/cp2k-output-tools" },
     { name = "dvc-s3", specifier = ">=3.2.0" },
-    { name = "imageio", specifier = ">=2.37.0" },
     { name = "mdanalysis", specifier = ">=2.8.0" },
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "pytest-cov", specifier = ">=6.0.0" },
@@ -2694,29 +2665,6 @@ wheels = [
 ]
 
 [[package]]
-name = "regex"
-version = "2021.11.10"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/97/cd/93ad08b2f97ec95da0bd860380ce0ac7481eaccc760356ee11eda369c048/regex-2021.11.10.tar.gz", hash = "sha256:f341ee2df0999bfdf7a95e448075effe0db212a59387de1a70690e4acb03d4c6", size = 702813 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/16/a3/db549b6f747cc8161a17c91c3aeb886344c7b69eeea0346f17367f0af2cf/regex-2021.11.10-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:9345b6f7ee578bad8e475129ed40123d265464c4cfead6c261fd60fc9de00bcf", size = 288346 },
-    { url = "https://files.pythonhosted.org/packages/5e/4f/decc7c212f44432881ae120f88e1f3dcb5325466839c472c639b87203b45/regex-2021.11.10-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:416c5f1a188c91e3eb41e9c8787288e707f7d2ebe66e0a6563af280d9b68478f", size = 279888 },
-    { url = "https://files.pythonhosted.org/packages/76/59/f1d961f2bb520840e342d33381b5f39e339f6b8e75cc129533536b0abf6a/regex-2021.11.10-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e0538c43565ee6e703d3a7c3bdfe4037a5209250e8502c98f20fea6f5fdf2965", size = 761116 },
-    { url = "https://files.pythonhosted.org/packages/06/42/9f55990f308a0ae05d327e97ea684d745b6a1037aae34146371bcd45d428/regex-2021.11.10-cp310-cp310-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:7ee1227cf08b6716c85504aebc49ac827eb88fcc6e51564f010f11a406c0a667", size = 800968 },
-    { url = "https://files.pythonhosted.org/packages/47/a0/ebb1bcf9d4e5c398f0f0cb214f5c7b5638cece69852efecb6725e98a0adf/regex-2021.11.10-cp310-cp310-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:6650f16365f1924d6014d2ea770bde8555b4a39dc9576abb95e3cd1ff0263b36", size = 788385 },
-    { url = "https://files.pythonhosted.org/packages/17/53/b5a6b68cd8947b53105e2e034b12c32c4799e513fb82fe456e4eee7d0b23/regex-2021.11.10-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:30ab804ea73972049b7a2a5c62d97687d69b5a60a67adca07eb73a0ddbc9e29f", size = 764050 },
-    { url = "https://files.pythonhosted.org/packages/5d/08/91f64dbb13d1b737c025b58b42eb9f4e5ca71498b24d1f838a954aeed819/regex-2021.11.10-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:68a067c11463de2a37157930d8b153005085e42bcb7ad9ca562d77ba7d1404e0", size = 752839 },
-    { url = "https://files.pythonhosted.org/packages/5b/83/b4d50e5ba522aee7e78bcaafac78abdb84d20e69a73c7ad66c34a728234b/regex-2021.11.10-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:162abfd74e88001d20cb73ceaffbfe601469923e875caf9118333b1a4aaafdc4", size = 677617 },
-    { url = "https://files.pythonhosted.org/packages/8d/2b/828cd9a9217993fe17bb4e572272b389804633f74fbe89c8b9536b145407/regex-2021.11.10-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:b9ed0b1e5e0759d6b7f8e2f143894b2a7f3edd313f38cf44e1e15d360e11749b", size = 732101 },
-    { url = "https://files.pythonhosted.org/packages/50/34/a3696746c217090267d966b1d136710490850f499254f60f1a4d262f953a/regex-2021.11.10-cp310-cp310-musllinux_1_1_i686.whl", hash = "sha256:473e67837f786404570eae33c3b64a4b9635ae9f00145250851a1292f484c063", size = 721311 },
-    { url = "https://files.pythonhosted.org/packages/8f/a1/421adcca10d4c5894882bfbf0f7463500defc719da3f5d9a4d2d60b5e882/regex-2021.11.10-cp310-cp310-musllinux_1_1_ppc64le.whl", hash = "sha256:2fee3ed82a011184807d2127f1733b4f6b2ff6ec7151d83ef3477f3b96a13d03", size = 755838 },
-    { url = "https://files.pythonhosted.org/packages/23/03/b000081da9e536bb287533115c3a3424ee47f617d613327a1d7ad5a98b4c/regex-2021.11.10-cp310-cp310-musllinux_1_1_s390x.whl", hash = "sha256:d5fd67df77bab0d3f4ea1d7afca9ef15c2ee35dfb348c7b57ffb9782a6e4db6e", size = 756172 },
-    { url = "https://files.pythonhosted.org/packages/3e/f6/b28b83f2d098b6b4703ef952dd9b37ba02095d48b0863c62cd7375de2faa/regex-2021.11.10-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:5d408a642a5484b9b4d11dea15a489ea0928c7e410c7525cd892f4d04f2f617b", size = 732645 },
-    { url = "https://files.pythonhosted.org/packages/a3/4e/f3b67cccf3c57aaa1073143e48afbab391f05acf6228e3278c74892b712d/regex-2021.11.10-cp310-cp310-win32.whl", hash = "sha256:98ba568e8ae26beb726aeea2273053c717641933836568c2a0278a84987b2a1a", size = 256978 },
-    { url = "https://files.pythonhosted.org/packages/60/a2/fef4d3c26a5d14f9ea09bec2ca99ee7a6514dc3f0878dcc62904443e7011/regex-2021.11.10-cp310-cp310-win_amd64.whl", hash = "sha256:780b48456a0f0ba4d390e8b5f7c661fdd218934388cde1a974010a965e200e12", size = 273282 },
-]
-
-[[package]]
 name = "requests"
 version = "2.32.3"
 source = { registry = "https://pypi.org/simple" }
@@ -3556,7 +3504,7 @@ wheels = [
 [[package]]
 name = "zntrack"
 version = "0.8.7"
-source = { git = "https://github.com/zincware/zntrack#23cb098080269f3b3dbad6f3c1056b7e4d1ccc7f" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "dvc" },
     { name = "pandas" },
@@ -3566,4 +3514,8 @@ dependencies = [
     { name = "znfields" },
     { name = "znflow" },
     { name = "znjson" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b0/8a/a48a9beeb0817bf5a48153275559ed5ba2c2d65b892d000c278a3ce48653/zntrack-0.8.7.tar.gz", hash = "sha256:fc51eb7a96cf5d3baf24f413895748e7de1404ba931928267f5fcb2e140ab85b", size = 345873 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b7/e3/8540c753dc6d30ca1cec0789b431921961017eadd80b5f85a6f32a02bd26/zntrack-0.8.7-py3-none-any.whl", hash = "sha256:2eb2e8f4c9ea7d066a02ab28597e7ca21f1983035aad73c9f624aaba34b68316", size = 61030 },
 ]
