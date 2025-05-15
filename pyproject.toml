@@ -47,6 +47,7 @@ gap = [
 ]
 dev = [
     "dvc-s3>=3.2.0",
+    "mace-torch>=0.3.13",
     "mdanalysis>=2.8.0",
     "pytest>=8.3.4",
     "pytest-cov>=6.0.0",
