@@ -1,9 +1,10 @@
 import dataclasses
 import logging
 from pathlib import Path
-from typing import Union, Optional, Literal
-from ase import units
+from typing import Literal, Optional, Union
+
 import zntrack
+from ase import units
 
 log = logging.getLogger(__name__)
 
@@ -11,10 +12,11 @@ log = logging.getLogger(__name__)
 @dataclasses.dataclass
 class MACEMPModel:
     """Interface for the MACE model.
-    
+
     For more information, see:
     - https://github.com/ACEsuit/mace
     """
+
     model: Optional[Union[str, Path]] = None
     device: str = ""
     default_dtype: str = "float32"
@@ -24,7 +26,6 @@ class MACEMPModel:
     dispersion_cutoff: float = 40.0 * units.Bohr
 
     model_path: Optional[Path] = zntrack.deps_path(None)
-    
 
     def get_calculator(self, **kwargs):
         """Get an xtb ase calculator."""
