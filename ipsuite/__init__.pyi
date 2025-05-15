@@ -105,7 +105,15 @@ from .datasets import MD22Dataset
 from .geometry import BarycenterMapping
 
 # Models
-from .models import GAP, CP2KModel, EnsembleModel, MACEMPModel, ORCAModel, TBLiteModel, GenericASEModel
+from .models import (
+    GAP,
+    CP2KModel,
+    EnsembleModel,
+    GenericASEModel,
+    MACEMPModel,
+    ORCAModel,
+    TBLiteModel,
+)
 
 # Project
 from .project import Project
