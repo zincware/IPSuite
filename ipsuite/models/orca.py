@@ -17,7 +17,7 @@ class ORCAModel:
     ----------
     simpleinput : str
         The ORCA input string.
-        For example: "B3LYP def2-TZVP enGrad TightSCF" to 
+        For example: "B3LYP def2-TZVP enGrad TightSCF" to
         compute the energy and forces of a system using
         the B3LYP functional with the def2-TZVP basis set.
         See [1]_ for more information.
@@ -47,6 +47,7 @@ class ORCAModel:
 
     .. [1] https://orca-manual.mpi-muelheim.mpg.de/index.html
     """
+
     simpleinput: str = "B3LYP def2-TZVP enGrad TightSCF"
     blocks: str = "%pal nprocs 2 end"
     cmd: str | None = None
