@@ -3,6 +3,7 @@ import logging
 
 log = logging.getLogger(__name__)
 
+
 @dataclasses.dataclass
 class TBLiteModel:
     """A model for the TBLite calculator [1]_.
@@ -32,8 +33,9 @@ class TBLiteModel:
     ...     )
     >>> project.build()
     """
-    method:  str = "GFN2-xTB"
-    verbosity:  int = 0
+
+    method: str = "GFN2-xTB"
+    verbosity: int = 0
 
     def get_calculator(self, **kwargs):
         """Get an xtb ase calculator."""
