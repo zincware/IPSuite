@@ -2,11 +2,12 @@ import dataclasses
 import logging
 import os
 from pathlib import Path
-from ase.calculators.orca import ORCA, OrcaProfile
-from ase.calculators.calculator import Calculator
 
+from ase.calculators.calculator import Calculator
+from ase.calculators.orca import ORCA, OrcaProfile
 
 log = logging.getLogger(__name__)
+
 
 @dataclasses.dataclass
 class ORCAModel:
