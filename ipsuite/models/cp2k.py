@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 @dataclasses.dataclass
 class CP2KModel:
     """CP2K ASE calculator model.
-    
+
     Parameters
     ----------
     config : str | Path
@@ -51,7 +51,8 @@ class CP2KModel:
     ...     )
     >>> project.build()
     """
-    config: str | Path  = zntrack.params_path()
+
+    config: str | Path = zntrack.params_path()
     files: list[str | Path] = zntrack.deps_path(default_factory=list)
     cmd: str | None = None
 
