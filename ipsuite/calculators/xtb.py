@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 
 
 @tyex.deprecated(
-    "Use `ipsuite.xTBModel` instead. Reason: Replaced by off-graph implementation."
+    "Use `ipsuite.TBLiteModel` instead. Reason: Replaced by off-graph implementation."
 )
 class xTBSinglePoint(base.ProcessAtoms):
     """Node for labeling date with xTB and obtaining ASE calculators.
