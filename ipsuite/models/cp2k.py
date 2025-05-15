@@ -17,9 +17,9 @@ log = logging.getLogger(__name__)
 
 @dataclasses.dataclass
 class CP2KModel:
+    config: str | Path  # TODO: fix zntrack to use params_path
+    files: list[str | Path] # TODO: fix zntrack to use deps_path
     cmd: str | None = None
-    config: str | Path = zntrack.params_path()
-    files: list[str | Path] = zntrack.deps_path(default_factory=list)
 
     def _update_cmd(self):
         if self.cmd is None:
@@ -42,6 +42,7 @@ class CP2KModel:
     def get_calculator(self, directory: str | Path, index: int = 0, **kwargs) -> CP2K:
         directory = Path(directory) / f"cp2k-{index}"
         directory.mkdir(parents=True, exist_ok=True)
+        self._update_cmd()
         for file in self.files:
             shutil.copy(file, directory)
 

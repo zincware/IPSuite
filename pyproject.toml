@@ -99,3 +99,5 @@ skip = "poetry.lock,ipsuite/static_data/*,docs/source/examples/06_Bootstrapping_
 
 [tool.uv.sources]
 cp2k-output-tools = { git = "https://github.com/cp2k/cp2k-output-tools" }
+zntrack = { git = "https://github.com/zincware/zntrack" } # TODO: rollback before merging!
+

@@ -1370,7 +1370,7 @@ wheels = [
 
 [[package]]
 name = "ipsuite"
-version = "0.2.5"
+version = "0.2.6"
 source = { editable = "." }
 dependencies = [
     { name = "ase" },
@@ -1413,7 +1413,7 @@ requires-dist = [
     { name = "seaborn", specifier = ">=0.13.2" },
     { name = "uncertainty-toolbox", specifier = ">=0.1.1" },
     { name = "znh5md", specifier = ">=0.4.4" },
-    { name = "zntrack", specifier = ">=0.8.5" },
+    { name = "zntrack", git = "https://github.com/zincware/zntrack" },
 ]
 
 [package.metadata.requires-dev]
@@ -3555,8 +3555,8 @@ wheels = [
 
 [[package]]
 name = "zntrack"
-version = "0.8.5"
-source = { registry = "https://pypi.org/simple" }
+version = "0.8.7"
+source = { git = "https://github.com/zincware/zntrack#23cb098080269f3b3dbad6f3c1056b7e4d1ccc7f" }
 dependencies = [
     { name = "dvc" },
     { name = "pandas" },
@@ -3566,8 +3566,4 @@ dependencies = [
     { name = "znfields" },
     { name = "znflow" },
     { name = "znjson" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/d0/45/e82f034b99f2782b03522ee03be0f356108c7f09156f69c9282b0eafd614/zntrack-0.8.5.tar.gz", hash = "sha256:c118845efaf1e379c3045c6e5de3e3db14e97980a1af025e11babb3fedd97793", size = 341821 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/ef/6e/eeb93f3f4f19479e1e1241952f10ab50d8c8f47857becfc95d11b9aff0a2/zntrack-0.8.5-py3-none-any.whl", hash = "sha256:813b4750b8191f15b39941d92f7407c697dbf2cb34c6854266994fbbf34efc57", size = 59377 },
 ]

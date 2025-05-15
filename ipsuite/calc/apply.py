@@ -30,10 +30,14 @@ class ApplyCalculator(zntrack.Node):
     dump_rate: int | None = zntrack.params(None)
 
     frames_path: pathlib.Path = zntrack.outs_path(zntrack.nwd / "frames.h5")
+    model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model")
+
 
     def run(self):
+        self.model_outs.mkdir(parents=True, exist_ok=True)
+        (self.model_outs / "dummy.txt").write_text("Thank you for using IPSuite!")
         frames = []
-        calc = self.model.get_calculator()
+        calc = self.model.get_calculator(directory=self.model_outs)
         io = znh5md.IO(self.frames_path)
 
         # TODO: use laufband

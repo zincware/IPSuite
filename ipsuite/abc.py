@@ -1,16 +1,12 @@
-"""Abstract base classes and type hints."""
-
-import typing as t
+from typing import Protocol, TypeVar
 from pathlib import Path
-
 from ase.calculators.calculator import Calculator
 
-T = t.TypeVar("T", covariant=True)
+T = TypeVar("T", covariant=True)
 
-
-class NodeWithCalculator(t.Protocol[T]):
-    """Any @dataclass, including zntrack.Node that provides a calculator."""
+class NodeWithCalculator(Protocol[T]):
+    """Any class with a `get_calculator` method returning an ASE Calculator."""
 
     def get_calculator(
-        self, directory: str | Path | None = None, **kwargs
+        self, **kwargs
     ) -> Calculator: ...
