@@ -7,21 +7,6 @@ import zntrack
 from ase.calculators.calculator import Calculator
 
 
-class Device:
-    AUTO = "auto"
-    CPU = "cpu"
-    CUDA = "cuda"
-
-    @staticmethod
-    def resolve_auto() -> t.Literal["cpu", "cuda"]:
-        import torch
-
-        return "cuda" if torch.cuda.is_available() else "cpu"
-
-
-# TODO: add files as dependencies somehow!
-
-
 @dataclasses.dataclass
 class GenericASEModel:
     """Generic ASE calculator.
@@ -48,7 +33,6 @@ class GenericASEModel:
     module: str
     class_name: str
     kwargs: dict[str, t.Any] | None = None
-    device: t.Literal["auto", "cpu", "cuda"] | None = None
     parameter_paths: str | Path | list[str | Path] | None = zntrack.params_path(None)
     file_paths: str | Path | list[str | Path] | None = zntrack.deps_path(None)
 
@@ -57,12 +41,7 @@ class GenericASEModel:
             kwargs.update(self.kwargs)
         module = importlib.import_module(self.module)
         cls = getattr(module, self.class_name)
-        if self.device is None:
-            return cls(**kwargs)
-        elif self.device == "auto":
-            return cls(**kwargs, device=Device.resolve_auto())
-        else:
-            return cls(**kwargs, device=self.device)
+        return cls(**kwargs)
 
     @property
     def available(self) -> bool:
