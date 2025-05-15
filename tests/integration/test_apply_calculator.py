@@ -3,7 +3,7 @@ import ipsuite as ips
 
 def test_apply_calculator(proj_path):
     project = ips.Project()
-    
+
     model = ips.MACEMPModel()
 
     with project:
@@ -15,8 +15,7 @@ def test_apply_calculator(proj_path):
             data=water.frames,
             model=model,
         )
-    
+
     project.repro()
 
     assert len(traj.frames) == 10
-
