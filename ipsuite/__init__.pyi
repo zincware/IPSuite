@@ -45,6 +45,7 @@ from .bootstrap import (
     SurfaceRasterScan,
     TranslateMolecules,
 )
+from .calc import ApplyCalculator
 
 # Calculators
 from .calculators import (
@@ -104,7 +105,15 @@ from .datasets import MD22Dataset
 from .geometry import BarycenterMapping
 
 # Models
-from .models import GAP, EnsembleModel
+from .models import (
+    GAP,
+    CP2KModel,
+    EnsembleModel,
+    GenericASEModel,
+    MACEMPModel,
+    ORCAModel,
+    TBLiteModel,
+)
 
 # Project
 from .project import Project
@@ -119,6 +128,11 @@ __all__ = [
     # Models
     "GAP",
     "EnsembleModel",
+    "CP2KModel",
+    "TBLiteModel",
+    "ORCAModel",
+    "MACEMPModel",
+    "GenericASEModel",
     # Configuration Selection
     "IndexSelection",
     "RandomSelection",
@@ -204,4 +218,6 @@ __all__ = [
     "BarycenterMapping",
     # Project
     "Project",
+    # Calc
+    "ApplyCalculator",
 ]
