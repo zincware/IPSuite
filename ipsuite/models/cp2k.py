@@ -1,15 +1,16 @@
 import dataclasses
-import zntrack
-from pathlib import Path
-from ase.calculators.cp2k import CP2K
-import yaml
-from cp2k_input_tools.generator import CP2KInputGenerator
+import functools
 import logging
 import os
 import shutil
-from unittest.mock import patch
-import functools
 import subprocess
+from pathlib import Path
+from unittest.mock import patch
+
+import yaml
+import zntrack
+from ase.calculators.cp2k import CP2K
+from cp2k_input_tools.generator import CP2KInputGenerator
 
 log = logging.getLogger(__name__)
 
@@ -18,7 +19,7 @@ log = logging.getLogger(__name__)
 class CP2KModel:
     cmd: str | None = None
     config: str | Path = zntrack.params_path()
-    files: list[str|Path] = zntrack.deps_path(default_factory=list)
+    files: list[str | Path] = zntrack.deps_path(default_factory=list)
 
     def _update_cmd(self):
         if self.cmd is None:
@@ -38,7 +39,7 @@ class CP2KModel:
 
         return "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
 
-    def get_calculator(self, directory: str|Path, index: int = 0, **kwargs) -> CP2K:
+    def get_calculator(self, directory: str | Path, index: int = 0, **kwargs) -> CP2K:
         directory = Path(directory) / f"cp2k-{index}"
         directory.mkdir(parents=True, exist_ok=True)
         for file in self.files:

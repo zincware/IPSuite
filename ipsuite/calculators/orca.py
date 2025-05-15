@@ -5,16 +5,17 @@ import pathlib
 import ase
 import h5py
 import tqdm
+import typing_extensions as tyex
 import znh5md
 import zntrack
 from ase.calculators.orca import ORCA, OrcaProfile
 
 from ipsuite import base
-import typing_extensions as tyex
 
 
-@tyex.deprecated("Use `ipsuite.ORCAModel` instead."
-                 " Reason: Replaced by off-graph implementation.")
+@tyex.deprecated(
+    "Use `ipsuite.ORCAModel` instead. Reason: Replaced by off-graph implementation."
+)
 class OrcaSinglePoint(base.IPSNode):
     """Node for running ORCA Single point calculations.
 

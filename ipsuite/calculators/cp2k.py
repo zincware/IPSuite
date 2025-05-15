@@ -11,11 +11,11 @@ import shutil
 import subprocess
 import typing as t
 from unittest.mock import patch
-import typing_extensions as tyex
 
 import ase.calculators.cp2k
 import ase.io
 import h5py
+import typing_extensions as tyex
 import yaml
 import znh5md
 import zntrack
@@ -40,8 +40,10 @@ def _update_cmd(cp2k_cmd: str | None, env="IPSUITE_CP2K_SHELL") -> str:
             ) from err
     return cp2k_cmd
 
-@tyex.deprecated("Use `ipsuite.CP2KModel` instead."
-                 " Reason: Replaced by off-graph implementation.")
+
+@tyex.deprecated(
+    "Use `ipsuite.CP2KModel` instead. Reason: Replaced by off-graph implementation."
+)
 class CP2KSinglePoint(base.IPSNode):
     """Node for running CP2K Single point calculations.
 

@@ -10,4 +10,7 @@ T = t.TypeVar("T", covariant=True)
 
 class NodeWithCalculator(t.Protocol[T]):
     """Any @dataclass, including zntrack.Node that provides a calculator."""
-    def get_calculator(self, directory: str|Path|None = None,**kwargs) -> Calculator: ...
+
+    def get_calculator(
+        self, directory: str | Path | None = None, **kwargs
+    ) -> Calculator: ...
