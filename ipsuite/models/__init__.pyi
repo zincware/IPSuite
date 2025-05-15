@@ -5,6 +5,7 @@ from .gap import GAP
 from .mace import MACEMPModel
 from .orca import ORCAModel
 from .tblite import TBLiteModel
+from .generic import GenericASEModel
 
 __all__ = [
     "MLModel",
@@ -14,4 +15,5 @@ __all__ = [
     "TBLiteModel",
     "ORCAModel",
     "MACEMPModel",
+    "GenericASEModel",
 ]

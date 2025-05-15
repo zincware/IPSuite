@@ -23,7 +23,7 @@ class Device:
 
 
 @dataclasses.dataclass
-class GenericASECalculator:
+class GenericASEModel:
     """Generic ASE calculator.
 
     Load any ASE calculator from a module and class name.
