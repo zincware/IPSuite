@@ -61,6 +61,7 @@ from .calculators import (
     FixedSphereConstraint,
     LammpsSimulator,
     LangevinThermostat,
+    HookeanConstraint,
     LJSinglePoint,
     MixCalculator,
     NPTThermostat,
@@ -214,6 +215,7 @@ __all__ = [
     "FixedLayerConstraint",
     "FixedBondLengthConstraint",
     "PressureRampModifier",
+    "HookeanConstraint",
     # Geometry
     "BarycenterMapping",
     # Project
