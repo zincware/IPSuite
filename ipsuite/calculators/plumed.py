@@ -1,13 +1,157 @@
-import pathlib
-import typing
+import typing as t
+from dataclasses import dataclass
+from pathlib import Path
 
 import ase
 import zntrack
 from ase import units
 from ase.calculators.calculator import Calculator, all_changes
 from ase.calculators.plumed import Plumed
+from ipsuite.abc import NodeWithCalculator
 
-import ipsuite as ips
+
+def cv_to_dataclass(cv: dict):
+    """
+    Convert a CV dictionary to a PLUMED string.
+    """
+    cv = cv.copy()
+    _type = cv.pop("_type", None)
+    if _type == DistanceCV.__name__:
+        return DistanceCV(**cv)
+    elif _type == TorsionCV.__name__:
+        return TorsionCV(**cv)
+    else:
+        raise ValueError(f"Unknown CV type: {_type}")
+
+
+# TODO: consider 0index instead of 1index of plumed?
+@dataclass
+class DistanceCV:
+    """DistanceCV class for PLUMED.
+
+    Reference
+    ----------
+    https://www.plumed.org/doc-master/user-doc/html/DISTANCE/
+    """
+
+    name: str
+    atoms: list[int]
+    grid_min: float | str
+    grid_max: float | str
+    grid_bin: int
+
+    _type: str = "DistanceCV"
+
+    def __post_init__(self):
+        if len(self.atoms) != 2:
+            raise ValueError("DistanceCV requires exactly 2 atoms.")
+        if not all(isinstance(atom, int) for atom in self.atoms):
+            raise TypeError("Atoms must be a list of integers.")
+
+    def to_plumed(self) -> str:
+        return f"{self.name}: DISTANCE ATOMS={','.join(map(str, self.atoms))}"
+
+    def __hash__(self):
+        return hash((self.name, tuple(self.atoms), self._type))
+
+
+@dataclass
+class TorsionCV:
+    """TorsionCV class for PLUMED.
+
+    Reference
+    ----------
+    https://www.plumed.org/doc-master/user-doc/html/TORSION/
+    """
+
+    name: str
+    atoms: list[int]
+    grid_min: float | str
+    grid_max: float | str
+    grid_bin: int
+
+    _type: str = "TorsionCV"  # need this, because dataclass.asdict() doesn't include the class name
+
+    def __post_init__(self):
+        if len(self.atoms) != 4:
+            raise ValueError("TorsionCV requires exactly 4 atoms.")
+        if not all(isinstance(atom, int) for atom in self.atoms):
+            raise TypeError("Atoms must be a list of integers.")
+
+    def to_plumed(self) -> str:
+        return f"{self.name}: TORSION ATOMS={','.join(map(str, self.atoms))}"
+
+    def __hash__(self):
+        return hash((self.name, tuple(self.atoms), self._type))
+
+
+@dataclass
+class MetadBias:
+    """MetadBias class for PLUMED.
+
+    Reference
+    ----------
+    https://www.plumed.org/doc-master/user-doc/html/METAD/
+    """
+
+    cvs: list[t.Union[DistanceCV, TorsionCV, dict]]
+    pace: int = 500
+    height: float = 1.2
+    sigma: float | list[float] = 0.3
+    biasfactor: float = 10
+    temp: float = 300
+    file: str = "HILLS"
+    name: str = "metad"
+
+    def __post_init__(self):
+        if isinstance(self.sigma, list):
+            if len(self.sigma) != len(self.cvs):
+                raise ValueError(
+                    "Length of SIGMA must match the number of CVs."
+                )
+
+    def to_plumed(self, directory: Path) -> list[str]:
+        cvs = [cv_to_dataclass(cv) if isinstance(cv, dict) else cv for cv in self.cvs]
+        if not cvs:
+            raise ValueError("MetadBias requires at least one CV.")
+
+        arg_names = ",".join(cv.name for cv in cvs)
+        file_path = Path(directory) / self.file
+
+        # Prepare comma-separated values for grid settings
+        grid_min = ",".join(str(cv.grid_min) for cv in cvs)
+        grid_max = ",".join(str(cv.grid_max) for cv in cvs)
+        grid_bin = ",".join(str(cv.grid_bin) for cv in cvs)
+
+        if isinstance(self.sigma, list):
+            sigma_str = ",".join(str(s) for s in self.sigma)
+        else:
+            sigma_str = ",".join(str(self.sigma) for _ in self.cvs)
+
+        metad_line = (
+            f"{self.name}: METAD ARG={arg_names} "
+            f"PACE={self.pace} HEIGHT={self.height} SIGMA={sigma_str} "
+            f"BIASFACTOR={self.biasfactor} TEMP={self.temp} "
+            f"FILE={file_path.as_posix()} "
+            f"GRID_MIN={grid_min} GRID_MAX={grid_max} GRID_BIN={grid_bin}"
+        )
+
+        return [metad_line]
+
+
+@dataclass
+class PrintAction:
+    cvs: list[t.Union[DistanceCV, TorsionCV]]
+    stride: int = 1
+    file: str = "COLVAR"
+
+    def to_plumed(self, directory: Path) -> list[str]:
+        cvs = [cv_to_dataclass(cv) if isinstance(cv, dict) else cv for cv in self.cvs]
+        arg_names = ",".join(cv.name for cv in cvs)
+        file_path = Path(directory) / self.file
+        return [
+            f"PRINT ARG={arg_names} STRIDE={self.stride} FILE={file_path.as_posix()}"
+        ]
 
 
 class NonOverwritingPlumed(Plumed):
@@ -15,104 +159,65 @@ class NonOverwritingPlumed(Plumed):
         self, atoms=None, properties=["energy", "forces"], system_changes=all_changes
     ):
         Calculator.calculate(self, atoms, properties, system_changes)
-
-        comp = self.compute_energy_and_forces(self.atoms.get_positions(), self.istep)
-        energy, forces = comp
+        energy, forces = self.compute_energy_and_forces(
+            self.atoms.get_positions(), self.istep
+        )
         self.istep += 1
-        # This line ensures the preservation of important model results!
         self.results = {f"model_{k}": v for k, v in self.calc.results.items()}
         self.results["energy"], self.results["forces"] = energy, forces
 
 
-class PlumedCalculator(ips.base.IPSNode):
-    """Interface for the enhanced-sampling software PLUMED.
+class PlumedModel(zntrack.Node):
+    data: list[ase.Atoms] = zntrack.deps()
+    model: NodeWithCalculator = zntrack.deps()
+    actions: list[t.Union[MetadBias, PrintAction]] = zntrack.deps()
 
-    Parameters
-    ----------
-    data : list[ase.Atoms]
-        List of `ase.Atoms` objects representing the system, which will be used
-        in combination with the calculator.
+    temperature: float = zntrack.params()
+    timestep: float = zntrack.params()
+    data_id: int = zntrack.params(default=-1)
 
-    data_id : int, default=-1
-        Index of the `ase.Atoms` object from the `data` list that will be used
-        to initialize the PLUMED calculator.
+    def get_calculator(self, directory: str | Path) -> Plumed:
+        directory = Path(directory)
+        directory.mkdir(parents=True, exist_ok=True)
 
-    model : typing.Any
-        The model to be used with the PLUMED calculator. (Provide a more detailed
-        description if applicable.)
+        lines = []
+        cvs = []
+        for action in self.actions:
+            action_cvs = [
+                cv_to_dataclass(cv) if isinstance(cv, dict) else cv for cv in action.cvs
+            ]
+            cvs.extend(action_cvs)
+            block = action.to_plumed(directory)
 
-    input_script_path : str
-        Path to the input script required for PLUMED. Instructions for PLUMED
-        can be provided either as a dedicated file (e.g., `plumed.dat`) or as
-        a string (see `input_string`). If `input_string` is used, this parameter
-        should not be set.
+            if isinstance(block, str):
+                lines.append(block)
+            elif isinstance(block, list):
+                lines.extend(block)
+            else:
+                raise TypeError("Unexpected return type from to_plumed()")
+        
+        # Add the unique CVs to the plumed input
+        for cv in set(cvs):
+            lines.insert(0, cv.to_plumed())
+        lines.insert(
+            0, f"UNITS LENGTH=A TIME={1 * units.fs} ENERGY={units.mol / units.kJ}"
+        )
 
-    input_string : str
-        Instructions for PLUMED provided as a list of strings instead of a file.
-        This parameter must not be set simultaneously with `input_script_path`.
-
-    temperature : float
-        Simulation temperature in Kelvin. This parameter is required, even if
-        not directly used, and is particularly important for metadynamics.
-
-    timestep : float
-        Timestep used in the simulation, in femtoseconds (fs).
-    """
-
-    data: list[ase.Atoms] = (
-        zntrack.deps()
-    )  # Plumed only works with a single ase.Atoms object!!!
-    data_id: int = zntrack.params(-1)
-    model: typing.Any = zntrack.deps()
-
-    input_script_path: str = zntrack.deps_path(None)  # plumed.dat
-    input_string: list[str] = zntrack.params(None)
-
-    temperature: float = zntrack.params(None)  # in Kelvin! Important for Metadynamics
-    timestep: float = zntrack.params(None)
-
-    plumed_directory: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plumed")
-
-    def check_input_instructions(self):
-        if self.input_script_path is None and self.input_string is None:
-            raise ValueError(
-                "No plumed input instructions are specified! Please provide a "
-                "filepath to a plumed setupfile or set the `input_string` variable."
-            )
-        if self.input_script_path is not None and self.input_string is not None:
-            raise ValueError(
-                "Both `input_script_path` and `input_string` are set. However, "
-                "only one of the two can be set at a time!"
-            )
-
-        if self.input_script_path is not None:
-            with pathlib.Path.open(self.input_script_path, "r") as file:
-                self.setup = file.read().splitlines()
-        elif self.input_string is not None:
-            self.setup = self.input_string
-
-        # needed for ase units:
-        units_string = f"""UNITS LENGTH=A TIME=1 \
-            ENERGY={units.mol / units.kJ}"""
-
-        self.setup.insert(0, units_string)
-        with pathlib.Path.open(
-            (self.plumed_directory / "setup.dat").as_posix(), "w"
-        ) as file:
-            for line in self.setup:
+        # Write plumed input file
+        with (directory / "plumed.dat").open("w") as file:
+            for line in lines:
                 file.write(line + "\n")
 
-    def run(self):
-        self.plumed_directory.mkdir(parents=True, exist_ok=True)
-        (self.plumed_directory / "outs.txt").write_text("Lorem Ipsum")
+        kT = units.kB * self.temperature
 
-    def get_calculator(self, directory: str = None):
-        self.check_input_instructions()
         return NonOverwritingPlumed(
             calc=self.model.get_calculator(),
             atoms=self.data[self.data_id],
-            input=self.setup,
-            timestep=self.timestep,
-            kT=self.temperature * units.kB,
-            log=(self.plumed_directory / "plumed.log").as_posix(),
+            input=lines,
+            timestep=float(self.timestep * units.fs),
+            kT=float(kT),
+            log=(directory / "plumed.log").as_posix(),
         )
+
+    def run(self):
+        pass
