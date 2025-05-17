@@ -7,6 +7,7 @@ import zntrack
 from ase import units
 from ase.calculators.calculator import Calculator, all_changes
 from ase.calculators.plumed import Plumed
+
 from ipsuite.abc import NodeWithCalculator
 
 
@@ -106,9 +107,7 @@ class MetadBias:
     def __post_init__(self):
         if isinstance(self.sigma, list):
             if len(self.sigma) != len(self.cvs):
-                raise ValueError(
-                    "Length of SIGMA must match the number of CVs."
-                )
+                raise ValueError("Length of SIGMA must match the number of CVs.")
 
     def to_plumed(self, directory: Path) -> list[str]:
         cvs = [cv_to_dataclass(cv) if isinstance(cv, dict) else cv for cv in self.cvs]
@@ -149,9 +148,7 @@ class PrintAction:
         cvs = [cv_to_dataclass(cv) if isinstance(cv, dict) else cv for cv in self.cvs]
         arg_names = ",".join(cv.name for cv in cvs)
         file_path = Path(directory) / self.file
-        return [
-            f"PRINT ARG={arg_names} STRIDE={self.stride} FILE={file_path.as_posix()}"
-        ]
+        return [f"PRINT ARG={arg_names} STRIDE={self.stride} FILE={file_path.as_posix()}"]
 
 
 class NonOverwritingPlumed(Plumed):
@@ -195,7 +192,7 @@ class PlumedModel(zntrack.Node):
                 lines.extend(block)
             else:
                 raise TypeError("Unexpected return type from to_plumed()")
-        
+
         # Add the unique CVs to the plumed input
         for cv in set(cvs):
             lines.insert(0, cv.to_plumed())
