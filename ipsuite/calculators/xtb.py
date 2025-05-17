@@ -1,6 +1,7 @@
 import logging
 
 import tqdm
+import typing_extensions as tyex
 import zntrack
 
 from ipsuite import base
@@ -9,6 +10,9 @@ from ipsuite.utils.ase_sim import freeze_copy_atoms
 log = logging.getLogger(__name__)
 
 
+@tyex.deprecated(
+    "Use `ipsuite.TBLiteModel` instead. Reason: Replaced by off-graph implementation."
+)
 class xTBSinglePoint(base.ProcessAtoms):
     """Node for labeling date with xTB and obtaining ASE calculators.
 
