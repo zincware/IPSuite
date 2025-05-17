@@ -22,7 +22,7 @@ from .cp2k import CP2KSinglePoint
 from .lammps import LammpsSimulator
 from .mix import MixCalculator
 from .orca import OrcaSinglePoint
-from .plumed import PlumedModel, MetadBias, DistanceCV, TorsionCV, PrintAction
+from .plumed import DistanceCV, MetadBias, PlumedModel, PrintAction, TorsionCV
 from .xtb import xTBSinglePoint
 
 __all__ = [
