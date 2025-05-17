@@ -22,6 +22,7 @@ from .cp2k import CP2KSinglePoint
 from .lammps import LammpsSimulator
 from .mix import MixCalculator
 from .orca import OrcaSinglePoint
+from .plumed import DistanceCV, MetadBias, PlumedModel, PrintAction, TorsionCV
 from .xtb import xTBSinglePoint
 
 __all__ = [
@@ -47,6 +48,11 @@ __all__ = [
     "FixedLayerConstraint",
     "MixCalculator",
     "SVCRBarostat",
+    "PlumedModel",
     "FixedBondLengthConstraint",
     "HookeanConstraint",
+    "MetadBias",
+    "DistanceCV",
+    "TorsionCV",
+    "PrintAction",
 ]
