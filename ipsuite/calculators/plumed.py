@@ -23,6 +23,43 @@ class NonOverwritingPlumed(Plumed):
 
 
 class PlumedModel(zntrack.Node):
+    """Plumed interface.
+    
+    Parameters
+    ----------
+    data: list[ase.Atoms]
+        List of ase atoms objects used to initialize the calculator.
+    data_id: int
+        Index of the ase atoms object to use for initialization.
+    model: NodeWithCalculator
+        The node that provides the calculator to compute 
+        unbiased energy and forces.
+    config: str | Path  
+        Path to the plumed input file.
+    temperature: float
+        Temperature of the simulation in Kelvin.
+    timestep: float 
+        Timestep of the simulation in fs.
+
+    Example
+    -------
+    An example config file for plumed can look like this:
+
+    .. code-block:: text
+
+        hoh-c: DISTANCE ATOMS=48,3
+        c-r1: DISTANCE ATOMS=2,3
+        metad: METAD ARG=hoh-c,c-r1 PACE=100 HEIGHT=0.75 SIGMA=0.5,0.5 \
+               BIASFACTOR=10 TEMP=400 FILE=HILLS GRID_MIN=1.15,1.15 \
+               GRID_MAX=8.0,8.0 GRID_BIN=200,200
+        PRINT ARG=hoh-c,c-r1 STRIDE=10 FILE=COLVAR
+
+    References
+    ----------
+    [1] Plumed manual: https://www.plumed.org/doc-master/user-doc/html/index.html
+    [2] Plumed : https://www.plumed.org/
+
+    """
     data: list[ase.Atoms] = zntrack.deps()
     model: NodeWithCalculator = zntrack.deps()
     config: str | Path = zntrack.deps_path()
