@@ -7,6 +7,7 @@ from ase.calculators.calculator import Calculator, all_changes
 from ase.calculators.plumed import Plumed
 
 from ipsuite.abc import NodeWithCalculator
+from ipsuite.base import IPSNode
 
 
 class NonOverwritingPlumed(Plumed):
@@ -22,7 +23,7 @@ class NonOverwritingPlumed(Plumed):
         self.results["energy"], self.results["forces"] = energy, forces
 
 
-class PlumedModel(zntrack.Node):
+class PlumedModel(IPSNode):
     """Plumed interface.
     
     Parameters
