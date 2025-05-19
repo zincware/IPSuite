@@ -98,8 +98,7 @@ class PlumedModel(IPSNode):
 
         lines.insert(
             0,
-            f"UNITS LENGTH=A TIME={1 / (1000 * units.fs)}"
-            " ENERGY={units.mol / units.kJ} \n",
+            f"UNITS LENGTH=A TIME={1 / (1000 * units.fs)} ENERGY={units.mol / units.kJ}",
         )
 
         for i, line in enumerate(lines):
