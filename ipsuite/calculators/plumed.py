@@ -11,9 +11,7 @@ from ipsuite.base import IPSNode
 
 
 class NonOverwritingPlumed(Plumed):
-    def calculate(
-        self, atoms=None, properties=None, system_changes=all_changes
-    ):
+    def calculate(self, atoms=None, properties=None, system_changes=all_changes):
         if properties is None:
             properties = ["energy", "forces"]
         Calculator.calculate(self, atoms, properties, system_changes)
