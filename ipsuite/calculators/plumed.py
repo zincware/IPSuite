@@ -95,9 +95,11 @@ class PlumedModel(IPSNode):
                 "The plumed input file should not contain the ENERGY keyword. "
                 "This is automatically added by the PlumedModel."
             )
+
         lines.insert(
             0,
-            f"UNITS LENGTH=A TIME={1/(1000 * units.fs)} ENERGY={units.mol / units.kJ} \n"
+            f"UNITS LENGTH=A TIME={1 / (1000 * units.fs)}"
+            " ENERGY={units.mol / units.kJ} \n",
         )
 
         for i, line in enumerate(lines):
