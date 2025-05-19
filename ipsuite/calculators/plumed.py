@@ -1,4 +1,3 @@
-import typing as t
 from pathlib import Path
 
 import ase
@@ -26,7 +25,7 @@ class NonOverwritingPlumed(Plumed):
 class PlumedModel(zntrack.Node):
     data: list[ase.Atoms] = zntrack.deps()
     model: NodeWithCalculator = zntrack.deps()
-    config: str|Path = zntrack.deps_path()
+    config: str | Path = zntrack.deps_path()
 
     temperature: float = zntrack.params()
     timestep: float = zntrack.params()
@@ -38,7 +37,7 @@ class PlumedModel(zntrack.Node):
 
         with Path(self.config).open("r") as file:
             lines = file.readlines()
-        
+
         # check if "UNITS" is in any line
         if any("UNITS" in line for line in lines):
             raise ValueError(
