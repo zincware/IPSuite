@@ -25,7 +25,7 @@ class NonOverwritingPlumed(Plumed):
 
 class PlumedModel(IPSNode):
     """Plumed interface.
-    
+
     Parameters
     ----------
     data: list[ase.Atoms]
@@ -33,13 +33,13 @@ class PlumedModel(IPSNode):
     data_id: int
         Index of the ase atoms object to use for initialization.
     model: NodeWithCalculator
-        The node that provides the calculator to compute 
+        The node that provides the calculator to compute
         unbiased energy and forces.
-    config: str | Path  
+    config: str | Path
         Path to the plumed input file.
     temperature: float
         Temperature of the simulation in Kelvin.
-    timestep: float 
+    timestep: float
         Timestep of the simulation in fs.
 
     Example
@@ -61,6 +61,7 @@ class PlumedModel(IPSNode):
     [2] Plumed : https://www.plumed.org/
 
     """
+
     data: list[ase.Atoms] = zntrack.deps()
     model: NodeWithCalculator = zntrack.deps()
     config: str | Path = zntrack.deps_path()
