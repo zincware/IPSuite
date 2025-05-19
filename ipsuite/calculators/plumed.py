@@ -60,6 +60,11 @@ class PlumedModel(zntrack.Node):
             0, f"UNITS LENGTH=A TIME={1 * units.fs} ENERGY={units.mol / units.kJ} \n"
         )
 
+        for i, line in enumerate(lines):
+            if "FILE=" in line:
+                # move file paths to NWD
+                lines[i] = line.replace("FILE=", f"FILE={directory}/")
+
         # Write plumed input file
         with (directory / "plumed.dat").open("w") as file:
             for line in lines:
