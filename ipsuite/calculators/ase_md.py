@@ -280,7 +280,7 @@ class LangevinThermostat:
     temperature: float
     friction: float
 
-    def get_thermostat(self, atoms):
+    def get_thermostat(self, atoms: ase.Atoms) -> Langevin:
         thermostat = Langevin(
             atoms=atoms,
             timestep=self.time_step * units.fs,
