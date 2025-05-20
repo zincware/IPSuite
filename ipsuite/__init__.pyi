@@ -11,11 +11,8 @@ from .analysis import (
     BoxScale,
     CalibrationMetrics,
     CollectMDSteps,
-    ConnectivityCheck,
-    DebugCheck,
     DipoleHistogram,
     EnergyHistogram,
-    EnergySpikeCheck,
     EnergyUncertaintyHistogram,
     ForceAngles,
     ForceDecomposition,
@@ -25,13 +22,10 @@ from .analysis import (
     MDStability,
     ModelEnsembleAnalysis,
     MoveSingleParticle,
-    NaNCheck,
     Prediction,
     PredictionMetrics,
     RattleAnalysis,
     StressHistogram,
-    TemperatureCheck,
-    ThresholdCheck,
 )
 
 # Base imports
@@ -101,6 +95,14 @@ from .data_loading import AddData, AddDataH5MD
 
 # Datasets
 from .datasets import MD22Dataset
+from .dynamics import (
+    ConnectivityCheck,
+    DebugCheck,
+    EnergySpikeCheck,
+    NaNCheck,
+    TemperatureCheck,
+    ThresholdCheck,
+)
 
 # Geometry
 from .geometry import BarycenterMapping

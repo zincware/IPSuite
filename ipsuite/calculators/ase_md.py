@@ -18,6 +18,20 @@ from ase.md.npt import NPT
 from ase.md.nvtberendsen import NVTBerendsen
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md.verlet import VelocityVerlet
+from rich.live import Live
+from rich.panel import Panel
+from rich.progress import (
+    BarColumn,
+    Progress,
+    ProgressColumn,
+    SpinnerColumn,
+    TaskProgressColumn,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
+from rich.table import Table
+from rich.text import Text
 from tqdm import trange
 
 from ipsuite import base
@@ -26,6 +40,16 @@ from ipsuite.calculators.integrators import StochasticVelocityCellRescaling
 from ipsuite.utils.ase_sim import freeze_copy_atoms, get_box_from_density, get_energy
 
 log = logging.getLogger(__name__)
+
+
+class IterationsPerSecondColumn(ProgressColumn):
+    def render(self, task):
+        if task.finished:
+            speed = task.completed / task.finished_time if task.finished_time else 0
+        else:
+            elapsed = task.elapsed or 0
+            speed = task.completed / elapsed if elapsed > 0 else 0
+        return Text(f"{speed:5.2f} it/s", style="magenta")
 
 
 @dataclasses.dataclass
@@ -784,57 +808,84 @@ class ASEMD(base.IPSNode):
         metrics_dict = self.initialize_metrics(atoms)
         sampling_iterations, total_fs = self.adjust_sim_time(time_step)
 
-        for constraint in self.constraints:
-            atoms.set_constraint(constraint.get_constraint(atoms))
-
-        # Run simulation
         atoms_cache = []
         self.steps_before_stopping = {"index": None}
-        tbar = trange(
-            self.steps,
-            leave=True,
-            ncols=120,
+
+        for constraint in self.constraints:
+            atoms.set_constraint(constraint.get_constraint(atoms))
+        # Replace tqdm tbar with Rich setup
+        progress = Progress(
+            SpinnerColumn(),
+            TextColumn("[bold green]Progress"),
+            BarColumn(),
+            TaskProgressColumn(),
+            TimeElapsedColumn(),
+            TimeRemainingColumn(),
+            IterationsPerSecondColumn(),
+            transient=True,
         )
-        for step in tbar:
-            self.apply_modifiers(thermostat, step)
-            if self.wrap:
-                atoms.wrap()
-            try:
-                thermostat.run(1)
-            except Exception as e:
-                # some calculators, e.g. plumed can raise an error
-                log.error(f"MD simulation failed: {e}")
-                self.steps_before_stopping = {"index": step}
-                break
 
-            check_trigger = []
-            for check in self.checks:
-                check_trigger.append(check.check(atoms))
-                if check_trigger[-1]:
-                    log.critical(str(check))
-            if any(check_trigger):
-                self.steps_before_stopping = {"index": step}
-                break
+        task = progress.add_task("Simulation", total=self.steps)
 
-            try:
-                metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks, step)
-            except Exception as e:
-                # when updating the metrics, technically we already compute
-                # the potential energy and forces for the next step and ASE magic cache
-                # the results.
-                log.error(f"MD simulation failed: {e}")
-                self.steps_before_stopping = {"index": step}
-                break
-            if step % self.sampling_rate == 0:
-                atoms_cache.append(freeze_copy_atoms(atoms))
-            if len(atoms_cache) == self.dump_rate:
-                self.db.extend(atoms_cache)
-                atoms_cache = []
-            time = (step + 1) * time_step
-            temperature = metrics_dict["temperature"][-1]
-            energy = metrics_dict["energy"][-1]
-            desc = get_desc(temperature, energy, time, total_fs)
-            tbar.set_description(desc)
+        def build_info_panel(metrics_dict, i):
+            table = Table.grid(padding=(0, 1), expand=True)
+            table.add_column(justify="left", style="bold")
+            table.add_column(justify="right")
+
+            for key, values in metrics_dict.items():
+                if isinstance(values, (list, np.ndarray)) and len(values) > i:
+                    val = values[i]
+                    if isinstance(val, float):
+                        table.add_row(f"{key}:", f"{val:.3f}")
+                    else:
+                        table.add_row(f"{key}:", str(val))
+
+            return Panel(
+                table, title="Simulation Info", border_style="cyan", padding=(1, 2)
+            )
+
+        with Live(console=progress.console, refresh_per_second=10) as live:
+            for step in range(self.steps):
+                self.apply_modifiers(thermostat, step)
+                if self.wrap:
+                    atoms.wrap()
+                try:
+                    thermostat.run(1)
+                except Exception as e:
+                    log.error(f"MD simulation failed: {e}")
+                    self.steps_before_stopping = {"index": step}
+                    break
+
+                check_trigger = []
+                for check in self.checks:
+                    check_trigger.append(check.check(atoms))
+                    if check_trigger[-1]:
+                        log.critical(str(check))
+                if any(check_trigger):
+                    self.steps_before_stopping = {"index": step}
+                    break
+
+                try:
+                    metrics_dict = update_metrics_dict(
+                        atoms, metrics_dict, self.checks, step
+                    )
+                except Exception as e:
+                    log.error(f"MD simulation failed: {e}")
+                    self.steps_before_stopping = {"index": step}
+                    break
+
+                if step % self.sampling_rate == 0:
+                    atoms_cache.append(freeze_copy_atoms(atoms))
+                if len(atoms_cache) == self.dump_rate:
+                    self.db.extend(atoms_cache)
+                    atoms_cache = []
+
+                progress.update(task, advance=1)
+                info_panel = build_info_panel(metrics_dict, step)
+                layout = Table.grid(padding=1)
+                layout.add_row(progress)
+                layout.add_row(info_panel)
+                live.update(layout)
 
         if not self.pop_last and self.steps_before_stopping["index"] is not None:
             metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks, step)
