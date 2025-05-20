@@ -122,10 +122,9 @@ class ASEMD(zntrack.Node):
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
         self.rng = np.random.default_rng(self.seed)
 
-    def initialize_atoms(self, idx: int) -> ase.Atoms:
+    def initialize_atoms(self, idx: int, atoms: ase.Atoms) -> ase.Atoms:
         directory = self.model_outs / f"{idx}"
         directory.mkdir(parents=True, exist_ok=True)
-        atoms = self.data[idx]
 
         atoms.repeat(self.repeat)
         atoms.calc = self.model.get_calculator(directory=directory)
@@ -166,8 +165,13 @@ class ASEMD(zntrack.Node):
         df = pd.DataFrame(metrics_list)
         df.to_csv(self.metrics / f"{idx}.csv", index=False)
 
-    def run_md(self, idx: int) -> t.Tuple[list[dict], int]:  # noqa: C901
-        atoms = self.initialize_atoms(idx)
+    def initialize_checks(self, atoms: ase.Atoms) -> None:
+        for check in self.checks:
+            check.initialize(atoms)
+
+    def run_md(self, idx: int, atoms: ase.Atoms) -> int:  # noqa: C901
+        atoms = self.initialize_atoms(idx=idx, atoms=atoms)
+        self.initialize_checks(atoms)
         metrics_list = []
 
         # initialize thermostat
@@ -250,7 +254,7 @@ class ASEMD(zntrack.Node):
 
         io.extend(atoms_cache)
         self.save_metrics(metrics_list, idx)
-        return metrics_list, step
+        return step
 
     def run(self):
         """Run the simulation."""
@@ -258,4 +262,28 @@ class ASEMD(zntrack.Node):
         ids = self.data_ids if isinstance(self.data_ids, list) else [self.data_ids]
         worker = Laufband(ids, com=self.laufband_path, disable=True)
         for data_id in worker:
-            self.run_md(idx=data_id)
+            self.run_md(idx=data_id, atoms=self.data[data_id])
+
+
+class ASEMDSafeSampling(ASEMD):
+    temperature_reduction_factor: float = zntrack.params(0.9)
+    # refresh_calculator: bool = zntrack.params(False)
+    # # TODO: this won't work with the directory argument,
+    # need some way of freeing up the calculator instead.
+
+    def run(self):
+        """Run the simulation."""
+        if not isinstance(self.data_ids, int):
+            raise ValueError(f"{self.__class__.__name__} only supports single data_id")
+        self.initialize_md()
+        simulated_steps = 0
+        idx = 0
+        atoms = self.data[self.data_ids]
+        full_steps = self.steps
+        while simulated_steps < full_steps:
+            steps = self.run_md(idx=idx, atoms=atoms.copy())
+            simulated_steps += steps
+            print(f"Restarting simulation. Missing {full_steps - simulated_steps} steps.")
+            self.thermostat.temperature *= self.temperature_reduction_factor
+            idx += 1
+            self.steps -= steps

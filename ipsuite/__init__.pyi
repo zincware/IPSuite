@@ -44,7 +44,6 @@ from .calc import ApplyCalculator
 # Calculators
 from .calculators import (
     ASEGeoOpt,
-    ASEMDSafeSampling,
     CP2KSinglePoint,
     EMTSinglePoint,
     LammpsSimulator,
@@ -83,6 +82,7 @@ from .data_loading import AddData, AddDataH5MD
 from .datasets import MD22Dataset
 from .dynamics import (
     ASEMD,
+    ASEMDSafeSampling,
     Berendsen,
     BoxOscillatingRampModifier,
     ConnectivityCheck,

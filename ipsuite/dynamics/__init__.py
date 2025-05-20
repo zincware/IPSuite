@@ -19,7 +19,7 @@ from ipsuite.dynamics.md import (
     SVCRBarostat,
     VelocityVerletDynamic,
 )
-from ipsuite.dynamics.md_nodes import ASEMD
+from ipsuite.dynamics.md_nodes import ASEMD, ASEMDSafeSampling
 from ipsuite.dynamics.transformations import (
     BoxOscillatingRampModifier,
     PressureRampModifier,
@@ -52,4 +52,5 @@ __all__ = [
     "HookeanConstraint",
     "WrapModifier",
     "ASEMD",
+    "ASEMDSafeSampling",
 ]

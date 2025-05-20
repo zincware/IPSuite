@@ -97,7 +97,7 @@ class Check:
     a molecular dynamics simulation if a vertain condition is met.
     """
 
-    status: str = None
+    status: str | None | bool = None
 
     def initialize(self, atoms: ase.Atoms) -> None:
         """Stores some reference property to compare the current property
