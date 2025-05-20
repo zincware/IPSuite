@@ -11,6 +11,14 @@ log = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass
+class WrapModifier:
+    """Wrap atoms to the into the cell."""
+
+    def modify(self, thermostat, step, total_steps) -> None:
+        thermostat.atoms.wrap()
+
+
+@dataclasses.dataclass
 class RescaleBoxModifier:
     cell: int | None = None
     density: float | None = None

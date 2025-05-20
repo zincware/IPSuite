@@ -1479,7 +1479,7 @@ gap = [
 requires-dist = [
     { name = "ase", specifier = ">=3.24.0" },
     { name = "cp2k-input-tools", specifier = ">=0.9.1" },
-    { name = "laufband", specifier = ">=0.1.2" },
+    { name = "laufband", specifier = ">=0.1.3" },
     { name = "lazy-loader", specifier = ">=0.4" },
     { name = "rdkit2ase", specifier = ">=0.1.4" },
     { name = "seaborn", specifier = ">=0.13.2" },
@@ -1788,15 +1788,15 @@ wheels = [
 
 [[package]]
 name = "laufband"
-version = "0.1.2"
+version = "0.1.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "flufl-lock" },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/23/4a/86730ab2fe2f1bced2ea18066e97f04682953c80675bdd0959016ba97488/laufband-0.1.2.tar.gz", hash = "sha256:73a365832b072292e74eba561f9013209567024fa2475d0401e7f01f4d05d1a2", size = 93309, upload-time = "2025-04-27T14:46:38.472Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a6/68/a4d1a905272c9a193bf7ddd6e0ece2deb4213715076f9e0ad89548e9ed0e/laufband-0.1.3.tar.gz", hash = "sha256:02ee647278be4068b785a1b1d8ba328f8afc4e966dffd328721913d7f2c3811f", size = 100693, upload-time = "2025-05-20T14:28:28.338Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/12/19/70c29a25da16b150ad91fa575301152c8bdae82d6405a9fb9a4986312071/laufband-0.1.2-py3-none-any.whl", hash = "sha256:47b786122f8a88d3a96a480f44046ca068500b82d7acae9603b2a705a72bb3e7", size = 6704, upload-time = "2025-04-27T14:46:37.227Z" },
+    { url = "https://files.pythonhosted.org/packages/09/7c/6804d99fcd8cb0d865232da724dae79533dc5249dfe9e0abc00c805f6535/laufband-0.1.3-py3-none-any.whl", hash = "sha256:1a887e4002f12c45b7e782cbede2ed1d1bf602b66b691cb7555d6c6717190728", size = 6866, upload-time = "2025-05-20T14:28:27.078Z" },
 ]
 
 [[package]]

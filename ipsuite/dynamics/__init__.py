@@ -19,12 +19,14 @@ from ipsuite.dynamics.md import (
     SVCRBarostat,
     VelocityVerletDynamic,
 )
+from ipsuite.dynamics.md_nodes import ASEMD
 from ipsuite.dynamics.transformations import (
     BoxOscillatingRampModifier,
     PressureRampModifier,
     RescaleBoxModifier,
     TemperatureOscillatingRampModifier,
     TemperatureRampModifier,
+    WrapModifier,
 )
 
 __all__ = [
@@ -48,4 +50,6 @@ __all__ = [
     "FixedLayerConstraint",
     "FixedBondLengthConstraint",
     "HookeanConstraint",
+    "WrapModifier",
+    "ASEMD",
 ]
