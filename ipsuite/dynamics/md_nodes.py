@@ -287,3 +287,5 @@ class ASEMDSafeSampling(ASEMD):
             self.thermostat.temperature *= self.temperature_reduction_factor
             idx += 1
             self.steps -= steps
+
+        self.laufband_path.write_text("Lorem Ipsum")
