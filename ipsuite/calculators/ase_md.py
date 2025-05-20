@@ -789,11 +789,12 @@ class ASEMD(base.IPSNode):
         # Run simulation
         atoms_cache = []
         self.steps_before_stopping = {"index": None}
-        for step in trange(
-            len(self.checks),
+        tbar = trange(
+            self.steps,
             leave=True,
             ncols=120,
-        ):
+        )
+        for step in tbar:
             self.apply_modifiers(thermostat, step)
             if self.wrap:
                 atoms.wrap()
@@ -824,7 +825,7 @@ class ASEMD(base.IPSNode):
             temperature = metrics_dict["temperature"][-1]
             energy = metrics_dict["energy"][-1]
             desc = get_desc(temperature, energy, time, total_fs)
-            trange.set_description(desc)
+            tbar.set_description(desc)
 
         if not self.pop_last and self.steps_before_stopping["index"] is not None:
             metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks, step)
