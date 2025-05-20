@@ -24,7 +24,11 @@ from ipsuite import base
 from ipsuite.calculators.integrators import StochasticVelocityCellRescaling
 from ipsuite.utils.ase_sim import freeze_copy_atoms, get_box_from_density, get_energy
 
+from ipsuite.abc import NodeWithThermostat
+
 log = logging.getLogger(__name__)
+
+
 
 
 @dataclasses.dataclass
@@ -675,7 +679,7 @@ class ASEMD(base.IPSNode):
     checks: list = zntrack.deps(None)
     constraints: list = zntrack.deps(None)
     modifiers: list = zntrack.deps(None)
-    thermostat: typing.Any = zntrack.deps()
+    thermostat: NodeWithThermostat = zntrack.deps()
 
     steps: int = zntrack.params()
     sampling_rate: int = zntrack.params(1)
@@ -814,8 +818,16 @@ class ASEMD(base.IPSNode):
             if any(check_trigger):
                 self.steps_before_stopping = {"index": step}
                 break
-
-            metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks, step)
+            
+            try:
+                metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks, step)
+            except Exception as e:
+                # when updating the metrics, technically we already compute
+                # the potential energy and forces for the next step and ASE magic cache
+                # the results.
+                log.error(f"MD simulation failed: {e}")
+                self.steps_before_stopping = {"index": step}
+                break
             if step % self.sampling_rate == 0:
                 atoms_cache.append(freeze_copy_atoms(atoms))
             if len(atoms_cache) == self.dump_rate:
