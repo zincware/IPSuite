@@ -16,4 +16,10 @@ class NodeWithCalculator(Protocol[T]):
 class NodeWithThermostat(Protocol[T]):
     """Any class with a `get_thermostat` method returning an ASE Dynamics."""
 
+    @property
+    def time_step(self) -> float: ...
+
+    @property
+    def temperature(self) -> float: ...
+
     def get_thermostat(self, atoms: ase.Atoms) -> Dynamics: ...
