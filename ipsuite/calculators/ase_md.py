@@ -18,7 +18,7 @@ from ase.md.npt import NPT
 from ase.md.nvtberendsen import NVTBerendsen
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md.verlet import VelocityVerlet
-from tqdm import trange, tqdm
+from tqdm import trange
 
 from ipsuite import base
 from ipsuite.calculators.integrators import StochasticVelocityCellRescaling
@@ -814,9 +814,7 @@ class ASEMD(base.IPSNode):
                 self.steps_before_stopping = {"index": step}
                 break
 
-            metrics_dict = update_metrics_dict(
-                atoms, metrics_dict, self.checks, step
-            )
+            metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks, step)
             if step % self.sampling_rate == 0:
                 atoms_cache.append(freeze_copy_atoms(atoms))
             if len(atoms_cache) == self.dump_rate:
@@ -828,11 +826,8 @@ class ASEMD(base.IPSNode):
             desc = get_desc(temperature, energy, time, total_fs)
             trange.set_description(desc)
 
-
         if not self.pop_last and self.steps_before_stopping["index"] is not None:
-            metrics_dict = update_metrics_dict(
-                atoms, metrics_dict, self.checks, step
-            )
+            metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks, step)
             atoms_cache.append(freeze_copy_atoms(atoms))
             step += 1
 
