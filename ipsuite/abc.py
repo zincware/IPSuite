@@ -1,8 +1,8 @@
 from typing import Protocol, TypeVar
 
+import ase
 from ase.calculators.calculator import Calculator
 from ase.optimize.optimize import Dynamics
-import ase
 
 T = TypeVar("T", covariant=True)
 
