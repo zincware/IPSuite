@@ -18,7 +18,7 @@ from ase.md.npt import NPT
 from ase.md.nvtberendsen import NVTBerendsen
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md.verlet import VelocityVerlet
-from tqdm import trange
+from tqdm import trange, tqdm
 
 from ipsuite import base
 from ipsuite.calculators.integrators import StochasticVelocityCellRescaling
@@ -767,7 +767,7 @@ class ASEMD(base.IPSNode):
                 total_steps=self.steps,
             )
 
-    def run_md(self, atoms):  # noqa: C901
+    def run_md(self, atoms: ase.Atoms):  # noqa: C901
         rng = np.random.default_rng(self.seed)
         atoms.repeat(self.repeat)
         atoms.calc = self.model.get_calculator(directory=self.model_outs)
@@ -788,64 +788,56 @@ class ASEMD(base.IPSNode):
 
         # Run simulation
         atoms_cache = []
-        self.steps_before_stopping = -1
-        current_step = 0
-        with trange(
-            self.steps,
+        self.steps_before_stopping = {"index": None}
+        for step in trange(
+            len(self.checks),
             leave=True,
             ncols=120,
-        ) as pbar:
-            for idx_outer in range(sampling_iterations):
-                desc = []
-                stop = []
+        ):
+            self.apply_modifiers(thermostat, step)
+            if self.wrap:
+                atoms.wrap()
+            try:
+                thermostat.run(1)
+            except Exception as e:
+                # some calculators, e.g. plumed can raise an error
+                log.error(f"MD simulation failed: {e}")
+                self.steps_before_stopping = {"index": step}
+                break
 
-                # run MD for sampling_rate steps
-                for idx_inner in range(self.sampling_rate):
-                    self.apply_modifiers(
-                        thermostat, idx_outer * self.sampling_rate + idx_inner
-                    )
+            check_trigger = []
+            for check in self.checks:
+                check_trigger.append(check.check(atoms))
+                if check_trigger[-1]:
+                    log.critical(str(check))
+            if any(check_trigger):
+                self.steps_before_stopping = {"index": step}
+                break
 
-                    if self.wrap:
-                        atoms.wrap()
-
-                    thermostat.run(1)
-
-                for check in self.checks:
-                    stop.append(check.check(atoms))
-                    if stop[-1]:
-                        log.critical(str(check))
-
-                if any(stop):
-                    self.steps_before_stopping = (
-                        idx_outer * self.sampling_rate + idx_inner
-                    )
-                    break
-                else:
-                    metrics_dict = update_metrics_dict(
-                        atoms, metrics_dict, self.checks, current_step
-                    )
-                    atoms_cache.append(freeze_copy_atoms(atoms))
-                    if len(atoms_cache) == self.dump_rate:
-                        self.db.extend(atoms_cache)
-                        atoms_cache = []
-
-                    time = (idx_outer + 1) * self.sampling_rate * time_step
-                    temperature = metrics_dict["temperature"][-1]
-                    energy = metrics_dict["energy"][-1]
-                    desc = get_desc(temperature, energy, time, total_fs)
-                    pbar.set_description(desc)
-                    pbar.update(self.sampling_rate)
-                    current_step += 1
-
-        if not self.pop_last and self.steps_before_stopping != -1:
             metrics_dict = update_metrics_dict(
-                atoms, metrics_dict, self.checks, current_step
+                atoms, metrics_dict, self.checks, step
+            )
+            if step % self.sampling_rate == 0:
+                atoms_cache.append(freeze_copy_atoms(atoms))
+            if len(atoms_cache) == self.dump_rate:
+                self.db.extend(atoms_cache)
+                atoms_cache = []
+            time = (step + 1) * time_step
+            temperature = metrics_dict["temperature"][-1]
+            energy = metrics_dict["energy"][-1]
+            desc = get_desc(temperature, energy, time, total_fs)
+            trange.set_description(desc)
+
+
+        if not self.pop_last and self.steps_before_stopping["index"] is not None:
+            metrics_dict = update_metrics_dict(
+                atoms, metrics_dict, self.checks, step
             )
             atoms_cache.append(freeze_copy_atoms(atoms))
-            current_step += 1
+            step += 1
 
         self.db.extend(atoms_cache)
-        return metrics_dict, current_step
+        return metrics_dict, step
 
     def run(self):
         """Run the simulation."""
