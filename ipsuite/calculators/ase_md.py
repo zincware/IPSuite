@@ -21,14 +21,11 @@ from ase.md.verlet import VelocityVerlet
 from tqdm import trange
 
 from ipsuite import base
+from ipsuite.abc import NodeWithThermostat
 from ipsuite.calculators.integrators import StochasticVelocityCellRescaling
 from ipsuite.utils.ase_sim import freeze_copy_atoms, get_box_from_density, get_energy
 
-from ipsuite.abc import NodeWithThermostat
-
 log = logging.getLogger(__name__)
-
-
 
 
 @dataclasses.dataclass
@@ -818,7 +815,7 @@ class ASEMD(base.IPSNode):
             if any(check_trigger):
                 self.steps_before_stopping = {"index": step}
                 break
-            
+
             try:
                 metrics_dict = update_metrics_dict(atoms, metrics_dict, self.checks, step)
             except Exception as e:

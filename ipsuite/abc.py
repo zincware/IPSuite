@@ -11,6 +11,7 @@ class NodeWithCalculator(Protocol[T]):
 
     def get_calculator(self, **kwargs) -> Calculator: ...
 
+
 class NodeWithThermostat(Protocol[T]):
     """Any class with a `get_thermostat` method returning an ASE Dynamics."""
 
