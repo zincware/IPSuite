@@ -6,7 +6,7 @@ import pandas as pd
 import zntrack
 
 from ipsuite import base
-from ipsuite.calculators.ase_md import ASEMD
+from ipsuite.dynamics import ASEMD
 from ipsuite.utils.ase_sim import get_density_from_atoms
 
 
