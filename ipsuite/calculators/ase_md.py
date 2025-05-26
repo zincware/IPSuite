@@ -930,6 +930,7 @@ class ASEMDSafeSampling(ASEMD):
         atoms_cache = []
         self.steps_before_stopping = -1
         current_step = 0
+        modifier_step_offset = 0
         with trange(
             self.steps,
             leave=True,
@@ -941,8 +942,10 @@ class ASEMDSafeSampling(ASEMD):
 
                 # run MD for sampling_rate steps
                 for idx_inner in range(self.sampling_rate):
+                    total_step = idx_outer * self.sampling_rate + idx_inner 
+                    modifier_step = total_step - modifier_step_offset
                     self.apply_modifiers(
-                        thermostat, idx_outer * self.sampling_rate + idx_inner
+                        thermostat, modifier_step
                     )
 
                     if self.wrap:
@@ -957,6 +960,7 @@ class ASEMDSafeSampling(ASEMD):
 
                 if any(stop):
                     atoms = original_atoms.copy()
+                    modifier_step_offset = total_step
                     if self.refresh_calculator:
                         atoms.calc = self.model.get_calculator(directory=self.model_outs)
                     else:

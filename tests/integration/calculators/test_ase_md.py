@@ -292,3 +292,45 @@ def test_ase_md_FixedBondLengthConstraint(proj_path):
     d1 = np.linalg.norm(md.frames[0][0].position - md.frames[0][1].position)
     d2 = np.linalg.norm(md.frames[-1][0].position - md.frames[-1][1].position)
     assert np.abs(d2 - d1) < 1e-6
+
+
+def test_ase_md_safe_reset_modifier(cu_box):
+
+    cu_box[0].set_cell([10,10,10], True)
+
+    ase.io.write("cu_box.xyz", cu_box)
+    check = ips.DebugCheck(10)
+    thermostat = ips.LangevinThermostat(
+        time_step=1,
+        temperature=1,
+        friction=1,
+    )
+    rescale_box = ips.RescaleBoxModifier(cell=100)
+    model = ips.LJSinglePoint()
+
+    with ips.Project() as project:
+        data = ips.AddData(file="cu_box.xyz")
+        md = ips.ASEMDSafeSampling(
+            data=data.frames,
+            model=model,
+            checks=[check],
+            modifiers=[rescale_box],
+            thermostat=thermostat,
+            steps=20,
+            sampling_rate=1,
+            dump_rate=33,
+        )
+
+    
+    project.repro()
+
+    c0 = cu_box[-1].cell[0][0]
+    c1 = md.frames[-1].cell[0][0]
+    c2 = 100
+    ref = (c2 - c0) * 0.5
+
+    print(c1)
+
+    assert c1 > c0
+    assert c1 < c2
+    assert np.abs(c1 - ref) < 0.1
