@@ -942,11 +942,9 @@ class ASEMDSafeSampling(ASEMD):
 
                 # run MD for sampling_rate steps
                 for idx_inner in range(self.sampling_rate):
-                    total_step = idx_outer * self.sampling_rate + idx_inner 
+                    total_step = idx_outer * self.sampling_rate + idx_inner
                     modifier_step = total_step - modifier_step_offset
-                    self.apply_modifiers(
-                        thermostat, modifier_step
-                    )
+                    self.apply_modifiers(thermostat, modifier_step)
 
                     if self.wrap:
                         atoms.wrap()

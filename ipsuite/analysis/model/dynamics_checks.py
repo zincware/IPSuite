@@ -22,6 +22,7 @@ class DebugCheck(base.Check):
     """
 
     n_iterations: int = 10
+
     def initialize(self, atoms: ase.Atoms) -> None:
         self.counter = 0
         self.is_initialized = True
@@ -30,7 +31,7 @@ class DebugCheck(base.Check):
     def check(self, atoms):
         if self.counter >= self.n_iterations:
             self.status = "n_iterations reached"
-            self.counter = 0 
+            self.counter = 0
             return True
         self.counter += 1
         self.status = "n_iterations not reached"
