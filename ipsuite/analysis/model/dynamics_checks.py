@@ -23,14 +23,18 @@ class DebugCheck(base.Check):
 
     n_iterations: int = 10
 
-    def __post_init__(self) -> None:
+    def initialize(self, atoms: ase.Atoms) -> None:
         self.counter = 0
-        self.status = self.__class__.__name__
+        self.is_initialized = True
+        self.status = "n_iterations not reached"
 
     def check(self, atoms):
         if self.counter >= self.n_iterations:
+            self.status = "n_iterations reached"
+            self.counter = 0
             return True
         self.counter += 1
+        self.status = "n_iterations not reached"
         return False
 
 
