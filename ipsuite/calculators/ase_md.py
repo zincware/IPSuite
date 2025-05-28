@@ -785,6 +785,8 @@ class ASEMD(base.IPSNode):
 
         for constraint in self.constraints:
             atoms.set_constraint(constraint.get_constraint(atoms))
+        for check in self.checks:
+            check.initialize(atoms)
 
         # Run simulation
         atoms_cache = []
