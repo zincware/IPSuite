@@ -321,7 +321,7 @@ def test_ase_md_safe_reset_modifier(proj_path, cu_box):
             dump_rate=33,
         )
 
-    
+
     project.run()
 
     c0 = cu_box[-1].cell[0][0]
