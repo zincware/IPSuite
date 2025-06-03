@@ -114,7 +114,7 @@ class ASEMD(zntrack.Node):
                 with h5py.File(f) as file:
                     frames.extend(znh5md.IO(file_handle=file)[:])
         return frames
-    
+
     @property
     def structures(self) -> list[list[ase.Atoms]]:
         """Return the structures as a list of lists of Atoms."""
@@ -253,8 +253,8 @@ class ASEMD(zntrack.Node):
                     )
                     tbar.set_description(desc)
                     tbar.update(1)
-            
-            if not self.pop_last and step != self.steps - 1: # did not finish all steps
+
+            if not self.pop_last and step != self.steps - 1:  # did not finish all steps
                 metrics_list.append(
                     get_current_metrics(
                         atoms, self.checks, step * self.thermostat.time_step, idx
