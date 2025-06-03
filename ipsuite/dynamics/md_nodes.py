@@ -114,6 +114,17 @@ class ASEMD(zntrack.Node):
                 with h5py.File(f) as file:
                     frames.extend(znh5md.IO(file_handle=file)[:])
         return frames
+    
+    @property
+    def structures(self) -> list[list[ase.Atoms]]:
+        """Return the structures as a list of lists of Atoms."""
+        files = list(self.state.fs.glob((self.frames_path / "*.h5").as_posix()))
+        structures = []
+        for file in files:
+            with self.state.fs.open(file, "rb") as f:
+                with h5py.File(f) as file:
+                    structures.append(znh5md.IO(file_handle=file)[:])
+        return structures
 
     def initialize_md(self):
         self.model_outs.mkdir(parents=True, exist_ok=True)
@@ -242,15 +253,15 @@ class ASEMD(zntrack.Node):
                     )
                     tbar.set_description(desc)
                     tbar.update(1)
-            else:
-                if not self.pop_last:
-                    metrics_list.append(
-                        get_current_metrics(
-                            atoms, self.checks, step * self.thermostat.time_step, idx
-                        )
+            
+            if not self.pop_last and step != self.steps - 1: # did not finish all steps
+                metrics_list.append(
+                    get_current_metrics(
+                        atoms, self.checks, step * self.thermostat.time_step, idx
                     )
-                    atoms_cache.append(freeze_copy_atoms(atoms))
-                    step += 1
+                )
+                atoms_cache.append(freeze_copy_atoms(atoms))
+                step += 1
 
         io.extend(atoms_cache)
         self.save_metrics(metrics_list, idx)
