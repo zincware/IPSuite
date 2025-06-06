@@ -40,7 +40,7 @@ def test_ase_run_md(proj_path, cu_box):
             sampling_rate=1,
             dump_rate=33,
         )
-        mapped_md = zn.apply(ips.ASEMD, method="map")(
+        mapped_md = ips.ASEMD(
             data=data.frames,
             data_ids=[0, 1, 2],
             model=model,
@@ -277,7 +277,7 @@ def test_ase_md_FixedBondLengthConstraint(proj_path):
 
     with ips.Project() as project:
         hydroxide = ips.Smiles2Atoms(smiles="[OH-]")
-        md = ips.calculators.ASEMD(
+        md = ips.ASEMD(
             data=hydroxide.frames,
             model=model,
             steps=5,
