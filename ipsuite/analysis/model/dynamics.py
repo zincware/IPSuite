@@ -45,7 +45,7 @@ class RattleAnalysis(base.ProcessSingleAtom):
     factor: float, default = 0.001
         The 'np.linspace(0.0, stop, num) * factor'
     atom_id: int, default = 0
-        The atom to pick from self.atoms as a starting point
+        The atom to pick from self.data as a starting point
     """
 
     model: models.MLModel = zntrack.deps()

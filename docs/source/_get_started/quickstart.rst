@@ -26,10 +26,10 @@ The goal is to place water molecules inside a box at a specified density.
 
 The :class:`ipsuite.Smiles2Conformers` node takes the `SMILES <https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system>`_ string for water ("O"),
 and generates an an `ASE atoms object <https://wiki.fysik.dtu.dk/ase/ase/atoms.html>`_ from it.
-This atom from the :class:`ipsuite.Smiles2Conformers` instance can be accessd by calling `mol.atoms`.
+This atom from the :class:`ipsuite.Smiles2Conformers` instance can be accessd by calling `mol.frames`.
 This instance attribute is then handed over to the Packmol node in the `data` attribute.
 It is possible to hand over multiple different types of ASE atoms,
-so `mol.atoms` as to be given as a list. The next attribute we need to set is the amount of molecules we want to place in the box.
+so `mol.frames` as to be given as a list. The next attribute we need to set is the amount of molecules we want to place in the box.
 This also has to be a list with each entry being the amount for other ASE atoms object in the `data` list. Lastly the density has
 to be provided. Calling `project.build()` will save the workflow into DVC graph configuration and parameter files.
 After executing the code, the entire workflow is constructed and can be visualised
