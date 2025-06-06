@@ -70,7 +70,7 @@ class ASEGeoOpt(base.IPSNode):
     ...         smiles="CCO", numConfs=1
     ...     )
     ...     opt = ips.ASEGeoOpt(
-    ...         data=etoh,
+    ...         data=etoh.frames,
     ...         model=model,
     ...         optimizer="FIRE",
     ...         run_kwargs={"fmax": 0.05},
