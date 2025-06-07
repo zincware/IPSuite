@@ -95,7 +95,7 @@ ignore = [
 ]
 
 [tool.codespell]
-ignore-words-list = "dscribe"
+ignore-words-list = "dscribe,OT"
 skip = "poetry.lock,ipsuite/static_data/*,docs/source/examples/06_Bootstrapping_Datasets.ipynb"
 
 [tool.uv.sources]
