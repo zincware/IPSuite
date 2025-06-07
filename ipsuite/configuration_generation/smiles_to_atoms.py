@@ -39,7 +39,7 @@ class Smiles2Conformers(base.IPSNode):
     maxAttempts : int, optional
         Maximum number of attempts to generate conformers (default is 1000).
     cell : float, optional
-        Size of the cubic unit cell to assign to the generated 
+        Size of the cubic unit cell to assign to the generated
         conformers (default is 100).
 
     Attributes
