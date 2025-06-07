@@ -14,6 +14,8 @@ TEST_PATH = pathlib.Path(__file__).parent.resolve()
 
 @pytest.fixture()
 def trained_model(proj_path, traj_file) -> tuple:
+    model = ipsuite.EMTSinglePoint()
+
     with ipsuite.Project() as project:
         data_1 = ipsuite.AddData(file=traj_file, name="data_1")
 
@@ -29,7 +31,7 @@ def trained_model(proj_path, traj_file) -> tuple:
             )
         )
 
-        model = ipsuite.GAP(soap={"cutoff": 0.7}, data=train_selection.frames)
+        # model = ipsuite.GAP(soap={"cutoff": 0.7}, data=train_selection.frames)
 
     project.repro()
 

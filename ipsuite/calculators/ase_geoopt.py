@@ -15,17 +15,70 @@ log = logging.getLogger(__name__)
 
 
 class ASEGeoOpt(base.IPSNode):
-    """Class to run a geometry optimization with ASE.
+    """Perform a structure relaxation using ASE.
+
+    Use any ASE calculator to perform a geometry optimization on
+    a given structure.
 
     Parameters
     ----------
+    data: list[ase.Atoms]
+        List of atoms objects to select the starting configuration from.
+    data_id: int
+        Index of the atoms object to use from ``data``.
     model: zntrack.Node
         A node that implements 'get_calculator'.
+    optimizer: str
+        The optimizer to use. Default is ``FIRE``.
+        Select from ``ase.optimize``, e.g. ``BFGS``, ``FIRE``, ``LBFGS``.
     maxstep: int, optional
         Maximum number of steps to perform.
+    checks: list[dataclasses.dataclass], optional
+        List of checks to perform during the optimization.
+        A failed check will stop the optimization.
+    constraints: list[dataclasses.dataclass], optional
+        List of constraints to apply to the atoms object.
+    run_kwargs: dict, optional
+        Keyword arguments to pass to the optimizer when running.
+        Default is ``{"fmax": 0.05}``.
+    init_kwargs: dict, optional
+        Keyword arguments to pass to the optimizer when initializing.
+        Default is ``{}``.
+    repeat: list[int], optional
+        List of integers to repeat the atoms object.
+        Default is ``(1, 1, 1)``.
+    dump_rate: int, optional
+        Number of steps to perform before dumping the current state.
+        Default is ``1000``.
+
+    Attributes
+    ----------
+    model_outs: pathlib.Path
+        Path to the directory where the model outputs are stored.
+    traj_file: pathlib.Path
+        Path to the file where the trajectory is stored.
+
+
+    Example
+    -------
+
+    >>> import ipsuite as ips
+    >>> project = ips.Project()
+    >>> model = ips.LJSinglePoint()
+    >>> with project:
+    ...     etoh = ips.Smiles2Conformers(
+    ...         smiles="CCO", numConfs=1
+    ...     )
+    ...     opt = ips.ASEGeoOpt(
+    ...         data=etoh.frames,
+    ...         model=model,
+    ...         optimizer="FIRE",
+    ...         run_kwargs={"fmax": 0.05},
+    ...     )
+    >>> project.build()
     """
 
-    data: typing.List[ase.Atoms] = zntrack.deps()
+    data: list[ase.Atoms] = zntrack.deps()
     data_id: int = zntrack.params(-1)
 
     model: typing.Any = zntrack.deps()

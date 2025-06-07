@@ -32,8 +32,10 @@ class RattleAnalysis(base.ProcessSingleAtom):
 
     Attributes
     ----------
-    model: The MLModel node that implements the 'predict' method
-    atoms: list[Atoms] to predict properties for
+    model: zntrack.Node
+        The MLModel node that implements the 'predict' method
+    data: list[Atoms]
+        list of atoms to predict properties for
     logspace: bool, default=True
         Increase the stdev of rattle with 'np.logspace' instead of 'np.linspace'
     stop: float, default = 1.0
@@ -43,7 +45,7 @@ class RattleAnalysis(base.ProcessSingleAtom):
     factor: float, default = 0.001
         The 'np.linspace(0.0, stop, num) * factor'
     atom_id: int, default = 0
-        The atom to pick from self.atoms as a starting point
+        The atom to pick from self.data as a starting point
     """
 
     model: models.MLModel = zntrack.deps()
@@ -97,8 +99,10 @@ class BoxScale(base.ProcessSingleAtom):
 
     Attributes
     ----------
-    model: The MLModel node that implements the 'predict' method
-    atoms: list[Atoms] to predict properties for
+    model:
+        The MLModel node that implements the 'predict' method
+    atoms: list[Atoms]
+        list of atoms to predict properties for
     start: int, default = None
         The initial box scale, default value is the original box size.
     stop: float, default = 1.0
