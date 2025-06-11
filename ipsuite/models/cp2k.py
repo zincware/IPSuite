@@ -50,6 +50,38 @@ class CP2KModel:
     ...         model=cp2k,
     ...     )
     >>> project.build()
+
+    An example of the ``cp2k.yaml`` file:
+
+    .. code-block:: yaml
+
+        force_eval:
+          method: quickstep
+          DFT:
+            mgrid:
+                cutoff: 400
+            SCF:
+                scf_guess: atomic
+                max_scf: 50
+                eps_scf: 1.0e-6
+                OT:
+                    minimizer: diis
+            XC:
+                xc_functional:
+                    PBE: {}
+            charge: 0
+            basis_set_file_name: GTH_BASIS_SETS
+            potential_file_name: GTH_POTENTIALS
+          subsys:
+            kind:
+              O:
+                  basis_set: DZVP-GTH-PBE
+                  potential: GTH-PBE-q6
+              H:
+                  basis_set: DZVP-GTH-PBE
+                  potential: GTH-PBE-q1
+
+
     """
 
     config: str | Path = zntrack.params_path()

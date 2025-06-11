@@ -218,14 +218,14 @@ class ThresholdCheck(base.Check):
     Furthermore, the simulation will be stopped if the property
     exceeds a threshold value.
 
-    Attributes
+    Parameters
     ----------
     key: str
         name of the property to check
     max_std: float, optional
         Maximum number of standard deviations away from the mean to stop the simulation.
         Roughly the value corresponds to the following percentiles:
-            {1: 68%, 2: 95%, 3: 99.7%}
+        ``{1: 68%, 2: 95%, 3: 99.7%}``
     window_size: int, optional
         Number of steps to average over
     max_value: float, optional
@@ -257,6 +257,7 @@ class ThresholdCheck(base.Check):
 
     def get_value(self, atoms):
         """Get the value of the property to check.
+
         Extracted into method so it can be subclassed.
         """
         return np.max(atoms.calc.results[self.key])
