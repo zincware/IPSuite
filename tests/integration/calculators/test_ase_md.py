@@ -333,7 +333,7 @@ def test_ase_md_safe_reset_modifier(proj_path, cu_box):
     npt.assert_almost_equal(md.frames[0].cell.diagonal().sum(), 30)
     # total steps is 20  - 1, as we start counting from 0
     npt.assert_almost_equal(md.frames[9].cell.diagonal().sum(), (10 * 10/19 + 9/19 * 100) * 3)
-    
+
     # second MD runs to the end
     npt.assert_almost_equal(md.frames[10].cell.diagonal().sum(), 30)
     npt.assert_almost_equal(md.frames[-1].cell.diagonal().sum(), 300)
@@ -371,4 +371,3 @@ def test_ase_md_debug_check(proj_path, cu_box):
     # first frame already has integrated positions
     assert not np.array_equal(md.frames[0].positions, cu_box[0].positions)
     assert len(md.frames) == 10
-
