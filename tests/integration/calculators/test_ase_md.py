@@ -296,10 +296,10 @@ def test_ase_md_FixedBondLengthConstraint(proj_path):
 
 def test_ase_md_safe_reset_modifier(proj_path, cu_box):
 
-    cu_box[0].set_cell([10,10,10], True)
+    cu_box[0].set_cell([10,10,10, 90, 90, 90], True)
 
-    ase.io.write("cu_box.xyz", cu_box)
-    check = ips.DebugCheck(10)
+    ase.io.write("cu_box.xyz", cu_box[0])
+    check = ips.DebugCheck(n_iterations=10)
     thermostat = ips.LangevinThermostat(
         time_step=1,
         temperature=1,
@@ -321,16 +321,20 @@ def test_ase_md_safe_reset_modifier(proj_path, cu_box):
             dump_rate=33,
         )
 
-
     project.run()
 
-    c0 = cu_box[-1].cell[0][0]
-    c1 = md.frames[-1].cell[0][0]
-    c2 = 100
-    ref = (c2 - c0) * 0.5
+    setup_box = cu_box[0].cell.diagonal().sum()
+    assert setup_box == 30
 
-    print(c1)
+    first_md_box = md.frames[0].cell.diagonal().sum()
+    npt.assert_almost_equal(first_md_box, (10 * 19/20 + 1/20 * 100) * 3)
+    first_md_box = md.frames[10].cell.diagonal().sum()
+    npt.assert_almost_equal(first_md_box, 178.5)
+    # something strange with the length of each simulation,
+    # depends when the check triggers and some 0indexing and 1indexing
+    first_md_box = md.frames[11].cell.diagonal().sum()
+    npt.assert_almost_equal(first_md_box, (10 * 7/8 + 1/8 * 100) * 3)
+    last_md_box = md.frames[-1].cell.diagonal().sum()
+    assert last_md_box == 300
 
-    assert c1 > c0
-    assert c1 < c2
-    assert np.abs(c1 - ref) < 10
+    assert len(md.frames) == 20

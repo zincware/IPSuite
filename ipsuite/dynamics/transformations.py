@@ -47,7 +47,7 @@ class RescaleBoxModifier:
 
         if self._initial_cell is None:
             self._initial_cell = thermostat.atoms.get_cell()
-        percentage = step / (total_steps - 1)
+        percentage = step / (total_steps)
         new_cell = (1 - percentage) * self._initial_cell + percentage * self.cell
         thermostat.atoms.set_cell(new_cell, scale_atoms=True)
 

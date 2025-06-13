@@ -26,7 +26,7 @@ from rich.progress import (
 )
 from rich.table import Table
 from rich.text import Text
-from tqdm import trange
+from tqdm import tqdm
 
 from ipsuite.abc import NodeWithCalculator, NodeWithThermostat
 from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
@@ -132,7 +132,6 @@ class ASEMD(zntrack.Node):
         self.laufband_path.parent.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
         self.rng = np.random.default_rng(self.seed)
-        self.modifier_step_offset = 0
 
     def initialize_atoms(self, idx: int, atoms: ase.Atoms) -> ase.Atoms:
         directory = self.model_outs / f"{idx}"
@@ -194,18 +193,20 @@ class ASEMD(zntrack.Node):
         progress, task = self.initalize_progress_bar()
 
         tty_available = sys.stdout.isatty()
-        tbar = trange(
-            self.steps,
-            leave=True,
+        tbar = tqdm(
+            range(1, self.steps + 1),
+            desc="Simulation",
+            total=self.steps,
+            disable=not tty_available,  # only show tqdm if rich is not available
             ncols=120,
-            disable=tty_available,  # only show tqdm if rich is not available
         )
         io = znh5md.IO(
             self.frames_path / f"{idx}.h5",
         )
+        # We do not save the starting configuration. E.g. step 0 is not saved!
         with Live(console=progress.console, refresh_per_second=10) as live:
             for step in tbar:
-                self.apply_modifiers(thermostat, step - self.modifier_step_offset)
+                self.apply_modifiers(thermostat, step)
                 try:
                     thermostat.run(1)
                 except Exception as e:
@@ -218,7 +219,6 @@ class ASEMD(zntrack.Node):
                     if check_trigger[-1]:
                         log.critical(str(check))
                 if any(check_trigger):
-                    self.modifier_step_offset = step
                     break
 
                 # TODO: only update metrics dict every sampling_rate steps?
