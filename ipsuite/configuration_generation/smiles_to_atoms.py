@@ -1,11 +1,12 @@
-import ase
-import rdkit2ase
-import zntrack
 from pathlib import Path
 
-from ipsuite import base, fields
-import znh5md
+import ase
 import h5py
+import rdkit2ase
+import znh5md
+import zntrack
+
+from ipsuite import base, fields
 
 
 class Smiles2Atoms(base.IPSNode):
@@ -46,7 +47,7 @@ class Smiles2Conformers(base.IPSNode):
             for atoms in frames:
                 atoms.set_cell([self.cell, self.cell, self.cell])
                 atoms.center()
-        
+
         io = znh5md.IO(filename=self.frames_path)
         io.extend(frames)
 
