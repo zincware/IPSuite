@@ -85,7 +85,7 @@ class MultiPackmol(Packmol):
     ...         smiles='O', numConfs=100
     ...         )
     ...     boxes = ips.MultiPackmol(
-    ...         data=[water.atoms], count=[10], density=997, n_configurations=10
+    ...         data=[water.frames], count=[10], density=997, n_configurations=10
     ...         )
     >>> project.repro()
 

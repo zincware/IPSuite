@@ -254,6 +254,11 @@ class ThresholdCheck(base.Check):
             raise ValueError("Either max_std or max_value must be set")
         self.values = collections.deque(maxlen=self.window_size)
 
+    def initialize(self, atoms: ase.Atoms) -> None:
+        # clear the deque
+        self.values.clear()
+        self.status = None
+
     def get_value(self, atoms):
         """Get the value of the property to check.
         Extracted into method so it can be subclassed.
