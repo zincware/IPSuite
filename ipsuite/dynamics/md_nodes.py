@@ -95,7 +95,6 @@ class ASEMD(zntrack.Node):
     sampling_rate: int = zntrack.params(1)
     repeat: t.Tuple[bool, bool, bool] = zntrack.params((1, 1, 1))
     dump_rate: int = zntrack.params(1000)
-    pop_last: bool = zntrack.params(False)
     use_momenta: bool = zntrack.params(False)
     seed: int = zntrack.params(42)
 
@@ -153,7 +152,7 @@ class ASEMD(zntrack.Node):
             modifier.modify(
                 thermostat,
                 step=step,
-                total_steps=self.steps,
+                total_steps=self.steps - 1,  # starting from 0, so we subtract 1
             )
 
     def initalize_progress_bar(self) -> t.Tuple[Progress, TaskID]:
@@ -194,7 +193,7 @@ class ASEMD(zntrack.Node):
 
         tty_available = sys.stdout.isatty()
         tbar = tqdm(
-            range(1, self.steps + 1),
+            range(self.steps),
             desc="Simulation",
             total=self.steps,
             disable=not tty_available,  # only show tqdm if rich is not available
@@ -255,15 +254,6 @@ class ASEMD(zntrack.Node):
                     tbar.set_description(desc)
                     tbar.update(1)
 
-            if not self.pop_last and step != self.steps - 1:  # did not finish all steps
-                metrics_list.append(
-                    get_current_metrics(
-                        atoms, self.checks, step * self.thermostat.time_step, idx
-                    )
-                )
-                atoms_cache.append(freeze_copy_atoms(atoms))
-                step += 1
-
         io.extend(atoms_cache)
         self.save_metrics(metrics_list, idx)
         return step
@@ -291,7 +281,7 @@ class ASEMDSafeSampling(ASEMD):
         simulated_steps = 0
         idx = 0
         atoms = self.data[self.data_ids]
-        full_steps = self.steps
+        full_steps = self.steps - 1
         while simulated_steps < full_steps:
             steps = self.run_md(idx=idx, atoms=atoms.copy())
             simulated_steps += steps

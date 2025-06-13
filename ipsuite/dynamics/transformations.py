@@ -83,7 +83,7 @@ class BoxOscillatingRampModifier:
 
     cell_amplitude: typing.Union[float, list[float]]
     num_oscillations: float
-    end_cell: int | None = None
+    end_cell: float | None = None
     num_ramp_oscillations: float | None = None
     interval: int = 1
     _initial_cell = None
@@ -110,7 +110,7 @@ class BoxOscillatingRampModifier:
                     ]
                 )
 
-        percentage = step / (total_steps - 1)
+        percentage = step / (total_steps)
         # if num_ramp_oscillations is set, the cell size is ramped to end_cell within
         # num_ramp_oscillations instead of num_oscillations. This can prevent a loop of
         # ever decreasing cell sizes in LoTF applications where simulations

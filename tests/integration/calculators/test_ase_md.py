@@ -1,8 +1,8 @@
 import ase.io
 import numpy as np
 import numpy.testing as npt
-import zntrack as zn
 from ase import units
+import pytest
 
 import ipsuite as ips
 from ipsuite.utils.ase_sim import get_density_from_atoms
@@ -105,7 +105,9 @@ def test_ase_md_target_density(proj_path, cu_box):
 
 
 def test_ase_md_box_ramp(proj_path, cu_box):
-    ase.io.write("cu_box.xyz", cu_box)
+    cu_box[0].set_cell([10,10,10, 90, 90, 90], True)
+
+    ase.io.write("cu_box.xyz", cu_box[0])
     thermostat = ips.LangevinThermostat(
         time_step=1,
         temperature=1,
@@ -132,10 +134,11 @@ def test_ase_md_box_ramp(proj_path, cu_box):
     project.repro()
 
     assert len(md.frames) == 20
-    assert md.frames[0].cell[0, 0] == 7.22
-    assert md.frames[1].cell[0, 0] > 7.22
-    assert md.frames[1].cell[0, 0] < 10
-    assert (md.frames[-1].cell[0, 0] - 10.0) < 1e-6
+    assert md.frames[0].cell[0][0] == 10.0
+    assert md.frames[5].cell[0][0] == pytest.approx(12.0, abs=0.1)
+    assert md.frames[10].cell[0][0] == pytest.approx(10.0, abs=0.5)
+    assert md.frames[15].cell[0][0] == pytest.approx(8.0, abs=0.1)
+    assert md.frames[-1].cell[0][0] == 10.0
 
 
 def test_ase_npt(proj_path, cu_box):
@@ -326,15 +329,46 @@ def test_ase_md_safe_reset_modifier(proj_path, cu_box):
     setup_box = cu_box[0].cell.diagonal().sum()
     assert setup_box == 30
 
-    first_md_box = md.frames[0].cell.diagonal().sum()
-    npt.assert_almost_equal(first_md_box, (10 * 19/20 + 1/20 * 100) * 3)
-    first_md_box = md.frames[10].cell.diagonal().sum()
-    npt.assert_almost_equal(first_md_box, 178.5)
-    # something strange with the length of each simulation,
-    # depends when the check triggers and some 0indexing and 1indexing
-    first_md_box = md.frames[11].cell.diagonal().sum()
-    npt.assert_almost_equal(first_md_box, (10 * 7/8 + 1/8 * 100) * 3)
-    last_md_box = md.frames[-1].cell.diagonal().sum()
-    assert last_md_box == 300
+    # first MD
+    npt.assert_almost_equal(md.frames[0].cell.diagonal().sum(), 30)
+    # total steps is 20  - 1, as we start counting from 0
+    npt.assert_almost_equal(md.frames[9].cell.diagonal().sum(), (10 * 10/19 + 9/19 * 100) * 3)
+    
+    # second MD runs to the end
+    npt.assert_almost_equal(md.frames[10].cell.diagonal().sum(), 30)
+    npt.assert_almost_equal(md.frames[-1].cell.diagonal().sum(), 300)
 
     assert len(md.frames) == 20
+
+
+def test_ase_md_debug_check(proj_path, cu_box):
+
+    cu_box[0].set_cell([10,10,10, 90, 90, 90], True)
+
+    ase.io.write("cu_box.xyz", cu_box[0])
+    check = ips.DebugCheck(n_iterations=10)
+    thermostat = ips.LangevinThermostat(
+        time_step=1,
+        temperature=1,
+        friction=1,
+    )
+    model = ips.LJSinglePoint()
+
+    with ips.Project() as project:
+        data = ips.AddData(file="cu_box.xyz")
+        md = ips.ASEMD(
+            data=data.frames,
+            model=model,
+            checks=[check],
+            thermostat=thermostat,
+            steps=20,
+            sampling_rate=1,
+            dump_rate=33,
+        )
+
+    project.run()
+
+    # first frame already has integrated positions
+    assert not np.array_equal(md.frames[0].positions, cu_box[0].positions)
+    assert len(md.frames) == 10
+
