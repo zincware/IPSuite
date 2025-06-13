@@ -132,6 +132,7 @@ class ASEMD(zntrack.Node):
         self.laufband_path.parent.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "outs.txt").write_text("Lorem Ipsum")
         self.rng = np.random.default_rng(self.seed)
+        self.modifier_step_offset = 0
 
     def initialize_atoms(self, idx: int, atoms: ase.Atoms) -> ase.Atoms:
         directory = self.model_outs / f"{idx}"
@@ -202,10 +203,9 @@ class ASEMD(zntrack.Node):
         io = znh5md.IO(
             self.frames_path / f"{idx}.h5",
         )
-
         with Live(console=progress.console, refresh_per_second=10) as live:
             for step in tbar:
-                self.apply_modifiers(thermostat, step)
+                self.apply_modifiers(thermostat, step - self.modifier_step_offset)
                 try:
                     thermostat.run(1)
                 except Exception as e:
@@ -218,6 +218,7 @@ class ASEMD(zntrack.Node):
                     if check_trigger[-1]:
                         log.critical(str(check))
                 if any(check_trigger):
+                    self.modifier_step_offset = step
                     break
 
                 # TODO: only update metrics dict every sampling_rate steps?
