@@ -1484,7 +1484,7 @@ requires-dist = [
     { name = "rdkit2ase", specifier = ">=0.1.4" },
     { name = "seaborn", specifier = ">=0.13.2" },
     { name = "uncertainty-toolbox", specifier = ">=0.1.1" },
-    { name = "znh5md", specifier = ">=0.4.4" },
+    { name = "znh5md", specifier = ">=0.4.7" },
     { name = "zntrack", specifier = ">=0.8.7" },
 ]
 
@@ -4275,7 +4275,7 @@ wheels = [
 
 [[package]]
 name = "znh5md"
-version = "0.4.4"
+version = "0.4.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ase" },
@@ -4283,9 +4283,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a4/63/fb2a977e119d403b8a0c3d0f4421d52e1b6e1eb8ed106e08348fb2fde63e/znh5md-0.4.4.tar.gz", hash = "sha256:5b20f9ceed62e890935d16171c9abb0613f0ef1d65c1d63997d41838d495a35d", size = 156669, upload-time = "2025-02-07T09:57:04.509Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ea/92/651aa0e1567ca9aa40b29d53c999cba7ea045bcb5ba9b073c6c641a11344/znh5md-0.4.7.tar.gz", hash = "sha256:d7c8cf12070a403e241ede4601234555b8deb36a07ff800dad869842f844f663", size = 194494, upload-time = "2025-06-13T07:57:03.25Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e8/9e/2fdd8702626dc549ab0c18a7a9849b621c2a33f6d6a8bfd53414bce5a695/znh5md-0.4.4-py3-none-any.whl", hash = "sha256:075f0fa6e495ecc4a19251a216a599789167677a2c68504ee4a42a6e6b6907b8", size = 22131, upload-time = "2025-02-07T09:57:03.158Z" },
+    { url = "https://files.pythonhosted.org/packages/37/70/0eecda577b5dc04602ecb8c7cd43cebd669f717e1a541c773949927b9b18/znh5md-0.4.7-py3-none-any.whl", hash = "sha256:b2afc82b02bf18e966d751ef6bf649d0dfedd3cf9d0d806f3db764ee85779635", size = 23019, upload-time = "2025-06-13T07:57:02.301Z" },
 ]
 
 [[package]]
