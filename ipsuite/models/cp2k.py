@@ -11,9 +11,19 @@ import numpy as np
 import yaml
 import zntrack
 from ase.calculators.cp2k import CP2K
-from cp2k_input_tools.generator import CP2KInputGenerator
 from pint import UnitRegistry
 from ase.calculators.calculator import Calculator, all_changes
+
+try:
+    from cp2k_input_tools.generator import CP2KInputGenerator
+except ImportError as err:
+    raise ImportError(
+        "IPSuite requires `pip install cp2k-input-tools>0.9.1` due to "
+        "incompatibility with pint and numpy for later versions. "
+        "See https://github.com/cp2k/cp2k-input-tools/issues/110 "
+        "You can install the latest version using "
+        "`pip install git+https://github.com/cp2k/cp2k-input-tools`."
+    ) from err
 
 ureg = UnitRegistry()
 
