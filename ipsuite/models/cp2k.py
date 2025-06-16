@@ -1,4 +1,5 @@
 import dataclasses
+import functools
 import logging
 import os
 import re
@@ -6,6 +7,7 @@ import shutil
 import subprocess
 from copy import deepcopy
 from pathlib import Path
+from unittest.mock import patch
 
 import numpy as np
 import yaml
@@ -141,7 +143,7 @@ class CustomCP2K(Calculator):
         "charges",
     ]
 
-    def __init__(self, cmd: str, inp: dict, path: str, **kwargs):
+    def __init__(self, cmd: str, inp: dict, path: str | Path, **kwargs):
         super().__init__(**kwargs)
 
         # make all keys in inp lowercase, iteratively
@@ -158,9 +160,6 @@ class CustomCP2K(Calculator):
 
     def calculate(self, atoms, properties=None, system_changes=all_changes):
         Calculator.calculate(self, atoms, properties, system_changes)
-        # Write the cp2k input script to self._path / "cp2k.inp"
-        # call cp2k to run the calculation
-        # read the results using cp2k_output_tools
 
         positions = atoms.get_positions()
         config = deepcopy(self._inp)
@@ -178,24 +177,17 @@ class CustomCP2K(Calculator):
         }
         config["global"] = {"project_name": "cp2k"}
         # print forces
-        # config["force_eval"]["print"]["forces"] = {"*": {"output": "FORCE"}}
         config["force_eval"].setdefault("print", {}).setdefault("forces", {"_": "ON"})
-        # config["force_eval"].setdefault("print", {}).setdefault("energy", {"_": "ON"})
+        # print analytic stress tensor
+        config["force_eval"]["stress_tensor"] = "analytical"
         config["force_eval"].setdefault("print", {}).setdefault(
             "stress_tensor", {"_": "ON"}
         )
-        # config["force_eval"].setdefault("print", {}).setdefault("stress", {"*": {"output": "STRESS"}})
-        # config["force_eval"].setdefault("print", {}).setdefault("energy", {"*": {"output": "ENERGY"}})
-        # analytic stress tensor
-        config["force_eval"]["stress_tensor"] = "analytical"
-
-        # compute hirshfeld charges
-        # config["force_eval"]["dft"]["print"] = {
-        #     "hirshfeld": {"_": "ON"},
-        # }
+        # print hirshfeld charges
         config["force_eval"]["dft"].setdefault("print", {}).setdefault(
             "hirshfeld", {"_": "ON"}
         )
+
         self._path.mkdir(parents=True, exist_ok=True)
         # keep the previous cp2k.inp and cp2k.out files if they exist
         for ext in ["inp", "out"]:
@@ -296,38 +288,38 @@ class CP2KModel:
 
         # return "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
 
-    def get_calculator(self, directory: str | Path, **kwargs) -> CP2K:
+    def get_calculator(self, directory: str | Path, **kwargs) -> CP2K | CustomCP2K:
         directory = Path(directory)
         directory.mkdir(parents=True, exist_ok=True)
         self._update_cmd()
         for file in self.files:
             shutil.copy(file, directory)
 
+        if os.environ["IPSUITE_CP2K_LEGACY"] == "1":
+            patch(
+                "ase.calculators.cp2k.subprocess.Popen",
+                wraps=functools.partial(subprocess.Popen, cwd=directory),
+            ).start()
+
+            return CP2K(
+                command=self.cmd,
+                inp=self.get_input_script(),
+                basis_set=None,
+                basis_set_file=None,
+                max_scf=None,
+                cutoff=None,
+                force_eval_method=None,
+                potential_file=None,
+                poisson_solver=None,
+                pseudo_potential=None,
+                stress_tensor=True,
+                xc=None,
+                print_level=None,
+                label="cp2k",
+                set_pos_file=True,
+            )
         return CustomCP2K(
             cmd=self.cmd,
             inp=self.get_input_script(),
             path=directory,
         )
-
-        # patch(
-        #     "ase.calculators.cp2k.subprocess.Popen",
-        #     wraps=functools.partial(subprocess.Popen, cwd=directory),
-        # ).start()
-
-        # return CP2K(
-        #     command=self.cmd,
-        #     inp=self.get_input_script(),
-        #     basis_set=None,
-        #     basis_set_file=None,
-        #     max_scf=None,
-        #     cutoff=None,
-        #     force_eval_method=None,
-        #     potential_file=None,
-        #     poisson_solver=None,
-        #     pseudo_potential=None,
-        #     stress_tensor=True,
-        #     xc=None,
-        #     print_level=None,
-        #     label=f"cp2k",
-        #     set_pos_file=True,
-        # )

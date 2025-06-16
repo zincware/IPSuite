@@ -129,7 +129,7 @@ class CP2KSinglePoint(base.IPSNode):
 
         return "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
 
-    # TODO: why the `idx` and not ammend the directory?
+    # TODO: why the `idx` and not amend the directory?
     def get_calculator(self, directory: t.Optional[str] = None, idx: int = 0):
         self.cp2k_shell = _update_cmd(self.cp2k_shell)
 
