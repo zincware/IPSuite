@@ -9,6 +9,7 @@ from copy import deepcopy
 from pathlib import Path
 from unittest.mock import patch
 
+from ipsuite.utils.helpers import lower_dict
 import numpy as np
 import yaml
 import zntrack
@@ -21,7 +22,7 @@ try:
 except ImportError as err:
     raise ImportError(
         "IPSuite requires `pip install cp2k-input-tools>0.9.1` due to "
-        "incompatibility with pint and numpy for later versions. "
+        "incompatibility with pint and numpy 2 in earlier versions. "
         "See https://github.com/cp2k/cp2k-input-tools/issues/110 "
         "You can install the latest version using "
         "`pip install git+https://github.com/cp2k/cp2k-input-tools`."
@@ -145,13 +146,6 @@ class CustomCP2K(Calculator):
 
     def __init__(self, cmd: str, inp: dict, path: str | Path, **kwargs):
         super().__init__(**kwargs)
-
-        # make all keys in inp lowercase, iteratively
-        def lower_dict(d):
-            return {
-                k.lower(): lower_dict(v) if isinstance(v, dict) else v
-                for k, v in d.items()
-            }
 
         inp = lower_dict(inp)
         self._cmd = cmd
@@ -280,13 +274,11 @@ class CP2KModel:
                     "'IPSUITE_CP2K_SHELL' or set the cp2k executable."
                 ) from err
 
-    def get_input_script(self):
+    def get_input_script(self) -> dict:
         """Return the input script."""
         with Path(self.config).open("r") as file:
             cp2k_input_dict = yaml.safe_load(file)
         return cp2k_input_dict
-
-        # return "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
 
     def get_calculator(self, directory: str | Path, **kwargs) -> CP2K | CustomCP2K:
         directory = Path(directory)
@@ -303,7 +295,7 @@ class CP2KModel:
 
             return CP2K(
                 command=self.cmd,
-                inp=self.get_input_script(),
+                inp="\n".join(CP2KInputGenerator().line_iter(self.get_input_script())),
                 basis_set=None,
                 basis_set_file=None,
                 max_scf=None,

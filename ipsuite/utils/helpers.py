@@ -65,3 +65,11 @@ def check_duplicate_keys(dict_a: dict, dict_b: dict, log: Logger) -> None:
                 f"Found <{key}> in given config file. Please be aware that <{key}>"
                 " will be overwritten by MLSuite!"
             )
+
+
+# make all keys in inp lowercase, iteratively
+def lower_dict(d):
+    return {
+        k.lower(): lower_dict(v) if isinstance(v, dict) else v
+        for k, v in d.items()
+    }
