@@ -5,6 +5,9 @@ import h5py
 import tqdm
 import znh5md
 import zntrack
+import os
+
+from laufband import Laufband
 
 # from ase.calculators.calculator import all_properties
 from ipsuite.abc import NodeWithCalculator
@@ -36,21 +39,33 @@ class ApplyCalculator(zntrack.Node):
         self.model_outs.mkdir(parents=True, exist_ok=True)
         (self.model_outs / "dummy.txt").write_text("Thank you for using IPSuite!")
         frames = []
-        calc = self.model.get_calculator(directory=self.model_outs)
         io = znh5md.IO(self.frames_path)
 
-        # TODO: use laufband
+        worker = Laufband(
+            self.data,
+            com=self.model_outs / "laufband.sqlite",
+            lock_path=self.model_outs / "laufband.lock",
+            disable=os.environ.get("LAUFBAND_DISABLE", "1") == "1",
+        )
+        # by default, we disable laufband for better performance
 
-        for atoms in tqdm.tqdm(self.data):
+        calc_dir = self.model_outs / f"{worker.identifier}"
+        calc_dir.mkdir(parents=True, exist_ok=True)
+
+        calc = self.model.get_calculator(directory=calc_dir)
+
+        for atoms in worker:
             atoms.calc = calc
             atoms.get_potential_energy()
             frames.append(freeze_copy_atoms(atoms))
             if self.dump_rate is not None:
                 if len(frames) % self.dump_rate == 0:
-                    io.extend(frames)
-                    frames = []
+                    with worker.lock:
+                        io.extend(frames)
+                        frames = []
 
-        io.extend(frames)
+        with worker.lock:
+            io.extend(frames)
 
     @property
     def frames(self) -> list[ase.Atoms]:
