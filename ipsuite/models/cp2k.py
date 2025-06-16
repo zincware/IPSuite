@@ -10,9 +10,9 @@ from pathlib import Path
 import numpy as np
 import yaml
 import zntrack
+from ase.calculators.calculator import Calculator, all_changes
 from ase.calculators.cp2k import CP2K
 from pint import UnitRegistry
-from ase.calculators.calculator import Calculator, all_changes
 
 try:
     from cp2k_input_tools.generator import CP2KInputGenerator
@@ -84,14 +84,16 @@ class CP2KOutput:
 
         stress *= ureg("bar").to("eV/angstrom**3").magnitude
         # Convert to Voigt format: [xx, yy, zz, yz, xz, xy], CP2K uses opposite sign
-        return -1.0 * np.array([
-            stress[0, 0],
-            stress[1, 1],
-            stress[2, 2],
-            stress[1, 2],
-            stress[0, 2],
-            stress[0, 1],
-        ])
+        return -1.0 * np.array(
+            [
+                stress[0, 0],
+                stress[1, 1],
+                stress[2, 2],
+                stress[1, 2],
+                stress[0, 2],
+                stress[0, 1],
+            ]
+        )
 
     @staticmethod
     def extract_hirshfeld_charges(content: str) -> np.ndarray:
@@ -102,7 +104,7 @@ class CP2KOutput:
 
         for i, line in enumerate(lines):
             if header_pattern.match(line):
-                data_lines = lines[i + 2:]  # Skip the next two header lines
+                data_lines = lines[i + 2 :]  # Skip the next two header lines
                 for data_line in data_lines:
                     if not data_line.strip():
                         break
@@ -127,6 +129,7 @@ class CP2KOutput:
             stress=cls.extract_stress_tensor(content),
             hirshfeld_charges=cls.extract_hirshfeld_charges(content),
         )
+
 
 class CustomCP2K(Calculator):
     """Custom ASE CP2K calculator to allow for custom input scripts."""

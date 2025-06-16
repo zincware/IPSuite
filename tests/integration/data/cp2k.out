@@ -27,8 +27,8 @@
                                            el/1243654
 
  CP2K| version string:                                       CP2K version 2025.1
- CP2K| source code revision number:                                             
- CP2K| cp2kflags: omp fftw3 libxc parallel scalapack xsmm                       
+ CP2K| source code revision number:
+ CP2K| cp2kflags: omp fftw3 libxc parallel scalapack xsmm
  CP2K| is freely available from                            https://www.cp2k.org/
  CP2K| Program compiled at                                   2025-05-31 10:19:25
  CP2K| Program compiled on                                                   ant
@@ -114,7 +114,7 @@
  [a.u.] -> [Hz]                                             6.57968392072181E+15
  [a.u.] -> [1/cm] (wave numbers)                            2.19474631370540E+05
  [a.u./Bohr**2] -> [1/cm]                                   5.14048714338585E+03
- 
+
 
  CELL_TOP| Volume [angstrom^3]:                                       239.316887
  CELL_TOP| Vector a [angstrom     6.209     0.000     0.000   |a| =     6.208563
@@ -183,7 +183,7 @@
 
  FUNCTIONAL| PBE:
  FUNCTIONAL| J.P.Perdew, K.Burke, M.Ernzerhof, Phys. Rev. Letter, vol. 77, n 18,
- FUNCTIONAL|  pp. 3865-3868, (1996) {spin unpolarized}                          
+ FUNCTIONAL|  pp. 3865-3868, (1996) {spin unpolarized}
 
 
  QS| Method:                                                                 GPW
@@ -593,7 +593,7 @@
                         --------------------------------------------------------
                         level_shift [a.u.]:                             0.000000
                         --------------------------------------------------------
-                        Outer loop SCF in use 
+                        Outer loop SCF in use
                         No variables optimised in outer loop
                         eps_scf                                         1.00E-06
                         max_scf                                              100
@@ -851,7 +851,7 @@
                                          in the iterative subspace
                                          using   7 DIIS vectors
                                          safer DIIS on
-  Preconditioner : FULL_SINGLE_INVERSE : inversion of 
+  Preconditioner : FULL_SINGLE_INVERSE : inversion of
                                          H + eS - 2*(Sc)(c^T*H*c+const)(Sc)^T
   Precond_solver : DEFAULT
   stepsize       :    0.08000000                  energy_gap     :    0.08000000
@@ -1040,45 +1040,45 @@
  -                                                                             -
  -------------------------------------------------------------------------------
  COUNTER                                    TOTAL       BLAS       SMM       ACC
- flops    32 x    32 x    53               217088       0.0%    100.0%      0.0%     
- flops     9 x    32 x    32               294912       0.0%    100.0%      0.0%     
- flops    22 x    32 x    32               360448       0.0%    100.0%      0.0%     
- flops    36 x    32 x    18              3649536       0.0%    100.0%      0.0%     
- flops    44 x    32 x    18              4460544       0.0%    100.0%      0.0%     
- flops    49 x    32 x    18              4967424       0.0%    100.0%      0.0%     
- flops    36 x    32 x    27              5474304       0.0%    100.0%      0.0%     
- flops    58 x    32 x    18              5879808       0.0%    100.0%      0.0%     
- flops    62 x    32 x    18              6285312       0.0%    100.0%      0.0%     
- flops    44 x    32 x    27              6690816       0.0%    100.0%      0.0%     
- flops    71 x    32 x    18              7197696       0.0%    100.0%      0.0%     
- flops    49 x    32 x    27              7451136       0.0%    100.0%      0.0%     
- flops    58 x    32 x    27              8819712       0.0%    100.0%      0.0%     
- flops    62 x    32 x    27              9427968       0.0%    100.0%      0.0%     
- flops    36 x    32 x    31              9427968       0.0%    100.0%      0.0%     
- flops    71 x    32 x    27             10796544       0.0%    100.0%      0.0%     
- flops    44 x    32 x    31             11523072       0.0%    100.0%      0.0%     
- flops    32 x    32 x    18             12718080       0.0%    100.0%      0.0%     
- flops    49 x    32 x    31             12832512       0.0%    100.0%      0.0%     
- flops    58 x    32 x    31             15189504       0.0%    100.0%      0.0%     
- flops    36 x    32 x    32             15777792       0.0%    100.0%      0.0%     
- flops    62 x    32 x    31             16237056       0.0%    100.0%      0.0%     
- flops    71 x    32 x    31             18594048       0.0%    100.0%      0.0%     
- flops    32 x    32 x    27             18911232       0.0%    100.0%      0.0%     
- flops    44 x    32 x    32             19283968       0.0%    100.0%      0.0%     
- flops    49 x    32 x    32             21475328       0.0%    100.0%      0.0%     
- flops    32 x    32 x    32             24969216       0.0%    100.0%      0.0%     
- flops    58 x    32 x    32             25419776       0.0%    100.0%      0.0%     
- flops    62 x    32 x    32             27172864       0.0%    100.0%      0.0%     
- flops    71 x    32 x    32             31117312       0.0%    100.0%      0.0%     
- flops     9 x     9 x    32             32431104       0.0%    100.0%      0.0%     
- flops    32 x    32 x    31             32759808       0.0%    100.0%      0.0%     
- flops    22 x     9 x    32             37306368       0.0%    100.0%      0.0%     
- flops     9 x    22 x    32             37306368       0.0%    100.0%      0.0%     
- flops    22 x    22 x    32             51296256       0.0%    100.0%      0.0%     
- flops     9 x    32 x     9            123420672       0.0%    100.0%      0.0%     
- flops    22 x    32 x     9            150847488       0.0%    100.0%      0.0%     
- flops     9 x    32 x    22            150847488       0.0%    100.0%      0.0%     
- flops    22 x    32 x    22            184369152       0.0%    100.0%      0.0%     
+ flops    32 x    32 x    53               217088       0.0%    100.0%      0.0%
+ flops     9 x    32 x    32               294912       0.0%    100.0%      0.0%
+ flops    22 x    32 x    32               360448       0.0%    100.0%      0.0%
+ flops    36 x    32 x    18              3649536       0.0%    100.0%      0.0%
+ flops    44 x    32 x    18              4460544       0.0%    100.0%      0.0%
+ flops    49 x    32 x    18              4967424       0.0%    100.0%      0.0%
+ flops    36 x    32 x    27              5474304       0.0%    100.0%      0.0%
+ flops    58 x    32 x    18              5879808       0.0%    100.0%      0.0%
+ flops    62 x    32 x    18              6285312       0.0%    100.0%      0.0%
+ flops    44 x    32 x    27              6690816       0.0%    100.0%      0.0%
+ flops    71 x    32 x    18              7197696       0.0%    100.0%      0.0%
+ flops    49 x    32 x    27              7451136       0.0%    100.0%      0.0%
+ flops    58 x    32 x    27              8819712       0.0%    100.0%      0.0%
+ flops    62 x    32 x    27              9427968       0.0%    100.0%      0.0%
+ flops    36 x    32 x    31              9427968       0.0%    100.0%      0.0%
+ flops    71 x    32 x    27             10796544       0.0%    100.0%      0.0%
+ flops    44 x    32 x    31             11523072       0.0%    100.0%      0.0%
+ flops    32 x    32 x    18             12718080       0.0%    100.0%      0.0%
+ flops    49 x    32 x    31             12832512       0.0%    100.0%      0.0%
+ flops    58 x    32 x    31             15189504       0.0%    100.0%      0.0%
+ flops    36 x    32 x    32             15777792       0.0%    100.0%      0.0%
+ flops    62 x    32 x    31             16237056       0.0%    100.0%      0.0%
+ flops    71 x    32 x    31             18594048       0.0%    100.0%      0.0%
+ flops    32 x    32 x    27             18911232       0.0%    100.0%      0.0%
+ flops    44 x    32 x    32             19283968       0.0%    100.0%      0.0%
+ flops    49 x    32 x    32             21475328       0.0%    100.0%      0.0%
+ flops    32 x    32 x    32             24969216       0.0%    100.0%      0.0%
+ flops    58 x    32 x    32             25419776       0.0%    100.0%      0.0%
+ flops    62 x    32 x    32             27172864       0.0%    100.0%      0.0%
+ flops    71 x    32 x    32             31117312       0.0%    100.0%      0.0%
+ flops     9 x     9 x    32             32431104       0.0%    100.0%      0.0%
+ flops    32 x    32 x    31             32759808       0.0%    100.0%      0.0%
+ flops    22 x     9 x    32             37306368       0.0%    100.0%      0.0%
+ flops     9 x    22 x    32             37306368       0.0%    100.0%      0.0%
+ flops    22 x    22 x    32             51296256       0.0%    100.0%      0.0%
+ flops     9 x    32 x     9            123420672       0.0%    100.0%      0.0%
+ flops    22 x    32 x     9            150847488       0.0%    100.0%      0.0%
+ flops     9 x    32 x    22            150847488       0.0%    100.0%      0.0%
+ flops    22 x    32 x    22            184369152       0.0%    100.0%      0.0%
  flops inhomo. stacks                   234550016     100.0%      0.0%      0.0%
  flops total                         1.397758E+09      16.8%     83.2%      0.0%
  flops max/rank                    687.737856E+06      20.2%     79.8%      0.0%
@@ -1188,25 +1188,25 @@
  -                           R E F E R E N C E S                               -
  -                                                                             -
  -------------------------------------------------------------------------------
- 
+
  CP2K version 2025.1, the CP2K developers group (2025).
  CP2K is freely available from https://www.cp2k.org/ .
- 
- T. D. Kuehne, M. Iannuzzi, M. Del Ben, V. V. Rybkin, P. Seewald, F. Stein, T. 
- Laino, R. Z. Khaliullin, O. Schuett, F. Schiffmann, D. Golze, J. Wilhelm, S. 
- Chulkov, M. H. Bani-Hashemian, V. Weber, U. Borstnik, M. Taillefumier, A. S. 
- Jakobovits, A. Lazzaro, H. Pabst, T. Mueller, R. Schade, M. Guidon, S. 
- Andermatt, N. Holmberg, G. K. Schenter, A. Hehn, A. Bussy, F. Belleflamme, G. 
- Tabacchi, A. Gloess, M. Lass, I. Bethune, C. J. Mundy, C. Plessl, M. Watkins, 
+
+ T. D. Kuehne, M. Iannuzzi, M. Del Ben, V. V. Rybkin, P. Seewald, F. Stein, T.
+ Laino, R. Z. Khaliullin, O. Schuett, F. Schiffmann, D. Golze, J. Wilhelm, S.
+ Chulkov, M. H. Bani-Hashemian, V. Weber, U. Borstnik, M. Taillefumier, A. S.
+ Jakobovits, A. Lazzaro, H. Pabst, T. Mueller, R. Schade, M. Guidon, S.
+ Andermatt, N. Holmberg, G. K. Schenter, A. Hehn, A. Bussy, F. Belleflamme, G.
+ Tabacchi, A. Gloess, M. Lass, I. Bethune, C. J. Mundy, C. Plessl, M. Watkins,
  J. VandeVondele, M. Krack, J. Hutter.
  J. Chem. Phys. 152, 194103 (2020).
- CP2K: An electronic structure and molecular dynamics software package - 
+ CP2K: An electronic structure and molecular dynamics software package -
  Quickstep: Efficient and accurate electronic structure calculations.
  https://doi.org/10.1063/5.0007045
 
  O. Schuett, P. Messmer, J. Hutter, J. VandeVondele.
  Electronic Structure Calculations on Graphics Processing Units, 173-190 (2016).
- GPU-Accelerated Sparse Matrix-Matrix Multiplication for Linear Scaling Density 
+ GPU-Accelerated Sparse Matrix-Matrix Multiplication for Linear Scaling Density
  Functional Theory.
  https://doi.org/10.1002/9781118670712.ch8
 
@@ -1222,25 +1222,25 @@
 
  U. Borstnik, J. VandeVondele, V. Weber, J. Hutter.
  Parallel Comput. 40, 47-58 (2014).
- Sparse matrix multiplication: The distributed block-compressed sparse row 
+ Sparse matrix multiplication: The distributed block-compressed sparse row
  library.
  https://doi.org/10.1016/j.parco.2014.03.012
 
  J. VandeVondele, J. Hutter.
  J. Chem. Phys. 127, 114105 (2007).
- Gaussian basis sets for accurate calculations on molecular systems in gas and 
+ Gaussian basis sets for accurate calculations on molecular systems in gas and
  condensed phases.
  https://doi.org/10.1063/1.2770708
 
  J. VandeVondele, M. Krack, F. Mohamed, M. Parrinello, T. Chassaing, J. Hutter.
  Comput. Phys. Commun. 167, 103-128 (2005).
- QUICKSTEP: Fast and accurate density functional calculations using a mixed 
+ QUICKSTEP: Fast and accurate density functional calculations using a mixed
  Gaussian and plane waves approach.
  https://doi.org/10.1016/j.cpc.2004.12.014
 
  M. Krack.
  Theor. Chem. Acc. 114, 145-152 (2005).
- Pseudopotentials for H to Kr optimized for gradient-corrected 
+ Pseudopotentials for H to Kr optimized for gradient-corrected
  exchange-correlation functionals.
  https://doi.org/10.1007/s00214-005-0655-y
 
@@ -1251,7 +1251,7 @@
 
  J. VandeVondele, J. Hutter.
  J. Chem. Phys. 118, 4365-4369 (2003).
- An efficient orbital transformation method for electronic structure 
+ An efficient orbital transformation method for electronic structure
  calculations.
  https://doi.org/10.1063/1.1543154
 
@@ -1332,7 +1332,7 @@
  -------------------------------------------------------------------------------
 
  The number of warnings for this run is : 2
- 
+
  -------------------------------------------------------------------------------
   **** **** ******  **  PROGRAM ENDED AT                 2025-06-16 14:17:19.369
  ***** ** ***  *** **   PROGRAM RAN ON                                       ant
