@@ -69,7 +69,4 @@ def check_duplicate_keys(dict_a: dict, dict_b: dict, log: Logger) -> None:
 
 # make all keys in inp lowercase, iteratively
 def lower_dict(d):
-    return {
-        k.lower(): lower_dict(v) if isinstance(v, dict) else v
-        for k, v in d.items()
-    }
+    return {k.lower(): lower_dict(v) if isinstance(v, dict) else v for k, v in d.items()}

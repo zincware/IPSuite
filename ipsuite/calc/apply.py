@@ -25,12 +25,13 @@ class ApplyCalculator(zntrack.Node):
     frames_path : pathlib.Path, optional
         Path to the H5MD file where the results will be stored.
     dump_rate : int, optional
-        If specified, the results will be dumped to the H5MD file every `dump_rate` frames.
-        If None, all frames will be dumped at once at the end of the calculation.
+        If specified, the results will be dumped to the H5MD file
+        every `dump_rate` frames. If None, all frames will be
+        dumped at once at the end of the calculation.
     model_outs : pathlib.Path, optional
         Path to the directory where the model outputs will be stored.
         Defaults to a subdirectory named "model" in the current working directory.
-    
+
     Laufband Configuration
     ----------------------
     This node can use Laufband for auto-checkpointing and parallel execution.
@@ -40,13 +41,13 @@ class ApplyCalculator(zntrack.Node):
 
         # Enable LAUFBAND
         export LAUFBAND_DISABLE="0"
-        
+
         # Maximum number of retries for unsuccessful jobs
         export LAUFBAND_MAX_DIED_RETRIES="3".
 
         # optional, but recommended for identifying dead jobs
         export LAUFBAND_HEARTBEAT_TIMEOUT=$((runtime_seconds))
-        
+
         # optional, can be used to identify the job
         export LAUFBAND_IDENTIFIER=${SLURM_JOB_ID}
     """

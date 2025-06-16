@@ -9,13 +9,14 @@ from copy import deepcopy
 from pathlib import Path
 from unittest.mock import patch
 
-from ipsuite.utils.helpers import lower_dict
 import numpy as np
 import yaml
 import zntrack
 from ase.calculators.calculator import Calculator, all_changes
 from ase.calculators.cp2k import CP2K
 from pint import UnitRegistry
+
+from ipsuite.utils.helpers import lower_dict
 
 try:
     from cp2k_input_tools.generator import CP2KInputGenerator
