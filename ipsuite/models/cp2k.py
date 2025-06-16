@@ -1,25 +1,25 @@
 import dataclasses
-import functools
 import logging
 import os
+import re
 import shutil
 import subprocess
+from copy import deepcopy
 from pathlib import Path
-from unittest.mock import patch
 
+import numpy as np
 import yaml
 import zntrack
 from ase.calculators.cp2k import CP2K
 from cp2k_input_tools.generator import CP2KInputGenerator
-from copy import deepcopy
-import numpy as np
-import re
 from pint import UnitRegistry
+
 ureg = UnitRegistry()
 
 log = logging.getLogger(__name__)
 
 from dataclasses import dataclass
+
 
 @dataclass
 class CP2KOutput:
@@ -34,14 +34,13 @@ class CP2KOutput:
             r"FORCES\|\s+\d+\s+([-+]?\d+\.\d+E[-+]\d+)\s+([-+]?\d+\.\d+E[-+]\d+)\s+([-+]?\d+\.\d+E[-+]\d+)"
         )
 
-        forces = np.array([
-            [float(x), float(y), float(z)]
-            for x, y, z in pattern.findall(content)
-        ])
+        forces = np.array(
+            [[float(x), float(y), float(z)] for x, y, z in pattern.findall(content)]
+        )
         # convert forces from cp2k units to ase units
         forces *= ureg("hartree/bohr").to(ureg("eV/angstrom")).magnitude
-        return forces 
-    
+        return forces
+
     @staticmethod
     def extract_energy(file_content: str) -> float:
         # use this line  ENERGY| Total FORCE_EVAL ( QS ) energy [hartree]           -770.620374551554278
@@ -86,7 +85,9 @@ class CP2KOutput:
                     parts = data_line.split()
                     if len(parts) >= 6:
                         try:
-                            charge = float(parts[5])  # Net charge is the 6th column (index 5)
+                            charge = float(
+                                parts[5]
+                            )  # Net charge is the 6th column (index 5)
                             charges.append(charge)
                         except ValueError:
                             continue
@@ -98,19 +99,21 @@ class CP2KOutput:
             raise ValueError("No Hirshfeld charges found in the file content.")
 
         return np.array(charges, dtype=float)
-        
 
-                
     @staticmethod
     def extract_stress_tensor(file_content: str) -> np.ndarray:
         float_pattern = r"([-+]?\d+\.?\d*(?:[Ee][-+]?\d+))"
 
         tensor_row_pattern = re.compile(
-            r"^\s*STRESS\|\s*[xyz]\s*" + 
-            float_pattern + r"\s+" + 
-            float_pattern + r"\s+" + 
-            float_pattern + r"$"
-        , re.MULTILINE)
+            r"^\s*STRESS\|\s*[xyz]\s*"
+            + float_pattern
+            + r"\s+"
+            + float_pattern
+            + r"\s+"
+            + float_pattern
+            + r"$",
+            re.MULTILINE,
+        )
 
         matches = tensor_row_pattern.findall(file_content)
 
@@ -121,8 +124,16 @@ class CP2KOutput:
 
             assert np.all(stress == np.transpose(stress))  # should be symmetric
             # Convert 3x3 stress tensor to Voigt form as required by ASE
-            stress = np.array([stress[0, 0], stress[1, 1], stress[2, 2],
-                            stress[1, 2], stress[0, 2], stress[0, 1]])
+            stress = np.array(
+                [
+                    stress[0, 0],
+                    stress[1, 1],
+                    stress[2, 2],
+                    stress[1, 2],
+                    stress[0, 2],
+                    stress[0, 1],
+                ]
+            )
             return -1.0 * stress  # cp2k uses the opposite sign
         else:
             raise ValueError("Stress tensor not found or incomplete in the file content.")
@@ -134,7 +145,12 @@ class CP2KOutput:
         stress = cls.extract_stress_tensor(file_content)
         hirshfeld_charges = cls.extract_hirshfeld_charges(file_content)
 
-        return cls(energy=energy, forces=forces, stress=stress, hirshfeld_charges=hirshfeld_charges)
+        return cls(
+            energy=energy,
+            forces=forces,
+            stress=stress,
+            hirshfeld_charges=hirshfeld_charges,
+        )
 
 
 from ase.calculators.calculator import Calculator, all_changes
@@ -152,9 +168,14 @@ class CustomCP2K(Calculator):
 
     def __init__(self, cmd: str, inp: dict, path: str, **kwargs):
         super().__init__(**kwargs)
+
         # make all keys in inp lowercase, iteratively
         def lower_dict(d):
-            return {k.lower(): lower_dict(v) if isinstance(v, dict) else v for k, v in d.items()}
+            return {
+                k.lower(): lower_dict(v) if isinstance(v, dict) else v
+                for k, v in d.items()
+            }
+
         inp = lower_dict(inp)
         self._cmd = cmd
         self._inp = inp
@@ -165,24 +186,29 @@ class CustomCP2K(Calculator):
         # Write the cp2k input script to self._path / "cp2k.inp"
         # call cp2k to run the calculation
         # read the results using cp2k_output_tools
-        
 
         positions = atoms.get_positions()
         config = deepcopy(self._inp)
         # should be ATOM TYPE, X, Y, Z
         cp2k_positions = [
-            f"{atom.symbol} {pos[0]} {pos[1]} {pos[2]}" for atom, pos in zip(atoms, positions)
+            f"{atom.symbol} {pos[0]} {pos[1]} {pos[2]}"
+            for atom, pos in zip(atoms, positions)
         ]
         config["force_eval"]["subsys"]["coord"] = {"*": cp2k_positions}
-        config["force_eval"]["subsys"]["cell"] = {"periodic": "XYZ", "A": atoms.get_cell().tolist()[0], 
-                                                  "B": atoms.get_cell().tolist()[1], 
-                                                  "C": atoms.get_cell().tolist()[2]}
+        config["force_eval"]["subsys"]["cell"] = {
+            "periodic": "XYZ",
+            "A": atoms.get_cell().tolist()[0],
+            "B": atoms.get_cell().tolist()[1],
+            "C": atoms.get_cell().tolist()[2],
+        }
         config["global"] = {"project_name": "cp2k"}
         # print forces
         # config["force_eval"]["print"]["forces"] = {"*": {"output": "FORCE"}}
         config["force_eval"].setdefault("print", {}).setdefault("forces", {"_": "ON"})
         # config["force_eval"].setdefault("print", {}).setdefault("energy", {"_": "ON"})
-        config["force_eval"].setdefault("print", {}).setdefault("stress_tensor", {"_": "ON"})
+        config["force_eval"].setdefault("print", {}).setdefault(
+            "stress_tensor", {"_": "ON"}
+        )
         # config["force_eval"].setdefault("print", {}).setdefault("stress", {"*": {"output": "STRESS"}})
         # config["force_eval"].setdefault("print", {}).setdefault("energy", {"*": {"output": "ENERGY"}})
         # analytic stress tensor
@@ -192,7 +218,9 @@ class CustomCP2K(Calculator):
         # config["force_eval"]["dft"]["print"] = {
         #     "hirshfeld": {"_": "ON"},
         # }
-        config["force_eval"]["dft"].setdefault("print", {}).setdefault("hirshfeld", {"_": "ON"})
+        config["force_eval"]["dft"].setdefault("print", {}).setdefault(
+            "hirshfeld", {"_": "ON"}
+        )
         self._path.mkdir(parents=True, exist_ok=True)
         # keep the previous cp2k.inp and cp2k.out files if they exist
         for ext in ["inp", "out"]:
@@ -221,7 +249,7 @@ class CustomCP2K(Calculator):
                 f"CP2K calculation failed with return code {result.returncode}. "
                 f"Check the output in {self._path / 'cp2k.out'}."
             )
-        
+
         output_file_content = (self._path / "cp2k.out").read_text()
         output = CP2KOutput.from_file_content(output_file_content)
         self.results = {
@@ -230,7 +258,6 @@ class CustomCP2K(Calculator):
             "stress": output.stress,
             "charges": output.hirshfeld_charges,
         }
-
 
 
 @dataclasses.dataclass

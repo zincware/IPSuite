@@ -1,12 +1,10 @@
+import os
 import pathlib
 
 import ase
 import h5py
-import tqdm
 import znh5md
 import zntrack
-import os
-
 from laufband import Laufband
 
 # from ase.calculators.calculator import all_properties
