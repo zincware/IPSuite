@@ -214,16 +214,16 @@ wheels = [
 
 [[package]]
 name = "ase"
-version = "3.24.0"
+version = "3.25.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "matplotlib" },
     { name = "numpy" },
     { name = "scipy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5c/c9/9adb9bc641bd7222367886e4e6c753b4c64da4ff2d9565ab39aee1e34734/ase-3.24.0.tar.gz", hash = "sha256:9acc93d6daaf48cd27b844c56f8bf49428b9db0542faa3cc30d9d5b8e1842195", size = 2383264, upload_time = "2024-12-28T22:20:33.711Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e8/a1/5735ced2f159979f5b27c4083126b7796a5750cee6f027864e59818a5b76/ase-3.25.0.tar.gz", hash = "sha256:374cf8ca9fe588f05d6e856da3c9c17ef262dc968027b231d449334140c962c2", size = 2400055, upload_time = "2025-04-11T17:14:39.975Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1f/cd/b1253035a1da90e89f31947e052c558cd83df3bcaff34aa199e5e806d773/ase-3.24.0-py3-none-any.whl", hash = "sha256:974922df87ef4ec8cf1140359a55ab4c4dc55c38e26876bdd9c00968da1f463c", size = 2928893, upload_time = "2024-12-28T22:20:29.416Z" },
+    { url = "https://files.pythonhosted.org/packages/07/f5/007d993fcf3b051acb304d5402e0bd103fd20816b47dee9531bdbfb3aa0c/ase-3.25.0-py3-none-any.whl", hash = "sha256:f9a5295e1154da355af04726d001fa76a311c076616d98e49cd9f34fc3afe188", size = 2951559, upload_time = "2025-04-11T17:14:37.617Z" },
 ]
 
 [[package]]
@@ -1502,7 +1502,7 @@ requires-dist = [
     { name = "laufband", specifier = ">=0.1.4" },
     { name = "lazy-loader", specifier = ">=0.4" },
     { name = "pint", specifier = ">=0.24.4" },
-    { name = "rdkit2ase", specifier = ">=0.1.4" },
+    { name = "rdkit2ase", specifier = ">=0.1.7" },
     { name = "seaborn", specifier = ">=0.13.2" },
     { name = "uncertainty-toolbox", specifier = ">=0.1.1" },
     { name = "znh5md", specifier = ">=0.4.7" },
@@ -3326,16 +3326,15 @@ wheels = [
 
 [[package]]
 name = "rdkit2ase"
-version = "0.1.4"
+version = "0.1.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ase" },
-    { name = "networkx" },
     { name = "rdkit" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/42/ab/4fcd5a68d6d2b58370fe3bd30eee9fe0f85b5b9cc1f6bbfdf8e9116d4b99/rdkit2ase-0.1.4.tar.gz", hash = "sha256:562da58dff1ee92cb8aff14475b2bb7f8cd99f63b962d60ef8c6c36ee1869a97", size = 7914, upload_time = "2024-08-22T14:03:15.477Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/62/3e72c857369797d603c738dd13601c97f12bd211a5d8f63e6bae5d8581e9/rdkit2ase-0.1.7.tar.gz", hash = "sha256:3482a5661d73b201f2fa357e9f65a6366b7da854b81347d7f0585956c6256393", size = 94292, upload_time = "2025-05-28T08:34:14.257Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a1/11/9ec9e63dcd6d347c812fe3f0930c6e120133fe02d3ba668dc00704a903b3/rdkit2ase-0.1.4-py3-none-any.whl", hash = "sha256:79e7a8f920cf956886d3aef508b5afd549de7db3d2ac791ea237d40d2faefada", size = 9432, upload_time = "2024-08-22T14:03:14.356Z" },
+    { url = "https://files.pythonhosted.org/packages/9c/9c/05b86461683a1d01529c05ed99d0eb628412f23e771512666acab87112f2/rdkit2ase-0.1.7-py3-none-any.whl", hash = "sha256:438a6e1af52a46009c2740d565f69117986beed348a27e4beb56ad1bc5f394bf", size = 13511, upload_time = "2025-05-28T08:34:13.435Z" },
 ]
 
 [[package]]
