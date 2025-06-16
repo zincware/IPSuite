@@ -13,148 +13,110 @@ import zntrack
 from ase.calculators.cp2k import CP2K
 from cp2k_input_tools.generator import CP2KInputGenerator
 from pint import UnitRegistry
+from ase.calculators.calculator import Calculator, all_changes
 
 ureg = UnitRegistry()
 
 log = logging.getLogger(__name__)
 
-from dataclasses import dataclass
 
-
-@dataclass
+@dataclasses.dataclass
 class CP2KOutput:
     energy: float
     forces: np.ndarray
     stress: np.ndarray
     hirshfeld_charges: np.ndarray
 
-    @staticmethod
-    def extract_forces(content: str) -> np.ndarray:
-        pattern = re.compile(
-            r"FORCES\|\s+\d+\s+([-+]?\d+\.\d+E[-+]\d+)\s+([-+]?\d+\.\d+E[-+]\d+)\s+([-+]?\d+\.\d+E[-+]\d+)"
-        )
-
-        forces = np.array(
-            [[float(x), float(y), float(z)] for x, y, z in pattern.findall(content)]
-        )
-        # convert forces from cp2k units to ase units
-        forces *= ureg("hartree/bohr").to(ureg("eV/angstrom")).magnitude
-        return forces
+    def __post_init__(self):
+        if not len(self.forces) == len(self.hirshfeld_charges):
+            raise ValueError("Length of forces and Hirshfeld charges must match.")
 
     @staticmethod
-    def extract_energy(file_content: str) -> float:
-        # use this line  ENERGY| Total FORCE_EVAL ( QS ) energy [hartree]           -770.620374551554278
+    def extract_energy(content: str) -> float:
+        """Extract total energy in eV from CP2K output."""
         pattern = re.compile(
             r"ENERGY\|\s+Total FORCE_EVAL \( QS \) energy \[hartree\]\s+([-+]?\d+\.\d+)"
         )
-        match = pattern.search(file_content)
-        if match:
-            energy = float(match.group(1))
-            # convert energy from hartree to eV
-            return energy * ureg("hartree").to(ureg("eV")).magnitude
-        else:
+        match = pattern.search(content)
+        if not match:
             raise ValueError("Total energy not found in the file content.")
-        # converged= False
-        # for line in file_content.splitlines():
-        #     if "*** SCF run converged in" in line:
-        #         converged = True
-        #     if converged and "Total energy:" in line:
-        #         match = re.search(r"Total energy:\s+([-+]?\d+\.\d+)", line)
-        #         if match:
-        #             energy = float(match.group(1))
-        #             # convert energy from hartree to eV
-        #             return energy * ureg("hartree").to(ureg("eV")).magnitude
-        # raise ValueError("Total energy not found or SCF run did not converge.")
+        hartree_energy = float(match.group(1))
+        return hartree_energy * ureg("hartree").to("eV").magnitude
 
     @staticmethod
-    def extract_hirshfeld_charges(file_content: str) -> np.ndarray:
-        # Regex to find the line with exactly "Hirshfeld Charges"
+    def extract_forces(content: str) -> np.ndarray:
+        """Extract forces in eV/angstrom from CP2K output."""
+        pattern = re.compile(
+            r"FORCES\|\s+\d+\s+([-+]?\d+\.\d+E[-+]\d+)\s+"
+            r"([-+]?\d+\.\d+E[-+]\d+)\s+([-+]?\d+\.\d+E[-+]\d+)"
+        )
+        matches = pattern.findall(content)
+        if not matches:
+            raise ValueError("No forces found in the file content.")
+        forces = np.array([[float(x), float(y), float(z)] for x, y, z in matches])
+        return forces * ureg("hartree/bohr").to("eV/angstrom").magnitude
+
+    @staticmethod
+    def extract_stress_tensor(content: str) -> np.ndarray:
+        """Extract 3x3 symmetric stress tensor in ASE Voigt format (eV/Å³)."""
+        float_pattern = r"([-+]?\d+\.?\d*(?:[Ee][-+]?\d+))"
+        pattern = re.compile(
+            rf"^\s*STRESS\|\s*[xyz]\s+{float_pattern}\s+{float_pattern}\s+{float_pattern}$",
+            re.MULTILINE,
+        )
+        rows = pattern.findall(content)
+        if len(rows) != 3:
+            raise ValueError("Stress tensor not found or incomplete.")
+
+        stress = np.array(rows, dtype=float)
+        if not np.allclose(stress, stress.T, atol=1e-6):
+            raise ValueError("Stress tensor is not symmetric.")
+
+        stress *= ureg("bar").to("eV/angstrom**3").magnitude
+        # Convert to Voigt format: [xx, yy, zz, yz, xz, xy], CP2K uses opposite sign
+        return -1.0 * np.array([
+            stress[0, 0],
+            stress[1, 1],
+            stress[2, 2],
+            stress[1, 2],
+            stress[0, 2],
+            stress[0, 1],
+        ])
+
+    @staticmethod
+    def extract_hirshfeld_charges(content: str) -> np.ndarray:
+        """Extract Hirshfeld net atomic charges."""
         header_pattern = re.compile(r"^\s*Hirshfeld Charges\s*$")
+        lines = content.splitlines()
         charges = []
-        found = False
-        lines = file_content.splitlines()
 
         for i, line in enumerate(lines):
             if header_pattern.match(line):
-                found = True
-                # Skip to data lines: we assume the next two lines are headers
-                data_lines = lines[i + 2 :]
+                data_lines = lines[i + 2:]  # Skip the next two header lines
                 for data_line in data_lines:
                     if not data_line.strip():
-                        break  # Stop at first empty line
+                        break
                     parts = data_line.split()
                     if len(parts) >= 6:
                         try:
-                            charge = float(
-                                parts[5]
-                            )  # Net charge is the 6th column (index 5)
-                            charges.append(charge)
+                            charges.append(float(parts[5]))
                         except ValueError:
                             continue
-                break  # No need to continue iterating after the block
+                break
 
-        if not found:
-            raise ValueError("Hirshfeld charges section not found in the file content.")
         if not charges:
             raise ValueError("No Hirshfeld charges found in the file content.")
-
         return np.array(charges, dtype=float)
 
-    @staticmethod
-    def extract_stress_tensor(file_content: str) -> np.ndarray:
-        float_pattern = r"([-+]?\d+\.?\d*(?:[Ee][-+]?\d+))"
-
-        tensor_row_pattern = re.compile(
-            r"^\s*STRESS\|\s*[xyz]\s*"
-            + float_pattern
-            + r"\s+"
-            + float_pattern
-            + r"\s+"
-            + float_pattern
-            + r"$",
-            re.MULTILINE,
-        )
-
-        matches = tensor_row_pattern.findall(file_content)
-
-        if len(matches) == 3:
-            stress = np.array(matches, dtype=float)
-            # Convert stress tensor from atomic units to eV/angstrom^3
-            stress *= ureg("bar").to(ureg("eV/angstrom**3")).magnitude
-
-            assert np.all(stress == np.transpose(stress))  # should be symmetric
-            # Convert 3x3 stress tensor to Voigt form as required by ASE
-            stress = np.array(
-                [
-                    stress[0, 0],
-                    stress[1, 1],
-                    stress[2, 2],
-                    stress[1, 2],
-                    stress[0, 2],
-                    stress[0, 1],
-                ]
-            )
-            return -1.0 * stress  # cp2k uses the opposite sign
-        else:
-            raise ValueError("Stress tensor not found or incomplete in the file content.")
-
     @classmethod
-    def from_file_content(cls, file_content: str) -> "CP2KOutput":
-        energy = cls.extract_energy(file_content)
-        forces = cls.extract_forces(file_content)
-        stress = cls.extract_stress_tensor(file_content)
-        hirshfeld_charges = cls.extract_hirshfeld_charges(file_content)
-
+    def from_file_content(cls, content: str) -> "CP2KOutput":
+        """Construct CP2KOutput from file content string."""
         return cls(
-            energy=energy,
-            forces=forces,
-            stress=stress,
-            hirshfeld_charges=hirshfeld_charges,
+            energy=cls.extract_energy(content),
+            forces=cls.extract_forces(content),
+            stress=cls.extract_stress_tensor(content),
+            hirshfeld_charges=cls.extract_hirshfeld_charges(content),
         )
-
-
-from ase.calculators.calculator import Calculator, all_changes
-
 
 class CustomCP2K(Calculator):
     """Custom ASE CP2K calculator to allow for custom input scripts."""
