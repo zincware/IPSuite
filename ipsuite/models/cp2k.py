@@ -288,7 +288,7 @@ class CP2KModel:
         for file in self.files:
             shutil.copy(file, directory)
 
-        if os.environ["IPSUITE_CP2K_LEGACY"] == "1":
+        if os.environ.get("IPSUITE_CP2K_LEGACY") == "1":
             patch(
                 "ase.calculators.cp2k.subprocess.Popen",
                 wraps=functools.partial(subprocess.Popen, cwd=directory),
