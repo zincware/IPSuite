@@ -73,7 +73,7 @@ class ApplyCalculator(zntrack.Node):
         )
         # by default, we disable laufband for better performance
 
-        calc_dir = self.model_outs / f"{worker.}"
+        calc_dir = self.model_outs / f"{worker.identifier}"
         calc_dir.mkdir(parents=True, exist_ok=True)
 
         calc = self.model.get_calculator(directory=calc_dir)
