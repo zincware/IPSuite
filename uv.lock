@@ -214,16 +214,16 @@ wheels = [
 
 [[package]]
 name = "ase"
-version = "3.24.0"
+version = "3.25.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "matplotlib" },
     { name = "numpy" },
     { name = "scipy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5c/c9/9adb9bc641bd7222367886e4e6c753b4c64da4ff2d9565ab39aee1e34734/ase-3.24.0.tar.gz", hash = "sha256:9acc93d6daaf48cd27b844c56f8bf49428b9db0542faa3cc30d9d5b8e1842195", size = 2383264, upload-time = "2024-12-28T22:20:33.711Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e8/a1/5735ced2f159979f5b27c4083126b7796a5750cee6f027864e59818a5b76/ase-3.25.0.tar.gz", hash = "sha256:374cf8ca9fe588f05d6e856da3c9c17ef262dc968027b231d449334140c962c2", size = 2400055, upload-time = "2025-04-11T17:14:39.975Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1f/cd/b1253035a1da90e89f31947e052c558cd83df3bcaff34aa199e5e806d773/ase-3.24.0-py3-none-any.whl", hash = "sha256:974922df87ef4ec8cf1140359a55ab4c4dc55c38e26876bdd9c00968da1f463c", size = 2928893, upload-time = "2024-12-28T22:20:29.416Z" },
+    { url = "https://files.pythonhosted.org/packages/07/f5/007d993fcf3b051acb304d5402e0bd103fd20816b47dee9531bdbfb3aa0c/ase-3.25.0-py3-none-any.whl", hash = "sha256:f9a5295e1154da355af04726d001fa76a311c076616d98e49cd9f34fc3afe188", size = 2951559, upload-time = "2025-04-11T17:14:37.617Z" },
 ]
 
 [[package]]
@@ -701,17 +701,13 @@ toml = [
 [[package]]
 name = "cp2k-input-tools"
 version = "0.9.1"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/cp2k/cp2k-input-tools#742af1aa02953b0ab4e150a85c95c1ceea56f881" }
 dependencies = [
     { name = "click" },
     { name = "jinja2" },
     { name = "pint" },
     { name = "pydantic" },
     { name = "transitions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/1f/82/0b8f5b382c9e20075429a868b7c762b1d0265f5e348ccf1d26b75a5fa8ed/cp2k_input_tools-0.9.1.tar.gz", hash = "sha256:bf7d229bbcfa41b1caaa32e7eb3c1c689d56bd1cbd4de674bd2fde8de4efb27c", size = 1348032, upload-time = "2024-02-16T07:46:31.788Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/47/22/324bdd3bad61943fca36f87bc8af07244b60c59ffda86ee35b74589603e0/cp2k_input_tools-0.9.1-py3-none-any.whl", hash = "sha256:6d5cca5dab7abe2f548621af5b03e06c38d3817cb9363d7bcf7e8ea1c55b0682", size = 1429665, upload-time = "2024-02-16T07:46:29.848Z" },
 ]
 
 [[package]]
@@ -1135,6 +1131,30 @@ wheels = [
 ]
 
 [[package]]
+name = "flexcache"
+version = "0.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/55/b0/8a21e330561c65653d010ef112bf38f60890051d244ede197ddaa08e50c1/flexcache-0.3.tar.gz", hash = "sha256:18743bd5a0621bfe2cf8d519e4c3bfdf57a269c15d1ced3fb4b64e0ff4600656", size = 15816, upload-time = "2024-03-09T03:21:07.555Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/27/cd/c883e1a7c447479d6e13985565080e3fea88ab5a107c21684c813dba1875/flexcache-0.3-py3-none-any.whl", hash = "sha256:d43c9fea82336af6e0115e308d9d33a185390b8346a017564611f1466dcd2e32", size = 13263, upload-time = "2024-03-09T03:21:05.635Z" },
+]
+
+[[package]]
+name = "flexparser"
+version = "0.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/82/99/b4de7e39e8eaf8207ba1a8fa2241dd98b2ba72ae6e16960d8351736d8702/flexparser-0.4.tar.gz", hash = "sha256:266d98905595be2ccc5da964fe0a2c3526fbbffdc45b65b3146d75db992ef6b2", size = 31799, upload-time = "2024-11-07T02:00:56.249Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fe/5e/3be305568fe5f34448807976dc82fc151d76c3e0e03958f34770286278c1/flexparser-0.4-py3-none-any.whl", hash = "sha256:3738b456192dcb3e15620f324c447721023c0293f6af9955b481e91d00179846", size = 27625, upload-time = "2024-11-07T02:00:54.523Z" },
+]
+
+[[package]]
 name = "flufl-lock"
 version = "8.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1442,13 +1462,13 @@ wheels = [
 
 [[package]]
 name = "ipsuite"
-version = "0.2.6"
+version = "0.2.7"
 source = { editable = "." }
 dependencies = [
     { name = "ase" },
-    { name = "cp2k-input-tools" },
     { name = "laufband" },
     { name = "lazy-loader" },
+    { name = "pint" },
     { name = "rdkit2ase" },
     { name = "seaborn" },
     { name = "uncertainty-toolbox" },
@@ -1458,6 +1478,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "cp2k-input-tools" },
     { name = "dvc-s3" },
     { name = "ipykernel" },
     { name = "mace-torch" },
@@ -1478,10 +1499,10 @@ gap = [
 [package.metadata]
 requires-dist = [
     { name = "ase", specifier = ">=3.24.0" },
-    { name = "cp2k-input-tools", specifier = ">=0.9.1" },
-    { name = "laufband", specifier = ">=0.1.3" },
+    { name = "laufband", specifier = ">=0.1.5" },
     { name = "lazy-loader", specifier = ">=0.4" },
-    { name = "rdkit2ase", specifier = ">=0.1.4" },
+    { name = "pint", specifier = ">=0.24.4" },
+    { name = "rdkit2ase", specifier = ">=0.1.7" },
     { name = "seaborn", specifier = ">=0.13.2" },
     { name = "uncertainty-toolbox", specifier = ">=0.1.1" },
     { name = "znh5md", specifier = ">=0.4.7" },
@@ -1490,6 +1511,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "cp2k-input-tools", git = "https://github.com/cp2k/cp2k-input-tools" },
     { name = "dvc-s3", specifier = ">=3.2.0" },
     { name = "ipykernel", specifier = ">=6.29.5" },
     { name = "mace-torch", specifier = ">=0.3.13" },
@@ -1788,15 +1810,15 @@ wheels = [
 
 [[package]]
 name = "laufband"
-version = "0.1.3"
+version = "0.1.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "flufl-lock" },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a6/68/a4d1a905272c9a193bf7ddd6e0ece2deb4213715076f9e0ad89548e9ed0e/laufband-0.1.3.tar.gz", hash = "sha256:02ee647278be4068b785a1b1d8ba328f8afc4e966dffd328721913d7f2c3811f", size = 100693, upload-time = "2025-05-20T14:28:28.338Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/41/69/47d905aa71918d08ad435df63f3749bc52e25ca26f65f2b1abfa35c2570e/laufband-0.1.5.tar.gz", hash = "sha256:ba59df630b92e5232ad4e7a207f954c7542dc38074196d007533994f2696e8fc", size = 104089, upload-time = "2025-06-16T15:13:04.731Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/09/7c/6804d99fcd8cb0d865232da724dae79533dc5249dfe9e0abc00c805f6535/laufband-0.1.3-py3-none-any.whl", hash = "sha256:1a887e4002f12c45b7e782cbede2ed1d1bf602b66b691cb7555d6c6717190728", size = 6866, upload-time = "2025-05-20T14:28:27.078Z" },
+    { url = "https://files.pythonhosted.org/packages/ed/f3/cc22a577039d14e7e5836750c6b30ebf49a0503c5cbab882db4e7e204f59/laufband-0.1.5-py3-none-any.whl", hash = "sha256:b7a966078cde1dcb20f67586cdc1e851781da828907a827a331c2c5dfb076a18", size = 8998, upload-time = "2025-06-16T15:13:03.605Z" },
 ]
 
 [[package]]
@@ -2721,14 +2743,17 @@ wheels = [
 
 [[package]]
 name = "pint"
-version = "0.23"
+version = "0.24.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "flexcache" },
+    { name = "flexparser" },
+    { name = "platformdirs" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/02/41/002d020f140db35d971f4bdd73407d69fdf56c5ba5fcccc10776e27d3a6c/Pint-0.23.tar.gz", hash = "sha256:e1509b91606dbc52527c600a4ef74ffac12fff70688aff20e9072409346ec9b4", size = 347420, upload-time = "2023-12-08T20:38:23.17Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/20/bb/52b15ddf7b7706ed591134a895dbf6e41c8348171fb635e655e0a4bbb0ea/pint-0.24.4.tar.gz", hash = "sha256:35275439b574837a6cd3020a5a4a73645eb125ce4152a73a2f126bf164b91b80", size = 342225, upload-time = "2024-11-07T16:29:46.061Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/76/1a/096c91c2006648fe28564e5884d59978962afe98de74b1c01bb5913d033f/Pint-0.23-py3-none-any.whl", hash = "sha256:df79b6b5f1beb7ed0cd55d91a0766fc55f972f757a9364e844958c05e8eb66f9", size = 305009, upload-time = "2023-12-08T20:38:20.574Z" },
+    { url = "https://files.pythonhosted.org/packages/b7/16/bd2f5904557265882108dc2e04f18abc05ab0c2b7082ae9430091daf1d5c/Pint-0.24.4-py3-none-any.whl", hash = "sha256:aa54926c8772159fcf65f82cc0d34de6768c151b32ad1deb0331291c38fe7659", size = 302029, upload-time = "2024-11-07T16:29:43.976Z" },
 ]
 
 [[package]]
@@ -3301,16 +3326,15 @@ wheels = [
 
 [[package]]
 name = "rdkit2ase"
-version = "0.1.4"
+version = "0.1.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ase" },
-    { name = "networkx" },
     { name = "rdkit" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/42/ab/4fcd5a68d6d2b58370fe3bd30eee9fe0f85b5b9cc1f6bbfdf8e9116d4b99/rdkit2ase-0.1.4.tar.gz", hash = "sha256:562da58dff1ee92cb8aff14475b2bb7f8cd99f63b962d60ef8c6c36ee1869a97", size = 7914, upload-time = "2024-08-22T14:03:15.477Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/62/3e72c857369797d603c738dd13601c97f12bd211a5d8f63e6bae5d8581e9/rdkit2ase-0.1.7.tar.gz", hash = "sha256:3482a5661d73b201f2fa357e9f65a6366b7da854b81347d7f0585956c6256393", size = 94292, upload-time = "2025-05-28T08:34:14.257Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a1/11/9ec9e63dcd6d347c812fe3f0930c6e120133fe02d3ba668dc00704a903b3/rdkit2ase-0.1.4-py3-none-any.whl", hash = "sha256:79e7a8f920cf956886d3aef508b5afd549de7db3d2ac791ea237d40d2faefada", size = 9432, upload-time = "2024-08-22T14:03:14.356Z" },
+    { url = "https://files.pythonhosted.org/packages/9c/9c/05b86461683a1d01529c05ed99d0eb628412f23e771512666acab87112f2/rdkit2ase-0.1.7-py3-none-any.whl", hash = "sha256:438a6e1af52a46009c2740d565f69117986beed348a27e4beb56ad1bc5f394bf", size = 13511, upload-time = "2025-05-28T08:34:13.435Z" },
 ]
 
 [[package]]
