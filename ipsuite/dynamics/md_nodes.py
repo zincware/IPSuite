@@ -196,7 +196,7 @@ class ASEMD(zntrack.Node):
             range(self.steps),
             desc="Simulation",
             total=self.steps,
-            disable=not tty_available,  # only show tqdm if rich is not available
+            disable=tty_available,  # only show tqdm if rich is not available
             ncols=120,
         )
         io = znh5md.IO(
