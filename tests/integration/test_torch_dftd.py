@@ -22,3 +22,4 @@ def test_Smiles2Atoms(proj_path):
     project.repro()
 
     assert data_with_d3.frames[0].get_potential_energy() < 0
+    assert data_with_d3.frames[0].get_forces().shape == (9, 3)
