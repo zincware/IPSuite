@@ -118,6 +118,7 @@ from .models import (
     MACEMPModel,
     ORCAModel,
     TBLiteModel,
+    TorchDFTD3,
 )
 
 # Project
@@ -138,6 +139,7 @@ __all__ = [
     "ORCAModel",
     "MACEMPModel",
     "GenericASEModel",
+    "TorchDFTD3",
     # Configuration Selection
     "IndexSelection",
     "RandomSelection",

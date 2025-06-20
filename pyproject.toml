@@ -55,6 +55,12 @@ dev = [
     "cp2k-input-tools",
 ]
 
+[project.optional-dependencies]
+
+d3 = [
+    "torch-dftd>=0.5.1",
+]
+
 [tool.ruff]
 
 # Exclude a variety of commonly ignored directories.
