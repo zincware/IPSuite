@@ -61,7 +61,7 @@ The goal is to place water molecules inside a box at a specified density.
         mol = ips.Smiles2Atoms(smiles="O")
         # Duplicate water molecules
         packmol = ips.Packmol(
-            data=[mol.atoms], count=[10], density=876
+            data=[mol.frames], count=[10], density=876
             )
 
     project.build()

@@ -105,7 +105,9 @@ def proj_path(tmp_path, request) -> pathlib.Path:
 
 
 @pytest.fixture
-def proj_w_data(proj_path, traj_file, request) -> typing.Tuple[ips.Project, ips.AddData]:
+def proj_w_data(
+    proj_path, traj_file, request
+) -> typing.Tuple[ips.Project, ips.AddData]:
     data = []
     with ips.Project() as proj:
         for idx in range(request.param):

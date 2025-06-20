@@ -8,24 +8,19 @@ from ipsuite.analysis.bin_property import (
 )
 from ipsuite.analysis.bond_stretch import BondStretchAnalyses
 from ipsuite.analysis.ensemble import ModelEnsembleAnalysis
+from ipsuite.analysis.forces import AnalyseStructureMeanForce
 from ipsuite.analysis.md import AnalyseDensity, CollectMDSteps
 from ipsuite.analysis.model import (
     BoxHeatUp,
     BoxScale,
     CalibrationMetrics,
-    ConnectivityCheck,
-    DebugCheck,
-    EnergySpikeCheck,
     ForceAngles,
     ForceDecomposition,
     ForceUncertaintyDecomposition,
     MDStability,
-    NaNCheck,
     Prediction,
     PredictionMetrics,
     RattleAnalysis,
-    TemperatureCheck,
-    ThresholdCheck,
 )
 from ipsuite.analysis.molecules import AllowedStructuresFilter
 from ipsuite.analysis.sensitivity import (
@@ -47,17 +42,11 @@ __all__ = [
     "ForceUncertaintyDecomposition",
     "BoxScale",
     "BoxHeatUp",
-    "DebugCheck",
-    "NaNCheck",
-    "TemperatureCheck",
-    "ConnectivityCheck",
-    "EnergySpikeCheck",
     "MDStability",
     "MoveSingleParticle",
     "AnalyseGlobalForceSensitivity",
     "AnalyseSingleForceSensitivity",
     "ForceDecomposition",
-    "ThresholdCheck",
     "BondStretchAnalyses",
     "StressHistogram",
     "ForcesUncertaintyHistogram",
@@ -65,4 +54,5 @@ __all__ = [
     "AnalyseDensity",
     "CollectMDSteps",
     "AllowedStructuresFilter",
+    "AnalyseStructureMeanForce",
 ]

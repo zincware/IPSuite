@@ -23,14 +23,18 @@ class DebugCheck(base.Check):
 
     n_iterations: int = 10
 
-    def __post_init__(self) -> None:
+    def initialize(self, atoms: ase.Atoms) -> None:
         self.counter = 0
-        self.status = self.__class__.__name__
+        self.is_initialized = True
+        self.status = "n_iterations not reached"
 
     def check(self, atoms):
         if self.counter >= self.n_iterations:
+            self.status = "n_iterations reached"
+            self.counter = 0
             return True
         self.counter += 1
+        self.status = "n_iterations not reached"
         return False
 
 
@@ -249,6 +253,11 @@ class ThresholdCheck(base.Check):
         if self.max_std is None and self.max_value is None:
             raise ValueError("Either max_std or max_value must be set")
         self.values = collections.deque(maxlen=self.window_size)
+
+    def initialize(self, atoms: ase.Atoms) -> None:
+        # clear the deque
+        self.values.clear()
+        self.status = None
 
     def get_value(self, atoms):
         """Get the value of the property to check.

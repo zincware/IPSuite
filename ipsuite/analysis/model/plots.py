@@ -137,7 +137,7 @@ def get_calibration_figure(
         np.logspace(-10, 100.0), np.logspace(-10, 100.0), linestyle="--", color="grey"
     )
     xlower = max(np.min(std) / 1.5, 1e-7)
-    ylower = max(np.min(std) / 1.5, 1e-7)
+    ylower = max(np.min(error) / 1.5, 1e-7)
     ax.set_xlim(xlower, np.max(std) * 1.5)
     ax.set_ylim(ylower, np.max(error) * 1.5)
 

@@ -42,7 +42,7 @@ class ASEGeoOpt(base.IPSNode):
 
     traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
 
-    def run(self):
+    def run(self):  # noqa: C901
         if self.checks is None:
             self.checks = []
         if self.constraints is None:
@@ -58,6 +58,8 @@ class ASEGeoOpt(base.IPSNode):
 
         for constraint in self.constraints:
             atoms.set_constraint(constraint.get_constraint(atoms))
+        for check in self.checks:
+            check.initialize(atoms)
 
         atoms_cache = []
 

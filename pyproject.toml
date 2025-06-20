@@ -1,74 +1,65 @@
-[tool.poetry]
+[project]
 name = "ipsuite"
-version = "0.2.4"
+version = "0.2.8"
 description = "A suite of tools for machine learned interatomic potentials."
-authors = ["zincwarecode <zincwarecode@gmail.com>"]
-keywords = ["data-version-control", "machine-learning", "reproducibility", "interatomic potentials"]
-license = "License :: OSI Approved :: Eclipse Public License 2.0 (EPL-2.0)"
 readme = "README.md"
-
-[tool.poetry.urls]
-documentation = "https://ipsuite.readthedocs.io"
-repository = "https://github.com/zincware/ipsuite"
-
-[tool.poetry.dependencies]
-# tensorflow-io-gcs-filesystem
-python = ">=3.10,<4.0.0"
-
-znh5md = "^0.4.1"
-ase = "^3.23"
-
-seaborn = "^0.12.2"
-cp2k-input-tools = "^0.9"
-cp2k-output-tools = "^0.5.0"
-
-lazy-loader = "0.4"
-zntrack = "0.8.1"
-uncertainty-toolbox = "^0.1.1"
-rdkit2ase = "^0.1.4"
-
-[tool.poetry.group.GAP.dependencies]
-quippy-ase = "^0.9.12"
-xmltodict = "^0.13.0"
-
-[tool.poetry.group.d3.dependencies]
-torch-dftd = "^0.4.0"
-
-[tool.poetry.group.dev.dependencies]
-pre-commit = "^3.4.0"
-pytest = "^7.2.1"
-coverage = "^7.2.1"
-imageio = "^2.28.1"
-dvc-s3 = "^3.0.1"
-mdanalysis = "^2.7.0"
-
-[tool.poetry.group.notebook.dependencies]
-jupyterlab = "^3.6.1"
-ipywidgets = "^8.0.6"
+requires-python = ">=3.10"
+keywords = ["data-version-control", "machine-learning", "reproducibility", "interatomic potentials"]
+dependencies = [
+    "ase>=3.24.0",
+    "laufband>=0.1.5",
+    "lazy-loader>=0.4",
+    "pint>=0.24.4",
+    "rdkit2ase>=0.1.7",
+    "seaborn>=0.13.2",
+    "uncertainty-toolbox>=0.1.1",
+    "znh5md>=0.4.7",
+    "zntrack>=0.8.7",
+]
 
 
-[tool.poetry.group.docs.dependencies]
-sphinx = "^7.2.6"
-furo = "^2024.1.29"
-sphinx-copybutton = "^0.5.2"
+authors = [
+    { name = "Fabian Zills", email = "fzills@icp.uni-stuttgart.de" },
+    { name = "Moritz René Schäfer", email = "schaefer@theochem.uni-stuttgart.de" },
+    { name = "Nico Segreto", email = "segreto@theochem.uni-stuttgart.de" },
+]
+classifiers = ["License :: OSI Approved :: Eclipse Public License 2.0 (EPL-2.0)"]
 
-[tool.poetry.extras]
-comparison = ["h5py", "tensorflow", "dscribe"]
-gap = ["quippy-ase", "xmltodict"]
-d3 = ["torch-dftd"]
+[project.urls]
+Repository = "https://github.com/zincware/ipsuite"
+Releases = "https://github.com/zincware/ipsuite/releases"
+Discord = "https://discord.gg/7ncfwhsnm4"
+Documentation = "https://ipsuite.readthedocs.io"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.isort]
-profile = 'black'
-multi_line_output = 3
+[dependency-groups]
+docs = [
+    "furo>=2024.8.6",
+    "sphinx>=8.1.3",
+    "sphinx-copybutton>=0.5.2",
+]
+gap = [
+    "quippy-ase>=0.9.14",
+    "xmltodict>=0.14.2",
+]
+dev = [
+    "dvc-s3>=3.2.0",
+    "ipykernel>=6.29.5",
+    "mace-torch>=0.3.13",
+    "mdanalysis>=2.8.0",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+    "cp2k-input-tools",
+]
 
-[tool.black]
-line-length = 90
-preview = true
+[project.optional-dependencies]
 
+d3 = [
+    "torch-dftd>=0.5.1",
+]
 
 [tool.ruff]
 
@@ -100,8 +91,6 @@ exclude = [
 # Same as Black.
 line-length = 90
 
-# Assume Python 3.10.
-target-version = "py310"
 
 [tool.ruff.lint]
 # Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
@@ -113,4 +102,7 @@ ignore = [
 
 [tool.codespell]
 ignore-words-list = "dscribe"
-skip = "poetry.lock,ipsuite/static_data/*,docs/source/examples/06_Bootstrapping_Datasets.ipynb"
+skip = "poetry.lock,ipsuite/static_data/*,docs/source/examples/06_Bootstrapping_Datasets.ipynb,*.out"
+
+[tool.uv.sources]
+cp2k-input-tools = { git = "https://github.com/cp2k/cp2k-input-tools" }

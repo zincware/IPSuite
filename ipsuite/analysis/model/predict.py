@@ -8,6 +8,7 @@ import ase
 import matplotlib.pyplot as plt
 import numpy as np
 import tqdm
+import typing_extensions as tyex
 import uncertainty_toolbox as uct
 import zntrack
 from ase.calculators.singlepoint import PropertyNotImplementedError
@@ -29,6 +30,10 @@ from ipsuite.geometry import BarycenterMapping
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
+@tyex.deprecated(
+    "Use `ipsuite.ApplyCalculator` instead."
+    " Reason: Generalization and misleading node name."
+)
 class Prediction(base.ProcessAtoms):
     """Create and Save the predictions from model on atoms.
 
@@ -481,7 +486,7 @@ class ForceDecomposition(base.ComparePredictions):
     ----------
     wasserstein_distance: float
         Compute the wasserstein distance between the distributions of the
-        prediced and true forces for each trans, rot, vib component.
+        predicted and true forces for each trans, rot, vib component.
     """
 
     trans_forces: dict = zntrack.metrics()

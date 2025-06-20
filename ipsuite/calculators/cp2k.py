@@ -15,19 +15,12 @@ from unittest.mock import patch
 import ase.calculators.cp2k
 import ase.io
 import h5py
-import tqdm
+import typing_extensions as tyex
 import yaml
 import znh5md
 import zntrack
-
-try:
-    from cp2k_input_tools.generator import CP2KInputGenerator
-except ImportError as err:
-    raise ImportError(
-        "Please install the newest development version of cp2k-input-tools: 'pip install"
-        " git+https://github.com/cp2k/cp2k-input-tools.git'"
-    ) from err
-
+from cp2k_input_tools.generator import CP2KInputGenerator
+from laufband import Laufband
 
 from ipsuite import base
 
@@ -48,6 +41,9 @@ def _update_cmd(cp2k_cmd: str | None, env="IPSUITE_CP2K_SHELL") -> str:
     return cp2k_cmd
 
 
+@tyex.deprecated(
+    "Use `ipsuite.CP2KModel` instead. Reason: Replaced by off-graph implementation."
+)
 class CP2KSinglePoint(base.IPSNode):
     """Node for running CP2K Single point calculations.
 
@@ -91,15 +87,20 @@ class CP2KSinglePoint(base.IPSNode):
 
         self.cp2k_shell = _update_cmd(self.cp2k_shell)
 
-        db = znh5md.IO(self.output_file)
-        calc = self.get_calculator()
+        worker = Laufband(
+            self.data, ncols=70, com=self.cp2k_directory / "laufband.sqlite"
+        )
+        with worker.lock:
+            db = znh5md.IO(self.output_file)
+        calc = self.get_calculator(idx=os.getpid())
         self.failed_configs = {"skipped": []}
 
-        for idx, atoms in enumerate(tqdm.tqdm(self.data, ncols=70)):
+        for idx, atoms in enumerate(worker):
             atoms.calc = calc
             try:
                 atoms.get_potential_energy()
-                db.append(atoms)
+                with worker.lock:
+                    db.append(atoms)
             except Exception as err:
                 if self.failure_policy == "fail":
                     raise err
@@ -122,34 +123,18 @@ class CP2KSinglePoint(base.IPSNode):
                 return znh5md.IO(file_handle=file)[:]
 
     def get_input_script(self):
-        """Return the input script.
-
-        We use cached_property, because this will also copy the restart file
-        to the cp2k directory.
-        """
-        if not self.cp2k_directory.exists():
-            self.cp2k_directory.mkdir(exist_ok=True)
-
-            if self.wfn_restart_file is not None:
-                shutil.copy(
-                    self.wfn_restart_file, self.cp2k_directory / "cp2k-RESTART.wfn"
-                )
-            if self.wfn_restart_node is not None:
-                shutil.copy(
-                    self.wfn_restart_node.cp2k_directory / "cp2k-RESTART.wfn",
-                    self.cp2k_directory / "cp2k-RESTART.wfn",
-                )
-
+        """Return the input script."""
         with pathlib.Path(self.cp2k_params).open("r") as file:
             cp2k_input_dict = yaml.safe_load(file)
 
         return "\n".join(CP2KInputGenerator().line_iter(cp2k_input_dict))
 
-    def get_calculator(self, directory: str = None):
+    # NOTE: We don't need to use the `idx` but could amend the directory.
+    def get_calculator(self, directory: t.Optional[str] = None, idx: int = 0):
         self.cp2k_shell = _update_cmd(self.cp2k_shell)
 
         if directory is None:
-            directory = self.cp2k_directory
+            directory = self.cp2k_directory / f"run_{idx}"
             pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
         else:
             restart_wfn = self.cp2k_directory / "cp2k-RESTART.wfn"
@@ -157,8 +142,21 @@ class CP2KSinglePoint(base.IPSNode):
                 pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
                 shutil.copy(restart_wfn, directory / "cp2k-RESTART.wfn")
 
-        for file in self.cp2k_files:
-            shutil.copy(file, directory / pathlib.Path(file).name)
+        if self.cp2k_files is not None:
+            for file in self.cp2k_files:
+                shutil.copy(file, directory / pathlib.Path(file).name)
+
+        if self.wfn_restart_file is not None:
+            shutil.copy(self.wfn_restart_file, directory / "cp2k-RESTART.wfn")
+        if self.wfn_restart_node is not None:
+            raise ValueError(
+                "wfn_restart_node is not implemented yet. "
+                "Please use wfn_restart_file instead."
+            )
+            # shutil.copy(
+            #     self.wfn_restart_node.cp2k_directory / "cp2k-RESTART.wfn",
+            #     self.cp2k_directory / "cp2k-RESTART.wfn",
+            # )
 
         patch(
             "ase.calculators.cp2k.subprocess.Popen",
@@ -179,5 +177,5 @@ class CP2KSinglePoint(base.IPSNode):
             stress_tensor=True,
             xc=None,
             print_level=None,
-            label="cp2k",
+            label=f"cp2k_{idx}",
         )

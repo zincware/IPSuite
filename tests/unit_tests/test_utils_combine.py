@@ -115,4 +115,6 @@ def test_ExcludeIds_dict_multi(ids):
 
     assert exclude.get_original_ids(
         [8 + 10 + 0, 8 + 10 + 1], per_key=True
-    ) == combine.get_ids_per_key(data, exclude.get_original_ids([8 + 10 + 0, 8 + 10 + 1]))
+    ) == combine.get_ids_per_key(
+        data, exclude.get_original_ids([8 + 10 + 0, 8 + 10 + 1])
+    )
