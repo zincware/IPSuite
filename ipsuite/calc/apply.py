@@ -58,6 +58,9 @@ class ApplyCalculator(zntrack.Node):
 
     frames_path: pathlib.Path = zntrack.outs_path(zntrack.nwd / "frames.h5")
     model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model")
+    implemented_properties: list[str] = zntrack.params(
+        default_factory=lambda: ["energy", "forces"]
+    )
 
     def run(self):
         self.model_outs.mkdir(parents=True, exist_ok=True)
@@ -80,7 +83,12 @@ class ApplyCalculator(zntrack.Node):
 
         for atoms in worker:
             atoms.calc = calc
-            atoms.get_potential_energy()
+            if "energy" in self.implemented_properties:
+                atoms.get_potential_energy()
+            if "forces" in self.implemented_properties:
+                atoms.get_forces()
+            if "stress" in self.implemented_properties:
+                atoms.get_stress()
             frames.append(freeze_copy_atoms(atoms))
             if self.dump_rate is not None:
                 if len(frames) % self.dump_rate == 0:

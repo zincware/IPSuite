@@ -6,6 +6,7 @@ from .generic import GenericASEModel
 from .mace import MACEMPModel
 from .orca import ORCAModel
 from .tblite import TBLiteModel
+from .torch_d3 import TorchDFTD3
 
 __all__ = [
     "MLModel",
@@ -16,4 +17,5 @@ __all__ = [
     "ORCAModel",
     "MACEMPModel",
     "GenericASEModel",
+    "TorchDFTD3",
 ]
