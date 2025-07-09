@@ -2,9 +2,9 @@
 
 import pathlib
 
-import h5py
 import znh5md
 import zntrack
+
 from ipsuite.utils.helpers import make_hdf5_file_opener
 
 CWD = pathlib.Path(__file__).parent.resolve()

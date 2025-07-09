@@ -1,14 +1,14 @@
 """Use packmole to create a periodic box"""
 
 import logging
+import os
 import random
 
 import ase
-import os
 import numpy as np
 import rdkit2ase
-import zntrack
 import znh5md
+import zntrack
 
 from ipsuite import base, fields
 
@@ -38,7 +38,7 @@ class Packmol(base.IPSNode):
         with periodic boundary conditions.
     """
 
-    data: list[list[ase.Atoms]| znh5md.IO] = zntrack.deps()
+    data: list[list[ase.Atoms] | znh5md.IO] = zntrack.deps()
     data_ids: list[int] = zntrack.params(None)
     count: list = zntrack.params()
     tolerance: float = zntrack.params(2.0)
@@ -111,7 +111,7 @@ class MultiPackmol(Packmol):
             # shuffle each data entry
             data = []
             for frames in self.data:
-                frames = frames[:] # convert znh5md.IO to a list of ase.Atoms
+                frames = frames[:]  # convert znh5md.IO to a list of ase.Atoms
                 random.shuffle(frames)
                 data.append(frames)
 

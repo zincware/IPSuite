@@ -1,11 +1,9 @@
 from pathlib import Path
 
 import ase
-import h5py
 import rdkit2ase
 import znh5md
 import zntrack
-import contextlib
 
 from ipsuite import base, fields
 from ipsuite.utils.helpers import make_hdf5_file_opener
