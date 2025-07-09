@@ -1520,7 +1520,7 @@ requires-dist = [
     { name = "seaborn", specifier = ">=0.13.2" },
     { name = "torch-dftd", marker = "extra == 'd3'", specifier = ">=0.5.1" },
     { name = "uncertainty-toolbox", specifier = ">=0.1.1" },
-    { name = "znh5md", specifier = ">=0.4.7" },
+    { name = "znh5md", git = "https://github.com/zincware/znh5md" },
     { name = "zntrack", specifier = ">=0.8.7" },
 ]
 provides-extras = ["d3"]
@@ -4463,17 +4463,13 @@ wheels = [
 
 [[package]]
 name = "znh5md"
-version = "0.4.7"
-source = { registry = "https://pypi.org/simple" }
+version = "0.4.8"
+source = { git = "https://github.com/zincware/znh5md#e2d23cf97fc6902a16d635ddc54204ab86fadb89" }
 dependencies = [
     { name = "ase" },
     { name = "h5py" },
     { name = "tqdm" },
     { name = "typer" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ea/92/651aa0e1567ca9aa40b29d53c999cba7ea045bcb5ba9b073c6c641a11344/znh5md-0.4.7.tar.gz", hash = "sha256:d7c8cf12070a403e241ede4601234555b8deb36a07ff800dad869842f844f663", size = 194494, upload-time = "2025-06-13T07:57:03.25Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/37/70/0eecda577b5dc04602ecb8c7cd43cebd669f717e1a541c773949927b9b18/znh5md-0.4.7-py3-none-any.whl", hash = "sha256:b2afc82b02bf18e966d751ef6bf649d0dfedd3cf9d0d806f3db764ee85779635", size = 23019, upload-time = "2025-06-13T07:57:02.301Z" },
 ]
 
 [[package]]

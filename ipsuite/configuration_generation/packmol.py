@@ -4,10 +4,11 @@ import logging
 import random
 
 import ase
-import ase.units
+import os
 import numpy as np
 import rdkit2ase
 import zntrack
+import znh5md
 
 from ipsuite import base, fields
 
@@ -37,7 +38,7 @@ class Packmol(base.IPSNode):
         with periodic boundary conditions.
     """
 
-    data: list[list[ase.Atoms]] = zntrack.deps()
+    data: list[list[ase.Atoms]| znh5md.IO] = zntrack.deps()
     data_ids: list[int] = zntrack.params(None)
     count: list = zntrack.params()
     tolerance: float = zntrack.params(2.0)
@@ -110,6 +111,7 @@ class MultiPackmol(Packmol):
             # shuffle each data entry
             data = []
             for frames in self.data:
+                frames = frames[:] # convert znh5md.IO to a list of ase.Atoms
                 random.shuffle(frames)
                 data.append(frames)
 
@@ -120,5 +122,6 @@ class MultiPackmol(Packmol):
                     tolerance=self.tolerance,
                     density=self.density,
                     pbc=self.pbc,
+                    packmol=os.environ.get("RDKIT2ASE_PACKMOL", "packmol"),
                 )
             )

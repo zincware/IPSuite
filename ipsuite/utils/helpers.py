@@ -2,11 +2,22 @@
 
 import contextlib
 from logging import Logger
+from pathlib import Path
+import os
+import h5py
+import typing as t
 
 import typing_extensions as tyex
 import znflow
 from zntrack import Node
 
+def make_hdf5_file_opener(self, path: str | Path | os.PathLike) -> t.Callable[[], t.ContextManager[h5py.File]]:
+    """Create a context manager to open an HDF5 file using the node file system."""
+    @contextlib.contextmanager
+    def _opener() -> t.Generator[h5py.File, None, None]:
+        with self.state.fs.open(path, "rb") as f:
+            yield h5py.File(f, "r")
+    return _opener
 
 def setup_ase():
     """Add uncertainty keys to ASE all properties."""
