@@ -59,9 +59,6 @@ def test_torch_dftd3_calculator_consistency(proj_path):
     forces_tol = 2e-3  # kcal/mol/Angstrom
 
     for case_name, atoms, is_periodic in test_cases:
-        print(f"\nTesting case: {case_name}")
-        print(f"  Atoms: {len(atoms)} atoms, PBC: {is_periodic}")
-
         # Prepare atoms copy for each calculator
         atoms1 = atoms.copy()
         atoms2 = atoms.copy()
@@ -86,9 +83,6 @@ def test_torch_dftd3_calculator_consistency(proj_path):
         # Compare results
         energy_diff = abs(energy1 - energy2)
         forces_diff = np.max(np.abs(forces1 - forces2))
-
-        print(f"  Energy diff: {energy_diff:.2e} (tol: {energy_tol:.2e})")
-        print(f"  Forces diff: {forces_diff:.2e} (tol: {forces_tol:.2e})")
 
         # Assertions
         assert energy_diff < energy_tol, (
@@ -161,8 +155,6 @@ def test_torch_dftd3_different_skin_values(proj_path):
 
         energies.append(energy)
         forces_list.append(forces)
-
-        print(f"Skin {skin}: Energy = {energy:.8f}")
 
     # Tolerances for skin value variations
     # Small differences expected due to neighbor list update frequency
