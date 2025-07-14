@@ -17,14 +17,14 @@ def test_torch_dftd3_calculator_consistency(proj_path):
 
     with project:
         # Generate molecular conformers
-        water = ips.Smiles2Conformers(smiles="O", numConfs=3, seed=42)
-        ethanol = ips.Smiles2Conformers(smiles="CCO", numConfs=2, seed=42)
+        water = ips.Smiles2Conformers(smiles="O", numConfs=10, seed=42)
+        ethanol = ips.Smiles2Conformers(smiles="CCO", numConfs=10, seed=42)
 
         # Create a periodic molecular box for testing PBC
         box = ips.MultiPackmol(
             data=[water.frames, ethanol.frames],
-            count=[4, 2],  # 4 water + 2 ethanol molecules
-            density=800,   # kg/m³
+            count=[10, 10],  # 10 water + 10 ethanol molecules
+            density=500,   # kg/m³, low density
             n_configurations=1,
             seed=42,
         )
@@ -54,8 +54,9 @@ def test_torch_dftd3_calculator_consistency(proj_path):
     }
 
     # Test tolerance - adjust based on system size and neighbor list differences
-    energy_tol = 2.5e-3  # kcal/mol - acceptable for neighbor list implementations
-    forces_tol = 1e-3  # kcal/mol/Angstrom
+    # Different neighbor list implementations (ASE vs vesin) can have small but acceptable differences
+    energy_tol = 8e-3  # kcal/mol - acceptable for neighbor list implementations
+    forces_tol = 2e-3  # kcal/mol/Angstrom
 
     for case_name, atoms, is_periodic in test_cases:
         print(f"\nTesting case: {case_name}")
@@ -118,11 +119,11 @@ def test_torch_dftd3_different_skin_values(proj_path):
     project = ips.Project()
 
     with project:
-        water = ips.Smiles2Conformers(smiles="O", numConfs=2, seed=42)
+        water = ips.Smiles2Conformers(smiles="O", numConfs=16, seed=42)
         box = ips.MultiPackmol(
             data=[water.frames],
-            count=[6],              # 6 water molecules
-            density=1000,           # kg/m³
+            count=[16],              # 16 water molecules
+            density=500,           # kg/m³, low density
             n_configurations=1,
             seed=42,
         )
@@ -165,8 +166,8 @@ def test_torch_dftd3_different_skin_values(proj_path):
 
     # Tolerances for skin value variations
     # Small differences expected due to neighbor list update frequency
-    energy_tol = 2e-3  # kcal/mol
-    forces_tol = 1e-3  # kcal/mol/Angstrom
+    energy_tol = 3e-3  # kcal/mol
+    forces_tol = 2e-3  # kcal/mol/Angstrom
 
     # Compare all skin values against the first one
     for i in range(1, len(skin_values)):

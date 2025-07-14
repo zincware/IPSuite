@@ -58,7 +58,7 @@ class ApplyCalculator(zntrack.Node):
 
     data: list[ase.Atoms] = zntrack.deps()
     model: NodeWithCalculator = zntrack.deps()
-    dump_rate: int | None = zntrack.params(None)
+    dump_rate: int | None = zntrack.params(1)
     additive: bool = zntrack.params(False)
 
     frames_path: pathlib.Path = zntrack.outs_path(zntrack.nwd / "frames.h5")
