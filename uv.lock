@@ -1488,6 +1488,7 @@ dependencies = [
 [package.optional-dependencies]
 d3 = [
     { name = "torch-dftd" },
+    { name = "vesin" },
 ]
 
 [package.dev-dependencies]
@@ -1520,7 +1521,8 @@ requires-dist = [
     { name = "seaborn", specifier = ">=0.13.2" },
     { name = "torch-dftd", marker = "extra == 'd3'", specifier = ">=0.5.1" },
     { name = "uncertainty-toolbox", specifier = ">=0.1.1" },
-    { name = "znh5md", specifier = ">=0.4.7" },
+    { name = "vesin", marker = "extra == 'd3'", specifier = ">=0.3.7" },
+    { name = "znh5md", specifier = ">=0.4.8" },
     { name = "zntrack", specifier = ">=0.8.7" },
 ]
 provides-extras = ["d3"]
@@ -4238,6 +4240,22 @@ wheels = [
 ]
 
 [[package]]
+name = "vesin"
+version = "0.3.7"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/73/24/39c98cd0911a170fb94f1077f26a043d4f47df48eecb3eccd1cb11c9e991/vesin-0.3.7.tar.gz", hash = "sha256:52c11ac0ba775c228f06779877cf8641854edab7ea59036093ef5e8447379de0", size = 31534, upload-time = "2025-05-14T15:50:04.371Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8d/cf/a8be6255d45a1434b6027ea5675ffdea55da1851a4b0f7607be12d38b336/vesin-0.3.7-py3-none-macosx_10_13_x86_64.whl", hash = "sha256:d9ad3fe9c040764d9329925cb560e40770c7b7167ac72096c5a1f6981ecea44f", size = 25929, upload-time = "2025-05-14T15:49:57.411Z" },
+    { url = "https://files.pythonhosted.org/packages/0e/69/f37c3922a0040fd5baa22516d1c82b455ea94c9f4c18c71f4a669904a434/vesin-0.3.7-py3-none-macosx_11_0_arm64.whl", hash = "sha256:1678347adb71070dca7130fe45c28b5f0cc3daa7a5461bd87ee1d93d62c9a57a", size = 26042, upload-time = "2025-05-14T15:49:58.743Z" },
+    { url = "https://files.pythonhosted.org/packages/7e/42/8a8db8d202403306a51045e85eb28e7d2a1fb4d9f3ca2cde5a139b5e007f/vesin-0.3.7-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7c85dde76427eb7e03a5bde915b8bdca2cfb64a0a82f0334231174a21ced4ab9", size = 54619, upload-time = "2025-05-14T15:50:00.481Z" },
+    { url = "https://files.pythonhosted.org/packages/6a/a4/aa108860fc8b563668046df37347c6ed36854981505ac36d78ea2845b33f/vesin-0.3.7-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e41dc2eb5598bb9dc759f6eb88df5e3076698a30465cf496e0ab35dc230820dc", size = 55954, upload-time = "2025-05-14T15:50:01.352Z" },
+    { url = "https://files.pythonhosted.org/packages/e6/74/ff7810aa15d7c2d0562472be7dda16188e05a1bdc392ae17dbe37c5bc0b4/vesin-0.3.7-py3-none-win_amd64.whl", hash = "sha256:69e55daff9f8ffc516708bee233c258c9fabdd2a8d6683c5044479b2d38ba577", size = 58173, upload-time = "2025-05-14T15:50:02.323Z" },
+]
+
+[[package]]
 name = "vine"
 version = "5.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -4463,7 +4481,7 @@ wheels = [
 
 [[package]]
 name = "znh5md"
-version = "0.4.7"
+version = "0.4.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ase" },
@@ -4471,9 +4489,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ea/92/651aa0e1567ca9aa40b29d53c999cba7ea045bcb5ba9b073c6c641a11344/znh5md-0.4.7.tar.gz", hash = "sha256:d7c8cf12070a403e241ede4601234555b8deb36a07ff800dad869842f844f663", size = 194494, upload-time = "2025-06-13T07:57:03.25Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/93/d4/50b9ad618d799983823ef4087033dcb7e90ffe95cb02fbdda01cd7fa0d66/znh5md-0.4.8.tar.gz", hash = "sha256:9dd02d45b5ed766e2f6a0c5b8c926cd15e5a8b9c3a80cab0303f518b129f16ac", size = 203729, upload-time = "2025-07-09T10:09:33.353Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/37/70/0eecda577b5dc04602ecb8c7cd43cebd669f717e1a541c773949927b9b18/znh5md-0.4.7-py3-none-any.whl", hash = "sha256:b2afc82b02bf18e966d751ef6bf649d0dfedd3cf9d0d806f3db764ee85779635", size = 23019, upload-time = "2025-06-13T07:57:02.301Z" },
+    { url = "https://files.pythonhosted.org/packages/81/03/4ceb3cec2f1b466c2c4dc609fd236dc064a1da1c612c89c12d2afeeaf0a0/znh5md-0.4.8-py3-none-any.whl", hash = "sha256:83e7c82424ae94e6b4d8a1704447c32eb7303e0c11c4d73605482fe0911ce267", size = 24424, upload-time = "2025-07-09T10:09:32.385Z" },
 ]
 
 [[package]]

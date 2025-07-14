@@ -1,6 +1,7 @@
 import dataclasses
 from typing import Dict, Optional, Tuple
 
+import numpy as np
 from ase import Atoms
 from ase.calculators.calculator import Calculator
 from ase.units import Bohr
@@ -8,13 +9,96 @@ from ase.units import Bohr
 try:
     import torch
     from torch import Tensor
-    from torch_dftd.functions.edge_extraction import calc_edge_index
     from torch_dftd.torch_dftd3_calculator import TorchDFTD3Calculator
+    from vesin import NeighborList
 except ImportError as e:
     raise ImportError(
-        "torch_dftd is not installed. You can install it using the"
+        "torch_dftd and vesin are required. You can install them using the"
         " extra 'pip install ipsuite[d3]' command."
     ) from e
+
+
+def calc_neighbor_by_vesin(
+    pos: Tensor, cell: Optional[Tensor], pbc: Tensor, cutoff: float
+) -> Tuple[Tensor, Tensor]:
+    """Calculate neighbors using vesin for better performance."""
+    # Convert to numpy for vesin
+    pos_np = pos.detach().cpu().numpy()
+    
+    # Create vesin neighbor list calculator
+    nl_calc = NeighborList(cutoff=cutoff, full_list=True)
+    
+    # Check if we have periodic boundary conditions
+    if cell is not None and torch.any(pbc):
+        cell_np = cell.detach().cpu().numpy()
+        # Compute neighbor list with periodic boundaries
+        idx_i, idx_j, S = nl_calc.compute(
+            points=pos_np,
+            box=cell_np,
+            periodic=True,
+            quantities="ijS"
+        )
+    else:
+        # Non-periodic case - provide empty box and False for periodic
+        idx_i, idx_j, S = nl_calc.compute(
+            points=pos_np,
+            box=np.zeros((3, 3)),
+            periodic=False,
+            quantities="ijS"
+        )
+    
+    # Convert back to tensors
+    edge_index = torch.tensor(np.stack([idx_i, idx_j], axis=0), device=pos.device)
+    S = torch.tensor(S, dtype=pos.dtype, device=pos.device)
+    return edge_index, S
+
+
+def calc_edge_index(
+    pos: Tensor,
+    cell: Optional[Tensor] = None,
+    pbc: Optional[Tensor] = None,
+    cutoff: float = 95.0 * Bohr,
+    bidirectional: bool = False,
+) -> Tuple[Tensor, Tensor]:
+    """Calculate atom pair as `edge_index`, and shift vector `S`.
+
+    Args:
+        pos (Tensor): atom positions in angstrom
+        cell (Tensor): cell size in angstrom, None for non periodic system.
+        pbc (Tensor): pbc condition, None for non periodic system.
+        cutoff (float): cutoff distance in angstrom
+        bidirectional (bool): calculated `edge_index` is bidirectional or not.
+
+    Returns:
+        edge_index (Tensor): (2, n_edges)
+        S (Tensor): (n_edges, 3) dtype is same with `pos`
+    """
+    if pbc is None or torch.all(~pbc):
+        assert cell is None
+        # Calculate distance brute force way
+        distances = torch.sum((pos.unsqueeze(0) - pos.unsqueeze(1)).pow_(2), dim=2)
+        right_ind, left_ind = torch.where(distances < cutoff**2)
+        if bidirectional:
+            edge_index = torch.stack(
+                (left_ind[left_ind != right_ind], right_ind[left_ind != right_ind])
+            )
+        else:
+            edge_index = torch.stack(
+                (left_ind[left_ind < right_ind], right_ind[left_ind < right_ind])
+            )
+        n_edges = edge_index.shape[1]
+        S = pos.new_zeros((n_edges, 3))
+    else:
+        if not bidirectional:
+            raise NotImplementedError("bidirectional=False is not supported")
+        if pos.shape[0] == 0:
+            edge_index = torch.zeros([2, 0], dtype=torch.long, device=pos.device)
+            S = torch.zeros_like(pos)
+        else:
+            edge_index, S = calc_neighbor_by_vesin(pos, cell, pbc, cutoff)
+
+    return edge_index, S
+
 
 
 class TorchDFTD3CalculatorNL(TorchDFTD3Calculator):
@@ -134,8 +218,8 @@ class TorchDFTD3:
     device : str
         Device used for the calculation. Defaults to "cuda" if available, otherwise "cpu".
     skin : float
-        If > 0, switches to a D3 implementation that reuses neighborlists.
-        This can significantly improve performance.
+        Neighbor list skin distance for efficient neighbor list reuse.
+        Uses vesin-based neighbor list implementation for better performance.
     """
 
     xc: str
@@ -157,28 +241,16 @@ class TorchDFTD3:
         else:
             raise ValueError("dtype must be float64 or float32")
 
-        if self.skin < 1e-5:
-            calc = TorchDFTD3Calculator(
-                xc=self.xc,
-                damping=self.damping,
-                cutoff=self.cutoff,
-                abc=self.abc,
-                cnthr=self.cnthr,
-                dtype=dtype,
-                atoms=None,
-                device=self.device,
-            )
-        else:
-            calc = TorchDFTD3CalculatorNL(
-                xc=self.xc,
-                damping=self.damping,
-                cutoff=self.cutoff,
-                abc=self.abc,
-                cnthr=self.cnthr,
-                dtype=dtype,
-                atoms=None,
-                device=self.device,
-                skin=self.skin,
-            )
+        calc = TorchDFTD3CalculatorNL(
+            xc=self.xc,
+            damping=self.damping,
+            cutoff=self.cutoff,
+            abc=self.abc,
+            cnthr=self.cnthr,
+            dtype=dtype,
+            atoms=None,
+            device=self.device,
+            skin=self.skin,
+        )
 
         return calc
