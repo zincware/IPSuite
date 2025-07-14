@@ -1487,6 +1487,7 @@ dependencies = [
 
 [package.optional-dependencies]
 d3 = [
+    { name = "torch" },
     { name = "torch-dftd" },
     { name = "vesin" },
 ]
@@ -1519,6 +1520,7 @@ requires-dist = [
     { name = "pint", specifier = ">=0.24.4" },
     { name = "rdkit2ase", specifier = ">=0.1.7" },
     { name = "seaborn", specifier = ">=0.13.2" },
+    { name = "torch", marker = "extra == 'd3'", specifier = ">=2.3.0" },
     { name = "torch-dftd", marker = "extra == 'd3'", specifier = ">=0.5.1" },
     { name = "uncertainty-toolbox", specifier = ">=0.1.1" },
     { name = "vesin", marker = "extra == 'd3'", specifier = ">=0.3.7" },
