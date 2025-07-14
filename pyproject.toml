@@ -59,7 +59,6 @@ dev = [
 
 d3 = [
     "torch-dftd>=0.5.1",
-    "vesin>=0.3.7",
     "torch>=2.3.0",
 ]
 
