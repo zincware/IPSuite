@@ -8,6 +8,7 @@ import ase.units
 import numpy as np
 import rdkit2ase
 import zntrack
+import os
 
 from ipsuite import base, fields
 
@@ -64,6 +65,7 @@ class Packmol(base.IPSNode):
                 tolerance=self.tolerance,
                 density=self.density,
                 pbc=self.pbc,
+                packmol=os.environ.get("RDKIT2ASE_PACKMOL", "packmol"),
             )
         ]
 
@@ -120,5 +122,6 @@ class MultiPackmol(Packmol):
                     tolerance=self.tolerance,
                     density=self.density,
                     pbc=self.pbc,
+                    packmol=os.environ.get("RDKIT2ASE_PACKMOL", "packmol"),
                 )
             )
