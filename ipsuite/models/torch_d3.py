@@ -203,23 +203,46 @@ class TorchDFTD3CalculatorNL(TorchDFTD3Calculator):
 @dataclasses.dataclass
 class TorchDFTD3:
     """Compute D3 correction terms using torch-dftd.
-
-    Attributes
+    Parameters
     ----------
     xc : str
+        Exchange-correlation functional (e.g., "pbe", "b3lyp").
     damping : str
+        Damping function type (e.g., "bj", "zero").
     cutoff : float
+        Cutoff distance in angstrom for D3 interactions.
     abc : bool
-        ATM 3-body interaction
+        Enable ATM 3-body interaction terms.
     cnthr : float
-        Coordination number cutoff distance in angstrom
+        Coordination number cutoff distance in angstrom.
     dtype : str
-        Data type used for the calculation.
-    device : str
+        Data type used for the calculation ("float32" or "float64").
+    device : str, optional
         Device used for the calculation. Defaults to "cuda" if available, otherwise "cpu".
-    skin : float
+    skin : float, default 0.0
         Neighbor list skin distance for efficient neighbor list reuse.
         Uses vesin-based neighbor list implementation for better performance.
+
+    Examples
+    --------
+
+    Combined with MACE-MP-0 model:
+
+    >>> import ipsuite as ips
+    >>> project = ips.Project()
+    >>> d3 = ips.TorchDFTD3(
+    ...     xc="pbe",
+    ...     damping="bj",
+    ...     cutoff=3,
+    ...     cnthr=3,
+    ...     abc=False,
+    ...     dtype="float32",
+    ... )
+    >>> mp0 = ips.MACEMPModel()
+    >>> with project:
+    ...     data = ips.Smiles2Atoms(smiles="CCO")
+    ...     mix_calc = ips.MixCalculator(calculators=[d3, mp0])
+    ...     data_with_d3 = ips.ApplyCalculator(data=data.frames, model=mix_calc)
     """
 
     xc: str
