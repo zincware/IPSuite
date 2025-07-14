@@ -5,7 +5,6 @@ import h5py
 import rdkit2ase
 import znh5md
 import zntrack
-from rdkit import Chem
 from rdkit.Chem import Draw
 
 from ipsuite import base
@@ -17,7 +16,6 @@ class Smiles2Atoms(base.IPSNode):
 
     frames_path: Path = zntrack.outs_path(zntrack.nwd / "frames.h5")
     molecule_image_path: Path = zntrack.outs_path(zntrack.nwd / "molecule.png")
-
 
     def run(self):
         atoms = rdkit2ase.smiles2atoms(
@@ -40,7 +38,6 @@ class Smiles2Atoms(base.IPSNode):
                 return znh5md.IO(file_handle=file)[:]
 
 
-
 class Smiles2Conformers(base.IPSNode):
     smiles: str = zntrack.params()
     numConfs: int = zntrack.params()
@@ -60,7 +57,7 @@ class Smiles2Conformers(base.IPSNode):
 
         io = znh5md.IO(filename=self.frames_path)
         io.extend(frames)
-        
+
         # Generate and save molecule image using first conformer
         if frames:
             mol = rdkit2ase.ase2rdkit(frames[0])
