@@ -24,29 +24,23 @@ def calc_neighbor_by_vesin(
     """Calculate neighbors using vesin for better performance."""
     # Convert to numpy for vesin
     pos_np = pos.detach().cpu().numpy()
-    
+
     # Create vesin neighbor list calculator
     nl_calc = NeighborList(cutoff=cutoff, full_list=True)
-    
+
     # Check if we have periodic boundary conditions
     if cell is not None and torch.any(pbc):
         cell_np = cell.detach().cpu().numpy()
         # Compute neighbor list with periodic boundaries
         idx_i, idx_j, S = nl_calc.compute(
-            points=pos_np,
-            box=cell_np,
-            periodic=True,
-            quantities="ijS"
+            points=pos_np, box=cell_np, periodic=True, quantities="ijS"
         )
     else:
         # Non-periodic case - provide empty box and False for periodic
         idx_i, idx_j, S = nl_calc.compute(
-            points=pos_np,
-            box=np.zeros((3, 3)),
-            periodic=False,
-            quantities="ijS"
+            points=pos_np, box=np.zeros((3, 3)), periodic=False, quantities="ijS"
         )
-    
+
     # Convert back to tensors
     edge_index = torch.tensor(np.stack([idx_i, idx_j], axis=0), device=pos.device)
     S = torch.tensor(S, dtype=pos.dtype, device=pos.device)
@@ -98,7 +92,6 @@ def calc_edge_index(
             edge_index, S = calc_neighbor_by_vesin(pos, cell, pbc, cutoff)
 
     return edge_index, S
-
 
 
 class TorchDFTD3CalculatorNL(TorchDFTD3Calculator):
