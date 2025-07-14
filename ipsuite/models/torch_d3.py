@@ -41,8 +41,8 @@ def calc_neighbor_by_vesin(
             points=pos_np, box=np.zeros((3, 3)), periodic=False, quantities="ijS"
         )
 
-    # Convert back to tensors
-    edge_index = torch.tensor(np.stack([idx_i, idx_j], axis=0), device=pos.device)
+    # Convert back to tensors with correct dtypes
+    edge_index = torch.tensor(np.stack([idx_i, idx_j], axis=0), dtype=torch.long, device=pos.device)
     S = torch.tensor(S, dtype=pos.dtype, device=pos.device)
     return edge_index, S
 
