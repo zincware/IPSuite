@@ -1487,6 +1487,7 @@ dependencies = [
 
 [package.optional-dependencies]
 d3 = [
+    { name = "torch" },
     { name = "torch-dftd" },
 ]
 
@@ -1518,9 +1519,10 @@ requires-dist = [
     { name = "pint", specifier = ">=0.24.4" },
     { name = "rdkit2ase", specifier = ">=0.1.7" },
     { name = "seaborn", specifier = ">=0.13.2" },
+    { name = "torch", marker = "extra == 'd3'", specifier = ">=2.3.0" },
     { name = "torch-dftd", marker = "extra == 'd3'", specifier = ">=0.5.1" },
     { name = "uncertainty-toolbox", specifier = ">=0.1.1" },
-    { name = "znh5md", specifier = ">=0.4.7" },
+    { name = "znh5md", specifier = ">=0.4.8" },
     { name = "zntrack", specifier = ">=0.8.7" },
 ]
 provides-extras = ["d3"]
@@ -4463,7 +4465,7 @@ wheels = [
 
 [[package]]
 name = "znh5md"
-version = "0.4.7"
+version = "0.4.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ase" },
@@ -4471,9 +4473,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ea/92/651aa0e1567ca9aa40b29d53c999cba7ea045bcb5ba9b073c6c641a11344/znh5md-0.4.7.tar.gz", hash = "sha256:d7c8cf12070a403e241ede4601234555b8deb36a07ff800dad869842f844f663", size = 194494, upload-time = "2025-06-13T07:57:03.25Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/93/d4/50b9ad618d799983823ef4087033dcb7e90ffe95cb02fbdda01cd7fa0d66/znh5md-0.4.8.tar.gz", hash = "sha256:9dd02d45b5ed766e2f6a0c5b8c926cd15e5a8b9c3a80cab0303f518b129f16ac", size = 203729, upload-time = "2025-07-09T10:09:33.353Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/37/70/0eecda577b5dc04602ecb8c7cd43cebd669f717e1a541c773949927b9b18/znh5md-0.4.7-py3-none-any.whl", hash = "sha256:b2afc82b02bf18e966d751ef6bf649d0dfedd3cf9d0d806f3db764ee85779635", size = 23019, upload-time = "2025-06-13T07:57:02.301Z" },
+    { url = "https://files.pythonhosted.org/packages/81/03/4ceb3cec2f1b466c2c4dc609fd236dc064a1da1c612c89c12d2afeeaf0a0/znh5md-0.4.8-py3-none-any.whl", hash = "sha256:83e7c82424ae94e6b4d8a1704447c32eb7303e0c11c4d73605482fe0911ce267", size = 24424, upload-time = "2025-07-09T10:09:32.385Z" },
 ]
 
 [[package]]

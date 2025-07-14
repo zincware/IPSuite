@@ -31,6 +31,10 @@ class ApplyCalculator(zntrack.Node):
     model_outs : pathlib.Path, optional
         Path to the directory where the model outputs will be stored.
         Defaults to a subdirectory named "model" in the current working directory.
+    additive : bool, optional
+        If True, adds the new calculator results to existing calculations.
+        If False (default), replaces any existing calculator results.
+        This is useful for adding corrections (e.g., D3 dispersion) to existing models.
 
     Laufband Configuration
     ----------------------
@@ -54,13 +58,51 @@ class ApplyCalculator(zntrack.Node):
 
     data: list[ase.Atoms] = zntrack.deps()
     model: NodeWithCalculator = zntrack.deps()
-    dump_rate: int | None = zntrack.params(None)
+    dump_rate: int | None = zntrack.params(1)
+    additive: bool = zntrack.params(False)
 
     frames_path: pathlib.Path = zntrack.outs_path(zntrack.nwd / "frames.h5")
     model_outs: pathlib.Path = zntrack.outs_path(zntrack.nwd / "model")
     implemented_properties: list[str] = zntrack.params(
         default_factory=lambda: ["energy", "forces"]
     )
+
+    def _process_atoms(self, atoms: ase.Atoms, calc) -> None:
+        """Process a single atoms object with the calculator."""
+        # Store original results if in additive mode
+        original_results = {}
+        if self.additive and atoms.calc is not None:
+            original_results = getattr(atoms.calc, "results", {}).copy()
+
+        # Apply new calculator
+        atoms.calc = calc
+
+        # Calculate new results
+        if "energy" in self.implemented_properties:
+            atoms.get_potential_energy()
+        if "forces" in self.implemented_properties:
+            atoms.get_forces()
+        if "stress" in self.implemented_properties:
+            atoms.get_stress()
+
+        # Add original results to new results if in additive mode
+        if self.additive and original_results:
+            self._combine_results(atoms.calc, original_results)
+
+    def _combine_results(self, calc, original_results: dict) -> None:
+        """Combine original and new calculator results."""
+        new_results = calc.results.copy()
+        for key, original_value in original_results.items():
+            if key in new_results:
+                try:
+                    # Add the values if they are numeric
+                    calc.results[key] = original_value + new_results[key]
+                except (TypeError, ValueError):
+                    # If addition fails, keep the new value
+                    pass
+            else:
+                # If key not in new results, keep original value
+                calc.results[key] = original_value
 
     def run(self):
         self.model_outs.mkdir(parents=True, exist_ok=True)
@@ -82,13 +124,7 @@ class ApplyCalculator(zntrack.Node):
         calc = self.model.get_calculator(directory=calc_dir)
 
         for atoms in worker:
-            atoms.calc = calc
-            if "energy" in self.implemented_properties:
-                atoms.get_potential_energy()
-            if "forces" in self.implemented_properties:
-                atoms.get_forces()
-            if "stress" in self.implemented_properties:
-                atoms.get_stress()
+            self._process_atoms(atoms, calc)
             frames.append(freeze_copy_atoms(atoms))
             if self.dump_rate is not None:
                 if len(frames) % self.dump_rate == 0:

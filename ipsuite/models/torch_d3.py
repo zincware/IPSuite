@@ -90,7 +90,8 @@ class TorchDFTD3CalculatorNL(TorchDFTD3Calculator):
             cell = None
         pbc = torch.tensor(atoms.pbc, device=self.device)
         condition = (
-            torch.any(self.pbc != pbc)
+            self.edge_index is None
+            or torch.any(self.pbc != pbc)
             or len(self.Z) != len(Z)
             or ((self.pos0 - pos) ** 2).sum(1).max() > self.skin**2 / 4.0
         )
