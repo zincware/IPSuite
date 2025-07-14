@@ -1,6 +1,7 @@
 """Use packmole to create a periodic box"""
 
 import logging
+import os
 import random
 
 import ase
@@ -8,7 +9,6 @@ import ase.units
 import numpy as np
 import rdkit2ase
 import zntrack
-import os
 
 from ipsuite import base, fields
 
