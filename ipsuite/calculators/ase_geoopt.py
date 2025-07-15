@@ -23,6 +23,8 @@ class ASEGeoOpt(base.IPSNode):
         A node that implements 'get_calculator'.
     maxstep: int, optional
         Maximum number of steps to perform.
+    sampling_rate: int, optional
+        How often to sample the atoms during the optimization.
     """
 
     data: typing.List[ase.Atoms] = zntrack.deps()
@@ -38,6 +40,7 @@ class ASEGeoOpt(base.IPSNode):
     run_kwargs: dict = zntrack.params(default_factory=lambda: {"fmax": 0.05})
     init_kwargs: dict = zntrack.params(default_factory=dict)
     dump_rate: int = zntrack.params(1000)
+    sampling_rate: int = zntrack.params(1)
     maxstep: int = zntrack.params(None)
 
     traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
@@ -70,8 +73,11 @@ class ASEGeoOpt(base.IPSNode):
 
         for step, _ in enumerate(dyn.irun(**self.run_kwargs)):
             stop = []
-            atoms_cache.append(freeze_copy_atoms(atoms))
-            if len(atoms_cache) == self.dump_rate:
+
+            if step % self.sampling_rate == 0:
+                atoms_cache.append(freeze_copy_atoms(atoms))
+
+            if len(atoms_cache) >= self.dump_rate:
                 db.extend(atoms_cache)
                 atoms_cache = []
 
@@ -89,8 +95,8 @@ class ASEGeoOpt(base.IPSNode):
 
             if self.maxstep is not None and step >= self.maxstep:
                 break
-
-        db.extend(atoms_cache)
+        if len(atoms_cache) > 0:
+            db.extend(atoms_cache)
 
     def get_atoms(self) -> ase.Atoms:
         atoms: ase.Atoms = self.get_data()
