@@ -73,7 +73,7 @@ class ASEGeoOpt(base.IPSNode):
 
         for step, _ in enumerate(dyn.irun(**self.run_kwargs)):
             stop = []
-            
+
             if step % self.sampling_rate == 0:
                 atoms_cache.append(freeze_copy_atoms(atoms))
 
