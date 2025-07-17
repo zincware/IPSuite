@@ -5,6 +5,7 @@ from ipsuite.dynamics.checks import (
     NaNCheck,
     TemperatureCheck,
     ThresholdCheck,
+    DensityCheck,
 )
 from ipsuite.dynamics.constraints import (
     FixedBondLengthConstraint,
@@ -36,6 +37,7 @@ __all__ = [
     "NaNCheck",
     "TemperatureCheck",
     "ThresholdCheck",
+    "DensityCheck",
     "RescaleBoxModifier",
     "BoxOscillatingRampModifier",
     "TemperatureRampModifier",
