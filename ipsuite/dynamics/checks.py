@@ -7,7 +7,7 @@ from ase.geometry import conditional_find_mic
 from ase.neighborlist import build_neighbor_list, natural_cutoffs
 
 from ipsuite import base
-from ipsuite.utils.ase_sim import get_energy, get_density_from_atoms
+from ipsuite.utils.ase_sim import get_density_from_atoms, get_energy
 
 
 @dataclasses.dataclass
@@ -307,10 +307,8 @@ class ThresholdCheck(base.Check):
             return False
 
 
-
 @dataclasses.dataclass
 class DensityCheck(base.Check):
-
     max_density: float | None = None
     min_density: float | None = None
 
@@ -318,7 +316,7 @@ class DensityCheck(base.Check):
 
     def get_quantity(self):
         return "Density"
-    
+
     def get_value(self, atoms):
         """Get the value of the density to check."""
         return get_density_from_atoms(atoms)
@@ -344,5 +342,3 @@ class DensityCheck(base.Check):
                 f"between min {self.min_density} and max {self.max_density}"
             )
             return False
-    
-    

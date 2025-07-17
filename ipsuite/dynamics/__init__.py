@@ -1,11 +1,11 @@
 from ipsuite.dynamics.checks import (
     ConnectivityCheck,
     DebugCheck,
+    DensityCheck,
     EnergySpikeCheck,
     NaNCheck,
     TemperatureCheck,
     ThresholdCheck,
-    DensityCheck,
 )
 from ipsuite.dynamics.constraints import (
     FixedBondLengthConstraint,
