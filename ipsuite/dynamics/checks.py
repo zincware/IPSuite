@@ -7,7 +7,7 @@ from ase.geometry import conditional_find_mic
 from ase.neighborlist import build_neighbor_list, natural_cutoffs
 
 from ipsuite import base
-from ipsuite.utils.ase_sim import get_energy
+from ipsuite.utils.ase_sim import get_density_from_atoms, get_energy
 
 
 @dataclasses.dataclass
@@ -303,5 +303,42 @@ class ThresholdCheck(base.Check):
                 f"StandardDeviationCheck for '{self.key}' passed with"
                 f" '{np.max(self.values[-1]):.3f}' for '{mean:.3f} +-"
                 f" {std:.3f}' and max value '{self.max_value}'"
+            )
+            return False
+
+
+@dataclasses.dataclass
+class DensityCheck(base.Check):
+    max_density: float | None = None
+    min_density: float | None = None
+
+    status: str | None | bool = None
+
+    def get_quantity(self):
+        return "Density"
+
+    def get_value(self, atoms):
+        """Get the value of the density to check."""
+        return get_density_from_atoms(atoms)
+
+    def check(self, atoms: ase.Atoms) -> bool:
+        density = get_density_from_atoms(atoms)
+        if self.max_density is not None and density > self.max_density:
+            self.status = (
+                "Density Check failed: last iteration"
+                f" density {density} > max density {self.max_density}"
+            )
+            return True
+
+        elif self.min_density is not None and density < self.min_density:
+            self.status = (
+                "Density Check failed: last iteration"
+                f" density {density} < min density {self.min_density}"
+            )
+            return True
+        else:
+            self.status = (
+                f"Density Check passed: density {density} "
+                f"between min {self.min_density} and max {self.max_density}"
             )
             return False
