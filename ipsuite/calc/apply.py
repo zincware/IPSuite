@@ -139,4 +139,4 @@ class ApplyCalculator(zntrack.Node):
     def frames(self) -> list[ase.Atoms]:
         with self.state.fs.open(self.frames_path, "rb") as f:
             with h5py.File(f) as file:
-                return list(znh5md.IO(file_handle=file))
+                return znh5md.IO(file_handle=file)[:]
