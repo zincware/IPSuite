@@ -61,6 +61,7 @@ from .configuration_generation import (
     Smiles2Atoms,
     Smiles2Conformers,
     Smiles2Gromacs,
+    BuildSurface
 )
 
 # Configuration Selection
@@ -156,6 +157,7 @@ __all__ = [
     "Smiles2Atoms",
     "Smiles2Conformers",
     "Smiles2Gromacs",
+    "BuildSurface",
     # Data
     "AddData",
     "AddDataH5MD",

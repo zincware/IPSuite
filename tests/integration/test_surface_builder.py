@@ -1,4 +1,5 @@
 import ipsuite as ips
+import pytest
 
 
 def test_BuildSurface_basic(proj_path):
@@ -67,3 +68,44 @@ def test_BuildSurface_different_indices(proj_path):
         atoms = surface.frames[0]
         assert all(symbol == "Pt" for symbol in atoms.get_chemical_symbols())
         assert len(atoms) > 0
+
+
+def test_BuildSurface_with_mace_relaxation(proj_path):
+    """Test BuildSurface followed by MACE-MP relaxation."""
+    with ips.Project() as proj:
+        # Build surface
+        surface = ips.BuildSurface(
+            lattice="Cu",
+            indices=(1, 1, 1),
+            layers=3,
+            vacuum=12.0
+        )
+        
+        # Set up MACE-MP model
+        model = ips.MACEMPModel()
+        
+        # Relax the surface using ASEGeoOpt
+        relaxed_surface = ips.ASEGeoOpt(
+            data=surface.frames,
+            model=model,
+            optimizer="FIRE",
+            run_kwargs={"fmax": 0.1, "steps": 50},
+            sampling_rate=10,
+            maxstep=50
+        )
+
+    proj.repro()
+
+    # Verify the surface was built correctly
+    initial_atoms = surface.frames[0]
+    assert all(symbol == "Cu" for symbol in initial_atoms.get_chemical_symbols())
+    assert len(initial_atoms) > 0
+    
+    # Verify relaxation trajectory was generated  
+    trajectory = relaxed_surface.frames
+    assert len(trajectory) > 0
+    
+    # Check that final structure still has correct composition
+    final_atoms = trajectory[-1]
+    assert all(symbol == "Cu" for symbol in final_atoms.get_chemical_symbols())
+    assert len(final_atoms) == len(initial_atoms)
