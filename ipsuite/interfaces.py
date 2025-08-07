@@ -72,6 +72,7 @@ __all__ = [
     "HasOrIsAtoms",
 ]
 
+
 def interfaces() -> dict[str, list[str]]:
     """Return a dictionary of available interfaces."""
     return {"ipsuite.interfaces": __all__}

@@ -6,8 +6,8 @@ from ase import units
 from ase.calculators.calculator import Calculator, all_changes
 from ase.calculators.plumed import Plumed
 
-from ipsuite.interfaces import NodeWithCalculator
 from ipsuite.base import IPSNode
+from ipsuite.interfaces import NodeWithCalculator
 
 
 class NonOverwritingPlumed(Plumed):
