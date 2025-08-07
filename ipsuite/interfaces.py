@@ -1,3 +1,4 @@
+import pathlib
 from typing import Dict, List, Protocol, TypeVar, Union
 
 import ase
@@ -10,7 +11,7 @@ T = TypeVar("T", covariant=True)
 class NodeWithCalculator(Protocol[T]):
     """Any class with a `get_calculator` method returning an ASE Calculator."""
 
-    def get_calculator(self, **kwargs) -> Calculator: ...
+    def get_calculator(self, *, directory: str | pathlib.Path | None = None, **kwargs) -> Calculator: ...
 
 
 class NodeWithThermostat(Protocol[T]):
@@ -43,11 +44,14 @@ class HasSelectedConfigurations(Protocol):
 class ProcessAtoms(Protocol):
     """Protocol for objects that process atoms.
 
-    Attributes
+    Parameters
     ----------
     data : list[ase.Atoms]
-        List of atoms to be processed.
-    atoms : list[ase.Atoms]
+        List of atoms to process.
+
+    Attributes
+    ----------
+    frames : list[ase.Atoms]
         List of processed atoms.
     """
 

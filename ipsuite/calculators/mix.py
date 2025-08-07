@@ -32,11 +32,11 @@ class MixCalculator(base.IPSNode):
         """
         if self.method == "mean":
             return mixing.AverageCalculator(
-                [calc.get_calculator() for calc in self.calculators]
+                [calc.get_calculator(**kwargs) for calc in self.calculators]
             )
         elif self.method == "sum":
             return mixing.SumCalculator(
-                [calc.get_calculator() for calc in self.calculators]
+                [calc.get_calculator(**kwargs) for calc in self.calculators]
             )
         else:
             raise ValueError(f"method {self.method} not supported")

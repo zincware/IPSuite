@@ -114,7 +114,7 @@ class PlumedModel(IPSNode):
         kT = units.kB * self.temperature
 
         return NonOverwritingPlumed(
-            calc=self.model.get_calculator(),
+            calc=self.model.get_calculator(directory=directory),
             atoms=self.data[self.data_id],
             input=lines,
             timestep=float(self.timestep * units.fs),
