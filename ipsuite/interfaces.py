@@ -11,7 +11,9 @@ T = TypeVar("T", covariant=True)
 class NodeWithCalculator(Protocol[T]):
     """Any class with a `get_calculator` method returning an ASE Calculator."""
 
-    def get_calculator(self, *, directory: str | pathlib.Path | None = None, **kwargs) -> Calculator: ...
+    def get_calculator(
+        self, *, directory: str | pathlib.Path | None = None, **kwargs
+    ) -> Calculator: ...
 
 
 class NodeWithThermostat(Protocol[T]):
