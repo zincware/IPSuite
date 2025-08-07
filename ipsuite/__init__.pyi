@@ -56,12 +56,13 @@ from .calculators import (
 
 # Configuration Generation
 from .configuration_generation import (
+    AddAdsorbate,
+    BuildSurface,
     MultiPackmol,
     Packmol,
     Smiles2Atoms,
     Smiles2Conformers,
     Smiles2Gromacs,
-    BuildSurface
 )
 
 # Configuration Selection
@@ -127,6 +128,21 @@ from .models import (
 from .project import Project
 from .version import __version__
 
+# Interfaces
+from .interfaces import AtomConstraint, AtomSelector
+
+# Atom Selection
+from .atom_selection import (
+    ElementTypeSelection,
+    FixAtomsConstraint,
+    FixBondLengthConstraint,
+    FixBondLengthsConstraint,
+    LayerSelection,
+    RadialSelection,
+    SurfaceSelection,
+    ZPositionSelection,
+)
+
 # Update __all__ for lazy loading
 __all__ = [
     "__version__",
@@ -152,12 +168,13 @@ __all__ = [
     "ThresholdSelection",
     "FilterOutlier",
     # Configuration Generation
-    "Packmol",
+    "AddAdsorbate",
+    "BuildSurface", 
     "MultiPackmol",
+    "Packmol",
     "Smiles2Atoms",
     "Smiles2Conformers",
     "Smiles2Gromacs",
-    "BuildSurface",
     # Data
     "AddData",
     "AddDataH5MD",
@@ -234,4 +251,16 @@ __all__ = [
     # Calc
     "ApplyCalculator",
     "WrapModifier",
+    # Interfaces
+    "AtomConstraint",
+    "AtomSelector",
+    # Atom Selection
+    "ElementTypeSelection",
+    "FixAtomsConstraint", 
+    "FixBondLengthConstraint",
+    "FixBondLengthsConstraint",
+    "LayerSelection",
+    "RadialSelection",
+    "SurfaceSelection",
+    "ZPositionSelection",
 ]
