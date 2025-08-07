@@ -5,7 +5,7 @@ import numpy as np
 from ase.calculators.calculator import Calculator, all_changes
 
 import ipsuite as ips
-from ipsuite.abc import NodeWithCalculator
+from ipsuite.interfaces import NodeWithCalculator
 
 
 class DummyCalculator(Calculator):
