@@ -107,3 +107,9 @@ skip = "poetry.lock,ipsuite/static_data/*,docs/source/examples/06_Bootstrapping_
 
 [tool.uv.sources]
 cp2k-input-tools = { git = "https://github.com/cp2k/cp2k-input-tools" }
+
+[project.entry-points.'zntrack.nodes']
+ipsuite = 'ipsuite.nodes:nodes'
+
+[project.entry-points.'zntrack.interfaces']
+ipsuite = 'ipsuite.interfaces:interfaces'

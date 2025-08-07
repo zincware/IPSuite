@@ -28,7 +28,7 @@ from rich.table import Table
 from rich.text import Text
 from tqdm import tqdm
 
-from ipsuite.abc import NodeWithCalculator, NodeWithThermostat
+from ipsuite.interfaces import NodeWithCalculator, NodeWithThermostat
 from ipsuite.utils.ase_sim import freeze_copy_atoms, get_energy
 
 log = logging.getLogger(__name__)

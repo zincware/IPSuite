@@ -3,7 +3,7 @@ from ase.calculators import mixing
 from ase.calculators.calculator import Calculator
 
 from ipsuite import base
-from ipsuite.abc import NodeWithCalculator
+from ipsuite.interfaces import NodeWithCalculator
 
 
 class MixCalculator(base.IPSNode):

@@ -6,7 +6,7 @@ from ase import units
 from ase.calculators.calculator import Calculator, all_changes
 from ase.calculators.plumed import Plumed
 
-from ipsuite.abc import NodeWithCalculator
+from ipsuite.interfaces import NodeWithCalculator
 from ipsuite.base import IPSNode
 
 

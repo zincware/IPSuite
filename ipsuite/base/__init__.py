@@ -1,6 +1,6 @@
 """Base classes and protocols for ipsuite nodes."""
 
-from ipsuite.base import protocol
+from ipsuite import interfaces
 from ipsuite.base.base import (
     AnalyseAtoms,
     Check,
@@ -16,7 +16,7 @@ __all__ = [
     "ProcessSingleAtom",
     "ComparePredictions",
     "AnalyseAtoms",
-    "protocol",
+    "interfaces",
     "Check",
     "IPSNode",
     "Flatten",

@@ -8,7 +8,7 @@ import zntrack
 from laufband import Laufband
 
 # from ase.calculators.calculator import all_properties
-from ipsuite.abc import NodeWithCalculator
+from ipsuite.interfaces import NodeWithCalculator
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 
