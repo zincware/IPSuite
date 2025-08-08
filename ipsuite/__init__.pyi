@@ -28,6 +28,18 @@ from .analysis import (
     StressHistogram,
 )
 
+# Atom Selection
+from .atom_selection import (
+    ElementTypeSelection,
+    FixAtomsConstraint,
+    FixBondLengthConstraint,
+    FixBondLengthsConstraint,
+    LayerSelection,
+    RadialSelection,
+    SurfaceSelection,
+    ZPositionSelection,
+)
+
 # Base imports
 from .base import Flatten
 
@@ -56,6 +68,8 @@ from .calculators import (
 
 # Configuration Generation
 from .configuration_generation import (
+    AddAdsorbate,
+    BuildSurface,
     MultiPackmol,
     Packmol,
     Smiles2Atoms,
@@ -110,6 +124,9 @@ from .dynamics import (
 # Geometry
 from .geometry import BarycenterMapping
 
+# Interfaces
+from .interfaces import AtomConstraint, AtomSelector
+
 # Models
 from .models import (
     GAP,
@@ -151,8 +168,10 @@ __all__ = [
     "ThresholdSelection",
     "FilterOutlier",
     # Configuration Generation
-    "Packmol",
+    "AddAdsorbate",
+    "BuildSurface",
     "MultiPackmol",
+    "Packmol",
     "Smiles2Atoms",
     "Smiles2Conformers",
     "Smiles2Gromacs",
@@ -232,4 +251,16 @@ __all__ = [
     # Calc
     "ApplyCalculator",
     "WrapModifier",
+    # Interfaces
+    "AtomConstraint",
+    "AtomSelector",
+    # Atom Selection
+    "ElementTypeSelection",
+    "FixAtomsConstraint",
+    "FixBondLengthConstraint",
+    "FixBondLengthsConstraint",
+    "LayerSelection",
+    "RadialSelection",
+    "SurfaceSelection",
+    "ZPositionSelection",
 ]
