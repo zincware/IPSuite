@@ -130,4 +130,4 @@ __all__ = [
 
 def interfaces() -> dict[str, list[str]]:
     """Return a dictionary of available interfaces."""
-    return {"ipsuite.interfaces": __all__}
+    return {"ipsuite": __all__}

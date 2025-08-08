@@ -14,7 +14,7 @@ dependencies = [
     "seaborn>=0.13.2",
     "uncertainty-toolbox>=0.1.1",
     "znh5md>=0.4.8",
-    "zntrack>=0.8.7",
+    "zntrack>=0.8.9",
 ]
 
 
