@@ -1,5 +1,8 @@
 """Module for selecting atoms within individual ASE Atoms objects."""
 
+from .constraints import (
+    FixAtomsConstraint,
+)
 from .selections import (
     ElementTypeSelection,
     LayerSelection,
@@ -7,13 +10,10 @@ from .selections import (
     SurfaceSelection,
     ZPositionSelection,
 )
-from .constraints import (
-    FixAtomsConstraint,
-)
 
 __all__ = [
     "ElementTypeSelection",
-    "LayerSelection", 
+    "LayerSelection",
     "RadialSelection",
     "SurfaceSelection",
     "ZPositionSelection",

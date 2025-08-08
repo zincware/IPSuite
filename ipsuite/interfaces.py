@@ -1,10 +1,10 @@
 import pathlib
-from typing import Any, Dict, List, Protocol, TypeVar, Union
+from typing import Dict, List, Protocol, TypeVar, Union
 
 import ase
 from ase.calculators.calculator import Calculator
-from ase.optimize.optimize import Dynamics
 from ase.constraints import FixConstraint
+from ase.optimize.optimize import Dynamics
 
 T = TypeVar("T", covariant=True)
 
@@ -64,19 +64,19 @@ class ProcessAtoms(Protocol):
 
 class AtomSelector(Protocol):
     """Protocol for selecting atoms within a single ASE Atoms object.
-    
+
     This interface defines the contract for selecting atoms based on various
     criteria within an individual frame/structure.
     """
 
     def select(self, atoms: ase.Atoms) -> list[int]:
         """Select atoms based on the implemented criteria.
-        
+
         Parameters
         ----------
         atoms : ase.Atoms
             The atomic structure to select from.
-            
+
         Returns
         -------
         list[int]
@@ -87,19 +87,19 @@ class AtomSelector(Protocol):
 
 class AtomConstraint(Protocol):
     """Protocol for applying constraints to selected atoms.
-    
+
     This interface defines how to apply ASE constraints to atoms selected
     by AtomSelector instances.
     """
 
     def get_constraint(self, atoms: ase.Atoms) -> FixConstraint:
         """Get the ASE constraint object for the selected atoms.
-        
+
         Parameters
         ----------
         atoms : ase.Atoms
             The atomic structure to apply constraints to.
-            
+
         Returns
         -------
         FixConstraint

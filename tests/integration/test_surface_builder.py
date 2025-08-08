@@ -81,10 +81,10 @@ def test_BuildSurface_with_mace_relaxation(proj_path):
             layers=3,
             vacuum=12.0
         )
-        
+
         # Set up MACE-MP model
         model = ips.MACEMPModel()
-        
+
         # Relax the surface using ASEGeoOpt
         relaxed_surface = ips.ASEGeoOpt(
             data=surface.frames,
@@ -101,11 +101,11 @@ def test_BuildSurface_with_mace_relaxation(proj_path):
     initial_atoms = surface.frames[0]
     assert all(symbol == "Cu" for symbol in initial_atoms.get_chemical_symbols())
     assert len(initial_atoms) > 0
-    
-    # Verify relaxation trajectory was generated  
+
+    # Verify relaxation trajectory was generated
     trajectory = relaxed_surface.frames
     assert len(trajectory) > 0
-    
+
     # Check that final structure still has correct composition
     final_atoms = trajectory[-1]
     assert all(symbol == "Cu" for symbol in final_atoms.get_chemical_symbols())
@@ -122,10 +122,10 @@ def test_AddAdsorbate_basic(proj_path):
             layers=4,
             vacuum=15.0
         )
-        
+
         # Create adsorbate molecules
         water = ips.Smiles2Atoms(smiles="O")  # H2O
-        
+
         # Add adsorbate to surface (nested structure)
         adsorbed_system = ips.AddAdsorbate(
             slab=surface.frames,
@@ -139,20 +139,20 @@ def test_AddAdsorbate_basic(proj_path):
     # Verify surface was created
     surface_atoms = surface.frames[0]
     assert all(symbol == "Pt" for symbol in surface_atoms.get_chemical_symbols())
-    
+
     # Verify adsorbate was added
     final_system = adsorbed_system.frames[0]
     symbols = final_system.get_chemical_symbols()
-    
+
     # Should have Pt atoms + water atoms
     pt_count = symbols.count("Pt")
-    o_count = symbols.count("O") 
+    o_count = symbols.count("O")
     h_count = symbols.count("H")
-    
+
     assert pt_count > 0  # Original surface atoms
     assert o_count == 1  # One oxygen from water
     assert h_count == 2  # Two hydrogens from water
-    
+
     # Total atoms should be surface + water
     assert len(final_system) == len(surface_atoms) + 3  # Pt atoms + H2O
 
@@ -167,15 +167,15 @@ def test_AddAdsorbate_multiple_adsorbates(proj_path):
             layers=3,
             vacuum=12.0
         )
-        
+
         # Create different adsorbate molecules
         co = ips.Smiles2Atoms(smiles="[C-]#[O+]")  # CO
         h2 = ips.Smiles2Atoms(smiles="[H][H]")     # H2
-        
+
         # Add multiple adsorbates with different heights and exclusion radii
         adsorbed_system = ips.AddAdsorbate(
             slab=surface.frames,
-            data=[co.frames, h2.frames],  # Nested structure 
+            data=[co.frames, h2.frames],  # Nested structure
             height=[1.5, 3.0],
             excluded_radius=[2.5, 2.0]
         )
@@ -185,29 +185,29 @@ def test_AddAdsorbate_multiple_adsorbates(proj_path):
     # Verify multiple adsorbates were added
     final_system = adsorbed_system.frames[0]
     symbols = final_system.get_chemical_symbols()
-    
+
     cu_count = symbols.count("Cu")
     c_count = symbols.count("C")
     o_count = symbols.count("O")
     h_count = symbols.count("H")
-    
+
     assert cu_count > 0   # Original surface
     assert c_count == 1   # One carbon from CO
-    assert o_count == 1   # One oxygen from CO  
+    assert o_count == 1   # One oxygen from CO
     assert h_count == 2   # Two hydrogens from H2
-    
+
     # Verify positioning: CO should be closer to surface than H2 (1.5 vs 3.0 Å)
     positions = final_system.get_positions()
     z_coords = positions[:, 2]
-    
+
     # Find CO and H2 z-coordinates (approximate check)
-    surface_top_z = np.max([z for i, z in enumerate(z_coords) 
+    surface_top_z = np.max([z for i, z in enumerate(z_coords)
                            if symbols[i] == "Cu"])
-    
+
     # Both adsorbates should be above the surface
     co_z = z_coords[symbols.index("C")]  # CO carbon position
     h2_z = np.mean([z_coords[i] for i, s in enumerate(symbols) if s == "H"])  # H2 average
-    
+
     assert co_z > surface_top_z
     assert h2_z > surface_top_z
     assert co_z < h2_z  # CO should be closer to surface
@@ -224,12 +224,12 @@ def test_AddAdsorbate_collision_detection_error(proj_path):
             vacuum=10.0,
             lattice_constant=3.0  # Small lattice for small surface
         )
-        
+
         # Try to place too many large adsorbates
         water1 = ips.Smiles2Atoms(smiles="O")
-        water2 = ips.Smiles2Atoms(smiles="O") 
+        water2 = ips.Smiles2Atoms(smiles="O")
         water3 = ips.Smiles2Atoms(smiles="O")
-        
+
         # Very large exclusion radii that should cause collision
         adsorbed_system = ips.AddAdsorbate(
             slab=surface.frames,
@@ -253,11 +253,11 @@ def test_AddAdsorbate_data_index_functionality(proj_path):
             layers=3,
             vacuum=12.0
         )
-        
+
         # Create multiple conformers of the same molecule
         water_conformers = ips.Smiles2Conformers(smiles="O", numConfs=5)
         co_molecule = ips.Smiles2Atoms(smiles="[C-]#[O+]")
-        
+
         # Test with data_index=None (default, uses -1 index)
         adsorbed_system_default = ips.AddAdsorbate(
             slab=surface.frames,
@@ -266,7 +266,7 @@ def test_AddAdsorbate_data_index_functionality(proj_path):
             height=[2.0, 2.5],
             excluded_radius=[2.0, 2.0]
         )
-        
+
         # Test with specific data_index
         adsorbed_system_custom = ips.AddAdsorbate(
             slab=surface.frames,
@@ -281,25 +281,25 @@ def test_AddAdsorbate_data_index_functionality(proj_path):
     # Both should have same atom counts but potentially different structures
     system_default = adsorbed_system_default.frames[0]
     system_custom = adsorbed_system_custom.frames[0]
-    
+
     # Same composition in both cases
     assert len(system_default) == len(system_custom)
-    
+
     symbols_default = system_default.get_chemical_symbols()
     symbols_custom = system_custom.get_chemical_symbols()
-    
+
     # Should have same element counts
     for element in set(symbols_default + symbols_custom):
         assert symbols_default.count(element) == symbols_custom.count(element)
-    
+
     # Should have Pt + water + CO
     pt_count = symbols_default.count("Pt")
-    h_count = symbols_default.count("H") 
+    h_count = symbols_default.count("H")
     o_count = symbols_default.count("O")
     c_count = symbols_default.count("C")
-    
+
     assert pt_count > 0  # Surface atoms
-    assert h_count == 2  # Water hydrogens  
+    assert h_count == 2  # Water hydrogens
     assert o_count == 2  # Water oxygen + CO oxygen
     assert c_count == 1  # CO carbon
 
@@ -314,20 +314,20 @@ def test_AddAdsorbate_slab_idx_functionality(proj_path):
             layers=3,
             vacuum=10.0
         )
-        
+
         surface2 = ips.BuildSurface(
-            lattice="Pt", 
+            lattice="Pt",
             indices=(1, 0, 0),
             layers=4,
             vacuum=12.0
         )
-        
+
         # Combine surfaces into a list
         combined_surfaces = surface1.frames + surface2.frames
-        
+
         # Create adsorbate
         water = ips.Smiles2Atoms(smiles="O")
-        
+
         # Test with slab_idx=0 (first slab - Au)
         adsorbed_au = ips.AddAdsorbate(
             slab=combined_surfaces,
@@ -336,7 +336,7 @@ def test_AddAdsorbate_slab_idx_functionality(proj_path):
             height=[2.0],
             excluded_radius=[2.0]
         )
-        
+
         # Test with slab_idx=-1 (default, last slab - Pt)
         adsorbed_pt = ips.AddAdsorbate(
             slab=combined_surfaces,
@@ -351,20 +351,20 @@ def test_AddAdsorbate_slab_idx_functionality(proj_path):
     # Check that correct surfaces were used
     au_system = adsorbed_au.frames[0]
     pt_system = adsorbed_pt.frames[0]
-    
+
     au_symbols = au_system.get_chemical_symbols()
     pt_symbols = pt_system.get_chemical_symbols()
-    
+
     # Au system should have Au atoms
     assert "Au" in au_symbols
     assert "Pt" not in au_symbols
-    
-    # Pt system should have Pt atoms  
+
+    # Pt system should have Pt atoms
     assert "Pt" in pt_symbols
     assert "Au" not in pt_symbols
-    
+
     # Both should have water
     assert au_symbols.count("H") == 2
     assert au_symbols.count("O") == 1
-    assert pt_symbols.count("H") == 2  
+    assert pt_symbols.count("H") == 2
     assert pt_symbols.count("O") == 1

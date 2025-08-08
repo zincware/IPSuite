@@ -1,7 +1,6 @@
 """Constraint classes that use atom selections."""
 
 import dataclasses
-import typing as t
 
 import ase
 from ase.constraints import FixAtoms, FixBondLength, FixBondLengths
@@ -23,12 +22,12 @@ class FixAtomsConstraint(AtomConstraint):
 
     def get_constraint(self, atoms: ase.Atoms) -> FixAtoms:
         """Get the FixAtoms constraint for the selected atoms.
-        
+
         Parameters
         ----------
         atoms : ase.Atoms
             Atomic structure to apply constraint to.
-            
+
         Returns
         -------
         FixAtoms
@@ -48,7 +47,7 @@ class FixBondLengthConstraint(AtomConstraint):
     ----------
     atom1_selection : AtomSelector
         Selection for the first atom. Must select exactly one atom.
-    atom2_selection : AtomSelector  
+    atom2_selection : AtomSelector
         Selection for the second atom. Must select exactly one atom.
     """
 
@@ -57,17 +56,17 @@ class FixBondLengthConstraint(AtomConstraint):
 
     def get_constraint(self, atoms: ase.Atoms) -> FixBondLength:
         """Get the FixBondLength constraint for the selected atom pair.
-        
+
         Parameters
         ----------
         atoms : ase.Atoms
             Atomic structure to apply constraint to.
-            
+
         Returns
         -------
         FixBondLength
             ASE constraint that fixes the bond length between selected atoms.
-            
+
         Raises
         ------
         ValueError
@@ -75,12 +74,16 @@ class FixBondLengthConstraint(AtomConstraint):
         """
         indices1 = self.atom1_selection.select(atoms)
         indices2 = self.atom2_selection.select(atoms)
-        
+
         if len(indices1) != 1:
-            raise ValueError(f"atom1_selection must select exactly 1 atom, got {len(indices1)}")
+            raise ValueError(
+                f"atom1_selection must select exactly 1 atom, got {len(indices1)}"
+            )
         if len(indices2) != 1:
-            raise ValueError(f"atom2_selection must select exactly 1 atom, got {len(indices2)}")
-        
+            raise ValueError(
+                f"atom2_selection must select exactly 1 atom, got {len(indices2)}"
+            )
+
         return FixBondLength(indices1[0], indices2[0])
 
 
@@ -99,36 +102,40 @@ class FixBondLengthsConstraint(AtomConstraint):
 
     def get_constraint(self, atoms: ase.Atoms) -> FixBondLengths:
         """Get the FixBondLengths constraint for multiple selected atom pairs.
-        
+
         Parameters
         ----------
         atoms : ase.Atoms
             Atomic structure to apply constraint to.
-            
+
         Returns
         -------
         FixBondLengths
             ASE constraint that fixes bond lengths between selected atom pairs.
-            
+
         Raises
         ------
         ValueError
             If any selection doesn't select exactly one atom.
         """
         pairs = []
-        
+
         for i, (sel1, sel2) in enumerate(self.bond_pairs):
             indices1 = sel1.select(atoms)
             indices2 = sel2.select(atoms)
-            
+
             if len(indices1) != 1:
-                raise ValueError(f"Bond pair {i}, atom1 selection must select exactly 1 atom, got {len(indices1)}")
+                raise ValueError(
+                    f"Bond pair {i}, atom1 selection must select exactly 1 atom, got {len(indices1)}"
+                )
             if len(indices2) != 1:
-                raise ValueError(f"Bond pair {i}, atom2 selection must select exactly 1 atom, got {len(indices2)}")
-            
+                raise ValueError(
+                    f"Bond pair {i}, atom2 selection must select exactly 1 atom, got {len(indices2)}"
+                )
+
             pairs.append([indices1[0], indices2[0]])
-        
+
         if not pairs:
             raise ValueError("No bond pairs provided for FixBondLengths constraint")
-            
+
         return FixBondLengths(pairs)
