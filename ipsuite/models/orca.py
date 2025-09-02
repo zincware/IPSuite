@@ -31,19 +31,19 @@ class ORCAModel:
 
     Examples
     --------
-    >>> import ipsuite as ips
-    >>> project = ips.Project()
-    >>> orca = ips.ORCAModel(
-    ...     simpleinput="B3LYP def2-TZVP enGrad TightSCF",
-    ...     blocks="%pal nprocs 2 end",
-    ... )
-    >>> with project:
-    ...     water = ips.Smiles2Conformers(smiles="O", numConfs=100)
-    ...     ips.ApplyCalculator(
-    ...         data=water.frames,
-    ...         model=orca,
-    ...     )
-    >>> project.build()
+    >> import ipsuite as ips
+    >> project = ips.Project()
+    >> orca = ips.ORCAModel(
+    ..     simpleinput="B3LYP def2-TZVP enGrad TightSCF",
+    ..     blocks="%pal nprocs 2 end",
+    .. )
+    >> with project:
+    ..     water = ips.Smiles2Conformers(smiles="O", numConfs=100)
+    ..     ips.ApplyCalculator(
+    ..         data=water.frames,
+    ..         model=orca,
+    ..     )
+    >> project.build()
 
     .. [1] https://orca-manual.mpi-muelheim.mpg.de/index.html
     """

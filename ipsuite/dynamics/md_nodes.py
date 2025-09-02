@@ -131,12 +131,10 @@ class ASEMD(zntrack.Node):
 
     Examples
     --------
-    >>> import ipsuite as ips
-    >>> project = ips.Project():
     >>> thermostat = ips.LangevinThermostat(temperature=300, friction=0.05, time_step=0.5)
     >>> model = ips.MACEMPModel()
     >>> with project:
-    ...     data = ips.AddData(file="seed.xyz")
+    ...     data = ips.AddData(file="ethanol.xyz")
     ...     md = ips.ASEMD(
     ...         model=model,
     ...         data=data.frames,
