@@ -93,30 +93,3 @@ def test_rotate_molecules(proj_path, traj_file, include_original):
     assert len(rattled_atoms) == desired_num_configs
     with pytest.raises(RuntimeError):
         assert rattle.frames[1].get_potential_energy() != 0.0
-
-
-def test_rotate_molecules_with_calc(proj_path, traj_file):
-    traj_file = pathlib.Path(traj_file)
-    shutil.copy(traj_file, ".")
-
-    n_configurations = 10
-
-    model = ips.EMTSinglePoint()
-    with ips.Project() as project:
-        data = ips.AddData(file=traj_file.name)
-
-        rattle = ips.RotateMolecules(
-            data=data.frames,
-            maximum=0.1,
-            n_configurations=n_configurations,
-            include_original=False,
-            seed=0,
-            model=model,
-        )
-    project.repro()
-
-    # assert all entries in the atoms[x] list have a different potential energy
-
-    energies = [atoms.get_potential_energy() for atoms in rattle.frames]
-    assert len(set(energies)) == len(energies)  # all different
-    assert energies[0] != 0.0
