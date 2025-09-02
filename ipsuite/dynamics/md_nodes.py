@@ -82,6 +82,70 @@ def build_info_panel(metrics: dict):
 
 
 class ASEMD(zntrack.Node):
+    """
+    Molecular Dynamics simulation node using ASE.
+
+    Parameters
+    ----------
+    model : NodeWithCalculator
+        The computational model/calculator used for force and energy calculations.
+    data : list[ase.Atoms]
+        List of atomic structures to simulate.
+    data_ids : int or list[int], default -1
+        Indices of structures from data to simulate. If -1, simulates all structures.
+    checks : list, optional
+        List of simulation checks/monitors to apply during the simulation.
+    constraints : list, optional
+        List of constraints to apply to the atomic system.
+    modifiers : list, optional
+        List of modifiers to dynamically change simulation parameters.
+    thermostat : NodeWithThermostat
+        Thermostat object for temperature control during simulation.
+    steps : int
+        Total number of MD steps to perform.
+    sampling_rate : int, default 1
+        Frequency of data sampling (every N steps).
+    repeat : tuple[int, int, int], default (1, 1, 1)
+        Cell repetition factors in x, y, z directions.
+    dump_rate : int, default 1000
+        Frequency of writing trajectory data to disk.
+    use_momenta : bool, default False
+        Whether to use existing atomic momenta or initialize with Maxwell-Boltzmann.
+    seed : int, default 42
+        Random seed for reproducible simulations.
+
+    Attributes
+    ----------
+    metrics : Path
+        Output path for simulation metrics (CSV files).
+    frames_path : Path
+        Output path for trajectory frames (HDF5 files).
+    model_outs : Path
+        Output path for model-specific output files.
+    laufband_path : Path
+        Path to the job queue database file.
+    frames : list[ase.Atoms]
+        Property that returns all trajectory frames from saved files.
+    structures : list[list[ase.Atoms]]
+        Property that returns structures organized by simulation run.
+
+    Examples
+    --------
+    >>> import ipsuite as ips
+    >>> project = ips.Project():
+    >>> thermostat = ips.LangevinThermostat(temperature=300, friction=0.05, time_step=0.5)
+    >>> model = ips.MACEMPModel()
+    >>> with project:
+    ...     data = ips.AddData(file="seed.xyz")
+    ...     md = ips.ASEMD(
+    ...         model=model,
+    ...         data=data.frames,
+    ...         thermostat=thermostat,
+    ...         steps=1000,
+    ...     )
+    >>> project.build()
+    """
+
     model: NodeWithCalculator = zntrack.deps()
     data: list[ase.Atoms] = zntrack.deps()
     data_ids: int | list[int] = zntrack.params(-1)
