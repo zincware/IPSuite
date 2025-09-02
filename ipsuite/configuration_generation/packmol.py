@@ -108,7 +108,7 @@ class MultiPackmol(Packmol):
     ...         data=[bf4.frames, bmim.frames],
     ...         count=[1, 1], density=1210, n_configurations=10
     ...     )
-    ...     box = ips.Packmol(
+    ...     box = ips.MultiPackmol(
     ...         data=[molecules.frames], count=[10], density=1210, n_configurations=1
     ...     )
     >>> project.build()
