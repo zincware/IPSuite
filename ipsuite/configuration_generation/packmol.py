@@ -95,7 +95,7 @@ class MultiPackmol(Packmol):
     Example
     -------
     >>> import ipsuite as ips
-    >>> project = ips.Project():
+    >>> project = ips.Project()
     >>> with project:
     ...     bf4 = ips.Smiles2Conformers(
     ...         smiles='[B-](F)(F)(F)F', numConfs=10
