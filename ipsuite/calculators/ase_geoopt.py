@@ -9,8 +9,8 @@ import znh5md
 import zntrack
 
 from ipsuite import base
-from ipsuite.utils.ase_sim import freeze_copy_atoms
 from ipsuite.interfaces import NodeWithCalculator
+from ipsuite.utils.ase_sim import freeze_copy_atoms
 
 log = logging.getLogger(__name__)
 
