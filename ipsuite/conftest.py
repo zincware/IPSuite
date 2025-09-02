@@ -3,10 +3,10 @@
 import os
 import pathlib
 import subprocess
-import rdkit2ase
-import ase.io
 
+import ase.io
 import pytest
+import rdkit2ase
 
 import ipsuite as ips
 
