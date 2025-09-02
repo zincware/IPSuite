@@ -105,7 +105,7 @@ class ASEMD(zntrack.Node):
         Total number of MD steps to perform.
     sampling_rate : int, default 1
         Frequency of data sampling (every N steps).
-    repeat : tuple[bool, bool, bool], default (1, 1, 1)
+    repeat : tuple[int, int, int], default (1, 1, 1)
         Cell repetition factors in x, y, z directions.
     dump_rate : int, default 1000
         Frequency of writing trajectory data to disk.
