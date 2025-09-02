@@ -5,10 +5,12 @@ import pathlib
 import typing
 
 import ase.io
+import h5py
 import tqdm
+import znh5md
 import zntrack
 
-from ipsuite import base, fields
+from ipsuite import base
 
 log = logging.getLogger(__name__)
 
@@ -65,9 +67,9 @@ class AddData(base.IPSNode):
     Loaded 50 configurations.
     """
 
-    frames: typing.List[ase.Atoms] = fields.Atoms()
     file: typing.Union[str, pathlib.Path] = zntrack.deps_path()
     lines_to_read: int = zntrack.params(None)
+    frames_path: pathlib.Path = zntrack.outs_path(zntrack.nwd / "frames.h5")
 
     def __post_init__(self):
         if not pathlib.Path(pathlib.Path(self.file).name + ".dvc").exists():
@@ -80,7 +82,15 @@ class AddData(base.IPSNode):
         """ZnTrack run method."""
         if self.lines_to_read == -1:  # backwards compatibility
             self.lines_to_read = None
-        self.frames = load_data(file=self.file, lines_to_read=self.lines_to_read)
+        frames = load_data(file=self.file, lines_to_read=self.lines_to_read)
+        io = znh5md.IO(self.frames_path)
+        io.extend(frames)
+
+    @property
+    def frames(self) -> typing.List[ase.Atoms]:
+        with self.state.fs.open(self.frames_path, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
 
     def __iter__(self) -> ase.Atoms:
         """Get iterable object."""
