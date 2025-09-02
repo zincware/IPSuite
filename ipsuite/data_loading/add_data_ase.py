@@ -42,13 +42,27 @@ def load_data(
 
 
 class AddData(base.IPSNode):
-    """Add data using ASE.
+    """Load atomic configurations from files using ASE.
+
+    Parameters
+    ----------
+    file : str or Path
+        Path to the file containing atomic configurations.
+    lines_to_read : int, optional
+        Maximum number of configurations to read. If None, reads all.
 
     Attributes
     ----------
-    use_dvc: bool
-        Don't use the filename as a parameter but rather use dvc add <file>
-        to track the file with DVC.
+    frames : List[ase.Atoms]
+        List of loaded atomic configurations.
+
+    Examples
+    --------
+    >>> with project:
+    ...     data = ips.AddData(file="ethanol.xyz", lines_to_read=50)
+    >>> project.repro()
+    >>> print(f"Loaded {len(data.frames)} configurations.")
+    Loaded 50 configurations.
     """
 
     frames: typing.List[ase.Atoms] = fields.Atoms()

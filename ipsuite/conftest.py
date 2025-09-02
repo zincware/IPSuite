@@ -21,7 +21,7 @@ def project(tmp_path: pathlib.Path):
     original_cwd = pathlib.Path.cwd()
     os.chdir(tmp_path)
 
-    ethanol = rdkit2ase.smiles2conformers("CCO", numConfs=1)
+    ethanol = rdkit2ase.smiles2conformers("CCO", numConfs=100)
     ase.io.write("ethanol.xyz", ethanol)
 
     # Setup: Initialize git and DVC
