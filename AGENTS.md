@@ -53,3 +53,6 @@ Examples
 >>> print(f"Generated {len(frames)} conformers.")
 Generated 5 conformers.
 ```
+
+### Workflow Standards
+- All connections between nodes must follow full type annotations.
