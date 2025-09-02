@@ -50,12 +50,14 @@ class IndexSelection(ConfigurationSelection):
     step: int | None = zntrack.params(None)
 
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
-        """Select Atoms randomly."""
-        if self.indices:
-            if isinstance(self.indices, typing.Iterable):
-                return self.indices
-            else:
+        """Select Atoms by explicit indices or slice parameters."""
+        if self.indices is not None:
+            if not isinstance(self.indices, typing.Iterable):
                 raise ValueError("indices must be an iterable of integers")
-        else:
-            idx_slice = slice(self.start, self.stop, self.step)
-            return list(range(len(atoms_lst)))[idx_slice]
+            if any(not isinstance(i, int) for i in self.indices):
+                raise ValueError("indices must be integers")
+            if any(v is not None for v in (self.start, self.stop, self.step)):
+                raise ValueError("Provide either 'indices' or slice parameters, not both")
+            return list(self.indices)
+        idx_slice = slice(self.start, self.stop, self.step)
+        return list(range(len(atoms_lst)))[idx_slice]

@@ -42,5 +42,4 @@ class SplitSelection(ConfigurationSelection):
     split: float = zntrack.params()
 
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
-        """Select Atoms randomly."""
         return np.arange(len(atoms_lst))[: int(len(atoms_lst) * self.split)].tolist()

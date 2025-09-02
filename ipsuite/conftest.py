@@ -38,7 +38,7 @@ def project(tmp_path: pathlib.Path):
         os.chdir(original_cwd)
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def doctest_namespace(project):
     """
     Makes the 'project' fixture and the 'ips' module

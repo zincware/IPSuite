@@ -45,7 +45,6 @@ class RandomSelection(ConfigurationSelection):
     seed: int = zntrack.params(1234)
 
     def select_atoms(self, atoms_lst: typing.List[ase.Atoms]) -> typing.List[int]:
-        """Select Atoms randomly."""
         np.random.seed(self.seed)
         return np.random.choice(
             len(atoms_lst), size=self.n_configurations, replace=False
