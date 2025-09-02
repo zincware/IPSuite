@@ -24,14 +24,15 @@ class LangevinThermostat:
     Attributes
     ----------
     time_step: float
-        time step of simulation
+        The simulation time step should be adjust for the system.
+        To properly resolve C-H vibrations, a time step of 0.5 fs is recommended.
+        For systems without significant C-H vibrations, larger time steps might be used.
 
     temperature: float
-        temperature in K to simulate at
+        temperature in Kelvin to simulate at
 
     friction: float
         friction of the Langevin simulator
-
     """
 
     time_step: float

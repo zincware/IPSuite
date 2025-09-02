@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 
 
 class Packmol(base.IPSNode):
-    """
+    """Create a box with packmol.
 
     Attributes
     ----------
@@ -36,6 +36,10 @@ class Packmol(base.IPSNode):
         If True the periodic boundary conditions are set for the generated structure and
         the box used by packmol is scaled by the tolerance, to avoid overlapping atoms
         with periodic boundary conditions.
+
+    Notes
+    -----
+    Output structures should be relaxed before further use.
     """
 
     data: list[list[ase.Atoms]] = zntrack.deps()
@@ -76,30 +80,37 @@ class MultiPackmol(Packmol):
     This Node generates multiple configurations with packmol.
     This is best used in conjunction with Smiles2Conformers:
 
-    Example
-    -------
-    .. testsetup::
-        >>> tmp_path = utils.docs.create_dvc_git_env_for_doctest()
-
-    >>> import ipsuite as ips
-    >>> with ips.Project() as project:
-    ...     water = ips.Smiles2Conformers(
-    ...         smiles='O', numConfs=100
-    ...         )
-    ...     boxes = ips.MultiPackmol(
-    ...         data=[water.frames], count=[10], density=997, n_configurations=10
-    ...         )
-    >>> project.repro()
-
-    .. testcleanup::
-        >>> tmp_path.cleanup()
-
     Attributes
     ----------
     n_configurations : int
         Number of configurations to create.
     seed : int
         Seed for the random number generator.
+
+    Notes
+    -----
+    Output structures should be relaxed before further use.
+
+
+    Example
+    -------
+    >>> import ipsuite as ips
+    >>> project = ips.Project():
+    >>> with project:
+    ...     bf4 = ips.Smiles2Conformers(
+    ...         smiles='[B-](F)(F)(F)F', numConfs=10
+    ...     )
+    ...     bmim = ips.Smiles2Conformers(
+    ...         smiles='CCCCN1C=C[N+](=C1)C',
+    ...         numConfs=10
+    ...     )
+    ...     molecules = ips.MultiPackmol(
+    ...         data=[bf4.frames, bmim.frames], count=[1, 1], density=1210, n_configurations=10
+    ...     )
+    ...     box = ips.Packmol(
+    ...         data=[molecules.frames], count=[10], density=1210, n_configurations=1
+    ...     )
+    >>> project.build()
     """
 
     n_configurations: int = zntrack.params()

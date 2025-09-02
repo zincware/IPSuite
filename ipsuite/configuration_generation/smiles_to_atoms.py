@@ -6,10 +6,11 @@ import rdkit2ase
 import znh5md
 import zntrack
 from rdkit.Chem import Draw
+import typing_extensions as tyex
 
 from ipsuite import base
 
-
+@tyex.deprecated("Use `ipsuite.Smiles2Conformers` instead.")
 class Smiles2Atoms(base.IPSNode):
     smiles: str = zntrack.params()
     seed: int = zntrack.params(1234)
@@ -39,6 +40,30 @@ class Smiles2Atoms(base.IPSNode):
 
 
 class Smiles2Conformers(base.IPSNode):
+    """Generate molecular conformers from a SMILES string.
+
+    Attributes
+    ----------
+    smiles : str
+        The SMILES string representing the molecule.
+    numConfs : int
+        The number of conformers to generate.
+    seed : int, optional
+        Random seed for conformer generation (default is 42).
+    maxAttempts : int, optional
+        Maximum number of attempts to generate conformers (default is 1000).
+
+    Methods
+    -------
+    frames : list of ase.Atoms
+        Property to load and return the generated conformers as a list of ASE Atoms objects.
+    
+    Notes
+    -----
+    Instead of creating one composite smile like `[B-](F)(F)(F)F.CCCCN1C=C[N+](=C1)C`
+    create two molecules and use `MultiPackmol` to generate the single molecule.
+    This will avoid overlapping structures.
+    """
     smiles: str = zntrack.params()
     numConfs: int = zntrack.params()
     seed: int = zntrack.params(42)
