@@ -7,7 +7,6 @@ import znh5md
 import zntrack
 from laufband import Laufband
 
-# from ase.calculators.calculator import all_properties
 from ipsuite.interfaces import NodeWithCalculator
 from ipsuite.utils.ase_sim import freeze_copy_atoms
 
@@ -54,6 +53,16 @@ class ApplyCalculator(zntrack.Node):
 
         # optional, can be used to identify the job
         export LAUFBAND_IDENTIFIER=${SLURM_JOB_ID}
+
+    Examples
+    --------
+    >>> model = ips.MACEMPModel()
+    >>> with project:
+    ...     data = ips.AddData(file="ethanol.xyz")
+    ...     calc_results = ips.ApplyCalculator(data=data.frames, model=model)
+    >>> project.repro()
+    >>> print(f"Calculated properties for {len(calc_results.frames)} configurations")
+    Calculated properties for 100 configurations
     """
 
     data: list[ase.Atoms] = zntrack.deps()

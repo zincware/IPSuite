@@ -19,19 +19,19 @@ class TBLiteModel:
 
     Examples
     --------
-    >>> import ipsuite as ips
-    >>> project = ips.Project()
-    >>> tblite = ips.TBLiteModel(method="GFN2-xTB")
-    >>> with project:
-    ...     water = ips.Smiles2Conformers(smiles="O", numConfs=100)
-    ...     box = ips.MultiPackmol(
-    ...         data=[water.frames], count=[16], density=1000, n_configurations=11,
-    ...     )
-    ...     ips.ApplyCalculator(
-    ...         data=box.frames,
-    ...         model=tblite,
-    ...     )
-    >>> project.build()
+    >> import ipsuite as ips
+    >> project = ips.Project()
+    >> tblite = ips.TBLiteModel(method="GFN2-xTB")
+    >> with project:
+    ..     water = ips.Smiles2Conformers(smiles="O", numConfs=100)
+    ..     box = ips.MultiPackmol(
+    ..         data=[water.frames], count=[16], density=1000, n_configurations=11,
+    ..     )
+    ..     ips.ApplyCalculator(
+    ..         data=box.frames,
+    ..         model=tblite,
+    ..     )
+    >> project.build()
     """
 
     method: str = "GFN2-xTB"

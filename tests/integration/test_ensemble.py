@@ -3,7 +3,6 @@ import os
 import ase
 import numpy as np
 import zntrack
-
 import ipsuite as ips
 
 os.environ["OPENBLAS_NUM_THREADS"] = "1"

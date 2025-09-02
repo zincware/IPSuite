@@ -2,7 +2,7 @@ import pytest
 
 import ipsuite as ips
 
-
+@pytest.mark.skip(reason="dagshub is no longer public")
 def test_ips_bin_property(data_repo, traj_file):
     """Test the BarycenterMapping class."""
     # data = ips.AddData.from_rev(name="BMIM_BF4_363_15K")

@@ -114,3 +114,6 @@ ipsuite = 'ipsuite.nodes:nodes'
 
 [project.entry-points.'zntrack.interfaces']
 ipsuite = 'ipsuite.interfaces:interfaces'
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules"

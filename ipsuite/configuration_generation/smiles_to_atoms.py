@@ -64,6 +64,15 @@ class Smiles2Conformers(base.IPSNode):
     Instead of creating one composite smile like `[B-](F)(F)(F)F.CCCCN1C=C[N+](=C1)C`
     create two molecules and use `MultiPackmol` to generate the single molecule.
     This will avoid overlapping structures.
+
+    Examples
+    --------
+    >>> with project:
+    ...     methanol_conformers = ips.Smiles2Conformers(smiles="CO", numConfs=5)
+    >>> project.repro()
+    >>> frames = methanol_conformers.frames
+    >>> print(f"Generated {len(frames)} conformers.")
+    Generated 5 conformers.
     """
 
     smiles: str = zntrack.params()

@@ -10,12 +10,33 @@ from ipsuite.configuration_selection import ConfigurationSelection
 
 
 class UniformArangeSelection(ConfigurationSelection):
-    """Class to perform a uniform arange action on a given atoms object list.
+    """Select configurations with uniform spacing using a step size.
+
+    Parameters
+    ----------
+    data : list[ase.Atoms]
+        The atomic configurations to select from.
+    step : int
+        Step size for selection. Every nth configuration will be selected.
 
     Attributes
     ----------
-    step: int
-        setting the step, every nth (step) object will be taken
+    selected_ids : list[int]
+        Indices of selected configurations.
+    frames : list[ase.Atoms]
+        The selected atomic configurations.
+    excluded_frames : list[ase.Atoms]
+        The atomic configurations that were not selected.
+
+    Examples
+    --------
+    >>> with project:
+    ...     data = ips.AddData(file="ethanol.xyz")  # contains 100 frames
+    ...     selector = ips.UniformArangeSelection(data=data.frames, step=10)
+    >>> project.repro()
+    >>> print(f"Selected {len(selector.selected_ids)} configurations with IDs: "
+    ...       f"{selector.selected_ids}")
+    Selected 10 configurations with IDs: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
     """
 
     step: int = zntrack.params()

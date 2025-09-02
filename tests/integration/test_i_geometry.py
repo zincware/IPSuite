@@ -7,7 +7,7 @@ from ase import Atoms
 
 import ipsuite as ips
 
-
+@pytest.mark.skip(reason="dagshub is no longer public")
 def test_ips_BarycenterMapping(data_repo):
     """Test the BarycenterMapping class."""
     data = ips.AddData.from_rev(

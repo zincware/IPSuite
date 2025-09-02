@@ -1,10 +1,11 @@
 import os
+import pytest
 
 import ipsuite as ips
 
 os.environ["OPENBLAS_NUM_THREADS"] = "1"
 
-
+@pytest.mark.skip(reason="dagshub is no longer public")
 def test_calibration(data_repo):
     water = ips.AddDataH5MD.from_rev(
         name="water", remote="https://github.com/IPSProjects/ips-examples"
