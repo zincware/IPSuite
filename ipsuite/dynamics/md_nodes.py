@@ -145,6 +145,7 @@ class ASEMD(zntrack.Node):
     ...     )
     >>> project.build()
     """
+
     model: NodeWithCalculator = zntrack.deps()
     data: list[ase.Atoms] = zntrack.deps()
     data_ids: int | list[int] = zntrack.params(-1)
