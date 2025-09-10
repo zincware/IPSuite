@@ -400,6 +400,7 @@ class ASEMDSafeSampling(ASEMD):
     ...     )
     >>> project.build()
     """
+
     temperature_reduction_factor: float = zntrack.params(0.9)
     # refresh_calculator: bool = zntrack.params(False)
     # # TODO: this won't work with the directory argument,
