@@ -196,7 +196,7 @@ class BoxHeatUp(base.ProcessSingleAtom):
     steps: int = zntrack.params()
     time_step: float = zntrack.params(0.5)
     friction: float = zntrack.params()
-    repeat: bool = zntrack.params((1, 1, 1))
+    repeat: tuple[int, int, int] = zntrack.params((1, 1, 1))
 
     max_temperature: float = zntrack.params(None)
 

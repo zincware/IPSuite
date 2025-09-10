@@ -72,7 +72,7 @@ class ASEGeoOpt(base.IPSNode):
     checks: list = zntrack.deps(None)
     constraints: list = zntrack.deps(None)
 
-    repeat: list = zntrack.params((1, 1, 1))
+    repeat: tuple[int, int, int] = zntrack.params((1, 1, 1))
     run_kwargs: dict = zntrack.params(default_factory=lambda: {"fmax": 0.05})
     init_kwargs: dict = zntrack.params(default_factory=dict)
     dump_rate: int = zntrack.params(1000)

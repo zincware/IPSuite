@@ -155,7 +155,7 @@ class ASEMD(zntrack.Node):
 
     steps: int = zntrack.params()
     sampling_rate: int = zntrack.params(1)
-    repeat: t.Tuple[bool, bool, bool] = zntrack.params((1, 1, 1))
+    repeat: tuple[int, int, int] = zntrack.params((1, 1, 1))
     dump_rate: int = zntrack.params(1000)
     use_momenta: bool = zntrack.params(False)
     seed: int = zntrack.params(42)
