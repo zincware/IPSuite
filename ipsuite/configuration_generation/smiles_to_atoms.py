@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import ase
-import h5py
 import rdkit2ase
 import typing_extensions as tyex
 import znh5md
@@ -9,6 +8,7 @@ import zntrack
 from rdkit.Chem import Draw
 
 from ipsuite import base
+from ipsuite.utils.helpers import make_hdf5_file_opener
 
 
 @tyex.deprecated("Use `ipsuite.Smiles2Conformers` instead.")
@@ -101,7 +101,6 @@ class Smiles2Conformers(base.IPSNode):
             img.save(self.molecule_image_path)
 
     @property
-    def frames(self) -> list[ase.Atoms]:
-        with self.state.fs.open(self.frames_path, "rb") as f:
-            with h5py.File(f) as file:
-                return znh5md.IO(file_handle=file)[:]
+    def frames(self) -> znh5md.IO:
+        file_factory = make_hdf5_file_opener(self, self.frames_path)
+        return znh5md.IO(file_factory=file_factory)

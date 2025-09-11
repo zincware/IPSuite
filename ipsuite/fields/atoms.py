@@ -2,18 +2,18 @@
 
 import pathlib
 
-import h5py
 import typing_extensions as tyex
 import znh5md
 import zntrack
 
+from ipsuite.utils.helpers import make_hdf5_file_opener
+
 CWD = pathlib.Path(__file__).parent.resolve()
 
 
-def _frames_getter(self: zntrack.Node, name: str, suffix: str) -> None:
-    with self.state.fs.open((self.nwd / name).with_suffix(suffix), mode="rb") as f:
-        with h5py.File(f) as file:
-            return znh5md.IO(file_handle=file)[:]
+def _frames_getter(self: zntrack.Node, name: str, suffix: str) -> znh5md.IO:
+    file_factory = make_hdf5_file_opener(self, (self.nwd / name).with_suffix(suffix))
+    return znh5md.IO(file_factory=file_factory)
 
 
 def _frames_save_func(self: zntrack.Node, name: str, suffix: str) -> None:

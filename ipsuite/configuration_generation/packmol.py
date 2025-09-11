@@ -45,7 +45,7 @@ class Packmol(base.IPSNode):
     Output structures should be relaxed before further use.
     """
 
-    data: list[list[ase.Atoms]] = zntrack.deps()
+    data: list[list[ase.Atoms] | znh5md.IO] = zntrack.deps()
     data_ids: list[int] = zntrack.params(None)
     count: list = zntrack.params()
     tolerance: float = zntrack.params(2.0)
@@ -134,9 +134,10 @@ class MultiPackmol(Packmol):
         for _ in range(self.n_configurations):
             # shuffle each data entry
             data = []
-            for frame_list in self.data:
-                random.shuffle(frame_list)
-                data.append(frame_list)
+            for frames in self.data:
+                frames = frames[:]  # convert znh5md.IO to a list of ase.Atoms
+                random.shuffle(frames)
+                data.append(frames)
 
             frames.append(
                 rdkit2ase.pack(
