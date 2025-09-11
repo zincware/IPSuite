@@ -155,7 +155,7 @@ class ASEMD(zntrack.Node):
 
     steps: int = zntrack.params()
     sampling_rate: int = zntrack.params(1)
-    repeat: t.Tuple[bool, bool, bool] = zntrack.params((1, 1, 1))
+    repeat: tuple[int, int, int] = zntrack.params((1, 1, 1))
     dump_rate: int = zntrack.params(1000)
     use_momenta: bool = zntrack.params(False)
     seed: int = zntrack.params(42)
@@ -198,7 +198,7 @@ class ASEMD(zntrack.Node):
         directory = self.model_outs / f"{idx}"
         directory.mkdir(parents=True, exist_ok=True)
 
-        atoms.repeat(self.repeat)
+        atoms = atoms.repeat(self.repeat)
         atoms.calc = self.model.get_calculator(directory=directory)
         for constraint in self.constraints:
             atoms.set_constraint(constraint.get_constraint(atoms))
@@ -217,7 +217,7 @@ class ASEMD(zntrack.Node):
                 total_steps=self.steps - 1,  # starting from 0, so we subtract 1
             )
 
-    def initalize_progress_bar(self) -> t.Tuple[Progress, TaskID]:
+    def initialize_progress_bar(self) -> t.Tuple[Progress, TaskID]:
         progress = Progress(
             SpinnerColumn(),
             TextColumn("[bold green]Progress"),
@@ -251,7 +251,7 @@ class ASEMD(zntrack.Node):
 
         atoms_cache = []
 
-        progress, task = self.initalize_progress_bar()
+        progress, task = self.initialize_progress_bar()
 
         tty_available = sys.stdout.isatty()
         tbar = tqdm(
@@ -330,6 +330,77 @@ class ASEMD(zntrack.Node):
 
 
 class ASEMDSafeSampling(ASEMD):
+    """
+    Molecular Dynamics simulation node using ASE with safe sampling.
+
+    This class inherits from :class:`ASEMD` and adds a safe sampling mechanism.
+    If a simulation fails, it is restarted with a reduced temperature. This is
+    particularly useful for sampling simulations with potentially unstable
+    models.
+
+    Parameters
+    ----------
+    model : NodeWithCalculator
+        The computational model/calculator used for force and energy calculations.
+    data : list[ase.Atoms]
+        List of atomic structures to simulate.
+    data_ids : int or list[int], default -1
+        Indices of structures from data to simulate. If -1, simulates all structures.
+    checks : list, optional
+        List of simulation checks/monitors to apply during the simulation.
+        It is recommended to include a `DebugCheck`.
+    constraints : list, optional
+        List of constraints to apply to the atomic system.
+    modifiers : list, optional
+        List of modifiers to dynamically change simulation parameters.
+    thermostat : NodeWithThermostat
+        Thermostat object for temperature control during simulation.
+    steps : int
+        Total number of MD steps to perform.
+    sampling_rate : int, default 1
+        Frequency of data sampling (every N steps).
+    repeat : tuple[int, int, int], default (1, 1, 1)
+        Cell repetition factors in x, y, z directions.
+    dump_rate : int, default 1000
+        Frequency of writing trajectory data to disk.
+    use_momenta : bool, default False
+        Whether to use existing atomic momenta or initialize with Maxwell-Boltzmann.
+    seed : int, default 42
+        Random seed for reproducible simulations.
+    temperature_reduction_factor : float, default 0.9
+        Factor by which the temperature is reduced upon simulation failure.
+
+    Attributes
+    ----------
+    metrics : Path
+        Output path for simulation metrics (CSV files).
+    frames_path : Path
+        Output path for trajectory frames (HDF5 files).
+    model_outs : Path
+        Output path for model-specific output files.
+    laufband_path : Path
+        Path to the job queue database file.
+    frames : list[ase.Atoms]
+        Property that returns all trajectory frames from saved files.
+    structures : list[list[ase.Atoms]]
+        Property that returns structures organized by simulation run.
+
+    Examples
+    --------
+    >>> thermostat = ips.LangevinThermostat(temperature=300, friction=0.05, time_step=0.5)
+    >>> model = ips.MACEMPModel()
+    >>> with project:
+    ...     data = ips.AddData(file="ethanol.xyz")
+    ...     md = ips.ASEMDSafeSampling(
+    ...         model=model,
+    ...         data=data.frames,
+    ...         thermostat=thermostat,
+    ...         steps=1000,
+    ...         checks=[ips.DebugCheck()],
+    ...     )
+    >>> project.build()
+    """
+
     temperature_reduction_factor: float = zntrack.params(0.9)
     # refresh_calculator: bool = zntrack.params(False)
     # # TODO: this won't work with the directory argument,
