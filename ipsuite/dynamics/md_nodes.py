@@ -198,7 +198,7 @@ class ASEMD(zntrack.Node):
         directory = self.model_outs / f"{idx}"
         directory.mkdir(parents=True, exist_ok=True)
 
-        atoms.repeat(self.repeat)
+        atoms = atoms.repeat(self.repeat)
         atoms.calc = self.model.get_calculator(directory=directory)
         for constraint in self.constraints:
             atoms.set_constraint(constraint.get_constraint(atoms))
@@ -217,7 +217,7 @@ class ASEMD(zntrack.Node):
                 total_steps=self.steps - 1,  # starting from 0, so we subtract 1
             )
 
-    def initalize_progress_bar(self) -> t.Tuple[Progress, TaskID]:
+    def initialize_progress_bar(self) -> t.Tuple[Progress, TaskID]:
         progress = Progress(
             SpinnerColumn(),
             TextColumn("[bold green]Progress"),
@@ -251,7 +251,7 @@ class ASEMD(zntrack.Node):
 
         atoms_cache = []
 
-        progress, task = self.initalize_progress_bar()
+        progress, task = self.initialize_progress_bar()
 
         tty_available = sys.stdout.isatty()
         tbar = tqdm(
