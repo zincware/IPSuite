@@ -68,7 +68,7 @@ class AddData(base.IPSNode):
     """
 
     file: typing.Union[str, pathlib.Path] = zntrack.deps_path()
-    lines_to_read: int = zntrack.params(None)
+    lines_to_read: int | None = zntrack.params(None)
     frames_path: pathlib.Path = zntrack.outs_path(zntrack.nwd / "frames.h5")
 
     def __post_init__(self):
@@ -91,20 +91,6 @@ class AddData(base.IPSNode):
         with self.state.fs.open(self.frames_path, "rb") as f:
             with h5py.File(f) as file:
                 return znh5md.IO(file_handle=file)[:]
-
-    def __iter__(self) -> ase.Atoms:
-        """Get iterable object."""
-        yield from self.frames
-
-    def __len__(self) -> int:
-        """Get the number of atoms."""
-        return len(self.frames)
-
-    def __getitem__(self, item):
-        """Access atoms objects directly and via advanced slicing."""
-        if isinstance(item, list):
-            return [self.frames[idx] for idx in item]
-        return self.frames[item]
 
     @classmethod
     def save_atoms_to_file(cls, atoms: typing.List[ase.Atoms], file: str):
