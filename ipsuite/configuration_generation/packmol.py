@@ -2,9 +2,6 @@
 
 import logging
 import os
-import random
-
-import ase
 import pathlib
 import random
 

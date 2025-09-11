@@ -7,9 +7,8 @@ import znh5md
 import zntrack
 from rdkit.Chem import Draw
 
-from ipsuite import base, fields
-from ipsuite.utils.helpers import make_hdf5_file_opener
 from ipsuite import base
+from ipsuite.utils.helpers import make_hdf5_file_opener
 
 
 @tyex.deprecated("Use `ipsuite.Smiles2Conformers` instead.")

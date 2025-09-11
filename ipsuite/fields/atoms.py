@@ -2,7 +2,6 @@
 
 import pathlib
 
-import h5py
 import typing_extensions as tyex
 import znh5md
 import zntrack
