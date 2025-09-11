@@ -3,6 +3,7 @@
 import pathlib
 
 import h5py
+import typing_extensions as tyex
 import znh5md
 import zntrack
 
@@ -22,6 +23,11 @@ def _frames_save_func(self: zntrack.Node, name: str, suffix: str) -> None:
     io.extend(getattr(self, name))
 
 
+@tyex.deprecated(
+    "use explicit frames_path: Path ="
+    " zntrack.outs_path(zntrack.nwd / 'frames.h5')"
+    " with property frames instead."
+)
 def Atoms(*, cache: bool = True, independent: bool = False, **kwargs):
     return zntrack.field(
         default=zntrack.NOT_AVAILABLE,

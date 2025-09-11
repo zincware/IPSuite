@@ -2,15 +2,18 @@
 
 import logging
 import os
+import pathlib
 import random
 
 import ase
 import ase.units
+import h5py
 import numpy as np
 import rdkit2ase
+import znh5md
 import zntrack
 
-from ipsuite import base, fields
+from ipsuite import base
 
 log = logging.getLogger(__name__)
 
@@ -47,8 +50,8 @@ class Packmol(base.IPSNode):
     count: list = zntrack.params()
     tolerance: float = zntrack.params(2.0)
     density: float = zntrack.params()
-    frames: list[ase.Atoms] = fields.Atoms()
     pbc: bool = zntrack.params(True)
+    frames_path: pathlib.Path = zntrack.outs_path(zntrack.nwd / "frames.h5")
 
     def __post_init__(self):
         if len(self.data) != len(self.count):
@@ -62,7 +65,7 @@ class Packmol(base.IPSNode):
         else:
             data = self.data
 
-        self.frames = [
+        frames = [
             rdkit2ase.pack(
                 data=data,
                 counts=self.count,
@@ -72,6 +75,14 @@ class Packmol(base.IPSNode):
                 packmol=os.environ.get("RDKIT2ASE_PACKMOL", "packmol"),
             )
         ]
+        io = znh5md.IO(self.frames_path)
+        io.extend(frames)
+
+    @property
+    def frames(self) -> list[ase.Atoms]:
+        with self.state.fs.open(self.frames_path, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
 
 
 class MultiPackmol(Packmol):
@@ -119,15 +130,15 @@ class MultiPackmol(Packmol):
 
     def run(self):
         np.random.seed(self.seed)
-        self.frames = []
+        frames = []
         for _ in range(self.n_configurations):
             # shuffle each data entry
             data = []
-            for frames in self.data:
-                random.shuffle(frames)
-                data.append(frames)
+            for frame_list in self.data:
+                random.shuffle(frame_list)
+                data.append(frame_list)
 
-            self.frames.append(
+            frames.append(
                 rdkit2ase.pack(
                     data=data,
                     counts=self.count,
@@ -137,3 +148,5 @@ class MultiPackmol(Packmol):
                     packmol=os.environ.get("RDKIT2ASE_PACKMOL", "packmol"),
                 )
             )
+        io = znh5md.IO(self.frames_path)
+        io.extend(frames)
