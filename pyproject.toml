@@ -12,9 +12,10 @@ dependencies = [
     "pint>=0.24.4",
     "rdkit2ase>=0.1.7",
     "seaborn>=0.13.2",
+    "typing-extensions>=4.12.2",
     "uncertainty-toolbox>=0.1.1",
     "znh5md>=0.4.8",
-    "zntrack>=0.8.7",
+    "zntrack>=0.8.9",
 ]
 
 
@@ -59,6 +60,7 @@ dev = [
 
 d3 = [
     "torch-dftd>=0.5.1",
+    "torch>=2.3.0",
 ]
 
 [tool.ruff]
@@ -106,4 +108,12 @@ skip = "poetry.lock,ipsuite/static_data/*,docs/source/examples/06_Bootstrapping_
 
 [tool.uv.sources]
 cp2k-input-tools = { git = "https://github.com/cp2k/cp2k-input-tools" }
-znh5md = { git = "https://github.com/zincware/znh5md" }
+
+[project.entry-points.'zntrack.nodes']
+ipsuite = 'ipsuite.nodes:nodes'
+
+[project.entry-points.'zntrack.interfaces']
+ipsuite = 'ipsuite.interfaces:interfaces'
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules"

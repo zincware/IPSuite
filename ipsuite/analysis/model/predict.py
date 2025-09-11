@@ -70,18 +70,46 @@ class Prediction(base.ProcessAtoms):
 
 
 class PredictionMetrics(base.ComparePredictions):
-    """Analyse the Models Prediction on standard metrics.
+    """Compare model predictions against reference data with comprehensive metrics.
 
-    Units are given in:
-    - energy: meV/atom
-    - forces: meV/Å
-    - stress: eV/Å^3
+    Computes and visualizes prediction accuracy for energy, forces, and stress
+    with statistical measures including MAE, RMSE, and correlation coefficients.
+    Useful for benchmarking different models and analyzing prediction quality.
+
+    Parameters
+    ----------
+    x : list[ase.Atoms]
+        Reference (ground truth) atomic configurations with calculated properties.
+    y : list[ase.Atoms]
+        Model predictions on the same configurations.
+    figure_ymax : dict[str, float], optional
+        Y-axis limits for plots by property type (energy, forces, stress).
 
     Attributes
     ----------
-    ymax: dict of label key, and figure ylim values.
-        Should be set when trying to compare different models.
+    energy : dict
+        Energy prediction metrics (MAE, RMSE, R², etc.) in meV/atom.
+    forces : dict
+        Force prediction metrics (MAE, RMSE, R², etc.) in meV/Å.
+    stress : dict
+        Stress prediction metrics in eV/Å³.
+    plots_dir : Path
+        Directory containing generated comparison plots.
 
+    Examples
+    --------
+    >>> medium_model = ips.MACEMPModel(model="medium")
+    >>> small_model = ips.MACEMPModel(model="small")
+    >>> with project:
+    ...     data = ips.AddData(file="ethanol.xyz")
+    ...     medium_data = ips.ApplyCalculator(data=data.frames, model=medium_model)
+    ...     small_data = ips.ApplyCalculator(data=data.frames, model=small_model)
+    ...     metrics = ips.PredictionMetrics(x=medium_data.frames, y=small_data.frames)
+    >>> project.repro()
+    >>> print(f"Energy MAE: {metrics.energy['mae']:.2f} meV/atom")
+    Energy MAE: 52.23 meV/atom
+    >>> print(f"Force MAE: {metrics.forces['mae']:.2f} meV/Å")
+    Force MAE: 213.22 meV/Å
     """
 
     # TODO ADD OPTIONAL YMAX PARAMETER

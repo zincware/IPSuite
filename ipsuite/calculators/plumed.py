@@ -6,8 +6,8 @@ from ase import units
 from ase.calculators.calculator import Calculator, all_changes
 from ase.calculators.plumed import Plumed
 
-from ipsuite.abc import NodeWithCalculator
 from ipsuite.base import IPSNode
+from ipsuite.interfaces import NodeWithCalculator
 
 
 class NonOverwritingPlumed(Plumed):
@@ -114,7 +114,7 @@ class PlumedModel(IPSNode):
         kT = units.kB * self.temperature
 
         return NonOverwritingPlumed(
-            calc=self.model.get_calculator(),
+            calc=self.model.get_calculator(directory=directory),
             atoms=self.data[self.data_id],
             input=lines,
             timestep=float(self.timestep * units.fs),

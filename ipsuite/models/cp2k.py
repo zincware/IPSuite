@@ -241,22 +241,22 @@ class CP2KModel:
 
     Examples
     --------
-    >>> import ipsuite as ips
-    >>> project = ips.Project()
-    >>> cp2k = ips.CP2KModel(
-    ...     config="cp2k.yaml",
-    ...     files=["GTH_BASIS_SETS", "GTH_POTENTIALS"],
-    ... )
-    >>> with project:
-    ...     water = ips.Smiles2Conformers(smiles="O", numConfs=100)
-    ...     box = ips.MultiPackmol(
-    ...         data=[water.frames], count=[16], density=1000, n_configurations=11,
-    ...     )
-    ...     ips.ApplyCalculator(
-    ...         data=box.frames,
-    ...         model=cp2k,
-    ...     )
-    >>> project.build()
+    >> import ipsuite as ips
+    >> project = ips.Project()
+    >> cp2k = ips.CP2KModel(
+    ..     config="cp2k.yaml",
+    ..     files=["GTH_BASIS_SETS", "GTH_POTENTIALS"],
+    .. )
+    >> with project:
+    ..     water = ips.Smiles2Conformers(smiles="O", numConfs=100)
+    ..     box = ips.MultiPackmol(
+    ..         data=[water.frames], count=[16], density=1000, n_configurations=11,
+    ..     )
+    ..     ips.ApplyCalculator(
+    ..         data=box.frames,
+    ..         model=cp2k,
+    ..     )
+    >> project.build()
     """
 
     config: str | Path = zntrack.params_path()

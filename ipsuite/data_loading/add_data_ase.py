@@ -5,10 +5,12 @@ import pathlib
 import typing
 
 import ase.io
+import h5py
 import tqdm
+import znh5md
 import zntrack
 
-from ipsuite import base, fields
+from ipsuite import base
 
 log = logging.getLogger(__name__)
 
@@ -42,18 +44,32 @@ def load_data(
 
 
 class AddData(base.IPSNode):
-    """Add data using ASE.
+    """Load atomic configurations from files using ASE.
+
+    Parameters
+    ----------
+    file : str or Path
+        Path to the file containing atomic configurations.
+    lines_to_read : int, optional
+        Maximum number of configurations to read. If None, reads all.
 
     Attributes
     ----------
-    use_dvc: bool
-        Don't use the filename as a parameter but rather use dvc add <file>
-        to track the file with DVC.
+    frames : List[ase.Atoms]
+        List of loaded atomic configurations.
+
+    Examples
+    --------
+    >>> with project:
+    ...     data = ips.AddData(file="ethanol.xyz", lines_to_read=50)
+    >>> project.repro()
+    >>> print(f"Loaded {len(data.frames)} configurations.")
+    Loaded 50 configurations.
     """
 
-    frames: typing.List[ase.Atoms] = fields.Atoms()
     file: typing.Union[str, pathlib.Path] = zntrack.deps_path()
-    lines_to_read: int = zntrack.params(None)
+    lines_to_read: int | None = zntrack.params(None)
+    frames_path: pathlib.Path = zntrack.outs_path(zntrack.nwd / "frames.h5")
 
     def __post_init__(self):
         if not pathlib.Path(pathlib.Path(self.file).name + ".dvc").exists():
@@ -66,21 +82,15 @@ class AddData(base.IPSNode):
         """ZnTrack run method."""
         if self.lines_to_read == -1:  # backwards compatibility
             self.lines_to_read = None
-        self.frames = load_data(file=self.file, lines_to_read=self.lines_to_read)
+        frames = load_data(file=self.file, lines_to_read=self.lines_to_read)
+        io = znh5md.IO(self.frames_path)
+        io.extend(frames)
 
-    def __iter__(self) -> ase.Atoms:
-        """Get iterable object."""
-        yield from self.frames
-
-    def __len__(self) -> int:
-        """Get the number of atoms."""
-        return len(self.frames)
-
-    def __getitem__(self, item):
-        """Access atoms objects directly and via advanced slicing."""
-        if isinstance(item, list):
-            return [self.frames[idx] for idx in item]
-        return self.frames[item]
+    @property
+    def frames(self) -> typing.List[ase.Atoms]:
+        with self.state.fs.open(self.frames_path, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
 
     @classmethod
     def save_atoms_to_file(cls, atoms: typing.List[ase.Atoms], file: str):

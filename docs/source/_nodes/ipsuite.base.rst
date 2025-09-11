@@ -12,13 +12,6 @@ ipsuite.base.base module
    :undoc-members:
    :show-inheritance:
 
-ipsuite.base.protocol module
-----------------------------
-
-.. automodule:: ipsuite.base.protocol
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 Module contents
 ---------------

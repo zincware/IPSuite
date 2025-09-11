@@ -176,19 +176,43 @@ class BoxScale(base.ProcessSingleAtom):
 
 
 class BoxHeatUp(base.ProcessSingleAtom):
-    """Attributes
-    ----------
-    start_temperature: float
-        the temperature to start the analysis.
-    stop_temperature: float
-        the upper bound of the temperature
-    steps: int
-        Number of steps between lower and upper temperature
-    time_step: float, default = 0.5 fs
-        time step of the simulation
-    friction: float, default = 0.01
-        langevin friction
+    """
+    Perform a heat-up analysis by gradually increasing the temperature of the system
+    and monitoring the measured temperature and energy.
 
+    Parameters
+    ----------
+    start_temperature : float
+        The initial temperature (in Kelvin) to start the analysis.
+    stop_temperature : float
+        The upper bound of the temperature range (in Kelvin).
+    steps : int
+        Number of temperature increments between start and stop temperature.
+    time_step : float, optional
+        Time step of the simulation in femtoseconds. Default is 0.5 fs.
+    friction : float
+        Langevin friction coefficient.
+    repeat : tuple of int, optional
+        Number of repetitions of the unit cell in each direction. Default is (1, 1, 1).
+    max_temperature : float or None, optional
+        Maximum allowed temperature before stopping the simulation.
+        If None, set to 1.5 * stop_temperature.
+    model : typing.Any
+        The MLModel node that implements the 'get_calculator' method.
+    model_outs : pathlib.Path
+        Output directory for model results.
+    plots : pathlib.Path
+        Path to save the temperature plot.
+
+    Attributes
+    ----------
+    flux_data : pd.DataFrame
+        DataFrame containing measured temperature, total energy,
+        and set temperature at each step.
+    steps_before_explosion : int
+        Number of steps completed before exceeding max_temperature, or -1 if not exceeded.
+    frames : list of ase.Atoms
+        List of atomic configurations at each step.
     """
 
     start_temperature: float = zntrack.params()
@@ -196,9 +220,9 @@ class BoxHeatUp(base.ProcessSingleAtom):
     steps: int = zntrack.params()
     time_step: float = zntrack.params(0.5)
     friction: float = zntrack.params()
-    repeat: bool = zntrack.params((1, 1, 1))
+    repeat: tuple[int, int, int] = zntrack.params((1, 1, 1))
 
-    max_temperature: float = zntrack.params(None)
+    max_temperature: float | None = zntrack.params(None)
 
     flux_data: pd.DataFrame = zntrack.plots()
 

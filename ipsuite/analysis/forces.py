@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import ase
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -9,15 +10,39 @@ import zntrack
 from ipsuite import base
 
 
-class AnalyseStructureMeanForce(base.AnalyseAtoms):
-    """Compute the mean force acting on a single structure.
+class AnalyseStructureMeanForce(base.IPSNode):
+    """Analyze mean force magnitude across atomic configurations.
 
-    The mean force should be zero for periodic structures
-    without any external forces acting on them.
-    This node can be used to check converges in the DFT
-    and find force trends in the system.
+    Computes the magnitude of the total force vector (sum of all atomic forces)
+    for each configuration. For well-converged periodic structures, this should
+    approach zero. Useful for checking DFT convergence, force consistency, and
+    identifying problematic structures in datasets.
+
+    Parameters
+    ----------
+    data : list[ase.Atoms]
+        Atomic configurations with calculated forces to analyze.
+
+    Attributes
+    ----------
+    forces : dict
+        Statistical summary containing mean, std, min, max force magnitudes.
+    figure_path : Path
+        Path to the generated force analysis plot.
+
+    Examples
+    --------
+    >>> model = ips.MACEMPModel()
+    >>> with project:
+    ...     data = ips.AddData(file="ethanol.xyz")
+    ...     calc_data = ips.ApplyCalculator(data=data.frames, model=model)
+    ...     force_analysis = ips.AnalyseStructureMeanForce(data=calc_data.frames)
+    >>> project.repro()
+    >>> print(f"Mean force magnitude: {force_analysis.forces['mean']:.4f} eV/Å")
+    Mean force magnitude: 0.0000 eV/Å
     """
 
+    data: list[ase.Atoms] = zntrack.deps()
     figure_path: Path = zntrack.outs_path(zntrack.nwd / "forces.png")
     forces: dict = zntrack.metrics()
 

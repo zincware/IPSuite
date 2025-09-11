@@ -1,6 +1,7 @@
 from ipsuite.dynamics.checks import (
     ConnectivityCheck,
     DebugCheck,
+    DensityCheck,
     EnergySpikeCheck,
     NaNCheck,
     TemperatureCheck,
@@ -36,6 +37,7 @@ __all__ = [
     "NaNCheck",
     "TemperatureCheck",
     "ThresholdCheck",
+    "DensityCheck",
     "RescaleBoxModifier",
     "BoxOscillatingRampModifier",
     "TemperatureRampModifier",

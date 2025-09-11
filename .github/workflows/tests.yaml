@@ -28,6 +28,7 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - uses: julia-actions/setup-julia@v2
       - name: Install the project
         run: uv sync --all-extras --dev --group=gap
       - name: Setup git user
@@ -35,8 +36,12 @@ jobs:
           git config --global user.name "John Doe"
           git config --global user.email johndoe@example.com
           git config --global init.defaultBranch "main"
+      - name: Install packmol.jl
+        run: |
+          julia -e 'import Pkg; Pkg.add("Packmol")'
       - name: Pytest
         run: |
+          export RDKIT2ASE_PACKMOL=packmol.jl
           uv run python --version
           uv run pytest -vv --cov --junitxml=junit.xml -o junit_family=legacy
       - name: Upload coverage to Codecov

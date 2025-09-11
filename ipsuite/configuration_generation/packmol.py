@@ -5,18 +5,24 @@ import os
 import random
 
 import ase
+import pathlib
+import random
+
+import ase
+import ase.units
+import h5py
 import numpy as np
 import rdkit2ase
 import znh5md
 import zntrack
 
-from ipsuite import base, fields
+from ipsuite import base
 
 log = logging.getLogger(__name__)
 
 
 class Packmol(base.IPSNode):
-    """
+    """Create a box with packmol.
 
     Attributes
     ----------
@@ -36,6 +42,10 @@ class Packmol(base.IPSNode):
         If True the periodic boundary conditions are set for the generated structure and
         the box used by packmol is scaled by the tolerance, to avoid overlapping atoms
         with periodic boundary conditions.
+
+    Notes
+    -----
+    Output structures should be relaxed before further use.
     """
 
     data: list[list[ase.Atoms] | znh5md.IO] = zntrack.deps()
@@ -43,8 +53,8 @@ class Packmol(base.IPSNode):
     count: list = zntrack.params()
     tolerance: float = zntrack.params(2.0)
     density: float = zntrack.params()
-    frames: list[ase.Atoms] = fields.Atoms()
     pbc: bool = zntrack.params(True)
+    frames_path: pathlib.Path = zntrack.outs_path(zntrack.nwd / "frames.h5")
 
     def __post_init__(self):
         if len(self.data) != len(self.count):
@@ -58,15 +68,24 @@ class Packmol(base.IPSNode):
         else:
             data = self.data
 
-        self.frames = [
+        frames = [
             rdkit2ase.pack(
                 data=data,
                 counts=self.count,
                 tolerance=self.tolerance,
                 density=self.density,
                 pbc=self.pbc,
+                packmol=os.environ.get("RDKIT2ASE_PACKMOL", "packmol"),
             )
         ]
+        io = znh5md.IO(self.frames_path)
+        io.extend(frames)
+
+    @property
+    def frames(self) -> list[ase.Atoms]:
+        with self.state.fs.open(self.frames_path, "rb") as f:
+            with h5py.File(f) as file:
+                return znh5md.IO(file_handle=file)[:]
 
 
 class MultiPackmol(Packmol):
@@ -75,30 +94,38 @@ class MultiPackmol(Packmol):
     This Node generates multiple configurations with packmol.
     This is best used in conjunction with Smiles2Conformers:
 
-    Example
-    -------
-    .. testsetup::
-        >>> tmp_path = utils.docs.create_dvc_git_env_for_doctest()
-
-    >>> import ipsuite as ips
-    >>> with ips.Project() as project:
-    ...     water = ips.Smiles2Conformers(
-    ...         smiles='O', numConfs=100
-    ...         )
-    ...     boxes = ips.MultiPackmol(
-    ...         data=[water.frames], count=[10], density=997, n_configurations=10
-    ...         )
-    >>> project.repro()
-
-    .. testcleanup::
-        >>> tmp_path.cleanup()
-
     Attributes
     ----------
     n_configurations : int
         Number of configurations to create.
     seed : int
         Seed for the random number generator.
+
+    Notes
+    -----
+    Output structures should be relaxed before further use.
+
+
+    Example
+    -------
+    >>> import ipsuite as ips
+    >>> project = ips.Project()
+    >>> with project:
+    ...     bf4 = ips.Smiles2Conformers(
+    ...         smiles='[B-](F)(F)(F)F', numConfs=10
+    ...     )
+    ...     bmim = ips.Smiles2Conformers(
+    ...         smiles='CCCCN1C=C[N+](=C1)C',
+    ...         numConfs=10
+    ...     )
+    ...     molecules = ips.MultiPackmol(
+    ...         data=[bf4.frames, bmim.frames],
+    ...         count=[1, 1], density=1210, n_configurations=10
+    ...     )
+    ...     box = ips.MultiPackmol(
+    ...         data=[molecules.frames], count=[10], density=1210, n_configurations=1
+    ...     )
+    >>> project.build()
     """
 
     n_configurations: int = zntrack.params()
@@ -106,7 +133,7 @@ class MultiPackmol(Packmol):
 
     def run(self):
         np.random.seed(self.seed)
-        self.frames = []
+        frames = []
         for _ in range(self.n_configurations):
             # shuffle each data entry
             data = []
@@ -115,7 +142,7 @@ class MultiPackmol(Packmol):
                 random.shuffle(frames)
                 data.append(frames)
 
-            self.frames.append(
+            frames.append(
                 rdkit2ase.pack(
                     data=data,
                     counts=self.count,
@@ -125,3 +152,5 @@ class MultiPackmol(Packmol):
                     packmol=os.environ.get("RDKIT2ASE_PACKMOL", "packmol"),
                 )
             )
+        io = znh5md.IO(self.frames_path)
+        io.extend(frames)
