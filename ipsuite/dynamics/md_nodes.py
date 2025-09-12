@@ -327,7 +327,7 @@ class ASEMD(zntrack.Node):
         ids = self.data_ids if isinstance(self.data_ids, list) else [self.data_ids]
         worker = Laufband(
             ids,
-            db=f"sqlite:///{self.laufband_path}",   
+            db=f"sqlite:///{self.laufband_path}",
             lock=Lock((self.laufband_path.parent / "laufband.lock").as_posix()),
             disabled=True,
         )
