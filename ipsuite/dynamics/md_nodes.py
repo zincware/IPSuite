@@ -329,7 +329,7 @@ class ASEMD(zntrack.Node):
             ids,
             db=f"sqlite:///{self.laufband_path / 'laufband.sqlite'}",
             lock=Lock((self.laufband_path / "laufband.lock").as_posix()),
-            disable=True,
+            disabled=True,
         )
         for data_id in worker:
             self.run_md(idx=data_id, atoms=self.data[data_id])

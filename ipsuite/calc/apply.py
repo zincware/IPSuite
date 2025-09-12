@@ -121,7 +121,7 @@ class ApplyCalculator(zntrack.Node):
             self.data,
             db=f"sqlite:///{self.model_outs / 'laufband.sqlite'}",
             lock=Lock((self.model_outs / "laufband.lock").as_posix()),
-            disable=os.environ.get("LAUFBAND_DISABLE", "1") == "1",
+            disabled=os.environ.get("LAUFBAND_DISABLE", "1") == "1",
         )
         # by default, we disable laufband for better performance
 
