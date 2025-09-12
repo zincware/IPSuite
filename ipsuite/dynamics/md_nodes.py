@@ -327,12 +327,14 @@ class ASEMD(zntrack.Node):
         ids = self.data_ids if isinstance(self.data_ids, list) else [self.data_ids]
         worker = Laufband(
             ids,
-            db=f"sqlite:///{self.laufband_path / 'laufband.sqlite'}",
-            lock=Lock((self.laufband_path / "laufband.lock").as_posix()),
+            db=f"sqlite:///{self.laufband_path}",   
+            lock=Lock((self.laufband_path.parent / "laufband.lock").as_posix()),
             disabled=True,
         )
         for data_id in worker:
             self.run_md(idx=data_id, atoms=self.data[data_id])
+        if worker.disabled:
+            self.laufband_path.write_text("Lorem Ipsum")
 
 
 class ASEMDSafeSampling(ASEMD):
