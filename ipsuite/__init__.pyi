@@ -112,7 +112,6 @@ from .geometry import BarycenterMapping
 
 # Models
 from .models import (
-    GAP,
     CP2KModel,
     EnsembleModel,
     GenericASEModel,
@@ -133,7 +132,6 @@ __all__ = [
     "Flatten",
     "base",
     # Models
-    "GAP",
     "EnsembleModel",
     "CP2KModel",
     "TBLiteModel",

@@ -22,8 +22,8 @@ def test_ensemble_model(proj_path, traj_file):
             n_configurations=5,
         )
 
-        model1 = ips.GAP(data=train_data.frames, soap={"n_max": 1}, use_stresses=False)
-        model2 = ips.GAP(data=train_data.frames, soap={"n_max": 2}, use_stresses=False)
+        model1 = ips.LJSinglePoint(epsilon=0.5, sigma=1.0)
+        model2 = ips.LJSinglePoint(epsilon=1.0, sigma=1.0)
 
         ensemble_model = ips.EnsembleModel(models=[model1, model2])
 

@@ -20,13 +20,6 @@ ipsuite.models.ensemble module
    :undoc-members:
    :show-inheritance:
 
-ipsuite.models.gap module
--------------------------
-
-.. automodule:: ipsuite.models.gap
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 Module contents
 ---------------

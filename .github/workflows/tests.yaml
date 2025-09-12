@@ -30,7 +30,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - uses: julia-actions/setup-julia@v2
       - name: Install the project
-        run: uv sync --all-extras --dev --group=gap
+        run: uv sync --all-extras --all-groups
       - name: Setup git user
         run: |
           git config --global user.name "John Doe"
