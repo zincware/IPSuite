@@ -3,11 +3,11 @@ name = "ipsuite"
 version = "0.2.8"
 description = "A suite of tools for machine learned interatomic potentials."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 keywords = ["data-version-control", "machine-learning", "reproducibility", "interatomic potentials"]
 dependencies = [
     "ase>=3.24.0",
-    "laufband>=0.1.5",
+    "laufband>=0.2.0",
     "lazy-loader>=0.4",
     "pint>=0.24.4",
     "rdkit2ase>=0.1.7",
@@ -108,6 +108,7 @@ skip = "poetry.lock,ipsuite/static_data/*,docs/source/examples/06_Bootstrapping_
 
 [tool.uv.sources]
 cp2k-input-tools = { git = "https://github.com/cp2k/cp2k-input-tools" }
+laufband = { git = "https://github.com/zincware/laufband" }
 
 [project.entry-points.'zntrack.nodes']
 ipsuite = 'ipsuite.nodes:nodes'

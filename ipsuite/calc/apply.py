@@ -5,6 +5,7 @@ import ase
 import h5py
 import znh5md
 import zntrack
+from flufl.lock import Lock
 from laufband import Laufband
 
 from ipsuite.interfaces import NodeWithCalculator
@@ -43,13 +44,10 @@ class ApplyCalculator(zntrack.Node):
     .. code-block:: bash
 
         # Enable LAUFBAND
-        export LAUFBAND_DISABLE="0"
+        export LAUFBAND_DISABLED="0"
 
-        # Maximum number of retries for unsuccessful jobs
-        export LAUFBAND_MAX_DIED_RETRIES="3".
-
-        # optional, but recommended for identifying dead jobs
-        export LAUFBAND_HEARTBEAT_TIMEOUT=$((runtime_seconds))
+        # Maximum number of retries for killed jobs
+        export LAUFBAND_MAX_KILLED_RETRIES="3".
 
         # optional, can be used to identify the job
         export LAUFBAND_IDENTIFIER=${SLURM_JOB_ID}
@@ -121,9 +119,9 @@ class ApplyCalculator(zntrack.Node):
 
         worker = Laufband(
             self.data,
-            com=self.model_outs / "laufband.sqlite",
-            lock_path=self.model_outs / "laufband.lock",
-            disable=os.environ.get("LAUFBAND_DISABLE", "1") == "1",
+            db=f"sqlite:///{self.model_outs / 'laufband.sqlite'}",
+            lock=Lock((self.model_outs / "laufband.lock").as_posix()),
+            disabled=os.environ.get("LAUFBAND_DISABLED", "1") == "1",
         )
         # by default, we disable laufband for better performance
 

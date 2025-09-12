@@ -10,6 +10,7 @@ import pandas as pd
 import znh5md
 import zntrack
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
+from flufl.lock import Lock
 from laufband import Laufband
 from rich.live import Live
 from rich.panel import Panel
@@ -324,9 +325,16 @@ class ASEMD(zntrack.Node):
         """Run the simulation."""
         self.initialize_md()
         ids = self.data_ids if isinstance(self.data_ids, list) else [self.data_ids]
-        worker = Laufband(ids, com=self.laufband_path, disable=True)
+        worker = Laufband(
+            ids,
+            db=f"sqlite:///{self.laufband_path}",
+            lock=Lock((self.laufband_path.parent / "laufband.lock").as_posix()),
+            disabled=True,
+        )
         for data_id in worker:
             self.run_md(idx=data_id, atoms=self.data[data_id])
+        if worker.disabled:
+            self.laufband_path.write_text("Lorem Ipsum")
 
 
 class ASEMDSafeSampling(ASEMD):

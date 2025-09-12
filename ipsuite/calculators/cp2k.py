@@ -20,6 +20,7 @@ import yaml
 import znh5md
 import zntrack
 from cp2k_input_tools.generator import CP2KInputGenerator
+from flufl.lock import Lock
 from laufband import Laufband
 
 from ipsuite import base
@@ -88,7 +89,10 @@ class CP2KSinglePoint(base.IPSNode):
         self.cp2k_shell = _update_cmd(self.cp2k_shell)
 
         worker = Laufband(
-            self.data, ncols=70, com=self.cp2k_directory / "laufband.sqlite"
+            self.data,
+            ncols=70,
+            db=f"sqlite:///{self.cp2k_directory / 'laufband.sqlite'}",
+            lock=Lock((self.cp2k_directory / "laufband.lock").as_posix()),
         )
         with worker.lock:
             db = znh5md.IO(self.output_file)
