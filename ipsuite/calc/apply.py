@@ -5,6 +5,7 @@ import ase
 import h5py
 import znh5md
 import zntrack
+from flufl.lock import Lock
 from laufband import Laufband
 
 from ipsuite.interfaces import NodeWithCalculator
@@ -121,8 +122,8 @@ class ApplyCalculator(zntrack.Node):
 
         worker = Laufband(
             self.data,
-            com=self.model_outs / "laufband.sqlite",
-            lock_path=self.model_outs / "laufband.lock",
+            db=f"sqlite:///{self.model_outs / 'laufband.sqlite'}",
+            lock=Lock((self.model_outs / "laufband.lock").as_posix()),
             disable=os.environ.get("LAUFBAND_DISABLE", "1") == "1",
         )
         # by default, we disable laufband for better performance
