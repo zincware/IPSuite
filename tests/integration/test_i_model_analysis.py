@@ -29,11 +29,9 @@ def trained_model(proj_path, traj_file) -> tuple:
             )
         )
 
-        model = ipsuite.GAP(soap={"cutoff": 0.7}, data=train_selection.frames)
-
     project.repro()
 
-    return project, model, validation_selection
+    return project, ipsuite.MACEMPModel(), validation_selection
 
 
 def test_PredictWithModel(trained_model):

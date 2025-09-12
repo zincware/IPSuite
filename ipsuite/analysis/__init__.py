@@ -7,7 +7,6 @@ from ipsuite.analysis.bin_property import (
     StressHistogram,
 )
 from ipsuite.analysis.bond_stretch import BondStretchAnalyses
-from ipsuite.analysis.ensemble import ModelEnsembleAnalysis
 from ipsuite.analysis.forces import AnalyseStructureMeanForce
 from ipsuite.analysis.md import AnalyseDensity, CollectMDSteps
 from ipsuite.analysis.model import (
@@ -33,7 +32,6 @@ __all__ = [
     "EnergyHistogram",
     "ForcesHistogram",
     "DipoleHistogram",
-    "ModelEnsembleAnalysis",
     "PredictionMetrics",
     "ForceAngles",
     "RattleAnalysis",
