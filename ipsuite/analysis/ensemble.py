@@ -1,13 +1,5 @@
-import typing
-from pathlib import Path
-
-import ase.calculators.singlepoint
 import matplotlib.pyplot as plt
 import numpy as np
-import zntrack
-
-from ipsuite import base
-from ipsuite.interfaces import NodeWithCalculator
 
 
 def plot_with_uncertainty(value, ylabel: str, xlabel: str, x=None, **kwargs) -> dict:
