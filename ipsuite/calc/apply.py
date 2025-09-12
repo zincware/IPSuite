@@ -44,13 +44,10 @@ class ApplyCalculator(zntrack.Node):
     .. code-block:: bash
 
         # Enable LAUFBAND
-        export LAUFBAND_DISABLE="0"
+        export LAUFBAND_DISABLED="0"
 
-        # Maximum number of retries for unsuccessful jobs
-        export LAUFBAND_MAX_DIED_RETRIES="3".
-
-        # optional, but recommended for identifying dead jobs
-        export LAUFBAND_HEARTBEAT_TIMEOUT=$((runtime_seconds))
+        # Maximum number of retries for killed jobs
+        export LAUFBAND_MAX_KILLED_RETRIES="3".
 
         # optional, can be used to identify the job
         export LAUFBAND_IDENTIFIER=${SLURM_JOB_ID}
