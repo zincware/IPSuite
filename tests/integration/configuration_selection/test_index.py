@@ -7,7 +7,7 @@ import ipsuite as ips
 
 
 def test_index_chained(proj_path, traj_file):
-    with ips.Project(remove_existing_graph=True) as project:
+    with ips.Project() as project:
         data = ips.AddData(file=traj_file)
         pre_selection = ips.IndexSelection(
             data=data.frames,
@@ -21,7 +21,7 @@ def test_index_chained(proj_path, traj_file):
 
         histogram = ips.EnergyHistogram(data=selection.frames, bins='auto')
 
-    project.repro(force=True)
+    project.repro()
 
     bin_edges = histogram.labels_df.to_dict()['bin_edges']
     num_edges = len(bin_edges)
