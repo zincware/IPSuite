@@ -22,7 +22,7 @@ def test_index_chained(proj_path, traj_file):
         histogram = ips.EnergyHistogram(data=selection.frames, bins='auto')
 
     project.repro(force=True)
-    
+
     bin_edges = histogram.labels_df.to_dict()['bin_edges']
     num_edges = len(bin_edges)
     assert bin_edges[num_edges-1] == pytest.approx(
