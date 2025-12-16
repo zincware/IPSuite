@@ -14,6 +14,10 @@ class TBLiteModel:
         The method to use for the calculator.
     verbosity : int
         The verbosity level of the calculator.
+    charge : int
+        The charge of the structure
+    multiplicity : int
+        The spin multiplicity of the structure
 
     .. [1] https://tblite.readthedocs.io/en/latest/
 
@@ -36,6 +40,8 @@ class TBLiteModel:
 
     method: str = "GFN2-xTB"
     verbosity: int = 0
+    charge: int = 0
+    multiplicity: int = 1
 
     def get_calculator(self, **kwargs):
         """Get an xtb ase calculator."""
@@ -48,5 +54,10 @@ class TBLiteModel:
             )
             raise
 
-        calc = TBLite(method=self.method, verbosity=self.verbosity)
+        calc = TBLite(
+            method=self.method,
+            verbosity=self.verbosity,
+            charge=self.charge,
+            multiplicity=self.multiplicity,
+        )
         return calc

@@ -16,11 +16,12 @@ class LabelHistogram(base.AnalyseAtoms):
     ----------
     data: list
         List of Atoms objects.
-    bins: int
-        Number of bins in the histogram.
-    """
+    bins: int | str
+        Number of bins in the histogram, or string indicating how to find the number of bins.
+        See https://numpy.org/devdocs/reference/generated/numpy.histogram_bin_edges.html#numpy.histogram_bin_edges
+    """  # noqa: E501
 
-    bins: int = zntrack.params(None)
+    bins: int | str = zntrack.params("auto")
     x_lim: tuple = zntrack.params(None)
     y_lim: tuple = zntrack.params(None)
     plots_dir: pathlib.Path = zntrack.outs_path(zntrack.nwd / "plots")
@@ -43,9 +44,8 @@ class LabelHistogram(base.AnalyseAtoms):
             "min": np.min(labels),
         }
 
-        if self.bins is None:
-            self.bins = int(np.ceil(len(labels) / 100))
-        counts, bin_edges = np.histogram(labels, self.bins)
+        bin_edges = np.histogram_bin_edges(labels, bins=self.bins)
+        counts, bin_edges = np.histogram(labels, bins=bin_edges)
         return counts, bin_edges
 
     def get_plots(self, counts, bin_edges):

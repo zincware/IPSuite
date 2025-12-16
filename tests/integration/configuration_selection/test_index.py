@@ -19,11 +19,13 @@ def test_index_chained(proj_path, traj_file):
             data=pre_selection.frames, indices=[0, 1, 2], name="selection"
         )
 
-        histogram = ips.EnergyHistogram(data=selection.frames)
+        histogram = ips.EnergyHistogram(data=selection.frames, bins='auto')
 
     project.repro()
 
-    assert histogram.labels_df.to_dict()["bin_edges"][0] == pytest.approx(
+    bin_edges = histogram.labels_df.to_dict()['bin_edges']
+    num_edges = len(bin_edges)
+    assert bin_edges[num_edges-1] == pytest.approx(
         0.0952380952380952
     )
 
@@ -42,8 +44,12 @@ def test_index_chained(proj_path, traj_file):
         histogram = ips.EnergyHistogram(data=selection.frames)
 
     project.repro()
+
     histogram = zntrack.from_rev(name=histogram.name)
-    assert histogram.labels_df.to_dict()["bin_edges"][0] == pytest.approx(
+
+    bin_edges = histogram.labels_df.to_dict()['bin_edges']
+    num_edges = len(bin_edges)
+    assert histogram.labels_df.to_dict()["bin_edges"][num_edges-1] == pytest.approx(
         0.3333333333333333
     )
 
