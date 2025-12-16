@@ -17,9 +17,9 @@ class LabelHistogram(base.AnalyseAtoms):
     data: list
         List of Atoms objects.
     bins: int | str
-        Number of bins in the histogram, or string indicating how to find the number of bins. See
-            https://numpy.org/devdocs/reference/generated/numpy.histogram_bin_edges.html#numpy.histogram_bin_edges
-    """
+        Number of bins in the histogram, or string indicating how to find the number of bins.
+        See https://numpy.org/devdocs/reference/generated/numpy.histogram_bin_edges.html#numpy.histogram_bin_edges
+    """  # noqa: E501
 
     bins: int | str = zntrack.params("auto")
     x_lim: tuple = zntrack.params(None)
