@@ -33,7 +33,7 @@ class AllowedStructuresFilter(base.IPSNode):
     def run(self):
         molecules = self.molecules + [rdkit2ase.smiles2atoms(s) for s in self.smiles]
         mapping = BarycenterMapping()
-        self.outliers = []
+        outliers_set = set()
         for idx, atoms in enumerate(tqdm.tqdm(self.data)):
             _, mols = mapping.forward_mapping(atoms)
             for mol in mols:
@@ -46,7 +46,8 @@ class AllowedStructuresFilter(base.IPSNode):
                     raise ValueError(f"Outlier found at index {idx} for molecule {mol}")
                 else:
                     print(f"Outlier found at index {idx} for molecule {mol}")
-                self.outliers.append(idx)
+                outliers_set.add(idx)
+        self.outliers = list(outliers_set)
 
     @property
     def excluded_frames(self) -> list[ase.Atoms]:
