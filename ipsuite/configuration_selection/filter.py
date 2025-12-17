@@ -60,6 +60,7 @@ class FilterOutlier(base.IPSNode):
         ax[2].hist([values[i] for i in self.filtered_indices], bins=100)
         ax[2].set_title("Excluded")
         fig.savefig(self.histogram, bbox_inches="tight")
+        plt.close()
 
     @property
     def frames(self) -> list[ase.Atoms]:

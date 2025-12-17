@@ -196,3 +196,4 @@ def plot_ture_vs_pred(x, y, z, name, height, plots_dir):
 
     fig.suptitle(rf"Additive {height} $\AA$ over the surface")
     fig.savefig(plots_dir / f"{name}-{height}-heat.png")
+    plt.close()

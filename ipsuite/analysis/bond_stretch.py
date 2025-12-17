@@ -104,6 +104,8 @@ class BondStretchAnalyses(ProcessAtoms):
 
         e_fig.savefig(self.plots_dir / f"energy_{chem_symbols[0]}_{chem_symbols[1]}.png")
         f_fig.savefig(self.plots_dir / f"force_{chem_symbols[0]}_{chem_symbols[1]}.png")
+        plt.close(fig=e_fig)
+        plt.close(fig=f_fig)
 
     def get_plots(
         self,

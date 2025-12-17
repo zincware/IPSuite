@@ -96,3 +96,4 @@ class AnalyseStructureMeanForce(base.IPSNode):
 
         plt.tight_layout()
         plt.savefig(self.figure_path)
+        plt.close()
