@@ -83,6 +83,7 @@ class AnalyseGlobalForceSensitivity(base.IPSNode):
         fig, ax = plt.subplots()
         nonuniform_imshow(ax, r_ij[0, :, 0], r_ij[0, :, 1], mean_forces)
         fig.savefig(self.plots / "2d_forces.png")
+        plt.close()
 
         fig, ax = plt.subplots()
         ax.scatter(d_ij[0], np.sum(std_forces, axis=1))
@@ -90,6 +91,7 @@ class AnalyseGlobalForceSensitivity(base.IPSNode):
         ax.set_xlabel(r"distance $d ~ / ~ \AA$")
         ax.set_ylabel(r"standard deviation $\sigma ~ / ~ a.u.$")
         fig.savefig(self.plots / "std_forces.png")
+        plt.close()
 
 
 def _compute_std_leave_one_out(data):  # Leave-One-Out Cross-Validation
@@ -159,3 +161,4 @@ class AnalyseSingleForceSensitivity(base.IPSNode):
         ax.set_xlabel(r"Distance $r ~ / ~ \AA$")
         ax.set_yscale("log")
         fig.savefig(self.sensitivity_plot, bbox_inches="tight")
+        plt.close()

@@ -88,6 +88,7 @@ class ConfigurationSelection(base.IPSNode):
         ax.scatter(indices, line_data[indices], c="r")
         ax.set_xlabel("Configuration")
         fig.savefig(self.img_selection, bbox_inches="tight")
+        plt.close()
 
 
 class BatchConfigurationSelection(ConfigurationSelection):

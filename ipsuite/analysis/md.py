@@ -30,6 +30,7 @@ class AnalyseDensity(base.AnalyseAtoms):
         ax.set_xlabel("Step")
         fig.tight_layout()
         fig.savefig(self.figure)
+        plt.close()
 
         self.density = {
             "density": np.mean(densities[self.start : self.end]),
