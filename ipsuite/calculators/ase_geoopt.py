@@ -79,6 +79,7 @@ class ASEGeoOpt(base.IPSNode):
     sampling_rate: int = zntrack.params(1)
     maxstep: int = zntrack.params(None)
 
+    log_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "opt.log")
     traj_file: pathlib.Path = zntrack.outs_path(zntrack.nwd / "structures.h5")
 
     def run(self):  # noqa: C901
@@ -105,7 +106,7 @@ class ASEGeoOpt(base.IPSNode):
         db = znh5md.IO(self.traj_file)
 
         optimizer = getattr(ase.optimize, self.optimizer)
-        dyn = optimizer(atoms, **self.init_kwargs)
+        dyn = optimizer(atoms, logfile=self.log_file, **self.init_kwargs)
 
         for step, _ in enumerate(dyn.irun(**self.run_kwargs)):
             stop = []

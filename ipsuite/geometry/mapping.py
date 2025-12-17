@@ -25,15 +25,20 @@ class BarycenterMapping:
     frozen: bool
         If True, the neighbor list is only constructed for the first configuration.
         The indices of the molecules will be frozen for all configurations.
+    cutoffs: dict[str, float] | None
+        cutoffs of each element.
+        Dictionary with keys for the symbols and values of the cutoff radii.
+        If None, use the `ase.data.covalent_radii`. Default: None
     """
 
     frozen: bool = False
+    cutoffs: dict[str, float] | None = None
 
     _components: t.Any | None = None
 
     def forward_mapping(self, atoms: ase.Atoms) -> tuple[ase.Atoms, list[ase.Atoms]]:
         if self._components is None:
-            components = graphs.identify_molecules(atoms)
+            components = graphs.identify_molecules(atoms, cutoffs=self.cutoffs)
         else:
             components = self._components
 
