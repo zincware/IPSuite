@@ -21,18 +21,22 @@ class AllowedStructuresFilter(base.IPSNode):
         The molecules that are allowed.
     smiles : list[str], optional
         The SMILES strings of the allowed molecules.
+    cutoffs : dict[str, float] | None, optional
+        The cutoffs for each element.
+        If None, use the `ase.data.covalent_radii`. Default: None
     """
 
     data: list[ase.Atoms] = zntrack.deps()
     molecules: list[ase.Atoms] = zntrack.deps(default_factory=list)
     smiles: list[str] = zntrack.params(default_factory=list)
+    cutoffs: dict[str, float] | None = zntrack.params(None)
     fail: bool = zntrack.params(False)
 
     outliers: list[int] = zntrack.outs()
 
     def run(self):
         molecules = self.molecules + [rdkit2ase.smiles2atoms(s) for s in self.smiles]
-        mapping = BarycenterMapping()
+        mapping = BarycenterMapping(cutoffs=self.cutoffs)
         outliers_set = set()
         for idx, atoms in enumerate(tqdm.tqdm(self.data)):
             _, mols = mapping.forward_mapping(atoms)

@@ -140,3 +140,4 @@ class ThresholdSelection(ConfigurationSelection):
         ax.set_xlabel("configuration")
 
         fig.savefig(self.img_selection, bbox_inches="tight")
+        plt.close()
