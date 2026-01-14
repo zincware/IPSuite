@@ -84,6 +84,7 @@ exclude = [
     "node_modules",
     "venv",
     "tests",
+    "ipsuite/__init__.pyi",
 ]
 
 # Same as Black.
@@ -97,6 +98,10 @@ select = ["A", "B", "C", "E", "F", "I", "C90", "C4", "TID", "PTH"] #  "D", "S"
 ignore = [
     "B905", # not supported in older python versions
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"ipsuite/__init__.py*" = ["E402", "F811", "I001"]
+
 
 [tool.codespell]
 ignore-words-list = "dscribe"
