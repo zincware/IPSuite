@@ -112,6 +112,7 @@ from .geometry import BarycenterMapping
 # Models
 from .models import (
     CP2KModel,
+    VASPModel,
     EnsembleModel,
     GenericASEModel,
     MACEMPModel,
@@ -133,6 +134,7 @@ __all__ = [
     # Models
     "EnsembleModel",
     "CP2KModel",
+    "VASPModel",
     "TBLiteModel",
     "ORCAModel",
     "MACEMPModel",
