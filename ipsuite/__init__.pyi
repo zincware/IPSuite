@@ -112,13 +112,13 @@ from .geometry import BarycenterMapping
 # Models
 from .models import (
     CP2KModel,
-    VASPModel,
     EnsembleModel,
     GenericASEModel,
     MACEMPModel,
     ORCAModel,
     TBLiteModel,
     TorchDFTD3,
+    VASPModel,
 )
 
 # Project

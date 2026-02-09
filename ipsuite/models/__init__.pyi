@@ -1,12 +1,12 @@
 from .base import MLModel
 from .cp2k import CP2KModel
-from .vasp import VASPModel
 from .ensemble import EnsembleModel
 from .generic import GenericASEModel
 from .mace import MACEMPModel
 from .orca import ORCAModel
 from .tblite import TBLiteModel
 from .torch_d3 import TorchDFTD3
+from .vasp import VASPModel
 
 __all__ = [
     "MLModel",
