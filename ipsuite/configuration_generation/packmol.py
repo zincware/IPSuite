@@ -71,12 +71,14 @@ class Packmol(base.IPSNode):
             data = self.data
 
         frames = [
-            rdkit2ase.pack(
+            #rdkit2ase.pack(
+            pack(
                 data=data,
                 counts=self.count,
                 tolerance=self.tolerance,
                 density=self.density,
                 pbc=self.pbc,
+                ratio=self.ratio,
                 packmol=os.environ.get("RDKIT2ASE_PACKMOL", "packmol"),
             )
         ]
