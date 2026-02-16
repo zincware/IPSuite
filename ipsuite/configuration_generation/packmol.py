@@ -9,7 +9,6 @@ import ase
 import ase.units
 import h5py
 import numpy as np
-import rdkit2ase
 import znh5md
 import zntrack
 
@@ -71,7 +70,7 @@ class Packmol(base.IPSNode):
             data = self.data
 
         frames = [
-            #rdkit2ase.pack(
+            # rdkit2ase.pack(
             pack(
                 data=data,
                 counts=self.count,

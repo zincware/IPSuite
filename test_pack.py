@@ -1,14 +1,14 @@
-import pytest
-import numpy as np
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 import ase
+import pytest
 
-from ipsuite import Packmol, MultiPackmol
-
+from ipsuite import MultiPackmol, Packmol
 
 # -----------------------------
 # Helpers
 # -----------------------------
+
 
 def dummy_atoms():
     return ase.Atoms("H2")
@@ -17,6 +17,7 @@ def dummy_atoms():
 # -----------------------------
 # Basic init tests
 # -----------------------------
+
 
 def test_packmol_ratio_default():
     node = Packmol(
@@ -50,6 +51,7 @@ def test_packmol_data_count_mismatch():
 # Mutable default safety
 # -----------------------------
 
+
 def test_ratio_not_shared_between_instances():
     a = Packmol(
         data=[[dummy_atoms()]],
@@ -69,6 +71,7 @@ def test_ratio_not_shared_between_instances():
 # -----------------------------
 # run() call test (mock pack)
 # -----------------------------
+
 
 @patch("ipsuite.pack.pack")
 @patch("ipsuite.pack.znh5md.IO")
@@ -93,6 +96,7 @@ def test_packmol_run_calls_pack(mock_io, mock_pack):
 # -----------------------------
 # MultiPackmol inheritance test
 # -----------------------------
+
 
 @patch("ipsuite.pack.pack")
 @patch("ipsuite.pack.znh5md.IO")
