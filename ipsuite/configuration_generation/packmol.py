@@ -11,7 +11,6 @@ import h5py
 import numpy as np
 import znh5md
 import zntrack
-
 from molify.pack import pack
 
 from ipsuite import base
@@ -53,9 +52,7 @@ class Packmol(base.IPSNode):
     density: float = zntrack.params()
     pbc: bool = zntrack.params(True)
     frames_path: pathlib.Path = zntrack.outs_path(zntrack.nwd / "frames.h5")
-    ratio: list[float] = zntrack.params(
-        default_factory=lambda: [1.0, 1.0, 1.0]
-    )
+    ratio: list[float] = zntrack.params(default_factory=lambda: [1.0, 1.0, 1.0])
 
     def __post_init__(self):
         if len(self.data) != len(self.count):
@@ -149,7 +146,7 @@ class MultiPackmol(Packmol):
                 data.append(frame_list)
 
             frames.append(
-                #rdkit2ase.pack(
+                # rdkit2ase.pack(
                 pack(
                     data=data,
                     counts=self.count,
