@@ -166,21 +166,34 @@ class ASEMD(zntrack.Node):
     model_outs: Path = zntrack.outs_path(zntrack.nwd / "model")
     laufband_path: Path = zntrack.outs_path(zntrack.nwd / "laufband.sqlite")
 
-    @property
-    def frames(self) -> znh5md.IO:
+    def _make_file_factory(self, file_path: str) -> t.Callable:
         @contextlib.contextmanager
         def _factory() -> t.Generator[h5py.File, None, None]:
             if self.state.rev is None and self.state.remote is None:
-                with h5py.File(self.frames_path / "md.h5", "r") as file:
+                with h5py.File(file_path, "r") as file:
                     yield file
             else:
-                with self.state.fs.open(
-                    (self.frames_path / "md.h5").as_posix(), "rb"
-                ) as f:
+                with self.state.fs.open(file_path, "rb") as f:
                     with h5py.File(f) as file:
                         yield file
 
-        return znh5md.IO(file_factory=_factory)
+        return _factory
+
+    @property
+    def frames(self) -> znh5md.IO | list[ase.Atoms]:
+        files = sorted(
+            self.state.fs.glob((self.frames_path / "*.h5").as_posix())
+        )
+        if not files:
+            raise FileNotFoundError(
+                f"No HDF5 files found in {self.frames_path}"
+            )
+        if len(files) == 1:
+            return znh5md.IO(file_factory=self._make_file_factory(files[0]))
+        return sum(
+            [znh5md.IO(file_factory=self._make_file_factory(f))[:] for f in files],
+            [],
+        )
 
     def initialize_md(self):
         self.model_outs.mkdir(parents=True, exist_ok=True)
