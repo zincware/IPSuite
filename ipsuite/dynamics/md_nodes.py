@@ -1,3 +1,4 @@
+import contextlib
 import logging
 import sys
 import typing as t
@@ -125,10 +126,8 @@ class ASEMD(zntrack.Node):
         Output path for model-specific output files.
     laufband_path : Path
         Path to the job queue database file.
-    frames : list[ase.Atoms]
-        Property that returns all trajectory frames from saved files.
-    structures : list[list[ase.Atoms]]
-        Property that returns structures organized by simulation run.
+    frames : znh5md.IO
+        Property that returns a lazy IO handle for trajectory frames.
 
     Examples
     --------
@@ -168,25 +167,20 @@ class ASEMD(zntrack.Node):
     laufband_path: Path = zntrack.outs_path(zntrack.nwd / "laufband.sqlite")
 
     @property
-    def frames(self) -> list[ase.Atoms]:
-        files = list(self.state.fs.glob((self.frames_path / "*.h5").as_posix()))
-        frames = []
-        for file in files:
-            with self.state.fs.open(file, "rb") as f:
-                with h5py.File(f) as file:
-                    frames.extend(znh5md.IO(file_handle=file)[:])
-        return frames
+    def frames(self) -> znh5md.IO:
+        @contextlib.contextmanager
+        def _factory() -> t.Generator[h5py.File, None, None]:
+            if self.state.rev is None and self.state.remote is None:
+                with h5py.File(self.frames_path / "md.h5", "r") as file:
+                    yield file
+            else:
+                with self.state.fs.open(
+                    (self.frames_path / "md.h5").as_posix(), "rb"
+                ) as f:
+                    with h5py.File(f) as file:
+                        yield file
 
-    @property
-    def structures(self) -> list[list[ase.Atoms]]:
-        """Return the structures as a list of lists of Atoms."""
-        files = list(self.state.fs.glob((self.frames_path / "*.h5").as_posix()))
-        structures = []
-        for file in files:
-            with self.state.fs.open(file, "rb") as f:
-                with h5py.File(f) as file:
-                    structures.append(znh5md.IO(file_handle=file)[:])
-        return structures
+        return znh5md.IO(file_factory=_factory)
 
     def initialize_md(self):
         self.model_outs.mkdir(parents=True, exist_ok=True)
@@ -263,7 +257,7 @@ class ASEMD(zntrack.Node):
             ncols=120,
         )
         io = znh5md.IO(
-            self.frames_path / f"{idx}.h5",
+            self.frames_path / "md.h5",
         )
         # We do not save the starting configuration. E.g. step 0 is not saved!
         with Live(console=progress.console, refresh_per_second=10) as live:
@@ -388,10 +382,8 @@ class ASEMDSafeSampling(ASEMD):
         Output path for model-specific output files.
     laufband_path : Path
         Path to the job queue database file.
-    frames : list[ase.Atoms]
-        Property that returns all trajectory frames from saved files.
-    structures : list[list[ase.Atoms]]
-        Property that returns structures organized by simulation run.
+    frames : znh5md.IO
+        Property that returns a lazy IO handle for trajectory frames.
 
     Examples
     --------
