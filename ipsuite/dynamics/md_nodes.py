@@ -181,13 +181,9 @@ class ASEMD(zntrack.Node):
 
     @property
     def frames(self) -> znh5md.IO | list[ase.Atoms]:
-        files = sorted(
-            self.state.fs.glob((self.frames_path / "*.h5").as_posix())
-        )
+        files = sorted(self.state.fs.glob((self.frames_path / "*.h5").as_posix()))
         if not files:
-            raise FileNotFoundError(
-                f"No HDF5 files found in {self.frames_path}"
-            )
+            raise FileNotFoundError(f"No HDF5 files found in {self.frames_path}")
         if len(files) == 1:
             return znh5md.IO(file_factory=self._make_file_factory(files[0]))
         return sum(
