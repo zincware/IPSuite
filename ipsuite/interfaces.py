@@ -1,14 +1,12 @@
 import pathlib
-from typing import Dict, List, Protocol, TypeVar, Union
+from typing import Dict, List, Protocol, Union
 
 import ase
 from ase.calculators.calculator import Calculator
 from ase.optimize.optimize import Dynamics
 
-T = TypeVar("T", covariant=True)
 
-
-class NodeWithCalculator(Protocol[T]):
+class NodeWithCalculator(Protocol):
     """Any class with a `get_calculator` method returning an ASE Calculator."""
 
     def get_calculator(
@@ -16,7 +14,7 @@ class NodeWithCalculator(Protocol[T]):
     ) -> Calculator: ...
 
 
-class NodeWithThermostat(Protocol[T]):
+class NodeWithThermostat(Protocol):
     """Any class with a `get_thermostat` method returning an ASE Dynamics."""
 
     @property

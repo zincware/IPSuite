@@ -128,5 +128,7 @@ class Check:
 class Flatten(ProcessAtoms):
     """Flattens list[list[ase.Atoms]] to list[ase.Atoms]"""
 
+    data: list[list[ase.Atoms]] = zntrack.deps()
+
     def run(self):
         self.frames = sum(self.data, [])
