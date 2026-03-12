@@ -281,7 +281,11 @@ class CP2KModel:
             cp2k_input_dict = yaml.safe_load(file)
         return cp2k_input_dict
 
-    def get_calculator(self, directory: str | Path, **kwargs) -> CP2K | CustomCP2K:
+    def get_calculator(
+        self, *, directory: str | Path | None = None, **kwargs
+    ) -> CP2K | CustomCP2K:
+        if directory is None:
+            raise ValueError("CP2KModel requires a directory for calculation.")
         directory = Path(directory)
         directory.mkdir(parents=True, exist_ok=True)
         self._update_cmd()

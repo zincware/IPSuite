@@ -3,7 +3,11 @@ from typing import Dict, List, Protocol, Union
 
 import ase
 from ase.calculators.calculator import Calculator
-from ase.optimize.optimize import Dynamics
+
+try:
+    from ase.optimize.optimize import BaseDynamics
+except ImportError:
+    from ase.optimize.optimize import Dynamics as BaseDynamics
 
 
 class NodeWithCalculator(Protocol):
@@ -26,7 +30,7 @@ class NodeWithThermostat(Protocol):
     @temperature.setter
     def temperature(self, value: float) -> None: ...
 
-    def get_thermostat(self, atoms: ase.Atoms) -> Dynamics: ...
+    def get_thermostat(self, atoms: ase.Atoms) -> BaseDynamics: ...
 
 
 class HasAtoms(Protocol):
