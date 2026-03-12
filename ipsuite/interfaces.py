@@ -1,14 +1,16 @@
 import pathlib
-from typing import Dict, List, Protocol, TypeVar, Union
+from typing import Dict, List, Protocol, Union
 
 import ase
 from ase.calculators.calculator import Calculator
-from ase.optimize.optimize import Dynamics
 
-T = TypeVar("T", covariant=True)
+try:
+    from ase.optimize.optimize import BaseDynamics
+except ImportError:
+    from ase.optimize.optimize import Dynamics as BaseDynamics
 
 
-class NodeWithCalculator(Protocol[T]):
+class NodeWithCalculator(Protocol):
     """Any class with a `get_calculator` method returning an ASE Calculator."""
 
     def get_calculator(
@@ -16,7 +18,7 @@ class NodeWithCalculator(Protocol[T]):
     ) -> Calculator: ...
 
 
-class NodeWithThermostat(Protocol[T]):
+class NodeWithThermostat(Protocol):
     """Any class with a `get_thermostat` method returning an ASE Dynamics."""
 
     @property
@@ -28,7 +30,7 @@ class NodeWithThermostat(Protocol[T]):
     @temperature.setter
     def temperature(self, value: float) -> None: ...
 
-    def get_thermostat(self, atoms: ase.Atoms) -> Dynamics: ...
+    def get_thermostat(self, atoms: ase.Atoms) -> BaseDynamics: ...
 
 
 class HasAtoms(Protocol):
