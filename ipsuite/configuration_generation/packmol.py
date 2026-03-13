@@ -9,9 +9,9 @@ import ase
 import ase.units
 import h5py
 import numpy as np
-import rdkit2ase
 import znh5md
 import zntrack
+from molify.pack import pack
 
 from ipsuite import base
 
@@ -52,6 +52,7 @@ class Packmol(base.IPSNode):
     density: float = zntrack.params()
     pbc: bool = zntrack.params(True)
     frames_path: pathlib.Path = zntrack.outs_path(zntrack.nwd / "frames.h5")
+    ratio: list[float] = zntrack.params(default_factory=lambda: [1.0, 1.0, 1.0])
 
     def __post_init__(self):
         if len(self.data) != len(self.count):
@@ -66,12 +67,14 @@ class Packmol(base.IPSNode):
             data = self.data
 
         frames = [
-            rdkit2ase.pack(
+            # rdkit2ase.pack(
+            pack(
                 data=data,
                 counts=self.count,
                 tolerance=self.tolerance,
                 density=self.density,
                 pbc=self.pbc,
+                ratio=self.ratio,
                 packmol=os.environ.get("RDKIT2ASE_PACKMOL", "packmol"),
             )
         ]
@@ -129,6 +132,10 @@ class MultiPackmol(Packmol):
     seed: int = zntrack.params(42)
 
     def run(self):
+        # print("RATIO IN NODE:", self.ratio)
+        # print("PACK FUNCTION:", rdkit2ase.pack)
+        # print("MODULE:", rdkit2ase.pack.__module__)
+        # print(rdkit2ase.__file__)
         np.random.seed(self.seed)
         frames = []
         for _ in range(self.n_configurations):
@@ -139,12 +146,14 @@ class MultiPackmol(Packmol):
                 data.append(frame_list)
 
             frames.append(
-                rdkit2ase.pack(
+                # rdkit2ase.pack(
+                pack(
                     data=data,
                     counts=self.count,
                     tolerance=self.tolerance,
                     density=self.density,
                     pbc=self.pbc,
+                    ratio=self.ratio,
                     packmol=os.environ.get("RDKIT2ASE_PACKMOL", "packmol"),
                 )
             )
