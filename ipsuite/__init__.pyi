@@ -118,6 +118,7 @@ from .models import (
     ORCAModel,
     TBLiteModel,
     TorchDFTD3,
+    VASPModel,
 )
 
 # Project
@@ -133,6 +134,7 @@ __all__ = [
     # Models
     "EnsembleModel",
     "CP2KModel",
+    "VASPModel",
     "TBLiteModel",
     "ORCAModel",
     "MACEMPModel",
