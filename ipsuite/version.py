@@ -1,3 +1,1 @@
-import importlib.metadata
-
-__version__ = importlib.metadata.version("ipsuite")
+from ipsuite._version import __version__, __version_tuple__  # noqa: F401

@@ -1,6 +1,6 @@
 [project]
 name = "ipsuite"
-version = "0.2.8"
+dynamic = ["version"]
 description = "A suite of tools for machine learned interatomic potentials."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -33,8 +33,14 @@ Discord = "https://discord.gg/7ncfwhsnm4"
 Documentation = "https://ipsuite.readthedocs.io"
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "ipsuite/_version.py"
 
 [dependency-groups]
 docs = [
@@ -50,6 +56,7 @@ dev = [
     "pytest>=8.3.4",
     "pytest-cov>=6.0.0",
     "cp2k-input-tools",
+    "pyright>=1.1.408",
 ]
 
 [project.optional-dependencies]
