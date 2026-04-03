@@ -1,3 +1,4 @@
+import logging
 import typing
 import warnings
 from pathlib import Path
@@ -10,7 +11,10 @@ import znh5md
 import zntrack
 from ase import Atoms
 from ase.calculators.singlepoint import SinglePointCalculator
+from ase.units import kJ, mol
 from MDAnalysis.auxiliary.EDR import EDRReader
+
+logger = logging.getLogger(__name__)
 
 _TYPE_TO_ELEMENT = {
     "CL": "Cl",
@@ -51,6 +55,22 @@ def _get_symbols(u: mda.Universe) -> list[str]:
             # Last resort: take leading alphabetic characters from atom name
             symbols.append(t[0].upper())
     return symbols
+
+
+def _match_edr_frame(
+    edr_times: np.ndarray, traj_time: float, tolerance: float = 0.1
+) -> int:
+    """Find the EDR index closest to a trajectory time, warning on large gaps."""
+    idx = int(np.argmin(np.abs(edr_times - traj_time)))
+    time_diff = abs(edr_times[idx] - traj_time)
+    if time_diff > tolerance:
+        logger.warning(
+            "EDR time %.3f ps does not match trajectory time %.3f ps (diff=%.3f ps)",
+            edr_times[idx],
+            traj_time,
+            time_diff,
+        )
+    return idx
 
 
 def gmx_to_ase(
@@ -105,7 +125,7 @@ def gmx_to_ase(
             reader = EDRReader(edr)
             edr_all = reader.get_data(list(reader.terms))
             edr_times = edr_all.pop("Time")
-            edr_data = {term: values for term, values in edr_all.items()}
+            edr_data = dict(edr_all)
             edr_terms = list(edr_data.keys())
 
     frames = []
@@ -130,9 +150,8 @@ def gmx_to_ase(
         extra_results = {}
 
         if edr_data is not None:
-            # Match EDR frame to trajectory time
-            idx = np.argmin(np.abs(edr_times - ts.time))
-            energy = float(edr_data["Potential"][idx])  # kJ/mol
+            idx = _match_edr_frame(edr_times, ts.time)
+            energy = float(edr_data["Potential"][idx]) * (kJ / mol)  # convert to eV
 
             # Build Voigt stress from pressure tensor if available
             try:
@@ -200,15 +219,15 @@ class Gmx2Frames(zntrack.Node):
     """
 
     topology: Path = zntrack.deps_path()
-    trajectory: Path = zntrack.deps_path(None)
-    edr: Path = zntrack.deps_path(None)
-    start: int = zntrack.params(None)
-    stop: int = zntrack.params(None)
-    step: int = zntrack.params(None)
+    trajectory: Path | None = zntrack.deps_path(None)
+    edr: Path | None = zntrack.deps_path(None)
+    start: int | None = zntrack.params(None)
+    stop: int | None = zntrack.params(None)
+    step: int | None = zntrack.params(None)
 
     frames_path: Path = zntrack.outs_path(zntrack.nwd / "frames.h5")
 
-    def run(self):
+    def run(self) -> None:
         data = gmx_to_ase(
             topology=str(self.topology),
             trajectory=str(self.trajectory) if self.trajectory else None,
@@ -236,5 +255,6 @@ if __name__ == "__main__":
     )
     print(f"Loaded {len(frames)} frames, {len(frames[0])} atoms per frame")
     print(f"Cell: {frames[0].cell.cellpar()}")
-    print(f"Potential energy (frame 0): {frames[0].get_potential_energy()} kJ/mol")
-    print(f"All EDR terms on frame 0: {list(frames[1].calc.results.keys())}")
+    print(f"Potential energy (frame 0): {frames[0].get_potential_energy()} eV")
+    if len(frames) >= 2:
+        print(f"All EDR terms on frame 1: {list(frames[1].calc.results.keys())}")
