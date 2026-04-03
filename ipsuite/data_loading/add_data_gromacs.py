@@ -5,8 +5,8 @@ from pathlib import Path
 import h5py
 import MDAnalysis as mda
 import numpy as np
-import znh5md
 import tqdm
+import znh5md
 import zntrack
 from ase import Atoms
 from ase.calculators.singlepoint import SinglePointCalculator
@@ -198,6 +198,7 @@ class Gmx2Frames(zntrack.Node):
     ...         start=1,
     ...     )
     """
+
     topology: Path = zntrack.deps_path()
     trajectory: Path = zntrack.deps_path(None)
     edr: Path = zntrack.deps_path(None)
@@ -208,7 +209,6 @@ class Gmx2Frames(zntrack.Node):
     frames_path: Path = zntrack.outs_path(zntrack.nwd / "frames.h5")
 
     def run(self):
-
         data = gmx_to_ase(
             topology=str(self.topology),
             trajectory=str(self.trajectory) if self.trajectory else None,
