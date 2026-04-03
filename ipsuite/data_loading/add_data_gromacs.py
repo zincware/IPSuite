@@ -30,7 +30,15 @@ _TYPE_TO_ELEMENT = {
 
 
 def _get_symbols(u: mda.Universe) -> list[str]:
-    """Extract element symbols from a Universe, trying multiple strategies."""
+    """
+    Produce a list of element symbols for the atoms in an MDAnalysis Universe by using available per-atom metadata and sensible fallbacks.
+
+    Parameters:
+        u (mda.Universe): MDAnalysis Universe containing atoms to derive symbols for.
+
+    Returns:
+        list[str]: Element symbols (e.g., "C", "Cl", "Na") for each atom in the Universe in atom order.
+    """
     # 1. Use elements attribute if available
     try:
         return list(u.atoms.elements)
@@ -209,6 +217,11 @@ class Gmx2Frames(zntrack.Node):
     frames_path: Path = zntrack.outs_path(zntrack.nwd / "frames.h5")
 
     def run(self):
+        """
+        Convert the configured GROMACS inputs into ASE Atoms frames and persist them to the node's HDF5 output at self.frames_path.
+
+        The node's topology, optional trajectory, optional EDR file, and slicing parameters (start, stop, step) are used to produce the frames which are written to the frames_path via znh5md.
+        """
         data = gmx_to_ase(
             topology=str(self.topology),
             trajectory=str(self.trajectory) if self.trajectory else None,
@@ -222,6 +235,12 @@ class Gmx2Frames(zntrack.Node):
 
     @property
     def frames(self) -> typing.List[Atoms]:
+        """
+        Return all ASE `Atoms` frames stored in the node's HDF5 frames file.
+
+        Returns:
+            typing.List[Atoms]: A list of ASE `Atoms` objects read from the HDF5 file at `self.frames_path`.
+        """
         with self.state.fs.open(self.frames_path, "rb") as f:
             with h5py.File(f) as file:
                 return znh5md.IO(file_handle=file)[:]
