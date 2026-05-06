@@ -205,7 +205,7 @@ def gmx_to_ase(
     return frames
 
 
-class Gmx2Frames(zntrack.Node):
+class AddDataGMX(zntrack.Node):
     """Convert GROMACS output files to ASE Atoms frames.
 
     Reads topology, trajectory, and optionally energy (.edr) files
