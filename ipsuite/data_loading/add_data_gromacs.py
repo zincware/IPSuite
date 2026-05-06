@@ -69,14 +69,25 @@ def _match_edr_frame(
     edr_times: np.ndarray, traj_time: float, tolerance: float = 0.1
 ) -> int:
     """Find the EDR index closest to a trajectory time, warning on large gaps."""
-    idx = int(np.argmin(np.abs(edr_times - traj_time)))
+    # Use binary search to find insertion point
+    insert_idx = np.searchsorted(edr_times, traj_time)
+
+    # Determine nearest neighbor (left or right)
+    if insert_idx == 0:
+        idx = 0
+    elif insert_idx == len(edr_times):
+        idx = len(edr_times) - 1
+    else:
+        # Compare distances to left and right neighbors
+        left_diff = abs(traj_time - edr_times[insert_idx - 1])
+        right_diff = abs(edr_times[insert_idx] - traj_time)
+        idx = insert_idx - 1 if left_diff <= right_diff else insert_idx
+
     time_diff = abs(edr_times[idx] - traj_time)
     if time_diff > tolerance:
-        logger.warning(
-            "EDR time %.3f ps does not match trajectory time %.3f ps (diff=%.3f ps)",
-            edr_times[idx],
-            traj_time,
-            time_diff,
+        raise ValueError(
+            f"EDR time {edr_times[idx]:.3f} ps does not match trajectory time "
+            f"{traj_time:.3f} ps (diff={time_diff:.3f} ps, tolerance={tolerance:.3f} ps)"
         )
     return idx
 
@@ -152,7 +163,8 @@ def gmx_to_ase(
             atoms.set_velocities(ts.velocities / 1000.0)
 
         # Forces and energies via SinglePointCalculator
-        forces = ts.forces.copy() if ts.has_forces else None
+        # MDAnalysis forces are in kJ/(mol·Å), convert to ASE units (eV/Å)
+        forces = ts.forces.copy() * (kJ / mol) if ts.has_forces else None
         energy = None
         stress = None
         extra_results = {}
