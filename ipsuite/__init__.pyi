@@ -75,7 +75,7 @@ from .configuration_selection import (
 )
 
 # Data
-from .data_loading import AddData, AddDataH5MD, AddDataGMX
+from .data_loading import AddData, AddDataGMX, AddDataH5MD
 
 # Datasets
 from .datasets import MD22Dataset
