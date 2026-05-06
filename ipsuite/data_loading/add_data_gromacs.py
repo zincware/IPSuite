@@ -35,13 +35,15 @@ _TYPE_TO_ELEMENT = {
 
 def _get_symbols(u: mda.Universe) -> list[str]:
     """
-    Produce a list of element symbols for the atoms in an MDAnalysis Universe by using available per-atom metadata and sensible fallbacks.
+    Produce a list of element symbols for the atoms in an MDAnalysis Universe by using
+    available per-atom metadata and sensible fallbacks.
 
     Parameters:
         u (mda.Universe): MDAnalysis Universe containing atoms to derive symbols for.
 
     Returns:
-        list[str]: Element symbols (e.g., "C", "Cl", "Na") for each atom in the Universe in atom order.
+        list[str]: Element symbols (e.g., "C", "Cl", "Na") for each atom
+        in the Universe in atom order.
     """
     # 1. Use elements attribute if available
     try:
@@ -273,7 +275,8 @@ class AddDataGMX(zntrack.Node):
         Return all ASE `Atoms` frames stored in the node's HDF5 frames file.
 
         Returns:
-            typing.List[Atoms]: A list of ASE `Atoms` objects read from the HDF5 file at `self.frames_path`.
+            typing.List[Atoms]: A list of ASE `Atoms` objects read
+            from the HDF5 file at `self.frames_path`.
         """
         with self.state.fs.open(self.frames_path, "rb") as f:
             with h5py.File(f) as file:
